@@ -1,2 +1,2 @@
-# project_template
-A template repository for starting new projects
+# Application to manage shelter volunteering process
+
