@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <style>
+    .text-center {
+      text-align: center;
+    }
+
+    .bordered,
+    .calendar-day,
+    .time-slot,
+    .sign-up-button {
+      border: 2px black solid
+    }
+
+    .calendar-day {
+      padding-bottom: 8px;
+    }
+
+    .calendar-day p {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+
+    .time-slot.shift {
+      border-top: none;
+      border-bottom: none;
+    }
+
+    .time-slot.specific-time {
+      padding: 30px 0px
+    }
+
+    .time-slot.available {
+      background-color: #f3f3f3;
+    }
+
+    .time-slot.unavailable {
+      background-color: #9e9e9e;
+    }
+
+    .sign-up-button {
+      margin: 10px;
+      padding: 4px;
+      background-color: #c8c8c8;
+    }
+  </style>
+  <h1 class="text-center">Volunteer Sign-Up</h1>
+  <div class="bordered" style="margin: 0 10%;">
+    <div class="text-center">
+      <h2 style="margin: 5px;">MONTH, YEAR</h2>
+    </div>
+    <div class="text-center" style="display: grid; grid-template-columns: repeat(8, 1fr); ">
+      <!-- Days of the week header -->
+      <div></div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Sunday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Monday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Tuesday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Wednesday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Thursday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Friday</p>
+      </div>
+      <div class="calendar-day">
+        <p>DATE</p>
+        <p>Saturday</p>
+      </div>
+
+      <!-- Calendar time slots -->
+      <div class="time-slot specific-time">
+        <p>9 AM</p>
+      </div>
+      <div class="time-slot shift available">
+        <p>1/5 - 4 Shifts Available</p>
+        <div class="sign-up-button">
+          Sign up for shift
+        </div>
+      </div>
+      <div class="time-slot"></div>
+      <div class="time-slot"></div>
+      <div class="time-slot"></div>
+      <div class="time-slot shift unavailable">
+        <p>5/5 - Unavailable</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
