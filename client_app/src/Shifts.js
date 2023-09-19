@@ -1,11 +1,17 @@
 import { useState,useEffect } from 'react'
 
-import ShelterList from './Components/ShelterList'
+import {SERVER} from './config'
 
-function Shelters(){
+import ShiftList from './Components/ShiftList'
+
+
+function Shifts(){
    const [data, setData] = useState([])
+   console.log(SERVER)
+   const shelters_endpoint = SERVER+'/shifts';
+   console.log(shelters_endpoint)
    useEffect(()=>{
-       fetch('http://127.0.0.1:5000/shelters',{
+       fetch(shelters_endpoint,{
         'methods':'GET',
         headers : {
           'Content-Type':'application/json'
@@ -19,9 +25,9 @@ function Shelters(){
 
    return(
      <div>
-         <ShelterList shelters={data.shelters}/>
+         <ShiftList shifts={data.shifts}/>
      </div>
    )
 }
 
-export default Shelters;
+export default Shifts;

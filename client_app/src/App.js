@@ -1,10 +1,10 @@
 import logo from './logo.svg';
-import Shelters from './Shelters';
+import Shifts from './Shifts';
 import './App.css';
 
 function App() {
   return (
-    Shelters()
+    Shifts()
   );
 }
 
