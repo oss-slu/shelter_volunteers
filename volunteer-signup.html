@@ -38,38 +38,49 @@
     }
 
     .time-slot.available {
-      background-color: #f3f3f3;
+      background-color: #f0ed56;
     }
 
-    .time-slot.unavailable,
-    .time-slot.conflict {
+    .time-slot.unavailable {
       background-color: #7b7b7b;
     }
 
+    .time-slot.conflict {
+      background-color: #e44242;
+    }
+
     .time-slot.signed-up {
-      background-color: #bdbdbd;
+      background-color: #53e65a;
     }
 
     .calendar-button {
       margin: 10px;
-      padding: 4px;
+      padding: 4px 8px;
       background-color: #c8c8c8;
+    }
+
+    .calendar-button:hover {
+      cursor: pointer;
     }
   </style>
   <h1 class="text-center">Volunteer Sign-Up</h1>
   <div class="bordered" style="margin: 0 10%;">
     <div class="calendar-header">
-      <div class="calendar-button">
+      <div class="calendar-button" style="height: 20px;">
         <strong>&lt;</strong>
       </div>
-      <h2 class="text-center" style="margin: 5px;">MONTH, YEAR</h2>
-      <div class="calendar-button">
+      <div>
+        <h2 class="text-center" style="margin: 5px;">MONTH, YEAR</h2>
+        <p>MONTH, DATE - MONTH, DATE</p>
+      </div>
+      <div class="calendar-button" style="height: 20px;">
         <strong>&gt;</strong>
       </div>
     </div>
     <div class="text-center" style="display: grid; grid-template-columns: repeat(8, 1fr); ">
       <!-- Days of the week header -->
-      <div></div>
+      <div class="time-slot specific-time">
+      </div>
       <div class="calendar-day">
         <p>DATE</p>
         <p>Sunday</p>
