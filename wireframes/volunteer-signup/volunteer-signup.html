@@ -72,14 +72,26 @@
           numChecked += 1;
         }
       }
-      console.log(numChecked)
       document.getElementById("submit-button").disabled = numChecked == 0;
       return numChecked;
     }
 
+    function checkConflict() {
+      let elements = document.getElementsByTagName("input");
+      for (let i = 0; i < elements.length; i++) {
+        if (elements[i].checked && elements[i].id.includes("conflict")) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     function submit() {
       let checked = select("");
-      let message = "You are about to sign up for " + checked.toString() + " shifts. Is this okay?";
+      let message = "You are about to sign up for " + checked.toString() + " shift(s). Is this okay?";
+      if (checkConflict()) {
+        message += "\n\nWARNING: One or more of your shifts create a conflict. Signing up for the selected shifts will cause the other shifts to be overwritten."
+      }
       window.confirm(message);
     }
   </script>
