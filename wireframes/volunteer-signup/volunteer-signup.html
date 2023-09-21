@@ -63,7 +63,29 @@
       cursor: pointer;
     }
   </style>
-  <h1 class="text-center">Volunteer Sign-Up</h1>
+  <script>
+    function select(id) {
+      let elements = document.getElementsByTagName("input");
+      numChecked = 0;
+      for (let i = 0; i < elements.length; i++) {
+        if (elements[i].checked) {
+          numChecked += 1;
+        }
+      }
+      console.log(numChecked)
+      document.getElementById("submit-button").disabled = numChecked == 0;
+      return numChecked;
+    }
+
+    function submit() {
+      let checked = select("");
+      let message = "You are about to sign up for " + checked.toString() + " shifts. Is this okay?";
+      window.confirm(message);
+    }
+  </script>
+  <h1 class="text-center">NAME OF SHELTER</h1>
+  <h2 class="text-center">Volunteer Sign-Up</h2>
+  <h3 class="text-center">Please select the shifts you would like to sign up for:</h3>
   <div class="bordered" style="margin: 0 10%;">
     <div class="calendar-header">
       <div class="calendar-button" style="height: 20px;">
@@ -114,31 +136,41 @@
       <div class="time-slot specific-time">
         <p>9 AM</p>
       </div>
-      <div class="time-slot shift available">
-        <p>4 Shifts Available</p>
-        <div class="calendar-button">
-          Sign up for shift
+      <div class="time-slot shift available" onclick="select('checkbox-1')">
+        <div style="text-align: right">
+          <input type="checkbox" id="checkbox-1" />
         </div>
+        <p>4/5 Shifts Available</p>
       </div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-2')">
+        <div style="text-align: right">
+          <input type="checkbox" id="checkbox-2" />
+        </div>
+        <p>2/5 Shifts Available</p>
+      </div>
       <div class="time-slot"></div>
       <div class="time-slot shift unavailable">
         <p>All Shifts Taken</p>
       </div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-3')">
+        <div style="text-align: right">
+          <input type="checkbox" id="checkbox-3" />
+        </div>
+        <p>5/5 Shifts Available</p>
+      </div>
 
       <div class="time-slot specific-time">
         <p>10 AM</p>
       </div>
-      <div class="time-slot shift available"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-1')"></div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-2')"></div>
       <div class="time-slot"></div>
       <div class="time-slot shift unavailable"></div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-3')"></div>
 
       <div class="time-slot">
         <p>...</p>
@@ -169,32 +201,41 @@
         <p>4 PM</p>
       </div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
       <div class="time-slot shift signed-up">
         <p>Signed up for shift</p>
-        <div class="calendar-button">
-          Unassign self
-        </div>
       </div>
       <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-4')">
+        <div style="text-align: right">
+          <input type="checkbox" id="checkbox-4" />
+        </div>
+        <p>1/5 Shifts Available</p>
+      </div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift conflict">
+      <div class="time-slot shift conflict" onclick="select('checkbox-conflict')">
+        <div style="text-align: right">
+          <input type="checkbox" id="checkbox-conflict" />
+        </div>
+        <p>3/5 Shifts Available</p>
         <p>Time Conflict</p>
       </div>
+      <div class="time-slot"></div>
 
       <div class="time-slot specific-time">
         <p>5 PM</p>
       </div>
       <div class="time-slot"></div>
-      <div class="time-slot"></div>
       <div class="time-slot shift signed-up"></div>
       <div class="time-slot"></div>
+      <div class="time-slot shift available" onclick="select('checkbox-4')"></div>
       <div class="time-slot"></div>
+      <div class="time-slot shift conflict" onclick="select('checkbox-conflict')"></div>
       <div class="time-slot"></div>
-      <div class="time-slot shift conflict"></div>
 
     </div>
+  </div>
+  <div class="text-center" style="margin: 30px 0;">
+    <button id="submit-button" onclick="submit()" disabled>Sign up for selected shifts</button>
   </div>
 </body>
 
