@@ -3,7 +3,8 @@
 
 <body>
   <style>
-    .text-center {
+    .text-center,
+    .listed-time {
       text-align: center;
     }
 
@@ -62,192 +63,268 @@
     .calendar-button:hover {
       cursor: pointer;
     }
+
+    .listed-time {
+      padding: 20px;
+    }
   </style>
   <script>
     function select(id) {
       let elements = document.getElementsByTagName("input");
       numChecked = 0;
+      let type = "";
+      if (id.includes("calendar")) {
+        type = "calendar";
+      }
+      else if (id.includes("list")) {
+        type = "list";
+      }
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].checked) {
+        if (elements[i].checked && elements[i].id.includes(type)) {
           numChecked += 1;
         }
       }
-      document.getElementById("submit-button").disabled = numChecked == 0;
+      document.getElementById(type + "-submit-button").disabled = numChecked == 0;
       return numChecked;
     }
 
-    function checkConflict() {
+    function checkConflict(type) {
       let elements = document.getElementsByTagName("input");
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].checked && elements[i].id.includes("conflict")) {
+        if (elements[i].checked && elements[i].id.includes("conflict") && elements[i].id.includes(type)) {
           return true;
         }
       }
       return false;
     }
 
-    function submit() {
-      let checked = select("");
+    function submit(type) {
+      let checked = select(type);
       let message = "You are about to sign up for " + checked.toString() + " shift(s). Is this okay?";
-      if (checkConflict()) {
+      if (checkConflict(type)) {
         message += "\n\nWARNING: One or more of your shifts create a conflict. Signing up for the selected shifts will cause the other shifts to be overwritten."
       }
       window.confirm(message);
     }
   </script>
+
   <h1 class="text-center">NAME OF SHELTER</h1>
   <h2 class="text-center">Volunteer Sign-Up</h2>
-  <h3 class="text-center">Please select the shifts you would like to sign up for:</h3>
-  <div class="bordered" style="margin: 0 10%;">
-    <div class="calendar-header">
-      <div class="calendar-button" style="height: 20px;">
-        <strong>&lt;</strong>
+
+  <div>
+
+    <h1 class="text-center" style="font-size: 40px"><u>Calendar Version</u></h1>
+
+    <h3 class="text-center">Please select the shifts you would like to sign up for:</h3>
+    <div class="bordered" style="margin: 0 10%;">
+      <div class="calendar-header">
+        <div class="calendar-button" style="height: 20px;">
+          <strong>&lt;</strong>
+        </div>
+        <div>
+          <h2 class="text-center" style="margin: 5px;">MONTH, YEAR</h2>
+          <p>MONTH, DATE - MONTH, DATE</p>
+        </div>
+        <div class="calendar-button" style="height: 20px;">
+          <strong>&gt;</strong>
+        </div>
       </div>
-      <div>
-        <h2 class="text-center" style="margin: 5px;">MONTH, YEAR</h2>
-        <p>MONTH, DATE - MONTH, DATE</p>
-      </div>
-      <div class="calendar-button" style="height: 20px;">
-        <strong>&gt;</strong>
+      <div class="text-center" style="display: grid; grid-template-columns: repeat(8, 1fr); ">
+        <!-- Days of the week header -->
+        <div class="time-slot specific-time">
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Sunday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Monday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Tuesday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Wednesday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Thursday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Friday</p>
+        </div>
+        <div class="calendar-day">
+          <p>DATE</p>
+          <p>Saturday</p>
+        </div>
+
+        <!-- Calendar time slots -->
+        <div class="time-slot specific-time">
+          <p>9 AM</p>
+        </div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-1')">
+          <div style="text-align: right">
+            <input type="checkbox" id="calendar-checkbox-1" />
+          </div>
+          <p>4/5 Shifts Available</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-2')">
+          <div style="text-align: right">
+            <input type="checkbox" id="calendar-checkbox-2" />
+          </div>
+          <p>2/5 Shifts Available</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift unavailable">
+          <p>All Shifts Taken</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-3')">
+          <div style="text-align: right">
+            <input type="checkbox" id="calendar-checkbox-3" />
+          </div>
+          <p>5/5 Shifts Available</p>
+        </div>
+
+        <div class="time-slot specific-time">
+          <p>10 AM</p>
+        </div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-1')"></div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-2')"></div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift unavailable"></div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-3')"></div>
+
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+        <div class="time-slot">
+          <p>...</p>
+        </div>
+
+        <div class="time-slot specific-time">
+          <p>4 PM</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift signed-up">
+          <p>Signed up for shift</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-4')">
+          <div style="text-align: right">
+            <input type="checkbox" id="calendar-checkbox-4" />
+          </div>
+          <p>1/5 Shifts Available</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift conflict" onclick="select('calendar-checkbox-conflict')">
+          <div style="text-align: right">
+            <input type="checkbox" id="calendar-checkbox-conflict" />
+          </div>
+          <p>3/5 Shifts Available</p>
+          <p>Time Conflict</p>
+        </div>
+        <div class="time-slot"></div>
+
+        <div class="time-slot specific-time">
+          <p>5 PM</p>
+        </div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift signed-up"></div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift available" onclick="select('calendar-checkbox-4')"></div>
+        <div class="time-slot"></div>
+        <div class="time-slot shift conflict" onclick="select('calendar-checkbox-conflict')"></div>
+        <div class="time-slot"></div>
+
       </div>
     </div>
-    <div class="text-center" style="display: grid; grid-template-columns: repeat(8, 1fr); ">
-      <!-- Days of the week header -->
-      <div class="time-slot specific-time">
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Sunday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Monday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Tuesday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Wednesday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Thursday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Friday</p>
-      </div>
-      <div class="calendar-day">
-        <p>DATE</p>
-        <p>Saturday</p>
-      </div>
-
-      <!-- Calendar time slots -->
-      <div class="time-slot specific-time">
-        <p>9 AM</p>
-      </div>
-      <div class="time-slot shift available" onclick="select('checkbox-1')">
-        <div style="text-align: right">
-          <input type="checkbox" id="checkbox-1" />
-        </div>
-        <p>4/5 Shifts Available</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-2')">
-        <div style="text-align: right">
-          <input type="checkbox" id="checkbox-2" />
-        </div>
-        <p>2/5 Shifts Available</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift unavailable">
-        <p>All Shifts Taken</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-3')">
-        <div style="text-align: right">
-          <input type="checkbox" id="checkbox-3" />
-        </div>
-        <p>5/5 Shifts Available</p>
-      </div>
-
-      <div class="time-slot specific-time">
-        <p>10 AM</p>
-      </div>
-      <div class="time-slot shift available" onclick="select('checkbox-1')"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-2')"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift unavailable"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-3')"></div>
-
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-      <div class="time-slot">
-        <p>...</p>
-      </div>
-
-      <div class="time-slot specific-time">
-        <p>4 PM</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift signed-up">
-        <p>Signed up for shift</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-4')">
-        <div style="text-align: right">
-          <input type="checkbox" id="checkbox-4" />
-        </div>
-        <p>1/5 Shifts Available</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift conflict" onclick="select('checkbox-conflict')">
-        <div style="text-align: right">
-          <input type="checkbox" id="checkbox-conflict" />
-        </div>
-        <p>3/5 Shifts Available</p>
-        <p>Time Conflict</p>
-      </div>
-      <div class="time-slot"></div>
-
-      <div class="time-slot specific-time">
-        <p>5 PM</p>
-      </div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift signed-up"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift available" onclick="select('checkbox-4')"></div>
-      <div class="time-slot"></div>
-      <div class="time-slot shift conflict" onclick="select('checkbox-conflict')"></div>
-      <div class="time-slot"></div>
-
+    <div class="text-center" style="margin: 30px 0;">
+      <button id="calendar-submit-button" onclick="submit('calendar')" disabled>Sign up for selected shifts</button>
     </div>
   </div>
-  <div class="text-center" style="margin: 30px 0;">
-    <button id="submit-button" onclick="submit()" disabled>Sign up for selected shifts</button>
+
+  <hr>
+
+  <div>
+
+    <h1 class="text-center" style="font-size: 40px"><u>List Version</u></h1>
+
+    <h3 class="text-center">Please select the shifts you would like to sign up for:</h3>
+    <div style="width: 50%; margin: 0 auto">
+
+      <h2 class="text-center"><u>DATE 1</u></h2>
+      <div class="time-slot available" onclick="select('list-checkbox-1')">
+        <div style="text-align: right">
+          <input type="checkbox" id="list-checkbox-1" />
+        </div>
+        <div class="listed-time">
+          <p>9:00 AM - 11:00 AM</p>
+          <p>4/5 Shifts Available</p>
+        </div>
+      </div>
+
+      <h2 class="text-center"><u>DATE 2</u></h2>
+      <div class="time-slot available" onclick="select('list-checkbox-2')">
+        <div style="text-align: right">
+          <input type="checkbox" id="list-checkbox-2" />
+        </div>
+        <div class="listed-time">
+          <p>11:00 AM - 1:00 PM</p>
+          <p>2/5 Shifts Available</p>
+        </div>
+      </div>
+      <div class="time-slot available" style="margin-top: 10px" onclick="select('list-checkbox-3')">
+        <div style="text-align: right">
+          <input type="checkbox" id="list-checkbox-3" />
+        </div>
+        <div class="listed-time">
+          <p>1:00 PM - 3:00 PM</p>
+          <p>3/5 Shifts Available</p>
+        </div>
+      </div>
+
+      <h2 class="text-center"><u>DATE 3</u></h2>
+      <div class="time-slot conflict" onclick="select('list-checkbox-conflict')">
+        <div style="text-align: right">
+          <input type="checkbox" id="list-checkbox-conflict" />
+        </div>
+        <div class="listed-time">
+          <p>11:00 AM - 1:00 PM</p>
+          <p>5/5 Shifts Available</p>
+          <p>Time Conflict</p>
+        </div>
+      </div>
+
+      <div class="text-center" style="margin: 30px 0;">
+        <button id="list-submit-button" onclick="submit('list')" disabled>Sign up for selected shifts</button>
+      </div>
+    </div>
   </div>
 </body>
 
