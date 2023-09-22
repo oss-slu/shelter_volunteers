@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="shelterlogo.png">
+    <title>Shelter Dashboard</title>
+    <meta name="description" content="A dashboard for shelter management and information." />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        header {
+            background-color: #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 0;
+        }
+
+        header .logo img {
+            width: 32px; /* Reduced the logo size */
+            cursor: pointer;
+        }
+
+        header .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        header .user-info img {
+            width: 32px;
+            height: 32px;
+            padding-left: 10px;
+            cursor: pointer;
+        }
+
+        .greeting {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        main {
+            display: flex;
+        }
+
+        .column {
+            padding: 10px;
+        }
+
+        .column-1 {
+            flex: 3;
+            background-color: #fdcb6e;
+        }
+
+        .column-2 {
+            flex: 3;
+            background-color: #55efc4;
+        }
+
+        .column-3 {
+            flex: 1;
+            background-color: #a29bfe;
+        }
+
+        .card {
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px #888888;
+            background-color: #fff; /* White background for cards */
+        }
+
+        .column-3 .card p {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #e74c3c;
+            border-radius: 5px;
+            color: #fff;
+            border: none;
+            padding: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="help.png" alt="shelter logo">
+        </div>
+
+        <div class="user-info">
+            <div class="greeting">Welcome Shelter Admin!</div>
+            <img src="account.png" alt="Account">
+            <img src="options.png" alt="Menu">
+        </div>
+    </header>
+
+    <main>
+        <div class="column column-1">
+            <h3>Shelter Details</h3>
+            <div class="card">
+                <h4>Hope Haven Shelter</h4>
+                <p>Location: St. Louis, Missouri</p>
+                <p>Contact: hope@example.com</p>
+            </div>
+            <div class="card">
+                <h4>Rainbow Shelter</h4>
+                <p>Location: St. Louis, Missouri</p>
+                <p>Contact: rainbow@example.com</p>
+            </div>
+            <div class="card">
+                <h4>New Beginnings Shelter</h4>
+                <p>Location: St. Louis, Missouri</p>
+                <p>Contact: newbegin@example.com</p>
+            </div>
+        </div>
+
+        <div class="column column-2">
+            <h3>Volunteer Requirements</h3>
+            <div class="card">
+                <h4>Volunteer Request 1</h4>
+                <p>Requirements:</p>
+                <ul>
+                    <li>Single Bed Accommodations</li>
+                </ul>
+                <button>Accept</button>
+            </div>
+            <div class="card">
+                <h4>Volunteer Request 2</h4>
+                <p>Requirements:</p>
+                <ul>
+                    <li>Ventilation and Hygiene</li>
+                </ul>
+                <button>Accept</button>
+            </div>
+            <div class="card">
+                <h4>Volunteer Request 3</h4>
+                <p>Requirements:</p>
+                <ul>
+                    <li>Spacious Room</li>
+                </ul>
+                <button>Accept</button>
+            </div>
+        </div>
+
+        <div class="column column-3">
+            <h3>Shelter Statistics</h3>
+            <div class="card">
+                <h4>Total Volunteers</h4>
+                <p>50</p>
+            </div>
+            <div class="card">
+                <h4>Current Occupancy</h4>
+                <p>25</p>
+            </div>
+            <div class="card">
+                <h4>Available Beds</h4>
+                <p>25</p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
