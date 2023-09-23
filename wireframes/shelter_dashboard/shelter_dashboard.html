@@ -14,7 +14,7 @@
         }
 
         header {
-            background-color: #3498db;
+            background-color: #2ecc71; /* Adjusted header color */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -23,7 +23,7 @@
         }
 
         header .logo img {
-            width: 32px; /* Reduced the logo size */
+            width: 32px;
             cursor: pointer;
         }
 
@@ -46,38 +46,55 @@
 
         main {
             display: flex;
-        }
-
-        .column {
-            padding: 10px;
-        }
-
-        .column-1 {
-            flex: 3;
-            background-color: #fdcb6e;
-        }
-
-        .column-2 {
-            flex: 3;
-            background-color: #55efc4;
-        }
-
-        .column-3 {
-            flex: 1;
-            background-color: #a29bfe;
-        }
-
-        .card {
+            justify-content: space-between;
+            align-items: flex-start;
             padding: 20px;
-            margin-bottom: 10px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
             border-radius: 15px;
             box-shadow: 2px 2px 5px #888888;
-            background-color: #fff; /* White background for cards */
+            padding: 20px;
+            width: 45%;
         }
 
-        .column-3 .card p {
-            font-size: 2.5em;
+        .container h1 {
+            font-size: 24px;
             font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .shift-card,
+        .volunteer-card {
+            background-color: #3498db; /* Adjusted card color */
+            border-radius: 10px;
+            margin: 10px 0;
+            padding: 15px; /* Increased padding for better appearance */
+            display: flex;
+            flex-direction: column; /* Adjusted layout to stack content */
+            align-items: center; /* Centered content horizontally */
+        }
+
+        .shift-card h4,
+        .volunteer-card h4 {
+            font-size: 18px;
+            color: #fff; /* Changed text color to white */
+            margin: 0;
+        }
+
+        .shift-card p,
+        .volunteer-card p {
+            font-size: 16px;
+            color: #fff; /* Changed text color to white */
+            margin: 0;
+        }
+
+        .volunteer-card {
+            margin-left: 20px; /* Added space between columns */
         }
 
         button {
@@ -85,8 +102,9 @@
             border-radius: 5px;
             color: #fff;
             border: none;
-            padding: 1em;
+            padding: 10px 20px;
             cursor: pointer;
+            margin-top: 10px; /* Added space between button and content */
         }
     </style>
 </head>
@@ -106,66 +124,47 @@
     </header>
 
     <main>
-        <div class="column column-1">
-            <h3>Shelter Details</h3>
-            <div class="card">
-                <h4>Hope Haven Shelter</h4>
-                <p>Location: St. Louis, Missouri</p>
-                <p>Contact: hope@example.com</p>
+        <div class="container">
+            <h1>Manage Volunteer Shifts</h1>
+            <div class="shift-card">
+                <h4>Monday Shift</h4>
+                <p>Volunteers Signed Up: 5</p>
+                <p>Volunteers Needed: 3</p>
+                <button>Manage</button>
             </div>
-            <div class="card">
-                <h4>Rainbow Shelter</h4>
-                <p>Location: St. Louis, Missouri</p>
-                <p>Contact: rainbow@example.com</p>
+            <div class="shift-card">
+                <div>
+                    <h4>Tuesday Shift</h4>
+                    <p>Volunteers Signed Up: 3</p>
+                    <p>Volunteers Needed: 2</p>
+                </div>
+                <button>Manage</button>
             </div>
-            <div class="card">
-                <h4>New Beginnings Shelter</h4>
-                <p>Location: St. Louis, Missouri</p>
-                <p>Contact: newbegin@example.com</p>
-            </div>
-        </div>
-
-        <div class="column column-2">
-            <h3>Volunteer Requirements</h3>
-            <div class="card">
-                <h4>Volunteer Request 1</h4>
-                <p>Requirements:</p>
-                <ul>
-                    <li>Single Bed Accommodations</li>
-                </ul>
-                <button>Accept</button>
-            </div>
-            <div class="card">
-                <h4>Volunteer Request 2</h4>
-                <p>Requirements:</p>
-                <ul>
-                    <li>Ventilation and Hygiene</li>
-                </ul>
-                <button>Accept</button>
-            </div>
-            <div class="card">
-                <h4>Volunteer Request 3</h4>
-                <p>Requirements:</p>
-                <ul>
-                    <li>Spacious Room</li>
-                </ul>
-                <button>Accept</button>
+            <div class="shift-card">
+                <div>
+                    <h4>Wednesday Shift</h4>
+                    <p>Volunteers Signed Up: 4</p>
+                    <p>Volunteers Needed: 1</p>
+                </div>
+                <button>Manage</button>
             </div>
         </div>
-
-        <div class="column column-3">
-            <h3>Shelter Statistics</h3>
-            <div class="card">
-                <h4>Total Volunteers</h4>
-                <p>50</p>
+        <div class="container">
+            <h1>Previously Signed Volunteers</h1>
+            <div class="volunteer-card">
+                <h4>John Doe</h4>
+                <p>Contact: john@example.com</p>
+                <button>Contact</button>
             </div>
-            <div class="card">
-                <h4>Current Occupancy</h4>
-                <p>25</p>
+            <div class="volunteer-card">
+                <h4>Jane Smith</h4>
+                <p>Contact: jane@example.com</p>
+                <button>Contact</button>
             </div>
-            <div class="card">
-                <h4>Available Beds</h4>
-                <p>25</p>
+            <div class="volunteer-card">
+                <h4>Bob Johnson</h4>
+                <p>Contact: bob@example.com</p>
+                <button>Contact</button>
             </div>
         </div>
     </main>
