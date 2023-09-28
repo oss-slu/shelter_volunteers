@@ -1,4 +1,4 @@
-from domain.work_shift import WorkShift
+from domains.work_shift import WorkShift
 
 
 class MemRepo:
