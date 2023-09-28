@@ -25,7 +25,7 @@ function Shifts(){
 
    return(
      <div>
-         <ShiftList shifts={data.shifts}/>
+         <ShiftList shifts={data}/>
      </div>
    )
 }
