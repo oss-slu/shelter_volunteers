@@ -1,6 +1,7 @@
 import json
 
 from flask import Blueprint, Response
+from flask_cors import cross_origin
 
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
@@ -26,7 +27,7 @@ shifts = [
 ]
 
 @blueprint.route("/shifts", methods=["GET"])
-#@cross_origin()
+@cross_origin()
 def list_work_sifts():
     repo = MemRepo(shifts)
     result = workshift_list_use_case(repo)
