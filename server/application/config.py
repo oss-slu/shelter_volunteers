@@ -4,18 +4,18 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
-   """Base configuration"""
+    """Base configuration"""
 
 
 class ProductionConfig(Config):
-   """Production configuration"""
+    """Production configuration"""
 
 
 class DevelopmentConfig(Config):
-   """Development configuration"""
+    """Development configuration"""
 
 
 class TestingConfig(Config):
-   """Testing configuration"""
+    """Testing configuration"""
 
-   TESTING = True
+    TESTING = True
