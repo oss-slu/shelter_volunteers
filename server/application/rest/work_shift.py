@@ -6,6 +6,7 @@ from flask_cors import cross_origin
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
+from use_cases.list_workshifts import delete_shift_use_case
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -37,3 +38,24 @@ def list_work_sifts():
         mimetype="application/json",
         status=200,
     ) 
+
+@blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
+@cross_origin()
+def delete_work_shift(shift_id):
+    try:
+        shift_id = str(shift_id)
+        repo = MemRepo(shifts)
+        delete_shift = delete_shift_use_case(repo, shift_id)
+
+        return Response(
+            json.dumps(delete_shift, cls=WorkShiftJsonEncoder),
+            mimetype="application/json",
+            status=200,
+        )
+    except Exception as e:
+        return Response(
+            json.dumps({"error": str(e)}),
+            mimetype="application/json",
+            status=400, 
+        )
+    
