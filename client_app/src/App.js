@@ -1,10 +1,9 @@
-import Shifts from './Shifts';
-import './App.css';
+import Shifts from "./Shifts";
+import Shelters from "./Shelters";
+import "./App.css";
 
 function App() {
-  return (
-    Shifts()
-  );
+  return Shelters();
 }
 
 export default App;
