@@ -1,6 +1,4 @@
 const ShelterList = (props) => {
-  console.log(props.shelters);
-  console.log(typeof props.shelters);
   return (
     <div>
       {/* Display the shift*/}
