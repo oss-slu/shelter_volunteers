@@ -1,9 +1,6 @@
 name: Linting
 
 on:
-  push:
-    branches:
-      - linting-setup
   pull_request:
     branches:
       - main
