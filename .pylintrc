@@ -124,7 +124,8 @@ disable=R,
         wrong-import-order,
         xrange-builtin,
         zip-builtin-not-iterating,
-        W0237
+        W0237,
+        C0202
 
 
 [REPORTS]
