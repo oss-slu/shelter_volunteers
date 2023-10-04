@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 
 const ShiftList = (props) => {
-  console.log(props.shifts);
-  console.log(typeof props.shifts);
+  function onCheckboxClick(event) {
+    console.log(event);
+  }
   return (
     <div>
       {/* Display the shift*/}
@@ -17,15 +18,22 @@ const ShiftList = (props) => {
           return (
             <div class="shift text-center" key={shift.code}>
               <div class="text-right">
-                <input type="checkbox" id={"shift-checkbox-" + shift.code} />
+                <input
+                  type="checkbox"
+                  id={"shift-checkbox-" + shift.code}
+                  onClick={onCheckboxClick}
+                />
               </div>
-              <h2>{shift.shelter}</h2>
-              <p>{shift.worker}</p>
+              {props.fromShelter !== true && (
+                <div>
+                  <h2>{shift.shelter}</h2>
+                  <p>{shift.worker}</p>
+                </div>
+              )}
               <p>
                 {" "}
                 {formattedStartTime} - {formattedEndTime}{" "}
               </p>
-              <hr />
             </div>
           );
         })}

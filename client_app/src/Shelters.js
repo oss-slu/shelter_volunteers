@@ -7,12 +7,14 @@ function Shelters() {
   const [latitude, setLatitude] = useState(41.8781);
   const [longitude, setLongitude] = useState(-87.6298);
   const [radius, setRadius] = useState("10");
+  const [loading, setLoading] = useState(true);
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
   let volunteers_endpoint = "https://api2-qa.gethelp.com/volunteers/";
 
   useEffect(() => {
+    setLoading(true);
     let new_endpoint =
       shelters_endpoint +
       "&latitude=" +
@@ -33,6 +35,7 @@ function Shelters() {
   }, [latitude, longitude, radius, shelters_endpoint, volunteers_endpoint]);
 
   function getLocation() {
+    setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(setLocation);
     }
@@ -60,7 +63,8 @@ function Shelters() {
           <option value="100">100</option>
         </select>
       </div>
-      <ShelterList shelters={data} />
+      {loading && <div class="loader"></div>}
+      <ShelterList shelters={data} loadingFunction={setLoading} />
     </div>
   );
 }
