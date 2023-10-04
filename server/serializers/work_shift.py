@@ -1,8 +1,13 @@
+"""
+This module is for a custom JSON encoder for serializing WorkShift objects.
+"""
 import json
 
 
 class WorkShiftJsonEncoder(json.JSONEncoder):
+    """Encode a WorkShift object to JSON."""
     def default(self, workshift):
+        """Encode a WorkShift object to JSON."""
         try:
             to_serialize = {
                 "code": str(workshift.code),

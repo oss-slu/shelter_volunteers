@@ -1,3 +1,6 @@
+"""
+Command line interface for displaying the data, shift data for example
+"""
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
 

@@ -1,3 +1,7 @@
+"""
+This module handles the API endpoints related to workshift
+"""
+
 import json
 
 from flask import Blueprint, Response
@@ -30,6 +34,9 @@ shifts = [
 @blueprint.route("/shifts", methods=["GET"])
 @cross_origin()
 def list_work_sifts():
+    """
+    The function returns a list of all work shifts in the system.
+    """
     repo = MemRepo(shifts)
     result = workshift_list_use_case(repo)
 

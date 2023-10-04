@@ -1,3 +1,6 @@
+"""
+Initializes the Flask application and CORS configuration.
+"""
 import os
 
 from flask_cors import CORS
