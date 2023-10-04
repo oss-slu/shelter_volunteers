@@ -1,9 +1,6 @@
 name: Linting
 
-on:
-  pull_request:
-    branches:
-      - main
+on: push
 
 jobs:
   pylint:
