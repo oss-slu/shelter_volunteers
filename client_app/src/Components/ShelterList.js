@@ -1,18 +1,49 @@
+import { useEffect, useState } from "react";
 import ShiftList from "./ShiftList";
 
 const ShelterList = (props) => {
   let allShifts = [];
-  let checked = [];
+  const [checked, setChecked] = useState([]);
+
   function onShiftClick(event) {
     let id = event.target.id;
     let shift = id.split("-")[2] + "-" + id.split("-")[3];
     if (checked.includes(shift) && !event.target.checked) {
       let index = checked.indexOf(shift);
-      checked.splice(index, 1);
+      let newChecked = [];
+      for (let i = 0; i < checked.length; i++) {
+        if (i !== index) {
+          newChecked.push(checked[i]);
+        }
+      }
+      setChecked(newChecked);
     } else if (!checked.includes(shift) && event.target.checked) {
-      checked.push(shift);
+      setChecked([...checked, shift]);
+    }
+
+    if (props.manageShiftsFunction) {
+      let selectedShifts = [];
+      for (let i = 0; i < allShifts.length; i++) {
+        if (checked.includes(allShifts[i].code)) {
+          selectedShifts.push(allShifts[i]);
+        }
+      }
+      props.manageShiftsFunction(selectedShifts);
     }
   }
+
+  useEffect(() => {
+    if (props.manageShiftsFunction) {
+      let selectedShifts = [];
+      for (let i = 0; i < allShifts.length; i++) {
+        if (checked.includes(allShifts[i].code)) {
+          selectedShifts.push(allShifts[i]);
+        }
+      }
+      props.manageShiftsFunction(selectedShifts);
+    }
+  }, [checked]);
+
   return (
     <div>
       <div>

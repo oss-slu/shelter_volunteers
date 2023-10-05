@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import ShelterList from "./Components/ShelterList";
+import { SERVER } from "./config";
 
 function Shelters() {
   const [data, setData] = useState([]);
@@ -8,6 +9,8 @@ function Shelters() {
   const [longitude, setLongitude] = useState(-87.6298);
   const [radius, setRadius] = useState("10");
   const [loading, setLoading] = useState(true);
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const [selectedShifts, setSelectedShifts] = useState([]);
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -50,10 +53,42 @@ function Shelters() {
     setRadius(event.target.value);
   }
 
+  function manageShifts(shifts) {
+    setSelectedShifts(shifts);
+    setButtonDisabled(selectedShifts.length === 0);
+  }
+
+  function submitShifts() {
+    let shifts = selectedShifts;
+    for (let i = 0; i < shifts.length; i++) {
+      shifts[i].worker = "submitted-volunteer@slu.edu";
+    }
+    const shiftsEndpoint = SERVER + "/shifts";
+    fetch(shiftsEndpoint, {
+      method: "POST",
+      body: JSON.stringify(shifts),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then(() => alert("You have submitted the shifts successfully"))
+      .catch((error) => console.log(error));
+  }
+
+  useEffect(() => {
+    setButtonDisabled(selectedShifts.length === 0);
+  }, [selectedShifts]);
+
   return (
     <div>
       <div class="navbar text-right">
-        <button class="navbar-button">Sign up for shifts</button>
+        <button
+          id="submit-shifts"
+          onClick={submitShifts}
+          disabled={isButtonDisabled}
+        >
+          Sign up for shifts
+        </button>
       </div>
       <div class="text-center navbar-buffer">
         <button onClick={getLocation}>Get Shelters from Location</button>
@@ -67,7 +102,11 @@ function Shelters() {
         </select>
       </div>
       {loading && <div class="loader"></div>}
-      <ShelterList shelters={data} loadingFunction={setLoading} />
+      <ShelterList
+        shelters={data}
+        loadingFunction={setLoading}
+        manageShiftsFunction={manageShifts}
+      />
     </div>
   );
 }
