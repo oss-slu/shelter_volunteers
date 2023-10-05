@@ -2,7 +2,9 @@ import { format } from "date-fns";
 
 const ShiftList = (props) => {
   function onCheckboxClick(event) {
-    console.log(event);
+    if (props.onCheck) {
+      props.onCheck(event);
+    }
   }
   return (
     <div>

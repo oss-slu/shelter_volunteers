@@ -53,3 +53,20 @@ code {
     transform: rotate(360deg);
   }
 }
+
+.navbar {
+  overflow: hidden;
+  background-color: #dddddd;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+}
+
+.navbar-buffer {
+  margin-top: 50px;
+}
+
+.navbar-button {
+  margin-right: 20px;
+}
