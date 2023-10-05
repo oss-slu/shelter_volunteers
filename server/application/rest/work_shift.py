@@ -34,10 +34,10 @@ shifts = [
 @blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
 def work_shifts():
+    """
+        The function returns a list of all work shifts in the system when a GET request, and adds shifts to the system when a POST request.
+    """
     if request.method == "GET":
-        """
-        The GET request returns a list of all work shifts in the system.
-        """
         repo = MemRepo(shifts)
         result = workshift_list_use_case(repo)
 
@@ -55,3 +55,4 @@ def work_shifts():
             mimetype="application/json",
             status=200,
         )
+        
