@@ -35,8 +35,8 @@ shifts = [
 @cross_origin()
 def work_shifts():
     """
-        The function returns a list of all work shifts in the system when a GET request.
-        The function adds shifts to the system when a POST request.
+        On GET: The function returns a list of all work shifts in the system.
+        On POST: The function adds shifts to the system.
     """
     if request.method == "GET":
         repo = MemRepo(shifts)
