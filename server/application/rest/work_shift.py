@@ -59,7 +59,9 @@ def work_shifts():
 
 
 def get_user_from_token(headers):
-    return headers["Authorization"]
+    if "Authorization" in headers:
+        return headers["Authorization"]
+    raise AuthenticationError("Authentication failed")
 
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
