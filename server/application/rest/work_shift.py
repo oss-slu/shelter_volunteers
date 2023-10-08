@@ -57,6 +57,6 @@ def work_shifts():
             json.dumps(data, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
             status=200,
-        )        
+        )
 def get_user_from_token(headers):
     return headers["Authorization"]
