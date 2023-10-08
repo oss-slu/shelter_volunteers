@@ -1,12 +1,10 @@
 """
-This module handles the API endpoints related to workshift
+This module handles the API endpoints related to work shifts.
 """
 
 import json
-
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
-
 from repository.memrepo import MemRepo
 from errors.authentication import AuthenticationError
 from errors.not_found import NotFoundError
@@ -41,8 +39,8 @@ shifts = [
 @cross_origin()
 def work_shifts():
     """
-        On GET: The function returns a list of all work shifts in the system.
-        On POST: The function adds shifts to the system.
+    On GET: The function returns a list of all work shifts in the system.
+    On POST: The function adds shifts to the system.
     """
     if request.method == "GET":
         repo = MemRepo(shifts)
@@ -97,4 +95,3 @@ def delete_work_shift(shift_id):
             mimetype="application/json",
             status=400,
         )
-
