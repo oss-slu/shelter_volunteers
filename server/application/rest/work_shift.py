@@ -8,11 +8,9 @@ from flask_cors import cross_origin
 from repository.memrepo import MemRepo
 from errors.authentication import AuthenticationError
 from errors.not_found import NotFoundError
-from use_cases.list_workshifts import (
-    workshift_list_use_case,
-    workshift_add_multiple_use_case,
-    delete_shift_use_case,
-)
+from use_cases.add_workshifts import workshift_add_multiple_use_case
+from use_cases.list_workshifts import workshift_list_use_case
+from use_cases.list_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 
 blueprint = Blueprint("work_shift", __name__)
