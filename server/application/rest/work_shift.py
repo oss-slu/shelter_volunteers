@@ -8,13 +8,14 @@ from flask import Blueprint, Response, request
 from flask_cors import cross_origin
 
 from repository.memrepo import MemRepo
-from use_cases.list_workshifts import workshift_list_use_case
-from use_cases.add_workshifts import workshift_add_multiple_use_case
-from serializers.work_shift import WorkShiftJsonEncoder
-from use_cases.list_workshifts import delete_shift_use_case
 from errors.authentication import AuthenticationError
 from errors.not_found import NotFoundError
-
+from use_cases.list_workshifts import (
+    workshift_list_use_case,
+    workshift_add_multiple_use_case,
+    delete_shift_use_case,
+)
+from serializers.work_shift import WorkShiftJsonEncoder
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -46,11 +47,8 @@ def work_shifts():
     if request.method == "GET":
         repo = MemRepo(shifts)
         result = workshift_list_use_case(repo)
-        return Response(
-            json.dumps(result, cls=WorkShiftJsonEncoder),
-            mimetype="application/json",
-            status=200,
-        )
+        response_data = json.dumps(result, cls=WorkShiftJsonEncoder)
+        return Response(response_data, mimetype="application/json", status=200)
     elif request.method == "POST":
         user = get_user_from_token(request.headers)
         data = request.get_json()
@@ -58,11 +56,10 @@ def work_shifts():
             shift["worker"] = user
         repo = MemRepo(shifts)
         workshift_add_multiple_use_case(repo, data)
-        return Response(
-            json.dumps(data, cls=WorkShiftJsonEncoder),
-            mimetype="application/json",
-            status=200,
-        )
+        response_data = json.dumps(data, cls=WorkShiftJsonEncoder)
+        return Response(response_data, mimetype="application/json", status=200)
+
+
 def get_user_from_token(headers):
     return headers["Authorization"]
 
@@ -73,7 +70,9 @@ def delete_work_shift(shift_id):
     try:
         shift_id = str(shift_id)
         repo = MemRepo(shifts)
-        delete_shift = delete_shift_use_case(repo, shift_id, get_user_from_token(request.headers))
+        delete_shift = delete_shift_use_case(
+            repo, shift_id, get_user_from_token(request.headers)
+        )
 
         return Response(
             json.dumps(delete_shift, cls=WorkShiftJsonEncoder),
@@ -84,18 +83,18 @@ def delete_work_shift(shift_id):
         return Response(
             json.dumps({"error": str(e)}),
             mimetype="application/json",
-            status=401, 
+            status=401,
         )
     except NotFoundError as e:
         return Response(
             json.dumps({"error": str(e)}),
             mimetype="application/json",
-            status=404, 
+            status=404,
         )
     except Exception as e:
         return Response(
             json.dumps({"error": str(e)}),
             mimetype="application/json",
-            status=400, 
+            status=400,
         )
-    
+

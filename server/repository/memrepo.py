@@ -8,9 +8,10 @@ class MemRepo:
     """
     An in-memory repository for storing work shifts.
     """
+
     def __init__(self, data):
         """
-        initialize the repo with passed data
+        Initialize the repo with passed data.
         """
         self.data = data
 
@@ -35,7 +36,5 @@ class MemRepo:
     def delete(self, shift_id):
         for item in self.data:
             if item["code"] == shift_id:
-             self.data.remove(item)
-             return
-
-        
+                self.data.remove(item)
+                return
