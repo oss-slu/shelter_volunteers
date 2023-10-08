@@ -1,22 +1,34 @@
+"""
+This module is for in-memory repository implementation.
+"""
 from domains.work_shift import WorkShift
 
 
 class MemRepo:
-   def __init__(self, data):
-      self.data = data
+    """
+    An in-memory repository for storing work shifts.
+    """
+    def __init__(self, data):
+        """
+        initialize the repo with passed data
+        """
+        self.data = data
 
-   def list(self):
-      return [WorkShift.from_dict(i) for i in self.data]
+    def list(self):
+        """
+        Return a list of WorkShift objects based on the data.
+        """
+        return [WorkShift.from_dict(i) for i in self.data]
    
-   def get_by_id(self, shift_id):
+    def get_by_id(self, shift_id):
         for item in self.data:
             if item["code"] == shift_id:
                 return WorkShift.from_dict(item)
         return None
 
-def delete(self, shift_id):
-    for item in self.data:
-        if item["code"] == shift_id:
-            self.data.remove(item)
-            return
+    def delete(self, shift_id):
+        for item in self.data:
+            if item["code"] == shift_id:
+             self.data.remove(item)
+             return
 
