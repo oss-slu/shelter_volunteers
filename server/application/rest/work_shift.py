@@ -4,11 +4,12 @@ This module handles the API endpoints related to workshift
 
 import json
 
-from flask import Blueprint, Response
+from flask import Blueprint, Response, request
 from flask_cors import cross_origin
 
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
+from use_cases.add_workshifts import workshift_add_multiple_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 
 blueprint = Blueprint("work_shift", __name__)
@@ -31,17 +32,32 @@ shifts = [
 ]
 
 
-@blueprint.route("/shifts", methods=["GET"])
+@blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
-def list_work_sifts():
+def work_shifts():
     """
-    The function returns a list of all work shifts in the system.
+        On GET: The function returns a list of all work shifts in the system.
+        On POST: The function adds shifts to the system.
     """
-    repo = MemRepo(shifts)
-    result = workshift_list_use_case(repo)
-
-    return Response(
-        json.dumps(result, cls=WorkShiftJsonEncoder),
-        mimetype="application/json",
-        status=200,
-    )
+    if request.method == "GET":
+        repo = MemRepo(shifts)
+        result = workshift_list_use_case(repo)
+        return Response(
+            json.dumps(result, cls=WorkShiftJsonEncoder),
+            mimetype="application/json",
+            status=200,
+        )
+    elif request.method == "POST":
+        user = get_user_from_token(request.headers)
+        data = request.get_json()
+        for shift in data:
+            shift["worker"] = user
+        repo = MemRepo(shifts)
+        workshift_add_multiple_use_case(repo, data)
+        return Response(
+            json.dumps(data, cls=WorkShiftJsonEncoder),
+            mimetype="application/json",
+            status=200,
+        )
+def get_user_from_token(headers):
+    return headers["Authorization"]
