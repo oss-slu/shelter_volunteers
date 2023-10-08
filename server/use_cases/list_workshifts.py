@@ -1,3 +1,8 @@
+from errors.not_found import NotFoundError
+from errors.authentication import AuthenticationError
+from repository.memrepo import MemRepo
+from domains.work_shift import WorkShift
+
 """
 This module contains the use case for listing work shifts.
 """
@@ -8,15 +13,24 @@ def workshift_list_use_case(repo):
     return repo.list()
 
 
-def delete_shift_use_case(repo, shift_id):
-    try:
-        shift = repo.get_by_id(shift_id)
+def delete_shift_use_case(repo, shift_id, user_email):
+    if not user_email:
+        raise AuthenticationError("Authentication failed")
 
-        if shift is None:
-            return {"error": "Shift not found"}
+    shift = repo.get_by_id(shift_id)
 
-        repo.delete(shift_id)
+    if shift is None:
+        raise NotFoundError("Shift not found")
 
-        return {"message": "Shift deleted successfully"}
-    except Exception as e:
-        return {"error": str(e)}
+    if shift.worker != user_email:
+        raise AuthenticationError("Unauthorized to delete this shift")
+
+    repo.delete(shift_id)
+
+    return shift 
+
+
+
+
+
+
