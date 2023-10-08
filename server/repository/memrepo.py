@@ -19,7 +19,13 @@ class MemRepo:
         Return a list of WorkShift objects based on the data.
         """
         return [WorkShift.from_dict(i) for i in self.data]
-   
+
+    def add(self, work_shift):
+        """
+        Add a WorkShift object to the data.
+        """
+        self.data.append(work_shift)
+
     def get_by_id(self, shift_id):
         for item in self.data:
             if item["code"] == shift_id:
@@ -32,3 +38,4 @@ class MemRepo:
              self.data.remove(item)
              return
 
+        
