@@ -42,7 +42,6 @@ def work_shifts():
     if request.method == "GET":
         repo = MemRepo(shifts)
         result = workshift_list_use_case(repo)
-
         return Response(
             json.dumps(result, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
@@ -50,15 +49,14 @@ def work_shifts():
         )
     elif request.method == "POST":
         user = get_user_from_token(request.headers)
+        print(user)
         data = request.get_json()
         repo = MemRepo(shifts)
         workshift_add_multiple_use_case(repo, data)
-        
         return Response(
             json.dumps(data, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
             status=200,
-        )
-        
+        )        
 def get_user_from_token(headers):
     return headers["Authorization"]

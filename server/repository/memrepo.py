@@ -25,3 +25,4 @@ class MemRepo:
         Add a WorkShift object to the data.
         """
         self.data.append(work_shift)
+        
