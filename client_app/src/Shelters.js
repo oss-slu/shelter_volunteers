@@ -60,9 +60,6 @@ function Shelters() {
 
   function submitShifts() {
     let shifts = selectedShifts;
-    for (let i = 0; i < shifts.length; i++) {
-      shifts[i].worker = "submitted-volunteer@slu.edu";
-    }
     const shiftsEndpoint = SERVER + "/shifts";
     fetch(shiftsEndpoint, {
       method: "POST",

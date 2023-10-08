@@ -49,8 +49,9 @@ def work_shifts():
         )
     elif request.method == "POST":
         user = get_user_from_token(request.headers)
-        print(user)
         data = request.get_json()
+        for shift in data:
+            shift["worker"] = user
         repo = MemRepo(shifts)
         workshift_add_multiple_use_case(repo, data)
         return Response(
