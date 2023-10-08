@@ -47,7 +47,11 @@ def work_shifts():
         try:
             result = workshift_list_use_case(repo)
             response_data = json.dumps(result, cls=WorkShiftJsonEncoder)
-            return Response(response_data, mimetype="application/json", status=200)
+            return Response(
+                response_data,
+                mimetype="application/json",
+                status=200
+            )
         except (AuthenticationError, NotFoundError) as e:
             return handle_error_response(e)
     elif request.method == "POST":
@@ -59,7 +63,11 @@ def work_shifts():
         try:
             workshift_add_multiple_use_case(repo, data)
             response_data = json.dumps(data, cls=WorkShiftJsonEncoder)
-            return Response(response_data, mimetype="application/json", status=200)
+            return Response(
+                response_data,
+                mimetype="application/json",
+                status=200
+            )
         except (AuthenticationError, NotFoundError) as e:
             return handle_error_response(e)
 
@@ -81,7 +89,7 @@ def delete_work_shift(shift_id):
         return Response(
             json.dumps({"message": "Shift deleted successfully"}),
             mimetype="application/json",
-            status=200,
+            status=200
         )
     except (AuthenticationError, NotFoundError) as e:
         return handle_error_response(e)
