@@ -9,6 +9,7 @@ from flask_cors import cross_origin
 
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
+from use_cases.add_workshifts import workshift_add_multiple_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 
 blueprint = Blueprint("work_shift", __name__)
@@ -48,12 +49,16 @@ def work_shifts():
             status=200,
         )
     elif request.method == "POST":
+        user = get_user_from_token(request.headers)
         data = request.get_json()
-        shifts.extend(data)
-        print(shifts)
+        repo = MemRepo(shifts)
+        workshift_add_multiple_use_case(repo, data)
+        
         return Response(
             json.dumps(data, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
             status=200,
         )
         
+def get_user_from_token(headers):
+    return headers["Authorization"]
