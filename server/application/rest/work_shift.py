@@ -44,25 +44,30 @@ def work_shifts():
     """
     if request.method == "GET":
         repo = MemRepo(shifts)
-        result = workshift_list_use_case(repo)
-        response_data = json.dumps(result, cls=WorkShiftJsonEncoder)
-        return Response(response_data, mimetype="application/json", status=200)
+        try:
+            result = workshift_list_use_case(repo)
+            response_data = json.dumps(result, cls=WorkShiftJsonEncoder)
+            return Response(response_data, mimetype="application/json", status=200)
+        except Exception as e:
+            return handle_error_response(e)
     elif request.method == "POST":
         user = get_user_from_token(request.headers)
         data = request.get_json()
         for shift in data:
             shift["worker"] = user
         repo = MemRepo(shifts)
-        workshift_add_multiple_use_case(repo, data)
-        response_data = json.dumps(data, cls=WorkShiftJsonEncoder)
-        return Response(response_data, mimetype="application/json", status=200)
+        try:
+            workshift_add_multiple_use_case(repo, data)
+            response_data = json.dumps(data, cls=WorkShiftJsonEncoder)
+            return Response(response_data, mimetype="application/json", status=200)
+        except Exception as e:
+            return handle_error_response(e)
 
 
 def get_user_from_token(headers):
     if "Authorization" in headers:
         return headers["Authorization"]
-    else:
-        raise AuthenticationError("Authentication failed")
+    raise AuthenticationError("Authentication failed")
 
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
@@ -70,31 +75,25 @@ def get_user_from_token(headers):
 def delete_work_shift(shift_id):
     try:
         shift_id = str(shift_id)
+        user_email = get_user_from_token(request.headers)
         repo = MemRepo(shifts)
-        delete_shift = delete_shift_use_case(
-            repo, shift_id, get_user_from_token(request.headers)
-        )
-
+        delete_shift_use_case(repo, shift_id, user_email)
         return Response(
-            json.dumps(delete_shift, cls=WorkShiftJsonEncoder),
+            json.dumps({"message": "Shift deleted successfully"}),
             mimetype="application/json",
             status=200,
         )
-    except AuthenticationError as e:
-        return Response(
-            json.dumps({"error": str(e)}),
-            mimetype="application/json",
-            status=401,
-        )
-    except NotFoundError as e:
-        return Response(
-            json.dumps({"error": str(e)}),
-            mimetype="application/json",
-            status=404,
-        )
     except Exception as e:
-        return Response(
-            json.dumps({"error": str(e)}),
-            mimetype="application/json",
-            status=400,
-        )
+        return handle_error_response(e)
+
+
+def handle_error_response(error):
+    if isinstance(error, (AuthenticationError, NotFoundError)):
+        status_code = error.status_code
+    else:
+        status_code = 500  # Internal Server Error
+    return Response(
+        json.dumps({"error": str(error)}),
+        mimetype="application/json",
+        status=status_code,
+    )
