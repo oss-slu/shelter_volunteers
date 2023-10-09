@@ -70,7 +70,7 @@ def work_shifts():
         )
 
 def get_user_from_token(headers):
-    return headers["Authorization"]
+    return headers.get("X-User-Email") or headers["Authorization"]
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
@@ -82,6 +82,7 @@ def delete_work_shift(shift_id):
 
         response = delete_shift_use_case(repo, shift_id, user_email)
         status_code = HTTP_STATUS_CODES_MAPPING.get(response.response_type, 500)
+
         if isinstance(response, ResponseFailure):
             return response.message, status_code
 
@@ -92,6 +93,7 @@ def delete_work_shift(shift_id):
         error_message = response_failure.message
         e_code = HTTP_STATUS_CODES_MAPPING.get(ResponseTypes.SYSTEM_ERROR, 500)
         return error_message, e_code
+
 
 
 

@@ -9,6 +9,7 @@ This module defines the response classes and types for the server.
 class ResponseSuccess:
     def __init__(self, value=None):
         self.value = value
+        self.response_type = ResponseTypes.SUCCESS
 
 class ResponseFailure:
     def __init__(self, response_type, message):
