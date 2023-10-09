@@ -31,6 +31,16 @@ shifts = [
     },
 ]
 
+HTTP_STATUS_CODES_MAPPING = {
+    ResponseTypes.NOT_FOUND: 404,
+    ResponseTypes.SYSTEM_ERROR: 500,
+    ResponseTypes.AUTHORIZATION_ERROR: 403,
+    ResponseTypes.PARAMETER_ERROR: 400,
+    ResponseTypes.SUCCESS: 200
+}
+
+
+
 @blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
 def work_shifts():
@@ -71,18 +81,18 @@ def delete_work_shift(shift_id):
         repo = MemRepo(shifts)
 
         response = delete_shift_use_case(repo, shift_id, user_email)
-        status_code = 400
-        if response.response_type == ResponseTypes.SYSTEM_ERROR:
-            status_code = 500
+        status_code = HTTP_STATUS_CODES_MAPPING.get(response.response_type, 500)
         if isinstance(response, ResponseFailure):
             return response.message, status_code
 
-        return response.value, 200
+        return response.value, status_code
 
     except ValueError as exc:
         response_failure = ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(exc))
         error_message = response_failure.message
-        return error_message, 500
+        e_code = HTTP_STATUS_CODES_MAPPING.get(ResponseTypes.SYSTEM_ERROR, 500)
+        return error_message, e_code
+
 
 
 

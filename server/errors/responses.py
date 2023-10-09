@@ -19,3 +19,6 @@ class ResponseTypes:
     SYSTEM_ERROR = "SystemError"
     NOT_FOUND = "NotFound"
     AUTHORIZATION_ERROR = "AuthorizationError"
+    PARAMETER_ERROR = "ParameterError"
+    SUCCESS = "Success"
+
