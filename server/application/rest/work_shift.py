@@ -1,3 +1,7 @@
+"""
+This module contains the RESTful route handlers
+for work shifts in the server application.
+"""
 import json
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
@@ -6,7 +10,7 @@ from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
-from errors.responses import ResponseSuccess, ResponseFailure, ResponseTypes
+from errors.responses import ResponseFailure, ResponseTypes
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -57,7 +61,7 @@ def work_shifts():
 
 def get_user_from_token(headers):
     return headers["Authorization"]
-    
+
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
@@ -67,10 +71,21 @@ def delete_work_shift(shift_id):
         repo = MemRepo(shifts)
 
         response = delete_shift_use_case(repo, shift_id, user_email)
+        status_code = 400
+        if response.response_type == ResponseTypes.SYSTEM_ERROR:
+            status_code = 500
         if isinstance(response, ResponseFailure):
-            return response.message, 400 if response.response_type != ResponseTypes.SYSTEM_ERROR else 500
+            return response.message, status_code
+
         return response.value, 200
 
-    except Exception as exc:
-        return ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(exc)).message, 500
+    except ValueError as exc:
+        response_failure = ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(exc))
+        error_message = response_failure.message
+        return error_message, 500
+
+
+
+
+
 

@@ -1,3 +1,11 @@
+"""
+This module defines the response classes and types for the server.
+
+- ResponseSuccess: Represents a successful response.
+- ResponseFailure: Represents a failed response.
+- ResponseTypes: Enumerates possible response types/errors.
+"""
+
 class ResponseSuccess:
     def __init__(self, value=None):
         self.value = value
