@@ -1,3 +1,7 @@
+"""
+This module builds a valid and an invalid request object
+for the list_work_shift use case
+"""
 from collections.abc import Mapping
 
 
@@ -24,7 +28,9 @@ class WorkShiftListValidRequest:
 
 
 def build_work_shift_list_request(filters=None):
-    accepted_filters = ["start_after", "start_before", "end_after", "end_before"]
+    accepted_filters = [
+        "start_after", "start_before", "end_after", "end_before"
+    ]
     invalid_req = WorkShiftListInvalidRequest()
 
     converted_filters = {}
@@ -37,13 +43,14 @@ def build_work_shift_list_request(filters=None):
         for key, value in filters.items():
             if key not in accepted_filters:
                 invalid_req.add_error(
-                    "filters", "Key {} cannot be used".format(key)
+                    "filters", f"Key {key} cannot be used"
                 )
             try:
                 converted_filters[key] = int(value)
-            except:
-                invalid_req.add_error("filters", key + "must be an integer")
-
+            except ValueError:
+                invalid_req.add_error(
+                    "filters", f"Value of {key} must be an integer"
+                )
         if invalid_req.has_errors():
             return invalid_req
 
