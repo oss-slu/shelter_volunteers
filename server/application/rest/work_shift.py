@@ -30,6 +30,14 @@ shifts = [
         "start_time": 1696255200000,
         "end_time": 1696269600000,
     },
+    {
+        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
+        "worker": "volunteer@slu.edu",
+        "shelter": "shelter-id-for-st-patric-center",
+        "start_time": 1701442800000,
+        "end_time": 1701453600000,
+    },
+
 ]
 
 
