@@ -39,16 +39,17 @@ def work_shifts():
         On GET: The function returns a list of all work shifts in the system.
         On POST: The function adds shifts to the system.
     """
+    user = get_user_from_token(request.headers)
+
     if request.method == "GET":
         repo = MemRepo(shifts)
-        result = workshift_list_use_case(repo)
+        result = workshift_list_use_case(repo, user)
         return Response(
             json.dumps(result, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
             status=200,
         )
     elif request.method == "POST":
-        user = get_user_from_token(request.headers)
         data = request.get_json()
         for shift in data:
             shift["worker"] = user

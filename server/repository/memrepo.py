@@ -14,11 +14,11 @@ class MemRepo:
         """
         self.data = data
 
-    def list(self):
+    def list(self, user):
         """
         Return a list of WorkShift objects based on the data.
         """
-        return [WorkShift.from_dict(i) for i in self.data]
+        return [WorkShift.from_dict(i) for i in self.data if WorkShift.from_dict(i).worker == user]
 
     def add(self, work_shift):
         """
