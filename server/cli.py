@@ -22,6 +22,6 @@ shifts = [
 ]
 
 repo = MemRepo(shifts)
-result = workshift_list_use_case(repo)
+result = workshift_list_use_case(repo, "volunteer@slu.edu")
 
 print([shift.to_dict() for shift in result])
