@@ -88,7 +88,7 @@ function Shelters() {
           Sign up for shifts
         </button>
       </div>
-      <div class="text-center navbar-buffer">
+      <div class="text-center double-navbar-buffer">
         <button onClick={getLocation}>Get Shelters from Location</button>
         <br />
         <label for="radius-select">Radius (miles): </label>

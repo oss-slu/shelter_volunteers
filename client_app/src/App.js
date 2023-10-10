@@ -15,10 +15,11 @@ function App() {
   return (
     <div>
       <Router>
-        <div>
+        <div class="main-nav">
           <Link to="/">Home</Link>
           <Link to="/shelters">Shelters</Link>
         </div>
+        <div class="navbar-buffer"></div>
         <Routes>
           <Route exact path="/" element={<Shifts />} />
           <Route path="/shelters" element={<Shelters />} />

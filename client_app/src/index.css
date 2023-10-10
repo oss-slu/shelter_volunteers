@@ -54,17 +54,30 @@ code {
   }
 }
 
+.main-nav,
 .navbar {
   overflow: hidden;
-  background-color: #dddddd;
   position: fixed;
-  top: 0;
   width: 100%;
   padding: 10px;
 }
 
+.main-nav {
+  top: 0;
+  background-color: #193b45;
+}
+
+.navbar {
+  top: 40px;
+  background-color: #dddddd;
+}
+
 .navbar-buffer {
-  margin-top: 50px;
+  margin-top: 45px;
+}
+
+.double-navbar-buffer {
+  margin-top: 100px;
 }
 
 #submit-shifts {
