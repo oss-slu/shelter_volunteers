@@ -11,7 +11,7 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from requests.work_shift_list import build_work_shift_list_request
-from errors.responses import ResponseTypes
+from responses import ResponseTypes
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -76,11 +76,11 @@ def work_shifts():
             filters=qrystr_params["filters"]
         )
         # find workshifts matching the request object
-        result = workshift_list_use_case(repo, request_object, user)
+        response = workshift_list_use_case(repo, request_object, user)
         return Response(
-            json.dumps(result, cls=WorkShiftJsonEncoder),
+            json.dumps(response.value, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
-            status=200,
+            status=HTTP_STATUS_CODES_MAPPING[response.response_type],
         )
 
     elif request.method == "POST":
