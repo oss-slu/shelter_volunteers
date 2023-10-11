@@ -63,3 +63,4 @@ class MemRepo:
             if item["code"] == shift_id:
                 self.data.remove(item)
                 return
+
