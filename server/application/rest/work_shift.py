@@ -11,7 +11,6 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from errors.responses import ResponseTypes
-from collections import namedtuple
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -73,20 +72,15 @@ def work_shifts():
 def get_user_from_token(headers):
     return headers["Authorization"]
 
-DeleteShiftRequest = namedtuple("DeleteShiftRequest",
-                            ["shift_id", "user_email"])
-
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
     shift_id = str(shift_id)
     user_email = get_user_from_token(request.headers)
-    delete_request = DeleteShiftRequest(shift_id=shift_id,
-                                    user_email=user_email)
 
     repo = MemRepo(shifts)
 
-    response = delete_shift_use_case(repo, delete_request)
+    response = delete_shift_use_case(repo, shift_id, user_email)
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
 
     return Response(

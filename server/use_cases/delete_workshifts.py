@@ -5,20 +5,14 @@ Module containing the use case for deleting work shifts.
 from errors.responses import (
     ResponseSuccess,
     ResponseFailure,
-    ResponseTypes,
-    build_response_from_invalid_request
+    ResponseTypes
 )
 
-def delete_shift_use_case(repo, request):
+def delete_shift_use_case(repo, shift_id, user_email):
     """
     Delete a specific shift based on ID and user email.
     """
-    if not request:
-        return build_response_from_invalid_request(request)
-
     try:
-        shift_id = request.shift_id
-        user_email = request.user_email
         shift = repo.get_by_id(shift_id)
 
         if shift is None:
