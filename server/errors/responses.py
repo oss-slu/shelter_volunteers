@@ -16,8 +16,8 @@ class ResponseTypes:
 
 class ResponseFailure:
     """
-Represents a failed response, encapsulating a type of error
-and an associated message.
+    Represents a failed response, encapsulating a type of error
+    and an associated message.
     """
     def __init__(self, response_type, message):
         self.response_type = response_type
@@ -25,9 +25,7 @@ and an associated message.
 
     def _format_message(self, msg):
         if isinstance(msg, Exception):
-            return "{}: {}".format(
-                msg.__class__.__name__, "{}".format(msg)
-            )
+            return f"{msg.__class__.__name__}: {msg}"
         return msg
 
     @property
@@ -49,9 +47,7 @@ class ResponseSuccess:
 
 def build_response_from_invalid_request(invalid_request):
     message = "\n".join(
-        [
-            "{}: {}".format(err["parameter"], err["message"])
-            for err in invalid_request.errors
-        ]
+        [f"{err['parameter']}: {err['message']}"
+         for err in invalid_request.errors]
     )
     return ResponseFailure(ResponseTypes.PARAMETER_ERROR, message)
