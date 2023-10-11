@@ -9,10 +9,9 @@ from errors.responses import (
     build_response_from_invalid_request
 )
 
-
 def delete_shift_use_case(repo, request):
     """
-    Delete a specific shift based on the provided request containing shift ID and user email.
+    Delete a specific shift based on ID and user email.
     """
     if not request:
         return build_response_from_invalid_request(request)
@@ -20,7 +19,6 @@ def delete_shift_use_case(repo, request):
     try:
         shift_id = request.shift_id
         user_email = request.user_email
-        
         shift = repo.get_by_id(shift_id)
 
         if shift is None:
@@ -34,5 +32,9 @@ def delete_shift_use_case(repo, request):
 
         return ResponseSuccess({"message": "Shift deleted successfully"})
 
-    except Exception as exc:
-        return ResponseFailure(ResponseTypes.SYSTEM_ERROR, exc)
+    except AttributeError:
+        return ResponseFailure(ResponseTypes.PARAMETER_ERROR,
+                            "Invalid request parameters.")
+    except ValueError: # Catch unexpected exceptions.
+        return ResponseFailure(ResponseTypes.SYSTEM_ERROR,
+                               "An unexpected error occurred.")

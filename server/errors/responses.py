@@ -15,6 +15,10 @@ class ResponseTypes:
 
 
 class ResponseFailure:
+    """
+Represents a failed response, encapsulating a type of error
+and an associated message.
+    """
     def __init__(self, response_type, message):
         self.response_type = response_type
         self.message = self._format_message(message)
