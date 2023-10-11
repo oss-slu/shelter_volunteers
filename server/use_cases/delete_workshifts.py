@@ -2,7 +2,7 @@
 Module containing the use case for deleting work shifts.
 """
 
-from errors.responses import (
+from responses import (
     ResponseSuccess,
     ResponseFailure,
     ResponseTypes

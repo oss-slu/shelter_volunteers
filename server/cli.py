@@ -3,6 +3,7 @@ Command line interface for displaying the data, shift data for example
 """
 from repository.memrepo import MemRepo
 from use_cases.list_workshifts import workshift_list_use_case
+from requests.work_shift_list import build_work_shift_list_request
 
 shifts = [
     {
@@ -22,6 +23,7 @@ shifts = [
 ]
 
 repo = MemRepo(shifts)
-result = workshift_list_use_case(repo)
+request = build_work_shift_list_request()
+result = workshift_list_use_case(repo, request, "volunteer@slu.edu")
 
-print([shift.to_dict() for shift in result])
+print([shift.to_dict() for shift in result.value])

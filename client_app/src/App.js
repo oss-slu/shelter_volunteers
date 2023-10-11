@@ -1,9 +1,14 @@
-import Shifts from "./Shifts";
+import {UpcomingShifts} from "./Shifts";
 import Shelters from "./Shelters";
 import "./App.css";
 
 function App() {
-  return Shelters();
+  return (
+    <div>
+        {UpcomingShifts()};
+        {Shelters()};
+    </div>
+  )
 }
 
 export default App;

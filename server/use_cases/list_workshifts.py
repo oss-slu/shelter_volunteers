@@ -1,8 +1,10 @@
 """
 This module contains the use case for listing work shifts.
 """
-def workshift_list_use_case(repo):
+from responses import ResponseSuccess
+
+def workshift_list_use_case(repo, request, user):
     """
     The function returns a list of all workshifts in the in-memory database.
     """
-    return repo.list()
+    return ResponseSuccess(repo.list(user, filters=request.filters))

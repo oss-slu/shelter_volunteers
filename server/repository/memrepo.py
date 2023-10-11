@@ -15,11 +15,36 @@ class MemRepo:
         """
         self.data = data
 
-    def list(self):
+    def list(self, user, filters=None):
         """
         Return a list of WorkShift objects based on the data.
         """
-        return [WorkShift.from_dict(i) for i in self.data]
+        shifts = [WorkShift.from_dict(i) for i in self.data if \
+                  WorkShift.from_dict(i).worker == user]
+        if filters is None:
+            return shifts
+
+        if "start_before" in filters:
+            shifts = [
+                shift for shift in shifts if \
+                shift.start_time < filters["start_before"]
+            ]
+        if "start_after" in filters:
+            shifts = [
+                shift for shift in shifts if \
+                shift.start_time >=filters["start_after"]
+            ]
+        if "end_before" in filters:
+            shifts = [
+                shift for shift in shifts if \
+                shift.end_time < filters["end_before"]
+            ]
+        if "end_after" in filters:
+            shifts = [
+                shift for shift in shifts if \
+                shift.end_time >= filters["end_after"]
+            ]
+        return shifts
 
     def add(self, work_shift):
         """
@@ -38,3 +63,4 @@ class MemRepo:
             if item["code"] == shift_id:
                 self.data.remove(item)
                 return
+
