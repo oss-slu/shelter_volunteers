@@ -2,13 +2,25 @@
 Module containing the use case for deleting work shifts.
 """
 
-from errors.responses import ResponseSuccess, ResponseFailure, ResponseTypes
+from errors.responses import (
+    ResponseSuccess,
+    ResponseFailure,
+    ResponseTypes,
+    build_response_from_invalid_request
+)
 
-def delete_shift_use_case(repo, shift_id, user_email):
+
+def delete_shift_use_case(repo, request):
     """
-    Delete a specific shift based on the provided shift ID and user email.
+    Delete a specific shift based on the provided request containing shift ID and user email.
     """
+    if not request:
+        return build_response_from_invalid_request(request)
+
     try:
+        shift_id = request.shift_id
+        user_email = request.user_email
+        
         shift = repo.get_by_id(shift_id)
 
         if shift is None:
@@ -22,6 +34,5 @@ def delete_shift_use_case(repo, shift_id, user_email):
 
         return ResponseSuccess({"message": "Shift deleted successfully"})
 
-    except ValueError as e:
-        # Assuming a ValueError might be raised, adjust as needed
-        return ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(e))
+    except Exception as exc:
+        return ResponseFailure(ResponseTypes.SYSTEM_ERROR, exc)

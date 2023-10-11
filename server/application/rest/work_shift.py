@@ -11,6 +11,7 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from errors.responses import ResponseFailure, ResponseTypes
+from collections import namedtuple
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -70,29 +71,33 @@ def work_shifts():
         )
 
 def get_user_from_token(headers):
-    return headers.get("X-User-Email") or headers["Authorization"]
+    return headers["Authorization"]
+
+DeleteShiftRequest = namedtuple("DeleteShiftRequest", ["shift_id", "user_email"])
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
-    try:
-        shift_id = str(shift_id)
-        user_email = get_user_from_token(request.headers)
-        repo = MemRepo(shifts)
+    shift_id = str(shift_id)
+    user_email = get_user_from_token(request.headers)
+    delete_request = DeleteShiftRequest(shift_id=shift_id, user_email=user_email)
+    
+    repo = MemRepo(shifts)
 
-        response = delete_shift_use_case(repo, shift_id, user_email)
-        status_code = HTTP_STATUS_CODES_MAPPING.get(response.response_type, 500)
+    response = delete_shift_use_case(repo, delete_request)
+    status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
 
-        if isinstance(response, ResponseFailure):
-            return response.message, status_code
+    return Response(
+        json.dumps(response.value),
+        mimetype="application/json",
+        status=status_code
+    )
 
-        return response.value, status_code
 
-    except ValueError as exc:
-        response_failure = ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(exc))
-        error_message = response_failure.message
-        e_code = HTTP_STATUS_CODES_MAPPING.get(ResponseTypes.SYSTEM_ERROR, 500)
-        return error_message, e_code
+
+
+
+
 
 
 
