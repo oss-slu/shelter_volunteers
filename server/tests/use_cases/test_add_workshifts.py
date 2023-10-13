@@ -1,12 +1,17 @@
-import pytest
+"""
+This module contains the test cases for adding work shifts.
+"""
 import uuid
 from unittest import mock
-
+import pytest
 from domains.work_shift import WorkShift
 from use_cases.add_workshifts import workshift_add_use_case, workshift_add_multiple_use_case
 
 @pytest.fixture
-def domain_work_shifts():
+def domain_work_shifts_data():
+    """
+mock data
+"""
     work_shift_1 = WorkShift(
         code = uuid.uuid4(),
         worker = "volunteer@slu.edu",
@@ -33,19 +38,25 @@ def domain_work_shifts():
 
     return [work_shift_1, work_shift_2, work_shift_3]
 
-def test_workshift_add_use_case(domain_work_shifts):
+def test_workshift_add_use_case(domain_work_shifts_data):
+    """
+    test case for adding workshift
+    """
     repo = mock.Mock()
 
-    workshift_add_use_case(repo, domain_work_shifts[0])
+    workshift_add_use_case(repo, domain_work_shifts_data[0])
 
-    repo.add.assert_called_with(domain_work_shifts[0])
+    repo.add.assert_called_with(domain_work_shifts_data[0])
 
-def test_workshift_add_multiple_use_case(domain_work_shifts):
+def test_workshift_add_multiple_use_case(domain_work_shifts_data):
+    """
+    test case for adding multiple workshifts
+    """
     repo = mock.Mock()
 
-    workshift_add_multiple_use_case(repo, domain_work_shifts)
+    workshift_add_multiple_use_case(repo, domain_work_shifts_data)
 
-    assert repo.add.call_count == len(domain_work_shifts)
-    repo.add.assert_any_call(domain_work_shifts[0])
-    repo.add.assert_any_call(domain_work_shifts[1])
-    repo.add.assert_any_call(domain_work_shifts[2])
+    assert repo.add.call_count == len(domain_work_shifts_data)
+    repo.add.assert_any_call(domain_work_shifts_data[0])
+    repo.add.assert_any_call(domain_work_shifts_data[1])
+    repo.add.assert_any_call(domain_work_shifts_data[2])
