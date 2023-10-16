@@ -1,0 +1,34 @@
+[
+    {
+      "volunteerId": "V1", 
+      "name": "John Smith",
+      "shelter": "St Patrick's",
+      "shift": {
+        "startDate": 1677664000000, 
+        "endDate": 1677667600000,
+        "task": "Serving Lunch"
+      }
+    },
+    
+    {
+      "volunteerId": "V2",
+      "name": "Jane Doe", 
+      "shelter": "St louis homeless shelter",
+      "shift": {
+        "startDate": 1678859600000,
+        "endDate": 1678868400000,
+        "task": "Independence dat event"
+      }
+    },  
+    
+    {
+      "volunteerId": "V3",
+      "name": "Bob Wilson",
+      "shelter": "New Haeven", 
+      "shift": {
+        "startDate": 1679488400000,
+        "endDate": 1679495800000, 
+        "task": "Bed allocation"
+      }
+    }
+  ]
