@@ -1,3 +1,7 @@
+"""
+This module contains tests for the list work shift use cases.
+"""
+
 from use_cases.list_workshifts import workshift_list_use_case
 from repository.memrepo import MemRepo
 
@@ -17,7 +21,8 @@ domain_shifts_data = [
         "end_time": 1696269600000
     },
     {
-        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",  # Note: The code is duplicated, ensure this is intentional.
+        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
+        # Note: The code is duplicated, ensure this is intentional.
         "worker": "volunteer@slu.edu",
         "shelter": "shelter-id-for-st-patric-center",
         "start_time": 1701442800000,

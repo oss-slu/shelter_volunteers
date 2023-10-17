@@ -1,6 +1,9 @@
+"""
+This module contains tests for the delete work shift use cases.
+"""
+
 from use_cases.delete_workshifts import delete_shift_use_case, ResponseTypes
 from repository.memrepo import MemRepo
-from unittest import mock
 
 domain_shifts_data = [
     {
@@ -39,4 +42,3 @@ def test_delete_shift_not_found():
                                      "f853578c-fc0f-4e65-81b8-566c5dffa35c",
                                      "volunteer@slu.edu")
     assert response.response_type == ResponseTypes.NOT_FOUND
-
