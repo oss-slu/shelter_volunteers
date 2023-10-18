@@ -89,6 +89,7 @@ function Shelters() {
         </button>
       </div>
       <div class="text-center double-navbar-buffer">
+        <h1>Shelters</h1>
         <button onClick={getLocation}>Get Shelters from Location</button>
         <br />
         <label for="radius-select">Radius (miles): </label>

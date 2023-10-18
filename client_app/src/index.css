@@ -65,21 +65,147 @@ code {
 .main-nav {
   top: 0;
   background-color: #193b45;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.main-nav .logo {
+  height: 60px;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: white;
 }
 
 .navbar {
-  top: 40px;
+  top: 85px;
   background-color: #dddddd;
 }
 
 .navbar-buffer {
-  margin-top: 45px;
+  margin-top: 90px;
 }
 
 .double-navbar-buffer {
-  margin-top: 100px;
+  margin-top: 140px;
 }
 
 #submit-shifts {
   margin-right: 20px;
+}
+
+.volunteer-dashboard {
+  display: flex;
+}
+
+.volunteer-dashboard .column {
+  padding: 10px;
+}
+
+.volunteer-dashboard .column-1 {
+  flex: 3;
+}
+
+.volunteer-dashboard .column-2 {
+  flex: 3;
+}
+
+.volunteer-dashboard .column-3 {
+  flex: 1;
+}
+.volunteer-dashboard .card {
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 5px #193b45;
+}
+.volunteer-dashboard .column-1 .card {
+  background: #3d885747;
+}
+
+.volunteer-dashboard .column-2 .card {
+  background: #81602c61;
+}
+
+.volunteer-dashboard .column-3 .card {
+  background: #05b1d85c;
+}
+
+.volunteer-dashboard .column-3 .card p {
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.volunteer-dashboard button {
+  background-color: #193b45;
+  border-radius: 5px;
+  color: #fdfaf6;
+  border: none;
+  padding: 1em;
+  cursor: pointer;
+}
+
+.shelter-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.shelter-dashboard .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 2px 2px 5px #888888;
+  padding: 20px;
+  width: 45%;
+}
+
+.shelter-dashboard .container h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.shelter-dashboard .shift-card,
+.shelter-dashboard .volunteer-card {
+  background-color: #3498db; /* Adjusted card color */
+  border-radius: 10px;
+  margin: 10px 0;
+  padding: 15px; /* Increased padding for better appearance */
+  display: flex;
+  flex-direction: column; /* Adjusted layout to stack content */
+  align-items: center; /* Centered content horizontally */
+}
+
+.shelter-dashboard .shift-card h4,
+.shelter-dashboard .volunteer-card h4 {
+  font-size: 18px;
+  color: #fff; /* Changed text color to white */
+  margin: 0;
+}
+
+.shelter-dashboard .shift-card p,
+.shelter-dashboard .volunteer-card p {
+  font-size: 16px;
+  color: #fff; /* Changed text color to white */
+  margin: 0;
+}
+
+.shelter-dashboard .volunteer-card {
+  margin-left: 20px; /* Added space between columns */
+}
+
+.shelter-dashboard button {
+  background-color: #e74c3c;
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 10px; /* Added space between button and content */
 }
