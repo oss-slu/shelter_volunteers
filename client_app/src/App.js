@@ -5,7 +5,6 @@ import logo from "./Assets/gethelplogo.png";
 import { PastShifts, UpcomingShifts } from "./Shifts";
 import Shelters from "./Shelters";
 import VolunteerDashboard from "./VolunteerDashboard";
-import ShelterDashboard from "./ShelterDashboard";
 
 import "./App.css";
 
@@ -17,10 +16,9 @@ function App() {
           <Link to="/">
             <img class="logo" src={logo} alt="GetHelp Logo" />
           </Link>
-          <Link to="/shelters">Shelters</Link>
           <Link to="/past-shifts">Previous Shifts</Link>
           <Link to="/upcoming-shifts">Upcoming Shifts</Link>
-          <Link to="/shelter-dashboard">Shelter Dashboard</Link>
+          <Link to="/shelters">Sign up to help</Link>
         </div>
         <div class="navbar-buffer"></div>
         <Routes>
@@ -28,7 +26,6 @@ function App() {
           <Route path="/shelters" element={<Shelters />} />
           <Route path="/past-shifts" element={<PastShifts />} />
           <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
-          <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
         </Routes>
       </Router>
     </div>
