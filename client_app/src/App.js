@@ -13,9 +13,7 @@ function App() {
     <div>
       <Router>
         <div class="main-nav">
-          <Link to="/">
-            <img class="logo" src={logo} alt="GetHelp Logo" />
-          </Link>
+          <Link to="/">Volunteer Dashboard</Link>
           <Link to="/past-shifts">Previous Shifts</Link>
           <Link to="/upcoming-shifts">Upcoming Shifts</Link>
           <Link to="/shelters">Sign up to help</Link>
