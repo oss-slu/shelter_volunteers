@@ -19,17 +19,18 @@ const ShiftList = (props) => {
           const formattedEndTime = format(endTime, "MMMM dd, yyyy HH:mm");
           return (
             <div class="shift text-center" key={shift.code}>
-              <div class="text-right">
-                <input
-                  type="checkbox"
-                  id={"shift-checkbox-" + shift.code}
-                  onClick={onCheckboxClick}
-                />
-              </div>
+              {props.fromShelter == true && (
+                <div class="text-right">
+                  <input
+                    type="checkbox"
+                    id={"shift-checkbox-" + shift.code}
+                    onClick={onCheckboxClick}
+                  />
+                </div>
+              )}
               {props.fromShelter !== true && (
                 <div>
                   <h2>{shift.shelter}</h2>
-                  <p>{shift.worker}</p>
                 </div>
               )}
               <p>
