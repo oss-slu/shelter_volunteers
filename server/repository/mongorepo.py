@@ -69,8 +69,13 @@ class MongoRepo:
         Add a WorkShift object to the data.
         """
         self.collection.insert_one(work_shift)
-
+        work_shift.pop("_id")
+        
     def get_by_id(self, shift_id):
+        """
+        The get_by_id function takes in a shift_id and 
+        returns the corresponding WorkShift object.
+        """
         id_filter = {"code":shift_id}
         projection = {"_id": 0}
         item = self.collection.find_one(filter=id_filter, projection=projection)
@@ -80,6 +85,10 @@ class MongoRepo:
             return None
 
     def delete(self, shift_id):
+        """
+        The delete function deletes a shift from the database.
+        """
+        
         self.collection.delete_one({"code": shift_id})
         return
 
