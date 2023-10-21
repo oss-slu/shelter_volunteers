@@ -1,34 +1,24 @@
 [
-    {
-      "volunteerId": "V1", 
-      "name": "John Smith",
-      "shelter": "St Patrick's",
-      "shift": {
-        "startDate": 1677664000000, 
-        "endDate": 1677667600000,
-        "task": "Serving Lunch"
-      }
-    },
-    
-    {
-      "volunteerId": "V2",
-      "name": "Jane Doe", 
-      "shelter": "St louis homeless shelter",
-      "shift": {
-        "startDate": 1678859600000,
-        "endDate": 1678868400000,
-        "task": "Independence dat event"
-      }
-    },  
-    
-    {
-      "volunteerId": "V3",
-      "name": "Bob Wilson",
-      "shelter": "New Haeven", 
-      "shift": {
-        "startDate": 1679488400000,
-        "endDate": 1679495800000, 
-        "task": "Bed allocation"
-      }
-    }
-  ]
+  {
+      "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
+      "worker": "volunteer@slu.edu",
+      "shelter": "shelter-id-for-st-patric-center",
+      "start_time": 1696168800000,
+      "end_time": 1696179600000
+  },
+  {
+      "code": "f853578c-fc0f-4e65-81b8-566c5dffa35b",
+      "worker": "volunteer2@slu.edu",
+      "shelter": "shelter-id-for-st-patric-center",
+      "start_time": 1696255200000,
+      "end_time": 1696269600000
+  },
+  {
+      "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
+      "worker": "volunteer@slu.edu",
+      "shelter": "shelter-id-for-st-patric-center",
+      "start_time": 1701442800000,
+      "end_time": 1701453600000
+  }
+
+]
