@@ -2,11 +2,24 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Navigation
+
+To add a page to the current navigation, do the following in the **App.js** file:
+
+- Add an import statement for the page.
+
+- Add a `Link` tag to the navigation bar.
+
+- Add another `Route` to the `Routes` tag that is present.
+
+- Modify each of the tags to work for your new page.
+
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `npm install`
+
 Installs the dependnecies of the project. This script needs to be run once before you can run the application.
 
 ### `npm start`
