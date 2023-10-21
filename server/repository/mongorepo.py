@@ -37,8 +37,8 @@ class MongoRepo:
         """
         user_filter = {"worker":user}
         projection = {"_id": 0}
-        user_shifts = [WorkShift.from_dict(i) for i in
-                       self.collection.find(filter=user_filter, projection=projection)]
+        user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
+                       (filter=user_filter, projection=projection)]
         if filters is None:
             return user_shifts
 

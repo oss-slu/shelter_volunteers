@@ -15,7 +15,7 @@ def app_config_file(config):
 
 def read_json_configuration(config):
     # Read configuration from the relative JSON file
-    with open(app_config_file(config), encoding='utf-8') as f:
+    with open(app_config_file(config), encoding="utf-8") as f:
         config_data = json.load(f)
 
     # Convert the config into a usable Python dictionary
