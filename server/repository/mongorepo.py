@@ -70,7 +70,7 @@ class MongoRepo:
         """
         self.collection.insert_one(work_shift)
         work_shift.pop("_id")
-        
+
     def get_by_id(self, shift_id):
         """
         The get_by_id function takes in a shift_id and 
@@ -88,7 +88,5 @@ class MongoRepo:
         """
         The delete function deletes a shift from the database.
         """
-        
         self.collection.delete_one({"code": shift_id})
         return
-
