@@ -30,14 +30,15 @@ class MongoRepo:
             )
             for q in results
         ]
-    
+
     def list(self, user, filters=None):
         """
         Return a list of WorkShift objects based on the data.
         """
         user_filter = {"worker":user}
-        projection = {'_id': 0}
-        user_shifts = [WorkShift.from_dict(i) for i in self.collection.find(filter=user_filter, projection=projection)]
+        projection = {"_id": 0}
+        user_shifts = [WorkShift.from_dict(i) for i in
+                       self.collection.find(filter=user_filter, projection=projection)]
         if filters is None:
             return user_shifts
 
@@ -71,7 +72,7 @@ class MongoRepo:
 
     def get_by_id(self, shift_id):
         id_filter = {"code":shift_id}
-        projection = {'_id': 0}
+        projection = {"_id": 0}
         item = self.collection.find_one(filter=id_filter, projection=projection)
         if item:
             return WorkShift.from_dict(item)
@@ -79,6 +80,6 @@ class MongoRepo:
             return None
 
     def delete(self, shift_id):
-        item = self.collection.delete_one({"code": shift_id})
+        self.collection.delete_one({"code": shift_id})
         return
 
