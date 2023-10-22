@@ -1,55 +1,69 @@
 """
-This module contains tests for the delete work shift use cases.
+Tests for the delete work shifts use case.
 """
 
-from use_cases.delete_workshifts import delete_shift_use_case, ResponseTypes
-from repository.memrepo import MemRepo
+import uuid
+from unittest import mock
 
-domain_shifts_data = [
-    {
-        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
-        "worker": "volunteer@slu.edu",
-        "shelter": "shelter-id-for-st-patric-center",
-        "start_time": 1696168800000,
-        "end_time": 1696179600000
-    },
-    {
-        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35b",
-        "worker": "volunteer@slu1.edu",
-        "shelter": "shelter-id-for-st-patric-center",
-        "start_time": 1706168800000,
-        "end_time": 1706179600000
-    }
+from domains.work_shift import WorkShift
+from use_cases.delete_workshifts import delete_shift_use_case, ResponseTypes
+
+domain_shifts = [
+    WorkShift(
+        code=uuid.uuid4(),
+        worker="volunteer@slu.edu",
+        shelter="shelter-id-for-st-patric-center",
+        start_time=1706168800000,
+        end_time=1706179600000
+        ),
+    WorkShift(
+        code=uuid.uuid4(),
+        worker="volunteer@slu1.edu",
+        shelter="shelter-id-for-st-patric-center",
+        start_time=1706168800000,
+        end_time=1706179600000
+        )
 ]
 
 def test_delete_shift_successfully():
-    repo = MemRepo(domain_shifts_data)
+    repo = mock.Mock()
+    repo.get_by_id.return_value = domain_shifts[0]
+
     response = delete_shift_use_case(repo,
-                                     "f853578c-fc0f-4e65-81b8-566c5dffa35a",
-                                     "volunteer@slu.edu")
+                                    domain_shifts[0].code,
+                                    domain_shifts[0].worker)
+
     assert response.response_type == ResponseTypes.SUCCESS
     assert response.value == {"message": "Shift deleted successfully"}
+    repo.delete.assert_called_with(domain_shifts[0].code)
 
 def test_delete_shift_unauthorized():
-    repo = MemRepo(domain_shifts_data)
+    repo = mock.Mock()
+    repo.get_by_id.return_value = domain_shifts[1]
+
     response = delete_shift_use_case(repo,
-                                     "f853578c-fc0f-4e65-81b8-566c5dffa35b",
-                                     "volunteer@slu.edu")
-    print("test_delete_shift_unauthorized response:", response.value)
+                                     domain_shifts[1].code,
+                                     domain_shifts[0].worker)
+
     assert response.response_type == ResponseTypes.AUTHORIZATION_ERROR
-    assert response.value == {"type": "AuthorizationError",
-                            "message": "Permission denied"}
+    assert response.value == {
+        "type": ResponseTypes.AUTHORIZATION_ERROR,
+        "message": "Permission denied"
+    }
+    repo.delete.assert_not_called()
 
 def test_delete_shift_not_found():
-    repo = MemRepo(domain_shifts_data)
+    repo = mock.Mock()
+    repo.get_by_id.return_value = None
+
+    non_existent_code = uuid.uuid4()
     response = delete_shift_use_case(repo,
-                                     "f853578c-fc0f-4e65-81b8-566c5dffa35c",
+                                     non_existent_code,
                                      "volunteer@slu.edu")
-    print("test_delete_shift_not_found response:", response.value)
+
     assert response.response_type == ResponseTypes.NOT_FOUND
-    assert response.value == {"type": "NotFound",
-                              "message": "Shift not found"}
-
-
-
-
+    assert response.value == {
+        "type": ResponseTypes.NOT_FOUND,
+        "message": "Shift not found"
+    }
+    repo.delete.assert_not_called()
