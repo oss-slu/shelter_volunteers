@@ -3,7 +3,7 @@ name: Server-side testing
 on: push
 
 jobs:
-  pylint:
+  pytest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
