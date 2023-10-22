@@ -75,7 +75,7 @@ const Shelters = (props) => {
       body: JSON.stringify(shifts),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        Authorization: "submitted-volunteer@slu.edu",
+        Authorization: "volunteer@slu.edu",
       },
     })
       .then(() => alert("You have submitted the shifts successfully"))
