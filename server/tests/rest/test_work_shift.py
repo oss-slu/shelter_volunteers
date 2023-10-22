@@ -56,7 +56,6 @@ def test_add_work_shifts(mock_use_case):
     client = app.test_client()
     new_shift = {
         'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35d',
-        'worker': 'volunteer@slu.edu',
         'shelter': 'new-shelter-id',
         'start_time': 1701442800000,
         'end_time': 1701453600000
