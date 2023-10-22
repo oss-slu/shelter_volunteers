@@ -5,7 +5,7 @@ for work shifts in the server application.
 import json
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
-from repository.memrepo import MemRepo
+from repository import mongorepo, manage
 from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
@@ -57,7 +57,7 @@ def work_shifts():
     On GET: The function returns a list of all work shifts in the system.
     On POST: The function adds shifts to the system.
     """
-    repo = MemRepo(shifts)
+    repo = mongorepo.MongoRepo(app_configuration())
     user = get_user_from_token(request.headers)
 
     if request.method == "GET":
@@ -103,7 +103,7 @@ def delete_work_shift(shift_id):
     shift_id = str(shift_id)
     user_email = get_user_from_token(request.headers)
 
-    repo = MemRepo(shifts)
+    repo = mongorepo.MongoRepo(app_configuration())
 
     response = delete_shift_use_case(repo, shift_id, user_email)
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
@@ -114,7 +114,9 @@ def delete_work_shift(shift_id):
         status=status_code
     )
 
-
+def app_configuration():
+    result = manage.read_json_configuration("mongo_config")
+    return result
 
 
 
