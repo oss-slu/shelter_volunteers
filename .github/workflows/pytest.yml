@@ -19,10 +19,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./server/requirements.txt
         pip install pytest
-    - name: set pythonpath
-      run: |
-        echo "PYTHONPATH=./server" >> $GITHUB_ENV
-
     - name: Running all server-side tests written for pytest
       run: |
-        cd server && pytest
+        cd server && PYTHONPATH=$(pwd) pytest
