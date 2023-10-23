@@ -25,4 +25,4 @@ jobs:
 
     - name: Running all server-side tests written for pytest
       run: |
-        pytest
+        cd server && pytest
