@@ -31,7 +31,7 @@ class MongoRepo:
             for q in results
         ]
 
-    def list(self, user=None, filters=None, shelter=None):
+    def list(self, user=None, shelter=None):
         """
         Return a list of WorkShift objects based on the data.
         """
@@ -45,29 +45,7 @@ class MongoRepo:
         projection = {"_id": 0}
         user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
                        (filter=db_filter, projection=projection)]
-        if filters is None:
-            return user_shifts
 
-        if "start_before" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.start_time < filters["start_before"]
-            ]
-        if "start_after" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.start_time >=filters["start_after"]
-            ]
-        if "end_before" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.end_time < filters["end_before"]
-            ]
-        if "end_after" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.end_time >= filters["end_after"]
-            ]
         return user_shifts
 
     def add(self, work_shift):
