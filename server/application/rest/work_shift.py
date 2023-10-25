@@ -59,7 +59,7 @@ def counts(shelter_id):
     """
     repo = mongorepo.MongoRepo(app_configuration())
     request_object = list_shift_request(request.args)
-    
+
     # find workshifts matching the request object
     response = count_volunteers_use_case(repo, request_object, shelter_id)
     return Response(

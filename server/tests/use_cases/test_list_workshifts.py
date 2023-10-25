@@ -37,8 +37,10 @@ class Object:
 
 def test_fetch_all_workshifts_for_volunteer():
     repo = mock.Mock()
-    workshifts_for_volunteer = [WorkShift.from_dict(s) for s in domain_shifts_data
-                                if s["worker"] == "volunteer@slu.edu"]
+    workshifts_for_volunteer = \
+        [WorkShift.from_dict(s) for s in domain_shifts_data
+        if s["worker"] == "volunteer@slu.edu"]
+
     repo.list.return_value = workshifts_for_volunteer
     request = Object()
     response = workshift_list_use_case(repo, request,

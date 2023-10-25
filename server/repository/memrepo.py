@@ -20,7 +20,8 @@ class MemRepo:
         Return a list of WorkShift objects based on the data.
         """
         shifts = [WorkShift.from_dict(i) for i in self.data if \
-                  user is None or WorkShift.from_dict(i).worker == user]
+                  (user is None or i["worker"] == user) and \
+                  (shelter is None or i["shelter"].shelter == shelter)]
         return shifts
 
     def add(self, work_shift):
