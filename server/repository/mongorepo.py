@@ -31,14 +31,20 @@ class MongoRepo:
             for q in results
         ]
 
-    def list(self, user, filters=None):
+    def list(self, user=None, filters=None, shelter=None):
         """
         Return a list of WorkShift objects based on the data.
         """
-        user_filter = {"worker":user}
+        db_filter = {}
+        if user:
+            db_filter["worker"] = user
+        if shelter:
+            db_filter["shelter"] = shelter
+
+        print(db_filter)
         projection = {"_id": 0}
         user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
-                       (filter=user_filter, projection=projection)]
+                       (filter=db_filter, projection=projection)]
         if filters is None:
             return user_shifts
 
@@ -73,7 +79,7 @@ class MongoRepo:
 
     def get_by_id(self, shift_id):
         """
-        The get_by_id function takes in a shift_id and 
+        The get_by_id function takes in a shift_id and
         returns the corresponding WorkShift object.
         """
         id_filter = {"code":shift_id}

@@ -12,7 +12,7 @@ class WorkShift:
     """
     code: uuid.UUID
     worker: str
-    shelter: str
+    shelter: int
     start_time: int  # number of milliseconds since the Epoch in UTC
     end_time: int
 
