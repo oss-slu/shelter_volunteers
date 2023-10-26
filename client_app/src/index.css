@@ -80,7 +80,7 @@ code {
 }
 
 .navbar {
-  top: 85px;
+  bottom: 0;
   background-color: #dddddd;
 }
 

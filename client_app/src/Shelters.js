@@ -88,18 +88,7 @@ const Shelters = (props) => {
 
   return (
     <div>
-      {!props.condensed && (
-        <div class="navbar text-right">
-          <button
-            id="submit-shifts"
-            onClick={submitShifts}
-            disabled={isButtonDisabled}
-          >
-            Sign up for shifts
-          </button>
-        </div>
-      )}
-      {!props.condensed && <div class="double-navbar-buffer"></div>}
+      {!props.condensed && <div class="navbar-buffer"></div>}
       <div class="text-center">
         {!props.condensed && <h1>Shelters</h1>}
         <button onClick={getLocation}>Get Shelters from Location</button>
@@ -127,6 +116,17 @@ const Shelters = (props) => {
           <Link to="/shelters">
             <button>View All Shelters</button>
           </Link>
+        </div>
+      )}
+      {!props.condensed && (
+        <div class="navbar text-right">
+          <button
+            id="submit-shifts"
+            onClick={submitShifts}
+            disabled={isButtonDisabled}
+          >
+            Sign up for shifts
+          </button>
         </div>
       )}
     </div>
