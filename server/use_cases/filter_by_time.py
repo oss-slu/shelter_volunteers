@@ -9,7 +9,7 @@ def apply_time_filters(shifts, filters):
     if "start_before" in filters:
         shifts = [
             shift for shift in shifts if \
-            shift.start_time < filters["start_before"]
+            shift.start_time <= filters["start_before"]
         ]
     if "start_after" in filters:
         shifts = [
@@ -19,7 +19,7 @@ def apply_time_filters(shifts, filters):
     if "end_before" in filters:
         shifts = [
             shift for shift in shifts if \
-            shift.end_time < filters["end_before"]
+            shift.end_time <= filters["end_before"]
         ]
     if "end_after" in filters:
         shifts = [

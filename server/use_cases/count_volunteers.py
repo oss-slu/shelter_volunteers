@@ -16,6 +16,7 @@ def count_volunteers_use_case(repo, request, shelter):
     shifts = repo.list(user=None, shelter=shelter)
     all_shifts = shifts.copy()
 
+    print(shifts)
     # filter the shifts: only keep those that overlap our time interval of interest
     if "start_after" in request.filters and "end_before" in request.filters:
         time_filter = {"end_before":request.filters["end_before"],
@@ -23,8 +24,12 @@ def count_volunteers_use_case(repo, request, shelter):
         shifts = apply_time_filters(shifts, time_filter)
         time_filter = {"start_before":request.filters["end_before"],
                        "start_after":request.filters["start_after"]}
-        shifts = shifts+apply_time_filters(all_shifts, time_filter)
- 
+        all_shifts = shifts+apply_time_filters(all_shifts, time_filter)
+
+    # remove duplicate shifts that may have resulted from applying the filtering twice
+    # and merging the results
+    shifts = [obj for i, obj in enumerate(all_shifts) if obj not in all_shifts[:i]]
+
     # calculate unique time intervals with worker counts
     # workers is a list of Staffing objects that may have non-unique time intervals
     workers = make_staffing_from_shifts(shifts);
@@ -95,6 +100,7 @@ def count_volunteers_use_case(repo, request, shelter):
             workforce.append(Staffing.from_dict({"start_time":worker.start_time,
                                                  "end_time":worker.end_time,
                                                  "count":worker.count}))
+    print(workforce)
     return ResponseSuccess(workforce)
 
 
