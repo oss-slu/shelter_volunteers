@@ -61,7 +61,7 @@ function NavBar() {
                         </li>
                     </ul>
                     <div className="nav-icon" onClick={handleClick}>
-                        {click ? (
+                        {!click ? (
                             <span className="icon">
                                 <HamburgetMenuOpen />{" "}
                             </span>

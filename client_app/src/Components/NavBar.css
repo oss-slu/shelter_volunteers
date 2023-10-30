@@ -56,7 +56,6 @@
 }
 
 .nav-item {
-  line-height: 40px;
   margin-right: 1rem;
 }
 
@@ -97,14 +96,14 @@
     width: 100%;
     border-top: 1pxsolid #fff;
     position: absolute;
-    top: 2em;
+    top: 60px;
     left: -110%;
     opacity: 1;
     transition: all 0.5s ease;
   }
 
   .nav-menu.active {
-    background: #1f5156;
+    background: #1f5156f2;
     left: 0px;
     opacity: 1;
     transition: all 0.5s ease;
