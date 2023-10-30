@@ -4,7 +4,6 @@ This module contains tests for the count volunteers use case
 
 from unittest import mock
 from use_cases.count_volunteers import count_volunteers_use_case
-from responses import ResponseSuccess
 from domains.work_shift import WorkShift
 from domains.staffing import Staffing
 
@@ -43,7 +42,7 @@ def test_nonoverlapping_shifts():
         assert value.start_time == staff.start_time
         assert value.end_time == staff.end_time
         assert value.count == staff.count
-   
+
 def test_identical_shifts():
     repo = mock.Mock()
     shifts_data = [
@@ -74,4 +73,3 @@ def test_identical_shifts():
         assert value.start_time == staff.start_time
         assert value.end_time == staff.end_time
         assert value.count == staff.count
- 

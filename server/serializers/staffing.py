@@ -15,4 +15,4 @@ class StaffingJsonEncoder(json.JSONEncoder):
             }
             return to_serialize
         except AttributeError:
-            return super().default(workshift)
+            return super().default(staffing)
