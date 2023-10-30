@@ -88,7 +88,7 @@ const Shelters = (props) => {
 
   return (
     <div>
-      {!props.condensed && <div class="navbar-buffer"></div>}
+      {!props.condensed && <div></div>}
       <div class="text-center">
         {!props.condensed && <h1>Shelters</h1>}
         <button onClick={getLocation}>Get Shelters from Location</button>
@@ -119,7 +119,7 @@ const Shelters = (props) => {
         </div>
       )}
       {!props.condensed && (
-        <div class="navbar text-right">
+        <div>
           <button
             id="submit-shifts"
             onClick={submitShifts}

@@ -54,44 +54,6 @@ code {
   }
 }
 
-.main-nav,
-.navbar {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  padding: 10px;
-}
-
-.main-nav {
-  top: 0;
-  background-color: #193b45;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.main-nav .logo {
-  height: 60px;
-}
-
-.main-nav a {
-  text-decoration: none;
-  color: white;
-}
-
-.navbar {
-  bottom: 0;
-  background-color: #dddddd;
-}
-
-.navbar-buffer {
-  margin-top: 90px;
-}
-
-.double-navbar-buffer {
-  margin-top: 140px;
-}
-
 #submit-shifts {
   margin-right: 20px;
 }
