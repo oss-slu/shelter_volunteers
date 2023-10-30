@@ -1,7 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-
-import logo from "./Assets/gethelplogo.png";
-
 import { PastShifts, UpcomingShifts } from "./Shifts";
 import Shelters from "./Shelters";
 import VolunteerDashboard from "./VolunteerDashboard";
