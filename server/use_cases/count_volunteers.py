@@ -85,8 +85,8 @@ def count_volunteers_use_case(repo, request, shelter):
                 # S___W___WS or S___W____S____W
                 found = True
                 staff.end_time = worker.start_time
-                move_to_workers = staff[i+1:]
-                staff[i+1:]=[]
+                move_to_workers = workforce[i+1:]
+                workforce[i+1:]=[]
                 workers.extend(move_to_workers)
 
                 workers.append(Staffing.from_dict(
