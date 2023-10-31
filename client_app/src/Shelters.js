@@ -119,7 +119,7 @@ const Shelters = (props) => {
         </div>
       )}
       {!props.condensed && (
-        <div>
+        <div class="footer">
           <button
             id="submit-shifts"
             onClick={submitShifts}

@@ -171,3 +171,37 @@ code {
   cursor: pointer;
   margin-top: 10px; /* Added space between button and content */
 }
+
+.footer {
+  background-color: #1f5156;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  bottom: 0;
+}
+
+.footer button {
+  color: #fff;
+  border: transparent;
+  background-color: transparent;
+}
+
+.footer button:disabled {
+  color: #aaa;
+}
+
+.footer button:enabled:after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0;
+  transition: width 0.7s ease, background-color 0.5s ease;
+}
+
+.footer button:enabled:hover:after {
+  width: 100%;
+  background: #ffdd40;
+}
