@@ -24,7 +24,7 @@ def compare(expected_staff, shifts_data, request):
         assert value.end_time == staff.end_time
         assert value.count == staff.count
 
-
+# X....XY....Y
 def test_nonoverlapping_shifts():
     shifts_data = [
         {
@@ -48,6 +48,7 @@ def test_nonoverlapping_shifts():
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
 
+# XY...YX
 def test_identical_shifts():
     shifts_data = [
         {
@@ -143,3 +144,169 @@ def test_overlapping3_shifts():
                 {"start_time":2, "end_time":3, "count":2},
                 {"start_time":3, "end_time":4, "count":1}]
     compare(expected, shifts_data, request)
+
+# X...Y....XY
+def test_overlapping4_shifts():
+    shifts_data = [
+        {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 4
+        },
+        {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 4
+        }
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":4})
+    expected = [{"start_time":1, "end_time":2, "count":1},
+                {"start_time":2, "end_time":4, "count":2}]
+    compare(expected, shifts_data, request)
+
+# X...Y...Z...X...Y...Z
+def test_many_overlapping_shifts():
+    shifts_data = [
+        {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 4
+        },
+        {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 5
+        },
+        {
+            "code": "3",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 6
+        }
+
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":6})
+    expected = [{"start_time":1, "end_time":2, "count":1},
+                {"start_time":2, "end_time":3, "count":2},
+                {"start_time":3, "end_time":4, "count":3},
+                {"start_time":4, "end_time":5, "count":2},
+                {"start_time":5, "end_time":6, "count":1}]
+
+    compare(expected, shifts_data, request)
+
+# X...Y...Z...Z...Y...X
+def test_many_overlapping2_shifts():
+    shifts_data = [
+        {
+            "code": "3",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 4
+        },
+        {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 6
+        },
+        {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 5
+        }
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":6})
+    expected = [{"start_time":1, "end_time":2, "count":1},
+                {"start_time":2, "end_time":3, "count":2},
+                {"start_time":3, "end_time":4, "count":3},
+                {"start_time":4, "end_time":5, "count":2},
+                {"start_time":5, "end_time":6, "count":1}]
+
+    compare(expected, shifts_data, request)
+
+# X...Y...Z...Y...Z...X
+def test_many_overlapping3_shifts():
+    shifts_data = [
+        {
+            "code": "3",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 4
+        },
+        {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 6
+        },
+        {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 5
+        }
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":6})
+    expected = [{"start_time":1, "end_time":2, "count":1},
+                {"start_time":2, "end_time":3, "count":2},
+                {"start_time":3, "end_time":4, "count":3},
+                {"start_time":4, "end_time":5, "count":2},
+                {"start_time":5, "end_time":6, "count":1}]
+
+    compare(expected, shifts_data, request)
+
+# X...Y...Z...X...Z...Y
+def test_many_overlapping4_shifts():
+    shifts_data = [
+        {
+            "code": "3",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 5
+        },
+        {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 4
+        },
+        {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 6
+        }
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":6})
+    expected = [{"start_time":1, "end_time":2, "count":1},
+                {"start_time":2, "end_time":3, "count":2},
+                {"start_time":3, "end_time":4, "count":3},
+                {"start_time":4, "end_time":5, "count":2},
+                {"start_time":5, "end_time":6, "count":1}]
+
+    compare(expected, shifts_data, request)
+
