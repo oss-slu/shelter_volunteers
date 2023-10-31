@@ -77,12 +77,14 @@ code {
 .volunteer-dashboard .column-3 {
   flex: 1;
 }
+
 .volunteer-dashboard .card {
   padding: 20px;
   margin-bottom: 10px;
   border-radius: 15px;
   box-shadow: 2px 2px 5px #193b45;
 }
+
 .volunteer-dashboard .column-1 .card {
   background: #3d885747;
 }
@@ -107,6 +109,12 @@ code {
   border: none;
   padding: 1em;
   cursor: pointer;
+}
+
+@media screen and (max-width: 960px) {
+  .volunteer-dashboard {
+    display: block;
+  }
 }
 
 .shelter-dashboard {
@@ -204,4 +212,8 @@ code {
 .footer button:enabled:hover:after {
   width: 100%;
   background: #ffdd40;
+}
+
+.no-title h1 {
+  display: none;
 }

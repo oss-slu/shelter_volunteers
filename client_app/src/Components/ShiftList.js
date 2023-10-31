@@ -40,6 +40,11 @@ const ShiftList = (props) => {
             </div>
           );
         })}
+      {props.shifts.length === 0 && (
+        <p className="text-center">
+          You do not have any shifts in this category.
+        </p>
+      )}
     </div>
   );
 };

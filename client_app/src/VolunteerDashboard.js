@@ -5,7 +5,10 @@ function VolunteerDashboard() {
   return (
     <div class="volunteer-dashboard">
       <div class="column column-1">
-        <UpcomingShifts />
+        <h3>Upcoming Shifts</h3>
+        <div class="no-title">
+          <UpcomingShifts />
+        </div>
       </div>
 
       <div class="column column-2">
