@@ -76,7 +76,7 @@ def count_volunteers_use_case(repo, request, shelter):
                 insert_staff2 = Staffing.from_dict(
                                     {"start_time":worker.end_time,
                                      "end_time":staff.end_time,
-                                     "count":staff.count+worker.count}
+                                     "count":staff.count}
                                 )
                 staff.end_time = worker.start_time
                 workers.append(insert_staff1)
@@ -106,12 +106,8 @@ def count_volunteers_use_case(repo, request, shelter):
 
         if not found:
             # S_____S_W____W
-            workforce.append(Staffing.from_dict(
-                                {"start_time":worker.start_time,
-                                 "end_time":worker.end_time,
-                                 "count":worker.count}
-                             ))
-    print(workforce)
+            workforce.append(worker)
+
     return ResponseSuccess(workforce)
 
 
