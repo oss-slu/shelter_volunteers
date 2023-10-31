@@ -84,14 +84,13 @@ def count_volunteers_use_case(repo, request, shelter):
             elif worker.start_time < staff.end_time:
                 # S___W___WS or S___W____S____W
                 found = True
-                staff.end_time = worker.start_time
                 move_to_workers = workforce[i+1:]
                 workforce[i+1:]=[]
                 workers.extend(move_to_workers)
 
                 workers.append(Staffing.from_dict(
                                     {"start_time":worker.start_time,
-                                     "end_time":worker.end_time,
+                                     "end_time":staff.end_time,
                                      "count":staff.count+worker.count})
                               )
 
@@ -101,6 +100,7 @@ def count_volunteers_use_case(repo, request, shelter):
                                      "end_time":worker.end_time,
                                      "count":worker.count}
                                    ))
+                staff.end_time = worker.start_time
             if found:
                 break
 

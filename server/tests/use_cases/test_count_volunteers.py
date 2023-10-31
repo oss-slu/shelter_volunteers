@@ -94,6 +94,7 @@ def test_overlapping_shifts():
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
 
+# X....Y....X....Y
 def test_overlapping2_shifts():
     shifts_data = [
         {
