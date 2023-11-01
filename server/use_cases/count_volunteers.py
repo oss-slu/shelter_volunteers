@@ -2,7 +2,7 @@
 This module contains the use case for counting volunteers.
 """
 from responses import ResponseSuccess, ResponseFailure, ResponseTypes
-from use_cases.filter_by_time import apply_time_filters, get_shifts_between
+from use_cases.filter_by_time import get_shifts_between
 from domains.staffing import Staffing
 
 def count_volunteers_use_case(repo, request, shelter):
@@ -17,13 +17,13 @@ def count_volunteers_use_case(repo, request, shelter):
     # filter the shifts: only keep those that overlap
     # our time interval of interest
     if not "start_after" in request.filters or \
-       not "end_before" in request.filters:
-       return ResponseFailure(ResponseTypes.PARAMETER_ERROR,
-               "start_after and end_before values are required")
+        not "end_before" in request.filters:
+        return ResponseFailure(ResponseTypes.PARAMETER_ERROR,
+                "start_after and end_before values are required")
 
     shifts = get_shifts_between(
-        all_shifts, 
-        request.filters["start_after"], 
+        all_shifts,
+        request.filters["start_after"],
         request.filters["end_before"])
 
     # calculate unique time intervals with worker counts
