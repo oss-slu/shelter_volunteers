@@ -19,8 +19,8 @@ def count_volunteers_use_case(repo, request, shelter):
     # our time interval of interest
     if not "start_after" in request.filters or \
        not "end_before" in request.filters:
-       return ResponseFailure(ResponseTypes.PARAMETER_ERROR, 
-              "start_after and end_before values are required")
+       return ResponseFailure(ResponseTypes.PARAMETER_ERROR,
+               "start_after and end_before values are required")
 
     time_filter = {"end_before":request.filters["end_before"],
                    "end_after":request.filters["start_after"]}
@@ -61,11 +61,11 @@ def count_volunteers_use_case(repo, request, shelter):
         # terminate the loop if our remaining workers start after the
         # requested end time
         if worker.start_time > request.filters["end_before"]:
-            break;
+            break
 
         # adjust worker start and end time to the requested range
         if worker.start_time < request.filters["start_after"]:
-            worker.start_time = request.filters["start_after"];
+            worker.start_time = request.filters["start_after"]
         if worker.end_time > request.filters["end_before"]:
             worker.end_time = request.filters["end_before"]
 
