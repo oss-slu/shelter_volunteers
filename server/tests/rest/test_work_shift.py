@@ -96,8 +96,8 @@ def test_delete_work_shift(mock_use_case):
 @mock.patch('application.app.work_shift.count_volunteers_use_case')
 def test_count_workers(mock_use_case):
     workforce_data = [
-        {"start_time": 110, "end_time": 120, "count":2},
-        {"start_time": 150, "end_time": 200, "count":1}]
+        {'start_time': 110, 'end_time': 120, 'count':2},
+        {'start_time': 150, 'end_time': 200, 'count':1}]
 
     workforce = [Staffing.from_dict(obj) for obj in workforce_data]
     mock_use_case.return_value = ResponseSuccess(workforce)
@@ -116,9 +116,9 @@ def test_count_workers(mock_use_case):
     data = json.loads(response.data)
 
     assert response.status_code == 200
-    len(data) == 2
+    assert len(data) == 2
     for i, staff in enumerate(data):
-        assert staff["start_time"] == workforce_data[i]["start_time"]
-        assert staff["end_time"] == workforce_data[i]["end_time"]
-        assert staff["count"] == workforce_data[i]["count"]
+        assert staff['start_time'] == workforce_data[i]['start_time']
+        assert staff['end_time'] == workforce_data[i]['end_time']
+        assert staff['count'] == workforce_data[i]['count']
     mock_use_case.assert_called()
