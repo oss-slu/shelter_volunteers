@@ -28,3 +28,36 @@ def apply_time_filters(shifts, filters):
             shift.end_time >= filters["end_after"]
         ]
     return filtered_shifts
+
+def get_shifts_between(shifts, start_time, end_time):
+    """
+    Returns shifts from the given list that are strictly between the given start
+    and end times. Adjust the start and end times of a given shift to be within
+    the required range, if needed.
+    """
+    time_filter = {"end_before":end_time,
+                   "end_after":start_time}
+    filtered_shifts = apply_time_filters(shifts, time_filter)
+
+    time_filter = {"start_before":end_time,
+                   "start_after":start_time}
+    filtered_shifts = filtered_shifts+apply_time_filters(shifts, time_filter)
+
+    time_filter = {"start_before":start_time,
+                   "end_after":end_time}
+    filtered_shifts = filtered_shifts+apply_time_filters(shifts, time_filter)
+
+
+    # remove duplicate shifts that may have resulted from applying the
+    # filtering twice and merging the results
+    filtered_shifts = [obj for i, obj in enumerate(filtered_shifts) \
+              if obj not in filtered_shifts[:i]]
+
+    # adjust start and end time, if needed
+    for shift in filtered_shifts:
+        if shift.start_time < start_time:
+            shift.start_time = start_time
+        if shift.end_time > end_time:
+            shift.end_time = end_time
+
+    return filtered_shifts

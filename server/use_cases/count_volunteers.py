@@ -2,7 +2,7 @@
 This module contains the use case for counting volunteers.
 """
 from responses import ResponseSuccess, ResponseFailure, ResponseTypes
-from use_cases.filter_by_time import apply_time_filters
+from use_cases.filter_by_time import apply_time_filters, get_shifts_between
 from domains.staffing import Staffing
 
 def count_volunteers_use_case(repo, request, shelter):
@@ -14,7 +14,6 @@ def count_volunteers_use_case(repo, request, shelter):
 
     # retrieve all the shifts for a given shelter
     all_shifts = repo.list(user=None, shelter=shelter)
-
     # filter the shifts: only keep those that overlap
     # our time interval of interest
     if not "start_after" in request.filters or \
@@ -22,21 +21,10 @@ def count_volunteers_use_case(repo, request, shelter):
        return ResponseFailure(ResponseTypes.PARAMETER_ERROR,
                "start_after and end_before values are required")
 
-    time_filter = {"end_before":request.filters["end_before"],
-                   "end_after":request.filters["start_after"]}
-    shifts = apply_time_filters(all_shifts, time_filter)
-    time_filter = {"start_before":request.filters["end_before"],
-                   "start_after":request.filters["start_after"]}
-    shifts = shifts+apply_time_filters(all_shifts, time_filter)
-    time_filter = {"start_before":request.filters["start_after"],
-                   "end_after":request.filters["end_before"]}
-    shifts = shifts+apply_time_filters(all_shifts, time_filter)
-
-
-    # remove duplicate shifts that may have resulted from applying the
-    # filtering twice and merging the results
-    shifts = [obj for i, obj in enumerate(all_shifts) \
-              if obj not in all_shifts[:i]]
+    shifts = get_shifts_between(
+        all_shifts, 
+        request.filters["start_after"], 
+        request.filters["end_before"])
 
     # calculate unique time intervals with worker counts
     # workers is a list of Staffing objects that may have non-unique
@@ -58,16 +46,6 @@ def count_volunteers_use_case(repo, request, shelter):
     while len(workers) > 0:
         workers.sort(key=lambda worker:(worker.start_time, worker.end_time))
         worker = workers.pop(0)
-        # terminate the loop if our remaining workers start after the
-        # requested end time
-        if worker.start_time > request.filters["end_before"]:
-            break
-
-        # adjust worker start and end time to the requested range
-        if worker.start_time < request.filters["start_after"]:
-            worker.start_time = request.filters["start_after"]
-        if worker.end_time > request.filters["end_before"]:
-            worker.end_time = request.filters["end_before"]
 
         found = False
         for i, staff in enumerate(workforce):
