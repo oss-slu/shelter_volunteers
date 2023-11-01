@@ -43,7 +43,7 @@ def test_nonoverlapping_shifts():
         }
     ]
 
-    request = Object(filters={"start_after":1, "end_before":2})
+    request = Object(filters={"start_after":1, "end_before":3})
     expected = [{"start_time":1, "end_time":2, "count":1},
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
@@ -90,7 +90,7 @@ def test_overlapping_shifts():
         }
     ]
 
-    request = Object(filters={"start_after":1, "end_before":2})
+    request = Object(filters={"start_after":1, "end_before":3})
     expected = [{"start_time":1, "end_time":2, "count":2},
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
@@ -310,3 +310,49 @@ def test_many_overlapping4_shifts():
 
     compare(expected, shifts_data, request)
 
+def test_workers_in_range():
+    shifts_data = [
+       {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 6
+        }
+    ]
+
+    request = Object(filters={"start_after":1, "end_before":4})
+    expected = [{"start_time":1, "end_time":4, "count":1}]
+
+    compare(expected, shifts_data, request)
+
+def test_workers_in_range_overlap():
+
+    shifts_data = [
+       {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 6
+       },
+       {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 2,
+            "end_time": 5
+       },
+       {
+            "code": "2",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 4
+       },
+    ]
+    request = Object(filters={"start_after":2, "end_before":4})
+    expected = [{"start_time":2, "end_time":3, "count":2},
+                {"start_time":3, "end_time":4, "count":3}]
+
+    compare(expected, shifts_data, request)
