@@ -452,7 +452,7 @@ def test_workers_in_range_overlap():
             "end_time": 5
        },
        {
-            "code": "2",
+            "code": "3",
             "worker": "volunteer@slu.edu",
             "shelter": 1,
             "start_time": 3,
@@ -463,4 +463,28 @@ def test_workers_in_range_overlap():
     expected = [{"start_time":2, "end_time":3, "count":2},
                 {"start_time":3, "end_time":4, "count":3}]
 
+    compare(expected, shifts_data, request)
+
+#
+# request          2...............4
+# ----------------------------------------------------
+# timeline 1.......2.......3.......4
+# ---------------------------------------------------
+# shift 1: |.......|
+# -----------------------------------
+# result:         (empty list)
+#
+def test_no_workers_in_range():
+
+    shifts_data = [
+       {
+            "code": "1",
+            "worker": "volunteer@slu.edu",
+            "shelter": 1,
+            "start_time": 1,
+            "end_time": 2
+       }
+    ]
+    request = Object(filters={"start_after":2, "end_before":4})
+    expected = []
     compare(expected, shifts_data, request)
