@@ -41,7 +41,6 @@ class MongoRepo:
         if shelter:
             db_filter["shelter"] = shelter
 
-        print(db_filter)
         projection = {"_id": 0}
         user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
                        (filter=db_filter, projection=projection)]
