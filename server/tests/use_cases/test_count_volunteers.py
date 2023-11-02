@@ -488,3 +488,44 @@ def test_no_workers_in_range():
     request = Object(filters={"start_after":2, "end_before":4})
     expected = []
     compare(expected, shifts_data, request)
+
+#
+# request          2.......3
+# ----------------------------------------------------
+# timeline 1.......2.......3.......4
+# ---------------------------------------------------
+# shift 1:                 |.......|
+# -----------------------------------
+# result:         (empty list)
+#
+def test_no_workers_in_range2():
+
+    shifts_data = [
+       {
+            "code": "1",
+            "worker": "volunteer1@slu.edu",
+            "shelter": 1,
+            "start_time": 3,
+            "end_time": 4
+       }
+    ]
+    request = Object(filters={"start_after":2, "end_before":3})
+    expected = []
+    compare(expected, shifts_data, request)
+
+
+#
+# request          2...............4
+# ----------------------------------------------------
+# timeline 1.......2.......3.......4
+# ---------------------------------------------------
+# no shifts are present in the database
+# -----------------------------------
+# result:         (empty list)
+#
+def test_no_workers():
+
+    shifts_data = []
+    request = Object(filters={"start_after":2, "end_before":4})
+    expected = []
+    compare(expected, shifts_data, request)
