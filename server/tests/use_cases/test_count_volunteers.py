@@ -38,14 +38,14 @@ def test_nonoverlapping_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 3
@@ -71,7 +71,7 @@ def test_identical_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -102,14 +102,14 @@ def test_overlapping_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 3
@@ -134,14 +134,14 @@ def test_overlapping2_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 3
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
@@ -167,14 +167,14 @@ def test_overlapping3_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 3
@@ -200,14 +200,14 @@ def test_overlapping4_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
@@ -233,21 +233,21 @@ def test_many_overlapping_shifts():
     shifts_data = [
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
         },
         {
             "code": "3",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 6
@@ -279,21 +279,21 @@ def test_many_overlapping2_shifts():
     shifts_data = [
         {
             "code": "3",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4
         },
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
@@ -324,21 +324,21 @@ def test_many_overlapping3_shifts():
     shifts_data = [
         {
             "code": "3",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
         },
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 5
@@ -369,21 +369,21 @@ def test_many_overlapping4_shifts():
     shifts_data = [
         {
             "code": "3",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 5
         },
         {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 6
@@ -411,7 +411,7 @@ def test_workers_in_range():
     shifts_data = [
        {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
@@ -439,21 +439,21 @@ def test_workers_in_range_overlap():
     shifts_data = [
        {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
        },
        {
             "code": "2",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
        },
        {
             "code": "3",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4
@@ -479,7 +479,7 @@ def test_no_workers_in_range():
     shifts_data = [
        {
             "code": "1",
-            "worker": "volunteer@slu.edu",
+            "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
