@@ -24,7 +24,16 @@ def compare(expected_staff, shifts_data, request):
         assert value.end_time == staff.end_time
         assert value.count == staff.count
 
-# X....XY....Y
+#
+# request  1...............3
+# ---------------------------
+# timeline 1.......2.......3
+# ---------------------------
+# shift 1: |.......|
+# shift 2:         |.......|
+# ---------------------------
+# result:  | 1     | 1     |
+#
 def test_nonoverlapping_shifts():
     shifts_data = [
         {
@@ -48,7 +57,16 @@ def test_nonoverlapping_shifts():
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
 
-# XY...YX
+#
+# request  1.......2
+# ---------------------------
+# timeline 1.......2
+# ---------------------------
+# shift 1: |.......|
+# shift 2: |.......|
+# ---------------------------
+# result:  | 2     | 
+#
 def test_identical_shifts():
     shifts_data = [
         {
@@ -71,7 +89,15 @@ def test_identical_shifts():
     expected = [{"start_time":1, "end_time":2, "count":2}]
     compare(expected, shifts_data, request)
 
-# XY....X....Y
+# request  1...............3
+# ---------------------------
+# timeline 1.......2.......3
+# ---------------------------
+# shift 1: |.......|
+# shift 2: |...............|
+# ---------------------------
+# result:  | 2     | 1     | 
+#
 def test_overlapping_shifts():
     shifts_data = [
         {
@@ -95,7 +121,15 @@ def test_overlapping_shifts():
                 {"start_time":2, "end_time":3, "count":1}]
     compare(expected, shifts_data, request)
 
-# X....Y....X....Y
+# request  1.......................4
+# -----------------------------------
+# timeline 1.......2.......3.......4
+# -----------------------------------
+# shift 1: |...............|
+# shift 2:         |...............|
+# -----------------------------------
+# result:  | 1     | 2     | 1     | 
+#
 def test_overlapping2_shifts():
     shifts_data = [
         {
@@ -120,7 +154,15 @@ def test_overlapping2_shifts():
                 {"start_time":3, "end_time":4, "count":1}]
     compare(expected, shifts_data, request)
 
-# X...Y....Y....X
+# request  1.......................4
+# -----------------------------------
+# timeline 1.......2.......3.......4
+# -----------------------------------
+# shift 1: |.......................|
+# shift 2:         |.......|
+# -----------------------------------
+# result:  | 1     | 2     | 1     | 
+#
 def test_overlapping3_shifts():
     shifts_data = [
         {
@@ -145,7 +187,15 @@ def test_overlapping3_shifts():
                 {"start_time":3, "end_time":4, "count":1}]
     compare(expected, shifts_data, request)
 
-# X...Y....XY
+# request  1.......................4
+# -----------------------------------
+# timeline 1.......2.......3.......4
+# -----------------------------------
+# shift 1: |.......................|
+# shift 2:         |...............|
+# -----------------------------------
+# result:  | 1     | 2             | 
+#
 def test_overlapping4_shifts():
     shifts_data = [
         {
@@ -169,7 +219,16 @@ def test_overlapping4_shifts():
                 {"start_time":2, "end_time":4, "count":2}]
     compare(expected, shifts_data, request)
 
-# X...Y...Z...X...Y...Z
+# request  1.......................................6
+# -----------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# -----------------------------------
+# shift 1: |.......................|
+# shift 2:         |.......................|
+# shift 3:                 |.......................|
+# -----------------------------------
+# result:  | 1     | 2     | 3     | 2     | 1     | 
+#
 def test_many_overlapping_shifts():
     shifts_data = [
         {
@@ -205,7 +264,17 @@ def test_many_overlapping_shifts():
 
     compare(expected, shifts_data, request)
 
-# X...Y...Z...Z...Y...X
+#
+# request  1.......................................6
+# -----------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# -----------------------------------
+# shift 1: |.......................................|
+# shift 2:         |.......................|
+# shift 3:                 |.......|
+# -----------------------------------
+# result:  | 1     | 2     | 3     | 2     | 1     | 
+#
 def test_many_overlapping2_shifts():
     shifts_data = [
         {
@@ -240,7 +309,17 @@ def test_many_overlapping2_shifts():
 
     compare(expected, shifts_data, request)
 
-# X...Y...Z...Y...Z...X
+#
+# request  1.......................................6
+# -----------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# -----------------------------------
+# shift 1: |.......................................|
+# shift 2:                 |...............|
+# shift 3:         |...............|
+# -----------------------------------
+# result:  | 1     | 2     | 3     | 2     | 1     | 
+#
 def test_many_overlapping3_shifts():
     shifts_data = [
         {
@@ -275,7 +354,17 @@ def test_many_overlapping3_shifts():
 
     compare(expected, shifts_data, request)
 
-# X...Y...Z...X...Z...Y
+#
+# request  1.......................................6
+# -----------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# -----------------------------------
+# shift 1: |.......................|
+# shift 2:         |...............................|
+# shift 3:                 |...............|
+# -----------------------------------
+# result:  | 1     | 2     | 3     | 2     | 1     | 
+#
 def test_many_overlapping4_shifts():
     shifts_data = [
         {
@@ -309,7 +398,15 @@ def test_many_overlapping4_shifts():
                 {"start_time":5, "end_time":6, "count":1}]
 
     compare(expected, shifts_data, request)
-
+#
+# request  1.......................4
+# --------------------------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# --------------------------------------------------
+# shift 1: |.......................................|
+# --------------------------------------------------
+# result:  | 1                     | 
+#
 def test_workers_in_range():
     shifts_data = [
        {
@@ -326,6 +423,17 @@ def test_workers_in_range():
 
     compare(expected, shifts_data, request)
 
+#
+# request          2...............4
+# ----------------------------------------------------
+# timeline 1.......2.......3.......4.......5.......6
+# ---------------------------------------------------
+# shift 1: |.......................................|
+# shift 2:         |.......................|
+# shift 3:                 |.......|
+# -----------------------------------
+# result:          | 2     | 3     |
+#
 def test_workers_in_range_overlap():
 
     shifts_data = [
