@@ -26,13 +26,22 @@ def count_volunteers_use_case(repo, request, shelter):
         request.filters["start_after"],
         request.filters["end_before"])
 
-    # calculate unique time intervals with worker counts
-    # workers is a list of Staffing objects that may have non-unique
+    # Calculate non-overlapping time intervals with worker counts
+    # workers is a list of Staffing objects that may have overlapping
     # time intervals
     workers = make_staffing_from_shifts(shifts)
-    # workforce Staffing objects with only unique time intervals
+    # workforce Staffing objects with non-overlapping time intervals
     workforce = []
 
+    # Algorithm Overview: only non-overlapping time intervals with worker counts
+    # will be inserted into the workforce list. We will process Staffing objects
+    # from the workers list one at a time. If a Staffing object we are processing
+    # does not overlap with the current workforce, we simply insert it into the
+    # workforce. If a Staffing object results in an overlap, we will split that
+    # Staffing object into multiple ones, adjust volunteer counts in the existing
+    # workforce and insert new resulting Staffing objects back into our workers list
+    # to be processed later.
+    #
     # Algorithm:
     # Always keep the workers list sorted: first by start time, then by end time
     # Repeat until workers list is empty:
@@ -41,33 +50,58 @@ def count_volunteers_use_case(repo, request, shelter):
     #   (slicing the time interval)
     #   If new Staffing objects are created in the process, they get added to
     #   the workers list.
-    # In the comments below, S is a staffing object from the workforce list,
-    # and W is a staffing object from the workers list.
+    # In the comments below, s is the number of volunteers from the staff (Staffing
+    # object from the workforce list), and w is the number of volunteers from the worker
+    # (Staffing object from the workers list)
     while len(workers) > 0:
+        # always keep the workers sorted by start time, then end time
         workers.sort(key=lambda worker:(worker.start_time, worker.end_time))
         worker = workers.pop(0)
 
         found = False
         for i, staff in enumerate(workforce):
+            # If staff and worker have the same starting time,
+            # then we can merge worker volunteer counts with staff
+            # volunteer count
+            # Case 1:
+            #   staff:  |______|
+            #   worker: |______|
+            #   result: |  s+w |
+            # Case 2:
+            #   staff:  |______|
+            #   worker: |___________|
+            #   resutl: |s+w   | w  |
             if worker.start_time == staff.start_time:
                 found = True
                 staff.count+=worker.count
-                # SW____WS
-                # SW_____S___W
+                # if worker and staff have different end time, we know
+                # that worker end time must be after staff end time
+                # as shown in case 2 comment. This is because all workers
+                # were sorted by first start time, then end time. Workers 
+                # are added to workforce in that sorted order (staff is an 
+                # object from the workforce list)
+                # In this case, we'll create a new Staffing object, to account
+                # for the volunteer count during non-overlapping time.
                 if not worker.end_time == staff.end_time:
                     workers.append(Staffing.from_dict({
                                         "start_time":staff.end_time, 
                                         "end_time":worker.end_time,
                                         "count":worker.count
                                     }))
+            # since all staff were sorted by start time, then end time,
+            # we know that worker start time cannot be before staff start time
+            # if worker end time is before staff end time and their start times
+            # are not the same, we must have the following
+            # staff:  |_________|
+            # worker:    |___|
+            # result: |s |s+w| s|
             elif worker.end_time < staff.end_time:
                 found = True
-                # S__W__W__S
                 insert_staff1 = Staffing.from_dict(
-                                    {"start_time":worker.start_time,
-                                     "end_time":worker.end_time,
-                                     "count":staff.count+worker.count}
-                                )
+                    {"start_time":worker.start_time,
+                     "end_time":worker.end_time,
+                     "count":staff.count+worker.count})
+
                 insert_staff2 = Staffing.from_dict(
                                     {"start_time":worker.end_time,
                                      "end_time":staff.end_time,
@@ -76,8 +110,17 @@ def count_volunteers_use_case(repo, request, shelter):
                 staff.end_time = worker.start_time
                 workers.append(insert_staff1)
                 workers.append(insert_staff2)
+
+            # if worker starts before staff ends, we have one of the following cases
+            # Case 1:
+            #   staff:  |__________|
+            #   worker:    |_______|
+            #   result: |s | s+w   |
+            # Case 2:
+            #   staff:  |_________|
+            #   worker:     |__________|
+            #   result: |s  |s+w  | w  |
             elif worker.start_time < staff.end_time:
-                # S___W___WS or S___W____S____W
                 found = True
                 move_to_workers = workforce[i+1:]
                 workforce[i+1:]=[]
@@ -99,8 +142,12 @@ def count_volunteers_use_case(repo, request, shelter):
             if found:
                 break
 
+        # if none of the previous cases matched, we can append the worker
+        # to our workforce, because it has no overlap
+        # staff:  |______|
+        # worker:          |___________|
+        # result: | s    | | w         |
         if not found:
-            # S_____S_W____W
             workforce.append(worker)
 
     return ResponseSuccess(workforce)
