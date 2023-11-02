@@ -12,13 +12,13 @@ from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from requests.work_shift_list import build_work_shift_list_request
 from responses import ResponseTypes
-import requests
+from use_cases.get_facility_info import get_facility_info_use_case
 
 blueprint = Blueprint("work_shift", __name__)
 
 shifts = [
     {
-        "code": "8955",
+        "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
         "worker": "volunteer@slu.edu",
         "shelter": "shelter-id-for-st-patric-center",
         "start_time": 1696168800000,
@@ -66,24 +66,25 @@ def work_shifts():
         qrystr_params = {
             "filters": {},
         }
-        facility_id = request.args.get("code")
-        if facility_id:
-            response_from_external_api = requests.get(f"https://api2-qa.gethelp.com/v2/facilities/{facility_id}")
-            if response_from_external_api.status_code == 200:
-                get_facility_info = response_from_external_api.json()
-                qrystr_params['get_facility_info'] = get_facility_info
-            else:
-                print("Failed to retrieve facility info from external API")
-
         for arg, values in request.args.items():
+            print(arg, values)
+
             if arg.startswith("filter_"):
                 qrystr_params["filters"][arg.replace("filter_", "")] = values
-
-        request_object = build_work_shift_list_request(filters=qrystr_params["filters"])
+        print(qrystr_params)
+        # generate a request object
+        request_object = build_work_shift_list_request(
+            filters=qrystr_params["filters"]
+        )
+        # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user)
-
-        if 'get_facility_info' in qrystr_params:
-            response.value['get_facility_info'] = qrystr_params['get_facility_info']
+        work_shifts = response.value['work_shifts']
+        for work_shift in work_shifts:
+            facility_response = get_facility_info_use_case(work_shift['shelter'])
+            if facility_response.type == ResponseTypes.SUCCESS:
+                work_shift['facility_info'] = facility_response.value
+            else:
+                work_shift['facility_info'] = {'error': facility_response.message}
 
         return Response(
             json.dumps(response.value, cls=WorkShiftJsonEncoder),
@@ -125,15 +126,3 @@ def delete_work_shift(shift_id):
 def app_configuration():
     result = manage.read_json_configuration("mongo_config")
     return result
-
-
-
-
-
-
-
-
-
-
-
-
