@@ -36,10 +36,10 @@ def count_volunteers_use_case(repo, request, shelter):
     # Algorithm Overview: only non-overlapping time intervals with worker counts
     # will be inserted into the workforce list. We will process Staffing objects
     # from the workers list one at a time. If a Staffing object we are
-    # processing does not overlap with the current workforce, we simply insert 
+    # processing does not overlap with the current workforce, we simply insert
     # workforce. If a Staffing object results in an overlap, we will split that
-    # it into the Staffing object into multiple ones, adjust volunteer counts in 
-    # the existin gworkforce and insert new resulting Staffing objects back into 
+    # it into the Staffing object into multiple ones, adjust volunteer counts in
+    # the existin gworkforce and insert new resulting Staffing objects back into
     # our workers list to be processed later.
     #
     # Algorithm:
@@ -50,9 +50,9 @@ def count_volunteers_use_case(repo, request, shelter):
     #   (slicing the time interval)
     #   If new Staffing objects are created in the process, they get added to
     #   the workers list.
-    # In the comments below, s is the number of volunteers from the staff (Staffing
-    # object from the workforce list), and w is the number of volunteers from the
-    # worker (Staffing object from the workers list)
+    # In the comments below, s is the number of volunteers from the staff
+    # (Staffing object from the workforce list), and w is the number of
+    # volunteers from the worker (Staffing object from the workers list)
     while len(workers) > 0:
         # always keep the workers sorted by start time, then end time
         workers.sort(key=lambda worker:(worker.start_time, worker.end_time))
