@@ -51,7 +51,7 @@ def get_shifts_between(shifts, start_time, end_time):
     # remove duplicate shifts that may have resulted from applying the
     # filtering twice and merging the results
     filtered_shifts = [obj for i, obj in enumerate(filtered_shifts) \
-              if obj not in filtered_shifts[:i]]
+            if obj not in filtered_shifts[:i]]
 
     # adjust start and end time, if needed
     for shift in filtered_shifts:
@@ -59,5 +59,10 @@ def get_shifts_between(shifts, start_time, end_time):
             shift.start_time = start_time
         if shift.end_time > end_time:
             shift.end_time = end_time
+
+    # After our time adjustments, it's possible to have a shift
+    # that starts and ends at the same time. We don't want to keep those
+    filtered_shifts = [obj for obj in filtered_shifts \
+            if obj.start_time != obj.end_time]
 
     return filtered_shifts
