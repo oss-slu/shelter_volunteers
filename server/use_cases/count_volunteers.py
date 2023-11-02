@@ -35,12 +35,12 @@ def count_volunteers_use_case(repo, request, shelter):
 
     # Algorithm Overview: only non-overlapping time intervals with worker counts
     # will be inserted into the workforce list. We will process Staffing objects
-    # from the workers list one at a time. If a Staffing object we are processing
-    # does not overlap with the current workforce, we simply insert it into the
+    # from the workers list one at a time. If a Staffing object we are
+    # processing does not overlap with the current workforce, we simply insert 
     # workforce. If a Staffing object results in an overlap, we will split that
-    # Staffing object into multiple ones, adjust volunteer counts in the existing
-    # workforce and insert new resulting Staffing objects back into our workers list
-    # to be processed later.
+    # it into the Staffing object into multiple ones, adjust volunteer counts in 
+    # the existin gworkforce and insert new resulting Staffing objects back into 
+    # our workers list to be processed later.
     #
     # Algorithm:
     # Always keep the workers list sorted: first by start time, then by end time
@@ -51,8 +51,8 @@ def count_volunteers_use_case(repo, request, shelter):
     #   If new Staffing objects are created in the process, they get added to
     #   the workers list.
     # In the comments below, s is the number of volunteers from the staff (Staffing
-    # object from the workforce list), and w is the number of volunteers from the worker
-    # (Staffing object from the workers list)
+    # object from the workforce list), and w is the number of volunteers from the
+    # worker (Staffing object from the workers list)
     while len(workers) > 0:
         # always keep the workers sorted by start time, then end time
         workers.sort(key=lambda worker:(worker.start_time, worker.end_time))
@@ -77,8 +77,8 @@ def count_volunteers_use_case(repo, request, shelter):
                 # if worker and staff have different end time, we know
                 # that worker end time must be after staff end time
                 # as shown in case 2 comment. This is because all workers
-                # were sorted by first start time, then end time. Workers 
-                # are added to workforce in that sorted order (staff is an 
+                # were sorted by first start time, then end time. Workers
+                # are added to workforce in that sorted order (staff is an
                 # object from the workforce list)
                 # In this case, we'll create a new Staffing object, to account
                 # for the volunteer count during non-overlapping time.
@@ -111,7 +111,8 @@ def count_volunteers_use_case(repo, request, shelter):
                 workers.append(insert_staff1)
                 workers.append(insert_staff2)
 
-            # if worker starts before staff ends, we have one of the following cases
+            # if worker starts before staff ends, we have one of the following
+            # cases
             # Case 1:
             #   staff:  |__________|
             #   worker:    |_______|
