@@ -87,7 +87,6 @@ const ShelterList = (props) => {
                     fromShelter={true}
                     onCheck={onShiftClick}
                   />
-                  <hr />
                 </div>
               );
             })}

@@ -12,6 +12,16 @@ code {
     monospace;
 }
 
+h1{
+  font-size: 1.5rem;
+}
+h2{
+  font-size: 1rem;
+}
+p{
+  font-size: 0.8rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -22,12 +32,21 @@ code {
 
 .shelter,
 .shift {
-  padding: 0 30px;
+  text-align: center;
+  margin: 10px;
+  border-radius: 1em;
+  border: 1px solid #000000;
+  background-color: #ecececfc;
 }
 
-.shift {
+.shift.upcoming {
   border: 1px solid black;
-  margin-bottom: 20px;
+  background-color: #219d46a9;
+}
+
+.shift.past {
+  border: 1px solid black;
+  background-color: #9d8021a9;
 }
 
 .shift input[type="checkbox"] {
@@ -216,4 +235,26 @@ code {
 
 .no-title h1 {
   display: none;
+}
+
+.signup-page{
+  display: flex;
+}
+
+.signup-page .column {
+  padding: 10px;
+}
+
+.signup-page .column-1 {
+  flex: 3;
+}
+
+.signup-page .column-2 {
+  flex: 2;
+  margin: 2rem;
+  padding-left: 1rem;
+  max-height: 70vh;
+  border-radius: 1rem;
+  background-color: #bde3c8;
+  box-shadow: 2px 2px 5px #888888;
 }

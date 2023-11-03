@@ -88,45 +88,58 @@ const Shelters = (props) => {
 
   return (
     <div>
-      {!props.condensed && <div></div>}
-      <div class="text-center">
-        {!props.condensed && <h1>Shelters</h1>}
-        <button onClick={getLocation}>Get Shelters from Location</button>
-        <br />
-        {!props.condensed && (
-          <div>
-            <label for="radius-select">Radius (miles): </label>
-            <select id="radius-select" onChange={setRadiusfromLocation}>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-        )}
-      </div>
-      {loading && <div class="loader"></div>}
-      <ShelterList
-        shelters={data}
-        loadingFunction={setLoading}
-        manageShiftsFunction={manageShifts}
-      />
       {props.condensed && (
-        <div class="text-center">
-          <Link to="/shelters">
-            <button>View All Shelters</button>
-          </Link>
+        <div className="text-center">
+          <button onClick={getLocation}>Get Shelters from Current Location</button>
+          <ShelterList
+            shelters={data}
+            loadingFunction={setLoading}
+            manageShiftsFunction={manageShifts}
+          />
+          <div class="text-center">
+            <Link to="/shelters">
+              <button>View All Shelters</button>
+            </Link>
+          </div>
         </div>
       )}
       {!props.condensed && (
-        <div class="footer">
-          <button
-            id="submit-shifts"
-            onClick={submitShifts}
-            disabled={isButtonDisabled}
-          >
-            Sign up for shifts
-          </button>
+        <div>
+          <div className="signup-page">
+            <div className="column column-1">
+              <div className="text-center">
+                <button onClick={getLocation}>Get Shelters from Current Location</button>
+                <br />
+                <h1>Volunteering Oppotunities</h1>
+                <label for="radius-select">Radius (miles): </label>
+                <select id="radius-select" onChange={setRadiusfromLocation}>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              {loading && <div class="loader"></div>}
+              <ShelterList
+                shelters={data}
+                loadingFunction={setLoading}
+                manageShiftsFunction={manageShifts}
+              />
+            </div>
+            <div className="column column-2">
+              <h2>Current Selection</h2>
+            </div>
+          </div>
+          <div class="footer">
+            <button
+              id="submit-shifts"
+              onClick={submitShifts}
+              disabled={isButtonDisabled}
+            >
+              Submit Shifts
+            </button>
+          </div>
         </div>
       )}
     </div>
