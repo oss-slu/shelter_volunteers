@@ -13,6 +13,8 @@ code {
 }
 
 h1{
+  margin: 0.5rem;
+  padding: 0;
   font-size: 1.5rem;
 }
 h2{
@@ -25,28 +27,47 @@ p{
 .text-center {
   text-align: center;
 }
+.text-left {
+  text-align: left;
+}
 
 .text-right {
   text-align: right;
 }
 
 .shelter,
-.shift {
-  text-align: center;
+.shift,
+.signupcard {
   margin: 10px;
   border-radius: 1em;
   border: 1px solid #000000;
   background-color: #ecececfc;
+  padding: 0.5rem;
+}
+.signupcard{
+  display: flex;
+}
+.signupcard .column1{
+  flex: 2;
+}
+.signupcard .column2{
+  flex: 1;
+}
+p{
+  margin: 0;
+  padding: 0;
 }
 
 .shift.upcoming {
   border: 1px solid black;
   background-color: #219d46a9;
+  text-align: center;
 }
 
 .shift.past {
   border: 1px solid black;
   background-color: #9d8021a9;
+  text-align: center;
 }
 
 .shift input[type="checkbox"] {
@@ -121,7 +142,7 @@ p{
   font-weight: bold;
 }
 
-.volunteer-dashboard button {
+button {
   background-color: #193b45;
   border-radius: 5px;
   color: #fdfaf6;
@@ -251,9 +272,16 @@ p{
 
 .signup-page .column-2 {
   flex: 2;
-  margin: 2rem;
+  
+}
+.current-selection{
+  position: fixed;
+  top: 5rem; /* Adjust the top position as needed */
+  right: 1rem;
+  margin: 1rem;
   padding-left: 1rem;
-  max-height: 70vh;
+  height: 75vh;
+  width: 35%;
   border-radius: 1rem;
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;

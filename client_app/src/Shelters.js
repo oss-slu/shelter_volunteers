@@ -95,6 +95,7 @@ const Shelters = (props) => {
             shelters={data}
             loadingFunction={setLoading}
             manageShiftsFunction={manageShifts}
+            isSignupPage = {false}
           />
           <div class="text-center">
             <Link to="/shelters">
@@ -125,10 +126,13 @@ const Shelters = (props) => {
                 shelters={data}
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
+                isSignupPage = {true}
               />
             </div>
             <div className="column column-2">
-              <h2>Current Selection</h2>
+              <div className="current-selection">
+                <h2>Current Selection</h2>
+              </div>
             </div>
           </div>
           <div class="footer">
