@@ -10,6 +10,7 @@ def get_facility_info_use_case(facility_id):
                 data = json.loads(response.read().decode())
                 return ResponseSuccess(data)
             else:
-                return ResponseFailure('Facility info could not be retrieved')
+                return ResponseFailure(ResponseTypes.NOT_FOUND, 'Facility info could not be retrieved')
     except error.URLError as e:
         return ResponseFailure(ResponseTypes.SYSTEM_ERROR, str(e))
+

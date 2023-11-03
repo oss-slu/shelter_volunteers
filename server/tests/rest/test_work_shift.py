@@ -11,34 +11,41 @@ shifts_data = [
         'worker': 'volunteer@slu.edu',
         'shelter': 'existing-shelter-id',
         'start_time': 1701441800000,
-        'end_time': 1701452600000
+        'end_time': 1701452600000,
+        'facility_info': {'info': 'Some facility info for existing-shelter-id'}
     },
     {
         'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35b',
         'worker': 'volunteer@slu.edu',
         'shelter': 'existing-shelter-id',
         'start_time': 1701442800000,
-        'end_time': 1701453600000
+        'end_time': 1701453600000,
+        'facility_info': {'info': 'Some facility info for existing-shelter-id'}
     }
 ]
 
 @mock.patch('application.app.work_shift.workshift_list_use_case')
-def test_list_work_shifts(mock_use_case):
-    mock_response = ResponseSuccess(shifts_data)
-    mock_use_case.return_value = mock_response
+@mock.patch('application.app.work_shift.get_facility_info_use_case')
+def test_list_work_shifts(mock_facility_info_use_case, mock_workshift_list_use_case):
+    # Mock the facility info use case to return successful facility information
+    mock_facility_response = ResponseSuccess({'info': 'Some facility info for existing-shelter-id'})
+    mock_facility_info_use_case.return_value = mock_facility_response
+
+    # Mock the work shift list use case to return the shifts data
+    mock_workshift_list_response = ResponseSuccess(shifts_data)
+    mock_workshift_list_use_case.return_value = mock_workshift_list_response
 
     app = create_app('testing')
     client = app.test_client()
-    headers = {
-        'Authorization': 'volunteer@slu.edu'
-    }
+    headers = {'Authorization': 'volunteer@slu.edu'}
     response = client.get('/shifts', headers=headers)
     data = json.loads(response.data)
 
+    # The data should now include facility_info
     assert data == shifts_data
     assert response.status_code == 200
-    mock_use_case.assert_called()
-
+    mock_workshift_list_use_case.assert_called()
+    mock_facility_info_use_case.assert_called_with('existing-shelter-id')
 
 @mock.patch('application.app.work_shift.workshift_add_multiple_use_case')
 def test_add_work_shifts(mock_use_case):
