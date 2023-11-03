@@ -31,37 +31,20 @@ class MongoRepo:
             for q in results
         ]
 
-    def list(self, user, filters=None):
+    def list(self, user=None, shelter=None):
         """
         Return a list of WorkShift objects based on the data.
         """
-        user_filter = {"worker":user}
+        db_filter = {}
+        if user:
+            db_filter["worker"] = user
+        if shelter:
+            db_filter["shelter"] = shelter
+
         projection = {"_id": 0}
         user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
-                       (filter=user_filter, projection=projection)]
-        if filters is None:
-            return user_shifts
+                       (filter=db_filter, projection=projection)]
 
-        if "start_before" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.start_time < filters["start_before"]
-            ]
-        if "start_after" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.start_time >=filters["start_after"]
-            ]
-        if "end_before" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.end_time < filters["end_before"]
-            ]
-        if "end_after" in filters:
-            user_shifts = [
-                shift for shift in user_shifts if \
-                shift.end_time >= filters["end_after"]
-            ]
         return user_shifts
 
     def add(self, work_shift):
@@ -73,7 +56,7 @@ class MongoRepo:
 
     def get_by_id(self, shift_id):
         """
-        The get_by_id function takes in a shift_id and 
+        The get_by_id function takes in a shift_id and
         returns the corresponding WorkShift object.
         """
         id_filter = {"code":shift_id}

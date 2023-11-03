@@ -9,9 +9,11 @@ from repository import mongorepo, manage
 from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
+from use_cases.count_volunteers import count_volunteers_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
-from requests.work_shift_list import build_work_shift_list_request
+from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
+from application.rest.request_from_params import list_shift_request
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -49,6 +51,24 @@ HTTP_STATUS_CODES_MAPPING = {
 }
 
 
+@blueprint.route("/counts/<int:shelter_id>", methods=["GET"])
+@cross_origin()
+def counts(shelter_id):
+    """
+    On GET: The function returns volunteer counts for times that are
+    specified by parameters.
+    """
+    repo = mongorepo.MongoRepo(app_configuration())
+    request_object = list_shift_request(request.args)
+
+    # find workshifts matching the request object
+    response = count_volunteers_use_case(repo, request_object, shelter_id)
+    return Response(
+        json.dumps(response.value, cls=StaffingJsonEncoder),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
+    )
+
 
 @blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
@@ -62,19 +82,8 @@ def work_shifts():
 
     if request.method == "GET":
         # process the GET request parameters
-        qrystr_params = {
-            "filters": {},
-        }
-        for arg, values in request.args.items():
-            print(arg, values)
+        request_object = list_shift_request(request.args)
 
-            if arg.startswith("filter_"):
-                qrystr_params["filters"][arg.replace("filter_", "")] = values
-        print(qrystr_params)
-        # generate a request object
-        request_object = build_work_shift_list_request(
-            filters=qrystr_params["filters"]
-        )
         # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user)
         return Response(

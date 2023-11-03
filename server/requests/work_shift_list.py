@@ -22,10 +22,11 @@ class WorkShiftListInvalidRequest:
 class WorkShiftListValidRequest:
     def __init__(self, filters=None):
         self.filters = filters
-
+        self.shelter = None
     def __bool__(self):
         return True
-
+    def set_shelter(self, shelter):
+        self.shelter = shelter
 
 def build_work_shift_list_request(filters=None):
     accepted_filters = [

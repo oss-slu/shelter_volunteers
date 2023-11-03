@@ -4,7 +4,7 @@ import json
 from unittest import mock
 from application.app import create_app
 from responses import ResponseSuccess
-
+from domains.staffing import Staffing
 shifts_data = [
     {
         'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35a',
@@ -91,4 +91,34 @@ def test_delete_work_shift(mock_use_case):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data['message'] == 'Shift deleted successfully'
+    mock_use_case.assert_called()
+
+@mock.patch('application.app.work_shift.count_volunteers_use_case')
+def test_count_workers(mock_use_case):
+    workforce_data = [
+        {'start_time': 110, 'end_time': 120, 'count':2},
+        {'start_time': 150, 'end_time': 200, 'count':1}]
+
+    workforce = [Staffing.from_dict(obj) for obj in workforce_data]
+    mock_use_case.return_value = ResponseSuccess(workforce)
+    app = create_app('testing')
+
+    client = app.test_client()
+    headers = {
+        'Authorization': 'volunteer@slu.edu',
+        'Content-Type': 'application/json'
+    }
+    response = client.get(
+        '/counts/123?start_after=100&end_before=200', 
+        headers=headers)
+
+    print(response.data)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == 2
+    for i, staff in enumerate(data):
+        assert staff['start_time'] == workforce_data[i]['start_time']
+        assert staff['end_time'] == workforce_data[i]['end_time']
+        assert staff['count'] == workforce_data[i]['count']
     mock_use_case.assert_called()

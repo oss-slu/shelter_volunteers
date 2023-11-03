@@ -1,32 +1,28 @@
 """
-This module handles data converstion from dictionary to class obj or vice versa
+This module handles data conversion from dictionary to class obj or vice versa
 """
-import uuid
 import dataclasses
-
-
 @dataclasses.dataclass
-class WorkShift:
+class Staffing:
     """
-    Data class for workshift releated data
+    Data class for keeping track of the number of workers
+    signed up for a given time interval
     """
-    code: uuid.UUID
-    worker: str
-    shelter: int
-    start_time: int  # number of milliseconds since the Epoch in UTC
+    start_time: int
     end_time: int
+    count: int
 
     @classmethod
     def from_dict(self, d):
         """
         The function is a class method that takes in a dictionary
-        and returns an instance of the class.
+        and returns an instance of the class
         """
         return self(**d)
 
     def to_dict(self):
         """
         The function takes an object and returns a dictionary
-        representation of the object.
+        representation of the object
         """
         return dataclasses.asdict(self)
