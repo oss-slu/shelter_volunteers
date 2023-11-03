@@ -78,20 +78,29 @@ def work_shifts():
         )
         # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user)
-        enriched_shifts = []
-        for work_shift in response.value:
-            facility_response = get_facility_info_use_case(work_shift.code)
-            if isinstance(facility_response, ResponseSuccess):
-                work_shift.facility_info = facility_response.value
-            else:
-                work_shift.facility_info = 'Facility information could not be retrieved'
-            enriched_shifts.append(work_shift)       
-        serialized_work_shifts = json.dumps(enriched_shifts, cls=WorkShiftJsonEncoder)
-        return Response(
-            serialized_work_shifts,
-            mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[response.response_type]
-        )
+        if response.response_type == ResponseTypes.SUCCESS:
+            enriched_shifts = []
+            for work_shift in response.value:
+                # Convert the WorkShift object to JSON
+                work_shift_json = json.loads(json.dumps(work_shift, cls=WorkShiftJsonEncoder))
+                facility_response = get_facility_info_use_case(work_shift_json['shelter'])               
+                if isinstance(facility_response, ResponseSuccess):
+                    work_shift_json['facility_info'] = facility_response.value
+                else:
+                    work_shift_json['facility_info'] = 'Facility information could not be retrieved'             
+                enriched_shifts.append(work_shift_json)
+            return Response(
+                json.dumps(enriched_shifts),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+            )
+        else:
+            # Handle error response
+            return Response(
+                json.dumps(response.value),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+            )
     elif request.method == "POST":
         data = request.get_json()
         for shift in data:
