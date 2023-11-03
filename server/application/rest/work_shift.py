@@ -11,7 +11,7 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from requests.work_shift_list import build_work_shift_list_request
-from responses import ResponseTypes
+from responses import ResponseTypes, ResponseSuccess, ResponseFailure
 from use_cases.get_facility_info import get_facility_info_use_case
 
 blueprint = Blueprint("work_shift", __name__)
@@ -78,20 +78,20 @@ def work_shifts():
         )
         # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user)
-        work_shifts = response.value['work_shifts']
-        for work_shift in work_shifts:
-            facility_response = get_facility_info_use_case(work_shift['shelter'])
-            if facility_response.type == ResponseTypes.SUCCESS:
-                work_shift['facility_info'] = facility_response.value
+        enriched_shifts = []
+        for work_shift in response.value:
+            facility_response = get_facility_info_use_case(work_shift.code)
+            if isinstance(facility_response, ResponseSuccess):
+                work_shift.facility_info = facility_response.value
             else:
-                work_shift['facility_info'] = {'error': facility_response.message}
-
+                work_shift.facility_info = 'Facility information could not be retrieved'
+            enriched_shifts.append(work_shift)       
+        serialized_work_shifts = json.dumps(enriched_shifts, cls=WorkShiftJsonEncoder)
         return Response(
-            json.dumps(response.value, cls=WorkShiftJsonEncoder),
+            serialized_work_shifts,
             mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[response.response_type],
+            status=HTTP_STATUS_CODES_MAPPING[response.response_type]
         )
-
     elif request.method == "POST":
         data = request.get_json()
         for shift in data:
