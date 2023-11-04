@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./Components/ShelterList";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
+import ShiftList from "./Components/ShiftList";
 
 const Shelters = (props) => {
   let defaultRadius = "10";
@@ -44,7 +45,14 @@ const Shelters = (props) => {
       })
       .then((shelters) => setData(shelters))
       .catch((error) => console.log(error));
-  }, [latitude, longitude, radius, shelters_endpoint, volunteers_endpoint]);
+  }, [
+    latitude,
+    longitude,
+    radius,
+    shelters_endpoint,
+    volunteers_endpoint,
+    props.condensed,
+  ]);
 
   function getLocation() {
     setLoading(true);
@@ -62,8 +70,8 @@ const Shelters = (props) => {
     setRadius(event.target.value);
   }
 
-  function manageShifts(shifts) {
-    setSelectedShifts(shifts);
+  function manageShifts(shift) {
+    setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
   }
 
@@ -90,12 +98,14 @@ const Shelters = (props) => {
     <div>
       {props.condensed && (
         <div className="text-center">
-          <button onClick={getLocation}>Get Shelters from Current Location</button>
+          <button onClick={getLocation}>
+            Get Shelters from Current Location
+          </button>
           <ShelterList
             shelters={data}
             loadingFunction={setLoading}
             manageShiftsFunction={manageShifts}
-            isSignupPage = {false}
+            isSignupPage={false}
           />
           <div class="text-center">
             <Link to="/shelters">
@@ -109,10 +119,12 @@ const Shelters = (props) => {
           <div className="signup-page">
             <div className="column column-1">
               <div className="text-center">
-                <button onClick={getLocation}>Get Shelters from Current Location</button>
+                <button onClick={getLocation}>
+                  Get Shelters from Current Location
+                </button>
                 <br />
                 <h1>Volunteering Oppotunities</h1>
-                <label for="radius-select">Radius (miles): </label>
+                <label htmlFor="radius-select">Radius (miles): </label>
                 <select id="radius-select" onChange={setRadiusfromLocation}>
                   <option value="5">5</option>
                   <option value="10">10</option>
@@ -126,12 +138,17 @@ const Shelters = (props) => {
                 shelters={data}
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
-                isSignupPage = {true}
+                isSignupPage={true}
               />
             </div>
             <div className="column column-2">
               <div className="current-selection">
                 <h2>Current Selection</h2>
+                {selectedShifts && (
+                  <div>
+                    <ShiftList shifts={selectedShifts} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

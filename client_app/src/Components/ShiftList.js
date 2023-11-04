@@ -18,8 +18,13 @@ const ShiftList = (props) => {
           const formattedStartTime = format(startTime, "MMMM dd, yyyy HH:mm");
           const formattedEndTime = format(endTime, "MMMM dd, yyyy HH:mm");
           return (
-            <div className={endTime.getTime()<Date.now() ? 'shift past' : 'shift upcoming'} key={shift.code}>
-              {props.fromShelter == true && (
+            <div
+              className={
+                endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"
+              }
+              key={shift.code}
+            >
+              {props.fromShelter === true && (
                 <div class="text-right">
                   <input
                     type="checkbox"
