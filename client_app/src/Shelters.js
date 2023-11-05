@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 
 import ShelterList from "./Components/ShelterList";
+import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
+import ShiftList from "./Components/ShiftList";
 
 const Shelters = (props) => {
   let defaultRadius = "10";
@@ -14,6 +16,7 @@ const Shelters = (props) => {
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -44,12 +47,33 @@ const Shelters = (props) => {
       })
       .then((shelters) => setData(shelters))
       .catch((error) => console.log(error));
-  }, [latitude, longitude, radius, shelters_endpoint, volunteers_endpoint]);
+  }, [
+    latitude,
+    longitude,
+    radius,
+    shelters_endpoint,
+    volunteers_endpoint,
+    props.condensed,
+  ]);
 
   function getLocation() {
     setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(setLocation);
+    }
+  }
+
+  function onShiftClose(event) {
+    let id = event.target.id;
+    let shift =
+      id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+    const codes = selectedShifts.map((s) => s.code);
+    if (codes.includes(shift)) {
+      let index = selectedShifts.indexOf(shift);
+      const newSelected = [...selectedShifts];
+      newSelected.splice(index, 1);
+      setSelectedShifts(newSelected);
+      setButtonDisabled(selectedShifts.length === 0);
     }
   }
 
@@ -62,8 +86,8 @@ const Shelters = (props) => {
     setRadius(event.target.value);
   }
 
-  function manageShifts(shifts) {
-    setSelectedShifts(shifts);
+  function manageShifts(shift) {
+    setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
   }
 
@@ -78,7 +102,7 @@ const Shelters = (props) => {
         Authorization: "volunteer@slu.edu",
       },
     })
-      .then(() => alert("You have submitted the shifts successfully"))
+      .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
   }
 
@@ -87,49 +111,87 @@ const Shelters = (props) => {
   }, [selectedShifts]);
 
   return (
-    <div>
-      {!props.condensed && (
-        <div class="navbar text-right">
-          <button
-            id="submit-shifts"
-            onClick={submitShifts}
-            disabled={isButtonDisabled}
-          >
-            Sign up for shifts
-          </button>
+    <>
+      {!showConfirmation && (
+        <div>
+          {props.condensed && (
+            <div className="text-center">
+              <button onClick={getLocation}>
+                Get Shelters from Current Location
+              </button>
+              <ShelterList
+                shelters={data}
+                loadingFunction={setLoading}
+                manageShiftsFunction={manageShifts}
+                isSignupPage={false}
+              />
+              <div class="text-center">
+                <Link to="/shelters">
+                  <button>View All Shelters</button>
+                </Link>
+              </div>
+            </div>
+          )}
+          {!props.condensed && (
+            <div>
+              <div className="signup-page">
+                <div className="column column-1">
+                  <div className="text-center">
+                    <h1>Volunteering Oppotunities</h1>
+                    <button onClick={getLocation}>
+                      Show oppotunities near me
+                    </button>
+                    <br />
+                    <label htmlFor="radius-select">Radius (miles): </label>
+                    <select id="radius-select" onChange={setRadiusfromLocation}>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  {loading && <div class="loader"></div>}
+                  <ShelterList
+                    shelters={data}
+                    loadingFunction={setLoading}
+                    manageShiftsFunction={manageShifts}
+                    isSignupPage={true}
+                  />
+                </div>
+                <div className="column column-2">
+                  <div className="current-selection">
+                    <h2>Current Selection</h2>
+                    {selectedShifts && (
+                      <div>
+                        <ShiftList
+                          shifts={selectedShifts}
+                          currentSelectionSection={true}
+                          onClose={onShiftClose}
+                        />
+                      </div>
+                    )}
+                    <div id="submit-shifts">
+                      <button
+                        onClick={submitShifts}
+                        disabled={isButtonDisabled}
+                      >
+                        Submit Shifts
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
-      {!props.condensed && <div class="double-navbar-buffer"></div>}
-      <div class="text-center">
-        {!props.condensed && <h1>Shelters</h1>}
-        <button onClick={getLocation}>Get Shelters from Location</button>
-        <br />
-        {!props.condensed && (
-          <div>
-            <label for="radius-select">Radius (miles): </label>
-            <select id="radius-select" onChange={setRadiusfromLocation}>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-        )}
-      </div>
-      {loading && <div class="loader"></div>}
-      <ShelterList
-        shelters={data}
-        loadingFunction={setLoading}
-        manageShiftsFunction={manageShifts}
-      />
-      {props.condensed && (
-        <div class="text-center">
-          <Link to="/shelters">
-            <button>View All Shelters</button>
-          </Link>
+      {showConfirmation && (
+        <div>
+          <ConfirmationPage selectedShifts={selectedShifts} />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

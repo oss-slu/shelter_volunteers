@@ -5,7 +5,10 @@ function VolunteerDashboard() {
   return (
     <div class="volunteer-dashboard">
       <div class="column column-1">
-        <UpcomingShifts />
+        <h3>Upcoming Shifts</h3>
+        <div class="no-title">
+          <UpcomingShifts />
+        </div>
       </div>
 
       <div class="column column-2">
@@ -29,6 +32,9 @@ function VolunteerDashboard() {
           <h4>Shelters served</h4>
           <p>4</p>
         </div>
+      </div>
+      <div className="cta-button">
+        <button>Sign up for shifts </button>
       </div>
     </div>
   );

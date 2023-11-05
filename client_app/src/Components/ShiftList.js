@@ -6,6 +6,11 @@ const ShiftList = (props) => {
       props.onCheck(event);
     }
   }
+  function onCloseBtnClick(event) {
+    if (props.onClose) {
+      props.onClose(event);
+    }
+  }
   return (
     <div>
       {/* Display the shift*/}
@@ -15,11 +20,34 @@ const ShiftList = (props) => {
           const endTime = new Date(shift.end_time);
 
           // format the start and end time to human-readable strings
-          const formattedStartTime = format(startTime, "MMMM dd, yyyy HH:mm");
-          const formattedEndTime = format(endTime, "MMMM dd, yyyy HH:mm");
+          const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
+          const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
           return (
-            <div class="shift text-center" key={shift.code}>
-              {props.fromShelter == true && (
+            <>
+            {props.currentSelectionSection === true && (<div className= "currentselection"
+              key={shift.code}>
+                <table>
+                  <tr>
+                    <td><p>{shift.shelter}</p></td>
+                    <td><p>
+                      {formattedStartTime} to {formattedEndTime}</p></td>
+                    <td>
+                      <button 
+                        className="closebtn"
+                        id={"shift-closebtn-" + shift.code}
+                        onClick={onCloseBtnClick}
+                        >X</button></td>
+                  </tr>
+                </table>
+
+            </div>)}
+            {props.currentSelectionSection !== true && (<div
+              className={
+                endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"
+              }
+              key={shift.code}
+            >
+              {props.fromShelter === true && (
                 <div class="text-right">
                   <input
                     type="checkbox"
@@ -37,9 +65,20 @@ const ShiftList = (props) => {
                 {" "}
                 {formattedStartTime} - {formattedEndTime}{" "}
               </p>
-            </div>
+            </div>)}
+            </>
           );
         })}
+      {props.shifts.length === 0 && !props.currentSelectionSection &&(
+        <p className="text-center">
+          You do not have any shifts in this category.
+        </p>
+      )}
+      {props.shifts.length === 0 && props.currentSelectionSection &&(
+        <p className="text-center">
+          Please add your desired shifts from the list
+        </p>
+      )}
     </div>
   );
 };

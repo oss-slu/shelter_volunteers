@@ -11,9 +11,66 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
+.conf-page {
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.conf-page table {
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+td,
+th {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+th {
+  background-color: #f2f2f2;
+}
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+h1 {
+  margin: 0.5rem;
+  padding: 0;
+  font-size: 1.5rem;
+}
+h2 {
+  font-size: 1rem;
+}
+p {
+  font-size: 0.8rem;
+}
+.closebtn {
+  background-color: #193b45;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  color: #fdfaf6;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  font-size: 0.5em;
+}
+
+#submit-shifts,
 .text-center {
   text-align: center;
+}
+.text-left {
+  text-align: left;
 }
 
 .text-right {
@@ -21,13 +78,38 @@ code {
 }
 
 .shelter,
-.shift {
-  padding: 0 30px;
+.shift,
+.signupcard {
+  margin: 10px;
+  border-radius: 1em;
+  border: 1px solid #000000;
+  background-color: #ecececfc;
+  padding: 0.5rem;
+}
+.signupcard {
+  display: flex;
+}
+.signupcard .column1 {
+  flex: 2;
+}
+.signupcard .column2 {
+  flex: 1;
+}
+p {
+  margin: 0;
+  padding: 0;
 }
 
-.shift {
+.shift.upcoming {
   border: 1px solid black;
-  margin-bottom: 20px;
+  background-color: #219d46a9;
+  text-align: center;
+}
+
+.shift.past {
+  border: 1px solid black;
+  background-color: #9d8021a9;
+  text-align: center;
 }
 
 .shift input[type="checkbox"] {
@@ -54,50 +136,9 @@ code {
   }
 }
 
-.main-nav,
-.navbar {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  padding: 10px;
-}
-
-.main-nav {
-  top: 0;
-  background-color: #193b45;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.main-nav .logo {
-  height: 60px;
-}
-
-.main-nav a {
-  text-decoration: none;
-  color: white;
-}
-
-.navbar {
-  top: 85px;
-  background-color: #dddddd;
-}
-
-.navbar-buffer {
-  margin-top: 90px;
-}
-
-.double-navbar-buffer {
-  margin-top: 140px;
-}
-
-#submit-shifts {
-  margin-right: 20px;
-}
-
 .volunteer-dashboard {
   display: flex;
+  text-align: center;
 }
 
 .volunteer-dashboard .column {
@@ -115,12 +156,14 @@ code {
 .volunteer-dashboard .column-3 {
   flex: 1;
 }
+
 .volunteer-dashboard .card {
   padding: 20px;
   margin-bottom: 10px;
   border-radius: 15px;
   box-shadow: 2px 2px 5px #193b45;
 }
+
 .volunteer-dashboard .column-1 .card {
   background: #3d885747;
 }
@@ -138,13 +181,21 @@ code {
   font-weight: bold;
 }
 
-.volunteer-dashboard button {
+button {
   background-color: #193b45;
   border-radius: 5px;
   color: #fdfaf6;
   border: none;
   padding: 1em;
   cursor: pointer;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@media screen and (max-width: 960px) {
+  .volunteer-dashboard {
+    display: block;
+  }
 }
 
 .shelter-dashboard {
@@ -208,4 +259,98 @@ code {
   padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px; /* Added space between button and content */
+}
+
+#submit-shifts {
+  margin-top: auto;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+#submit-shifts button {
+  color: #fff;
+  border: transparent;
+  background-color: #142f37;
+  cursor: not-allowed;
+}
+
+#submit-shifts button:disabled {
+  color: #aaa;
+}
+
+#submit-shifts button:enabled:hover {
+  cursor: pointer;
+}
+
+#submit-shifts button:enabled:after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0;
+  transition: width 0.7s ease, background-color 0.5s ease;
+}
+
+#submit-shifts button:enabled:hover:after {
+  width: 100%;
+  background: #ffdd40;
+}
+
+.no-title h1 {
+  display: none;
+}
+
+.signup-page {
+  display: flex;
+}
+
+.signup-page .column {
+  padding: 10px;
+}
+
+.signup-page .column-1 {
+  flex: 3;
+}
+
+.signup-page .column-2 {
+  flex: 2;
+}
+.current-selection {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 5rem; /* Adjust the top position as needed */
+  right: 1rem;
+  margin: 1rem;
+  padding-left: 1rem;
+  height: 85vh;
+  width: 35%;
+  border-radius: 1rem;
+  background-color: #bde3c8;
+  box-shadow: 2px 2px 5px #888888;
+  overflow-y: auto;
+}
+
+.cta-button {
+  display: none;
+  @media (max-width: 767px) {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block;
+    z-index: 999;
+  }
+}
+.cta-button button {
+  padding: 10px 20px;
+  background-color: #132b32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 10px 10px 50px rgba(0, 0, 0, 1);
+}
+
+.cta-button button:hover {
+  background-color: #2980b9;
 }
