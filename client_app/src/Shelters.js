@@ -61,6 +61,18 @@ const Shelters = (props) => {
     }
   }
 
+  function onShiftClose(event) {
+    let id = event.target.id;
+    let shift = id.split("-")[2] + "-" + id.split("-")[3]+ "-" + id.split("-")[4];
+    const codes = selectedShifts.map(s => s.code);
+    if (codes.includes(shift)) {
+      let index = selectedShifts.indexOf(shift);
+      const newSelected = [...selectedShifts]; 
+      newSelected.splice(index, 1);
+      setSelectedShifts(newSelected);    
+    }
+  }
+
   function setLocation(location) {
     setLatitude(location.coords.latitude);
     setLongitude(location.coords.longitude);
@@ -146,7 +158,10 @@ const Shelters = (props) => {
                 <h2>Current Selection</h2>
                 {selectedShifts && (
                   <div>
-                    <ShiftList shifts={selectedShifts} />
+                    <ShiftList 
+                    shifts={selectedShifts}
+                    currentSelectionSection={true}
+                    onClose={onShiftClose} />
                   </div>
                 )}
               </div>

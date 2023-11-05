@@ -17,7 +17,7 @@ function Shifts(request_endpoint) {
       .then((response) => response.json())
       .then((response) => setData(response))
       .catch((error) => console.log(error));
-  });
+  },[]);
 
   return (
     <div>

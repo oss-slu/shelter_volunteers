@@ -6,6 +6,11 @@ const ShiftList = (props) => {
       props.onCheck(event);
     }
   }
+  function onCloseBtnClick(event) {
+    if (props.onClose) {
+      props.onClose(event);
+    }
+  }
   return (
     <div>
       {/* Display the shift*/}
@@ -18,7 +23,24 @@ const ShiftList = (props) => {
           const formattedStartTime = format(startTime, "MMMM dd, yyyy HH:mm");
           const formattedEndTime = format(endTime, "MMMM dd, yyyy HH:mm");
           return (
-            <div
+            <>
+            {props.currentSelectionSection === true && (<div className= "currentselection"
+              key={shift.code}>
+                <table>
+                  <tr>
+                    <td><p>{shift.shelter}</p></td>
+                    <td><p>{formattedStartTime} to {formattedEndTime}</p></td>
+                    <td>
+                      <button 
+                        className="closebtn"
+                        id={"shift-closebtn-" + shift.code}
+                        onClick={onCloseBtnClick}
+                        >X</button></td>
+                  </tr>
+                </table>
+
+            </div>)}
+            {props.currentSelectionSection !== true && (<div
               className={
                 endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"
               }
@@ -42,7 +64,8 @@ const ShiftList = (props) => {
                 {" "}
                 {formattedStartTime} - {formattedEndTime}{" "}
               </p>
-            </div>
+            </div>)}
+            </>
           );
         })}
       {props.shifts.length === 0 && (
