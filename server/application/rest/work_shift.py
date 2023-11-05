@@ -14,7 +14,6 @@ from use_cases.get_facility_info import get_facility_info_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes, ResponseSuccess
-from requests.work_shift_list import build_work_shift_list_request
 from application.rest.request_from_params import list_shift_request
 
 blueprint = Blueprint("work_shift", __name__)
