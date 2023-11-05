@@ -16,23 +16,24 @@ table {
   width: 100%;
 }
 
-.conf-page{
+.conf-page {
   max-width: 100%;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   text-align: center;
   flex-direction: column;
 }
 
-.conf-page table{
+.conf-page table {
   max-width: 70%;
   margin: 0 auto;
 }
 
-td,th {
+td,
+th {
   padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
 }
 th {
   background-color: #f2f2f2;
@@ -41,18 +42,18 @@ tr:hover {
   background-color: #f5f5f5;
 }
 
-h1{
+h1 {
   margin: 0.5rem;
   padding: 0;
   font-size: 1.5rem;
 }
-h2{
+h2 {
   font-size: 1rem;
 }
-p{
+p {
   font-size: 0.8rem;
 }
-.closebtn{
+.closebtn {
   background-color: #193b45;
   border-radius: 50%;
   width: 2em;
@@ -64,6 +65,7 @@ p{
   font-size: 0.5em;
 }
 
+#submit-shifts,
 .text-center {
   text-align: center;
 }
@@ -84,16 +86,16 @@ p{
   background-color: #ecececfc;
   padding: 0.5rem;
 }
-.signupcard{
+.signupcard {
   display: flex;
 }
-.signupcard .column1{
+.signupcard .column1 {
   flex: 2;
 }
-.signupcard .column2{
+.signupcard .column2 {
   flex: 1;
 }
-p{
+p {
   margin: 0;
   padding: 0;
 }
@@ -132,10 +134,6 @@ p{
   100% {
     transform: rotate(360deg);
   }
-}
-
-#submit-shifts {
-  margin-right: 20px;
 }
 
 .volunteer-dashboard {
@@ -263,28 +261,28 @@ button {
   margin-top: 10px; /* Added space between button and content */
 }
 
-.footer {
-  background-color: #1f5156;
-  height: 40px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 1.2rem;
-  position: sticky;
-  bottom: 0;
+#submit-shifts {
+  margin-top: auto;
+  margin-bottom: 20px;
+  font-size: 20px;
 }
 
-.footer button {
+#submit-shifts button {
   color: #fff;
   border: transparent;
-  background-color: transparent;
+  background-color: #142f37;
+  cursor: not-allowed;
 }
 
-.footer button:disabled {
+#submit-shifts button:disabled {
   color: #aaa;
 }
 
-.footer button:enabled:after {
+#submit-shifts button:enabled:hover {
+  cursor: pointer;
+}
+
+#submit-shifts button:enabled:after {
   content: "";
   display: block;
   height: 3px;
@@ -292,7 +290,7 @@ button {
   transition: width 0.7s ease, background-color 0.5s ease;
 }
 
-.footer button:enabled:hover:after {
+#submit-shifts button:enabled:hover:after {
   width: 100%;
   background: #ffdd40;
 }
@@ -301,7 +299,7 @@ button {
   display: none;
 }
 
-.signup-page{
+.signup-page {
   display: flex;
 }
 
@@ -315,29 +313,31 @@ button {
 
 .signup-page .column-2 {
   flex: 2;
-  
 }
-.current-selection{
+.current-selection {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   top: 5rem; /* Adjust the top position as needed */
   right: 1rem;
   margin: 1rem;
   padding-left: 1rem;
-  height: 75vh;
+  height: 85vh;
   width: 35%;
   border-radius: 1rem;
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;
+  overflow-y: auto;
 }
 
 .cta-button {
-  display: none;   
+  display: none;
   @media (max-width: 767px) {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    display: block; 
-    z-index: 999; 
+    display: block;
+    z-index: 999;
   }
 }
 .cta-button button {

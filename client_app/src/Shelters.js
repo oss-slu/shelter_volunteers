@@ -65,13 +65,15 @@ const Shelters = (props) => {
 
   function onShiftClose(event) {
     let id = event.target.id;
-    let shift = id.split("-")[2] + "-" + id.split("-")[3]+ "-" + id.split("-")[4];
-    const codes = selectedShifts.map(s => s.code);
+    let shift =
+      id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+    const codes = selectedShifts.map((s) => s.code);
     if (codes.includes(shift)) {
       let index = selectedShifts.indexOf(shift);
-      const newSelected = [...selectedShifts]; 
+      const newSelected = [...selectedShifts];
       newSelected.splice(index, 1);
-      setSelectedShifts(newSelected);    
+      setSelectedShifts(newSelected);
+      setButtonDisabled(selectedShifts.length === 0);
     }
   }
 
@@ -110,81 +112,85 @@ const Shelters = (props) => {
 
   return (
     <>
-    {!showConfirmation && (<div>
-      {props.condensed && (
-        <div className="text-center">
-          <button onClick={getLocation}>
-            Get Shelters from Current Location
-          </button>
-          <ShelterList
-            shelters={data}
-            loadingFunction={setLoading}
-            manageShiftsFunction={manageShifts}
-            isSignupPage={false}
-          />
-          <div class="text-center">
-            <Link to="/shelters">
-              <button>View All Shelters</button>
-            </Link>
-          </div>
-        </div>
-      )}
-      {!props.condensed && (
+      {!showConfirmation && (
         <div>
-          <div className="signup-page">
-            <div className="column column-1">
-              <div className="text-center">
-              <h1>Volunteering Oppotunities</h1>
-                <button onClick={getLocation}>
-                  Show oppotunities near me
-                </button>
-                <br />
-                <label htmlFor="radius-select">Radius (miles): </label>
-                <select id="radius-select" onChange={setRadiusfromLocation}>
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-              {loading && <div class="loader"></div>}
+          {props.condensed && (
+            <div className="text-center">
+              <button onClick={getLocation}>
+                Get Shelters from Current Location
+              </button>
               <ShelterList
                 shelters={data}
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
-                isSignupPage={true}
+                isSignupPage={false}
               />
-            </div>
-            <div className="column column-2">
-              <div className="current-selection">
-                <h2>Current Selection</h2>
-                {selectedShifts && (
-                  <div>
-                    <ShiftList 
-                    shifts={selectedShifts}
-                    currentSelectionSection={true}
-                    onClose={onShiftClose} />
-                  </div>
-                )}
+              <div class="text-center">
+                <Link to="/shelters">
+                  <button>View All Shelters</button>
+                </Link>
               </div>
             </div>
-          </div>
-          <div class="footer">
-            <button
-              id="submit-shifts"
-              onClick={submitShifts}
-              disabled={isButtonDisabled}
-            >
-              Submit Shifts
-            </button>
-          </div>
+          )}
+          {!props.condensed && (
+            <div>
+              <div className="signup-page">
+                <div className="column column-1">
+                  <div className="text-center">
+                    <h1>Volunteering Oppotunities</h1>
+                    <button onClick={getLocation}>
+                      Show oppotunities near me
+                    </button>
+                    <br />
+                    <label htmlFor="radius-select">Radius (miles): </label>
+                    <select id="radius-select" onChange={setRadiusfromLocation}>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  {loading && <div class="loader"></div>}
+                  <ShelterList
+                    shelters={data}
+                    loadingFunction={setLoading}
+                    manageShiftsFunction={manageShifts}
+                    isSignupPage={true}
+                  />
+                </div>
+                <div className="column column-2">
+                  <div className="current-selection">
+                    <h2>Current Selection</h2>
+                    {selectedShifts && (
+                      <div>
+                        <ShiftList
+                          shifts={selectedShifts}
+                          currentSelectionSection={true}
+                          onClose={onShiftClose}
+                        />
+                      </div>
+                    )}
+                    <div id="submit-shifts">
+                      <button
+                        onClick={submitShifts}
+                        disabled={isButtonDisabled}
+                      >
+                        Submit Shifts
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
-    </div>)}
-    {showConfirmation && <div>
-      <ConfirmationPage selectedShifts={selectedShifts} />
-      </div>}
+      {showConfirmation && (
+        <div>
+          <ConfirmationPage selectedShifts={selectedShifts} />
+        </div>
+      )}
     </>
   );
 };

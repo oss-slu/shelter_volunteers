@@ -1,22 +1,6 @@
-import { useEffect, useState } from "react";
 import IndividualShelter from "./IndividualShelter";
 
 const ShelterList = (props) => {
-  let allShifts = [];
-  const [checked, setChecked] = useState([]);
-
-  // useEffect(() => {
-  //   if (props.manageShiftsFunction) {
-  //     let selectedShifts = [];
-  //     for (let i = 0; i < allShifts.length; i++) {
-  //       if (checked.includes(allShifts[i].code)) {
-  //         selectedShifts.push(allShifts[i]);
-  //       }
-  //     }
-  //     props.manageShiftsFunction(selectedShifts);
-  //   }
-  // }, [checked]);
-
   function addShift(shift) {
     if (props.manageShiftsFunction) {
       props.manageShiftsFunction(shift);
