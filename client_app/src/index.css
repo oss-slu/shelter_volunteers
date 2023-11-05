@@ -16,12 +16,27 @@ table {
   width: 100%;
 }
 
-td {
+.conf-page{
+  max-width: 100%;
+  display: flex;
+  justify-content:center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.conf-page table{
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+td,th {
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid #ddd; 
 }
-
+th {
+  background-color: #f2f2f2;
+}
 tr:hover {
   background-color: #f5f5f5;
 }
@@ -125,6 +140,7 @@ p{
 
 .volunteer-dashboard {
   display: flex;
+  text-align: center;
 }
 
 .volunteer-dashboard .column {
@@ -174,6 +190,8 @@ button {
   border: none;
   padding: 1em;
   cursor: pointer;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 @media screen and (max-width: 960px) {
@@ -310,4 +328,29 @@ button {
   border-radius: 1rem;
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;
+}
+
+.cta-button {
+  display: none;   
+  @media (max-width: 767px) {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block; 
+    z-index: 999; 
+  }
+}
+.cta-button button {
+  padding: 10px 20px;
+  background-color: #132b32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 10px 10px 50px rgba(0, 0, 0, 1);
+}
+
+.cta-button button:hover {
+  background-color: #2980b9;
 }

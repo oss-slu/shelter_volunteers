@@ -33,6 +33,9 @@ function VolunteerDashboard() {
           <p>4</p>
         </div>
       </div>
+      <div className="cta-button">
+        <button>Sign up for shifts </button>
+      </div>
     </div>
   );
 }

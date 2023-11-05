@@ -23,7 +23,7 @@ function NavBar() {
                 className="nav-links"
                 onClick={handleClick}
               >
-                Volunteer Dashboard
+                Your Dashboard
               </NavLink>
             </li>
             <li className="nav-item">
@@ -45,7 +45,7 @@ function NavBar() {
                 className="nav-links"
                 onClick={handleClick}
               >
-                Upcoming Shifts
+                Your Upcoming Shifts
               </NavLink>
             </li>
             <li className="nav-item">
@@ -56,7 +56,7 @@ function NavBar() {
                 className="nav-links"
                 onClick={handleClick}
               >
-                Previous Shifts
+                Your Previous Shifts
               </NavLink>
             </li>
           </ul>

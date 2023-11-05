@@ -20,8 +20,8 @@ const ShiftList = (props) => {
           const endTime = new Date(shift.end_time);
 
           // format the start and end time to human-readable strings
-          const formattedStartTime = format(startTime, "MMMM dd, yyyy HH:mm");
-          const formattedEndTime = format(endTime, "MMMM dd, yyyy HH:mm");
+          const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
+          const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
           return (
             <>
             {props.currentSelectionSection === true && (<div className= "currentselection"
@@ -29,7 +29,8 @@ const ShiftList = (props) => {
                 <table>
                   <tr>
                     <td><p>{shift.shelter}</p></td>
-                    <td><p>{formattedStartTime} to {formattedEndTime}</p></td>
+                    <td><p>
+                      {formattedStartTime} to {formattedEndTime}</p></td>
                     <td>
                       <button 
                         className="closebtn"
@@ -68,9 +69,14 @@ const ShiftList = (props) => {
             </>
           );
         })}
-      {props.shifts.length === 0 && (
+      {props.shifts.length === 0 && !props.currentSelectionSection &&(
         <p className="text-center">
           You do not have any shifts in this category.
+        </p>
+      )}
+      {props.currentSelectionSection &&(
+        <p className="text-center">
+          Please add your desired shifts from the list
         </p>
       )}
     </div>

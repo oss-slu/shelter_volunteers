@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import ShelterList from "./Components/ShelterList";
+import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
@@ -15,6 +16,7 @@ const Shelters = (props) => {
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -98,7 +100,7 @@ const Shelters = (props) => {
         Authorization: "volunteer@slu.edu",
       },
     })
-      .then(() => alert("You have submitted the shifts successfully"))
+      .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
   }
 
@@ -107,7 +109,8 @@ const Shelters = (props) => {
   }, [selectedShifts]);
 
   return (
-    <div>
+    <>
+    {!showConfirmation && (<div>
       {props.condensed && (
         <div className="text-center">
           <button onClick={getLocation}>
@@ -131,11 +134,11 @@ const Shelters = (props) => {
           <div className="signup-page">
             <div className="column column-1">
               <div className="text-center">
+              <h1>Volunteering Oppotunities</h1>
                 <button onClick={getLocation}>
-                  Get Shelters from Current Location
+                  Show oppotunities near me
                 </button>
                 <br />
-                <h1>Volunteering Oppotunities</h1>
                 <label htmlFor="radius-select">Radius (miles): </label>
                 <select id="radius-select" onChange={setRadiusfromLocation}>
                   <option value="5">5</option>
@@ -178,7 +181,11 @@ const Shelters = (props) => {
           </div>
         </div>
       )}
-    </div>
+    </div>)}
+    {showConfirmation && <div>
+      <ConfirmationPage selectedShifts={selectedShifts} />
+      </div>}
+    </>
   );
 };
 
