@@ -93,12 +93,13 @@ def work_shifts():
             enriched_shifts = []
             for work_shift in response.value:
                 # Convert the WorkShift object to JSON
-                work_shift_json = json.loads(json.dumps(work_shift, cls=WorkShiftJsonEncoder))
-                facility_response = get_facility_info_use_case(work_shift_json['shelter'])               
+                work_shift_json = json.loads(json.dumps(work_shift,
+                                                    cls=WorkShiftJsonEncoder))
+                facility_response = get_facility_info_use_case(work_shift_json['shelter'])        
                 if isinstance(facility_response, ResponseSuccess):
-                    work_shift_json['facility_info'] = facility_response.value
+                    work_shift_json["facility_info"]=facility_response.value
                 else:
-                    work_shift_json['facility_info'] = 'Facility information could not be retrieved'             
+                    work_shift_json["facility_info"]="Facilityinformation could not be retrieved"  
                 enriched_shifts.append(work_shift_json)
             return Response(
                 json.dumps(enriched_shifts),

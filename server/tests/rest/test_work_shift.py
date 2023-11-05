@@ -26,9 +26,11 @@ shifts_data = [
 
 @mock.patch('application.app.work_shift.workshift_list_use_case')
 @mock.patch('application.app.work_shift.get_facility_info_use_case')
-def test_list_work_shifts(mock_facility_info_use_case, mock_workshift_list_use_case):
+def test_list_work_shifts(mock_facility_info_use_case,
+                          mock_workshift_list_use_case):
     # Mock the facility info use case to return successful facility information
-    mock_facility_response = ResponseSuccess({'info': 'Some facility info for existing-shelter-id'})
+    mock_facility_response = ResponseSuccess({
+        'info': 'Some facility info for existing-shelter-id'})
     mock_facility_info_use_case.return_value = mock_facility_response
 
     # Mock the work shift list use case to return the shifts data
@@ -116,7 +118,7 @@ def test_count_workers(mock_use_case):
         'Content-Type': 'application/json'
     }
     response = client.get(
-        '/counts/123?start_after=100&end_before=200', 
+        '/counts/123?start_after=100&end_before=200',
         headers=headers)
 
     print(response.data)
