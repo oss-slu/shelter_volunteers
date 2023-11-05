@@ -74,7 +74,7 @@ const ShiftList = (props) => {
           You do not have any shifts in this category.
         </p>
       )}
-      {props.currentSelectionSection &&(
+      {props.shifts.length === 0 && props.currentSelectionSection &&(
         <p className="text-center">
           Please add your desired shifts from the list
         </p>
