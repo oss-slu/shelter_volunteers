@@ -10,12 +10,11 @@ from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
-from serializers.work_shift import WorkShiftJsonEncoder
-from requests.work_shift_list import build_work_shift_list_request
-from responses import ResponseTypes, ResponseSuccess, ResponseFailure
 from use_cases.get_facility_info import get_facility_info_use_case
+from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
-from responses import ResponseTypes
+from responses import ResponseTypes, ResponseSuccess
+from requests.work_shift_list import build_work_shift_list_request
 from application.rest.request_from_params import list_shift_request
 
 blueprint = Blueprint("work_shift", __name__)
@@ -95,11 +94,11 @@ def work_shifts():
                 # Convert the WorkShift object to JSON
                 work_shift_json = json.loads(json.dumps(work_shift,
                                                     cls=WorkShiftJsonEncoder))
-                facility_response = get_facility_info_use_case(work_shift_json['shelter'])        
+                facility_response = get_facility_info_use_case(work_shift_json["shelter"])
                 if isinstance(facility_response, ResponseSuccess):
                     work_shift_json["facility_info"]=facility_response.value
                 else:
-                    work_shift_json["facility_info"]="Facilityinformation could not be retrieved"  
+                    work_shift_json["facility_info"]="Facilityinformation could not be retrieved"
                 enriched_shifts.append(work_shift_json)
             return Response(
                 json.dumps(enriched_shifts),
