@@ -13,7 +13,7 @@ from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
-from responses import ResponseTypes, ResponseSuccess
+from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 
 blueprint = Blueprint("work_shift", __name__)
