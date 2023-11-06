@@ -10,6 +10,7 @@ from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
+from use_cases.get_facility_info import get_facility_info_use_case
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
@@ -86,12 +87,32 @@ def work_shifts():
 
         # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user)
-        return Response(
-            json.dumps(response.value, cls=WorkShiftJsonEncoder),
-            mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[response.response_type],
-        )
-
+        if response.response_type == ResponseTypes.SUCCESS:
+            enriched_shifts = []
+            for work_shift in response.value:
+                # Convert the WorkShift object to JSON
+                work_shift_json = json.loads(json.dumps(work_shift,
+                                                    cls=WorkShiftJsonEncoder))
+                facility_response = get_facility_info_use_case(
+                    work_shift_json["shelter"])
+                if facility_response.response_type == ResponseTypes.SUCCESS:
+                    work_shift_json["facility_info"]=facility_response.value
+                else:
+                    work_shift_json["facility_info"]=\
+                    "Facility information could not be retrieved"
+                enriched_shifts.append(work_shift_json)
+            return Response(
+                json.dumps(enriched_shifts),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+            )
+        else:
+            # Handle error response
+            return Response(
+                json.dumps(response.value),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+            )
     elif request.method == "POST":
         data = request.get_json()
         for shift in data:
@@ -126,15 +147,3 @@ def delete_work_shift(shift_id):
 def app_configuration():
     result = manage.read_json_configuration("mongo_config")
     return result
-
-
-
-
-
-
-
-
-
-
-
-
