@@ -354,3 +354,8 @@ button {
 .cta-button button:hover {
   background-color: #2980b9;
 }
+
+.shift-count {
+  display: flex;
+  flex-wrap: wrap;
+}
