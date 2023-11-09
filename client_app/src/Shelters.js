@@ -5,6 +5,7 @@ import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
+import getAuthHeader from "./authentication/getAuthHeader";
 
 const Shelters = (props) => {
   let defaultRadius = "10";
@@ -94,13 +95,12 @@ const Shelters = (props) => {
   function submitShifts() {
     let shifts = selectedShifts;
     const shiftsEndpoint = SERVER + "/shifts";
+    const header = getAuthHeader();
+
     fetch(shiftsEndpoint, {
       method: "POST",
       body: JSON.stringify(shifts),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: "volunteer@slu.edu",
-      },
+      headers: header,
     })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));

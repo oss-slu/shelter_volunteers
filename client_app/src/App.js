@@ -3,10 +3,11 @@ import { PastShifts, UpcomingShifts } from "./Shifts";
 import Shelters from "./Shelters";
 import VolunteerDashboard from "./VolunteerDashboard";
 import NavBar from "./Components/NavBar";
-import Login from "./Login";
-import useToken from "./useToken";
+import Login from "./authentication/Login";
+import useToken from "./authentication/useToken";
 
 import "./App.css";
+
 function App() {
   // get authentication token
   const { token, setToken } = useToken();

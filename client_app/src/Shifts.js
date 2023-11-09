@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 import { SERVER } from "./config";
 
 import ShiftList from "./Components/ShiftList";
+import getAuthHeader from "./authentication/getAuthHeader";
 
 function Shifts(request_endpoint) {
   const [data, setData] = useState([]);
+  const header = getAuthHeader();
+
   useEffect(() => {
     fetch(request_endpoint, {
       methods: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "volunteer@slu.edu",
-      },
+      headers: header,
     })
       .then((response) => response.json())
       .then((response) => setData(response))
