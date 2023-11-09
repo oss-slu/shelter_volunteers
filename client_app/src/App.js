@@ -8,9 +8,7 @@ import useToken from "./useToken";
 
 import "./App.css";
 function App() {
-
   // get authentication token
-  localStorage.clear();
   const { token, setToken } = useToken();
   if(!token) {
     return <Login setToken={setToken} />

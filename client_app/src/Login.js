@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 // permanent solution is to add a /login endpoint to our server-side
 // which authenticates through GetHelp
 async function loginUser(user, pass, setToken) {
-  console.log("user "+user);
-  console.log("pass "+pass);
   fetch('https://oauth-qa.gethelp.com/api/oauth/token', {
     method: 'POST',
     headers: {

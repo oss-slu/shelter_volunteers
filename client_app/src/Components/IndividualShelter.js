@@ -20,7 +20,6 @@ const IndividualShelter = (props) => {
       let end = endTime.getTime();
       let shift = {
         code: `${id}-${start}-${end}`,
-        worker: "volunteer@slu.edu",
         shelter: id,
         start_time: start,
         end_time: end,
