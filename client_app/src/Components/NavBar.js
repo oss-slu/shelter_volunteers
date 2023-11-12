@@ -59,6 +59,17 @@ function NavBar() {
                 Your Previous Shifts
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink
+                exact
+                to="/logout"
+                activeClassName="active"
+                className="nav-links"
+                onClick={handleClick}
+              >
+                Sign Out
+              </NavLink>
+            </li>
           </ul>
           <div className="nav-icon" onClick={handleClick}>
             {!click ? (

@@ -4,6 +4,8 @@ import Shelters from "./Shelters";
 import VolunteerDashboard from "./VolunteerDashboard";
 import NavBar from "./Components/NavBar";
 import Login from "./authentication/Login";
+import Logout from "./authentication/Logout";
+import {ProtectedRoute} from "./ProtectedRoute";
 import useToken from "./authentication/useToken";
 
 import "./App.css";
@@ -20,10 +22,11 @@ function App() {
       <Router>
         <NavBar/>
         <Routes>
-          <Route path="/" element={<VolunteerDashboard />} />
-          <Route path="/shelters" element={<Shelters />} />
-          <Route path="/past-shifts" element={<PastShifts />} />
-          <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
+          <Route path="/" element={<ProtectedRoute><VolunteerDashboard /></ProtectedRoute>} />
+          <Route path="/shelters" element={<ProtectedRoute> <Shelters /> </ProtectedRoute>} />
+          <Route path="/past-shifts" element={<ProtectedRoute> <PastShifts /> </ProtectedRoute>} />
+          <Route path="/upcoming-shifts" element={<ProtectedRoute> <UpcomingShifts /> </ProtectedRoute>} />
+          <Route path="/logout" element={<ProtectedRoute> <Logout /> </ProtectedRoute>} />
         </Routes>
       </Router>
     </>
