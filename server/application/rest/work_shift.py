@@ -128,7 +128,7 @@ def work_shifts():
 def get_user_from_token(headers):
     token = headers.get("Authorization")
     if not token:
-        return jsonify({"message": 'No token provided'}), \
+        return jsonify({"message": "No token provided"}), \
             ResponseTypes.AUTHORIZATION_ERROR
 
     try:
