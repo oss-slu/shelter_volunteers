@@ -128,7 +128,8 @@ def work_shifts():
 def get_user_from_token(headers):
     token = headers.get("Authorization")
     if not token:
-        return jsonify({'message': 'No token provided'}), 401
+        return jsonify({'message': 'No token provided'}),ResponseTypes.AUTHORIZATION_ERROR
+
     try:
         response = requests.get(
             "https://api2-qa.gethelp.com/v1/users/current",
@@ -136,11 +137,11 @@ def get_user_from_token(headers):
         )
 
         if response.status_code == 200:
-            return response.json()
+            return response.json(), ResponseTypes.SUCCESS
         else:
-            return jsonify({'message': 'Invalid token'}), 401
+            return jsonify({'message': 'Invalid token'}),ResponseTypes.AUTHORIZATION_ERROR
     except requests.RequestException as e:
-        return jsonify({'message': str(e)}), 500
+        return jsonify({'message': str(e)}),ResponseTypes.SYSTEM_ERROR
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
