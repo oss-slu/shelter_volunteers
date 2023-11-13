@@ -314,6 +314,17 @@ button {
 .signup-page .column-2 {
   flex: 2;
 }
+
+@media (max-width: 768px) {
+  .signup-page .column-2 {
+    display: none;
+  }
+  
+  .signup-page .column-1 {
+    flex: 1;
+  }
+}
+
 .current-selection {
   display: flex;
   flex-direction: column;
@@ -328,6 +339,9 @@ button {
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;
   overflow-y: auto;
+  @media (max-width: 767px) {
+    display: none;
+  }
 }
 
 .cta-button {
@@ -351,6 +365,32 @@ button {
   box-shadow: 10px 10px 50px rgba(0, 0, 0, 1);
 }
 
+.cta-button .circle {
+  padding: 20px 25px;
+  background-color: #205156;
+  color: #f5b922;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0px 0px 50px 30px rgb(255, 255, 255);
+}
+
+.cta-button .count-bubble {
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  width: 1.8rem;  
+  height: 1.8rem;
+  border:  1px solid #205156;
+  border-radius: 50%;
+  background: #f5b921;
+  color: #205156;
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .cta-button button:hover {
   background-color: #2980b9;
 }

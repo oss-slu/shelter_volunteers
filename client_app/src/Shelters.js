@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons'
+
 
 const Shelters = (props) => {
   let defaultRadius = "10";
@@ -179,6 +181,14 @@ const Shelters = (props) => {
                         Submit Shifts
                       </button>
                     </div>
+                  </div>
+                </div>
+                <div className="cta-button">
+                  <div className="circle">
+                    <FontAwesomeIcon icon={faCalendarDays} size="5x"/>
+                  </div>
+                  <div className="count-bubble">
+                      {selectedShifts.length}
                   </div>
                 </div>
               </div>
