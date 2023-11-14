@@ -17,6 +17,7 @@ const IndividualShelter = (props) => {
     setHours(setMinutes(new Date(), 0), new Date().getHours() + 2)
   );
   const [shiftCounts, setShiftCounts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
@@ -73,6 +74,7 @@ const IndividualShelter = (props) => {
       999
     );
     if (shelter) {
+      setLoading(true);
       let request_endpoint =
         SERVER +
         `/counts/${
@@ -89,6 +91,8 @@ const IndividualShelter = (props) => {
         .then((shifts) => {
           let newShifts = [];
           for (let i = 0; i < shifts.length; i++) {
+            let startTime = new Date(shifts[i].start_time);
+            let endTime = new Date(shifts[i].end_time);
             let prevBounds = start;
             if (i > 0) prevBounds = shifts[i - 1].end_time;
             if (prevBounds !== shifts[i].start_time) {
@@ -98,7 +102,13 @@ const IndividualShelter = (props) => {
                 count: 0,
               });
             }
-            newShifts.push(shifts[i]);
+            if (
+              !(
+                startTime.getHours() === endTime.getHours() &&
+                startTime.getMinutes() === endTime.getMinutes()
+              )
+            )
+              newShifts.push(shifts[i]);
             if (i === shifts.length - 1) {
               if (end !== shifts[i].end_time) {
                 newShifts.push({
@@ -111,7 +121,10 @@ const IndividualShelter = (props) => {
           }
           return newShifts;
         })
-        .then((response) => setShiftCounts(response))
+        .then((response) => {
+          setShiftCounts(response);
+          setLoading(false);
+        })
         .catch((error) => console.log(error));
     }
   }, [startTime, shelter]);
@@ -160,10 +173,13 @@ const IndividualShelter = (props) => {
           <div class="signupcard shift-graph text-center">
             <h3>Shift Counts for Time Ranges</h3>
             <div class="shift-count">
-              {shiftCounts && <div>{GraphComponent(shiftCounts)}</div>}
-              {shiftCounts.length === 0 && (
+              {!loading && shiftCounts && shiftCounts.length > 0 && (
+                <div>{<GraphComponent shifts={shiftCounts} />}</div>
+              )}
+              {!loading && shiftCounts && shiftCounts.length === 0 && (
                 <p>There are no shifts during your selected time range.</p>
               )}
+              {loading && <p>Loading...</p>}
             </div>
           </div>
         </div>

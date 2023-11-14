@@ -95,6 +95,7 @@ p {
 .signupcard.shift-graph {
   display: block;
   margin-top: 0;
+  background-color: #fcfff1;
 }
 
 .signupcard .column1 {
@@ -369,4 +370,17 @@ button {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.shift-count {
+  height: 250px;
+}
+
+.shift-count canvas {
+  height: 225px;
+}
+
+.signupcard.shift-graph h3,
+.signupcard.shift-graph h4 {
+  margin: 0;
 }
