@@ -86,15 +86,26 @@ p {
   background-color: #ecececfc;
   padding: 0.5rem;
 }
+
 .signupcard {
   display: flex;
+  margin-top: 0;
+  margin-bottom: 0;
 }
+
+.signupcard.shift-graph {
+  display: block;
+  margin-bottom: 15px;
+}
+
 .signupcard .column1 {
   flex: 2;
 }
+
 .signupcard .column2 {
   flex: 1;
 }
+
 p {
   margin: 0;
   padding: 0;
@@ -358,4 +369,5 @@ button {
 .shift-count {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }

@@ -6,6 +6,7 @@ import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../config";
+import GraphComponent from "./GraphComponent";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
@@ -131,16 +132,14 @@ const IndividualShelter = (props) => {
               <button onClick={() => addShift()}>Add to selection</button>
             </div>
           </div>
-          <div class="signupcard shift-count">
-            {shiftCounts &&
-              shiftCounts.map((shift, index) => {
-                return (
-                  <div>
-                    <p>{shift.count}</p>
-                    <p>{shift.start_time}</p>
-                  </div>
-                );
-              })}
+          <div class="signupcard shift-graph text-center">
+            <h3>Shift Counts for Time Ranges</h3>
+            <div class="shift-count">
+              {shiftCounts && <div>{GraphComponent(shiftCounts)}</div>}
+              {shiftCounts.length === 0 && (
+                <p>There are no shifts during your selected time range.</p>
+              )}
+            </div>
           </div>
         </div>
       )}
