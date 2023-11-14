@@ -80,7 +80,7 @@ p {
 .shelter,
 .shift,
 .signupcard {
-  margin: 10px;
+  margin: 15px;
   border-radius: 1em;
   border: 1px solid #000000;
   background-color: #ecececfc;
@@ -89,13 +89,12 @@ p {
 
 .signupcard {
   display: flex;
-  margin-top: 0;
   margin-bottom: 0;
 }
 
 .signupcard.shift-graph {
   display: block;
-  margin-bottom: 15px;
+  margin-top: 0;
 }
 
 .signupcard .column1 {

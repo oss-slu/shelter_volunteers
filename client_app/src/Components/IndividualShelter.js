@@ -86,6 +86,31 @@ const IndividualShelter = (props) => {
         },
       })
         .then((response) => response.json())
+        .then((shifts) => {
+          let newShifts = [];
+          for (let i = 0; i < shifts.length; i++) {
+            let prevBounds = start;
+            if (i > 0) prevBounds = shifts[i - 1].end_time;
+            if (prevBounds !== shifts[i].start_time) {
+              newShifts.push({
+                start_time: prevBounds,
+                end_time: shifts[i].start_time,
+                count: 0,
+              });
+            }
+            newShifts.push(shifts[i]);
+            if (i === shifts.length - 1) {
+              if (end !== shifts[i].end_time) {
+                newShifts.push({
+                  start_time: shifts[i].end_time,
+                  end_time: end,
+                  count: 0,
+                });
+              }
+            }
+          }
+          return newShifts;
+        })
         .then((response) => setShiftCounts(response))
         .catch((error) => console.log(error));
     }
