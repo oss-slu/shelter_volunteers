@@ -10,7 +10,7 @@ import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-sol
 
 
 const Shelters = (props) => {
-  let defaultRadius = "10";
+  let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
   const [latitude, setLatitude] = useState(41.8781);
@@ -203,7 +203,7 @@ const Shelters = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="continue-bottom-row">
+                {!onMobileContinueclicked&&(<div className="continue-bottom-row">
                   <div className="cart" onClick={onMobileContinueClick}>
                     <div className="circle">
                       <FontAwesomeIcon icon={faCalendarDays} size="2x"/>
@@ -216,7 +216,7 @@ const Shelters = (props) => {
                     Continue 
                     {selectedShifts.length>0 && (<FontAwesomeIcon icon={faArrowRight} style={{"marginLeft":"1em"}}/>)}
                   </button>
-                </div>
+                </div>)}
               </div>
             </div>
           )}
