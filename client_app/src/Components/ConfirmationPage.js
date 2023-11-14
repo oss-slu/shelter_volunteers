@@ -44,7 +44,7 @@ const ConfirmationPage = ({ selectedShifts }) => {
         <br/>
         <div className="button-row">
           <Link to="/">
-            <button>Dashboard</button>
+            <button>Your Dashboard</button>
           </Link>
           <Link 
           to="/shelters"

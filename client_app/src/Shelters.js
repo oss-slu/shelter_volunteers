@@ -5,7 +5,8 @@ import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDays } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+
 
 
 const Shelters = (props) => {
@@ -19,6 +20,7 @@ const Shelters = (props) => {
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [onMobileContinueclicked,setOnMobileContinueclicked]=useState(false);
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -69,13 +71,16 @@ const Shelters = (props) => {
     let id = event.target.id;
     let shift =
       id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+    
     const codes = selectedShifts.map((s) => s.code);
     if (codes.includes(shift)) {
-      let index = selectedShifts.indexOf(shift);
-      const newSelected = [...selectedShifts];
-      newSelected.splice(index, 1);
-      setSelectedShifts(newSelected);
-      setButtonDisabled(selectedShifts.length === 0);
+      let index = selectedShifts.findIndex((s) => s.code === shift)
+      if (index !== -1) {
+        const newSelected = [...selectedShifts];
+        newSelected.splice(index, 1);
+        setSelectedShifts(newSelected);
+        setButtonDisabled(selectedShifts.length === 0);
+      }
     }
   }
 
@@ -106,6 +111,16 @@ const Shelters = (props) => {
     })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
+  }
+
+  function onMobileContinueClick(){
+    if (selectedShifts.length<1) {
+      return
+    }
+    setOnMobileContinueclicked(true);
+  }
+  function handleCurrentSelectionClose(){
+    setOnMobileContinueclicked(false);
   }
 
   useEffect(() => {
@@ -162,8 +177,13 @@ const Shelters = (props) => {
                   />
                 </div>
                 <div className="column column-2">
-                  <div className="current-selection">
+                  <div className={onMobileContinueclicked?"current-selection active":"current-selection"}>
                     <h2>Current Selection</h2>
+                    {onMobileContinueclicked&&(
+                      <div className="close-btn" onClick={handleCurrentSelectionClose}>
+                        <FontAwesomeIcon icon={faCircleXmark} size="2x" />
+                      </div>
+                    )}
                     {selectedShifts && (
                       <div>
                         <ShiftList
@@ -183,13 +203,19 @@ const Shelters = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="cta-button">
-                  <div className="circle">
-                    <FontAwesomeIcon icon={faCalendarDays} size="5x"/>
+                <div className="continue-bottom-row">
+                  <div className="cart" onClick={onMobileContinueClick}>
+                    <div className="circle">
+                      <FontAwesomeIcon icon={faCalendarDays} size="2x"/>
+                    </div>
+                    <div className="count-bubble">
+                        {selectedShifts.length}
+                    </div>
                   </div>
-                  <div className="count-bubble">
-                      {selectedShifts.length}
-                  </div>
+                  <button className={selectedShifts.length>0?"cont-btn":"cont-btn disabled"} onClick={onMobileContinueClick}>
+                    Continue 
+                    {selectedShifts.length>0 && (<FontAwesomeIcon icon={faArrowRight} style={{"marginLeft":"1em"}}/>)}
+                  </button>
                 </div>
               </div>
             </div>
