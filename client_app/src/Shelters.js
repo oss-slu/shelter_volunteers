@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { useSpring, animated } from '@react-spring/web'
 
 
 
@@ -21,6 +22,11 @@ const Shelters = (props) => {
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked,setOnMobileContinueclicked]=useState(false);
+  const [shaking, setShaking] = useState(false)
+
+  const shakeAnimation = useSpring({
+    transform: shaking ? 'translateY(-20px)' : 'translateY(0px)'  
+  })
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -94,6 +100,8 @@ const Shelters = (props) => {
   }
 
   function manageShifts(shift) {
+    setShaking(true)
+    setTimeout(() => setShaking(false), 200)
     setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
   }
@@ -204,14 +212,14 @@ const Shelters = (props) => {
                   </div>
                 </div>
                 {!onMobileContinueclicked&&(<div className="continue-bottom-row">
-                  <div className="cart" onClick={onMobileContinueClick}>
+                  <animated.div className="cart" onClick={onMobileContinueClick} style={shakeAnimation}>
                     <div className="circle">
                       <FontAwesomeIcon icon={faCalendarDays} size="2x"/>
                     </div>
                     <div className="count-bubble">
                         {selectedShifts.length}
                     </div>
-                  </div>
+                  </animated.div>
                   <button className={selectedShifts.length>0?"cont-btn":"cont-btn disabled"} onClick={onMobileContinueClick}>
                     Continue 
                     {selectedShifts.length>0 && (<FontAwesomeIcon icon={faArrowRight} style={{"marginLeft":"1em"}}/>)}
