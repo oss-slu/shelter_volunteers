@@ -3,7 +3,8 @@ This module contains the RESTful route handlers
 for work shifts in the server application.
 """
 import json
-from flask import Blueprint, Response, request
+import requests
+from flask import Blueprint, Response, request, jsonify
 from flask_cors import cross_origin
 from repository import mongorepo, manage
 from use_cases.list_workshifts import workshift_list_use_case
@@ -125,7 +126,25 @@ def work_shifts():
         )
 
 def get_user_from_token(headers):
-    return headers["Authorization"]
+    token = headers.get("Authorization")
+    if not token:
+        return jsonify({"message": "No token provided"}), \
+            ResponseTypes.AUTHORIZATION_ERROR
+
+    try:
+        response = requests.get(
+            "https://api2-qa.gethelp.com/v1/users/current",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        if response.status_code == 200:
+            return response.json(), ResponseTypes.SUCCESS
+        else:
+            return jsonify({"message": "Invalid token"}), \
+       ResponseTypes.AUTHORIZATION_ERROR
+    except requests.RequestException as e:
+        return jsonify({"message": str(e)}), \
+            ResponseTypes.SYSTEM_ERROR
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
