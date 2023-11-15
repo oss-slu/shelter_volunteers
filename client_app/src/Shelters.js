@@ -176,7 +176,7 @@ const Shelters = (props) => {
                     isSignupPage={true}
                   />
                 </div>
-                <div className="column column-2">
+                <div className={onMobileContinueclicked?"column column-2 active":"column column-2"}>
                   <div className={onMobileContinueclicked?"current-selection active":"current-selection"}>
                     <h2>Current Selection</h2>
                     {onMobileContinueclicked&&(
