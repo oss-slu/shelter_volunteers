@@ -102,6 +102,7 @@ p {
   display: flex;
   flex-direction: row;
   text-align: right;
+  white-space: nowrap;
 }
 .signupcard .column2 .dates{
   flex: 4;
@@ -115,11 +116,17 @@ p {
 }
 
 @media (max-width: 767px) {
-
+  .signupcard {
+    transition: transform 0.3s ease; 
+  }
+  .signupcard.added-to-cart {
+    transform: translateX(200px);
+  }
   .signupcard .column2 {
     flex-direction: column;
     text-align: left;
     flex:2;
+    white-space:initial;
   }
   .signupcard .column2 .add-btn button{
     width: 100%;

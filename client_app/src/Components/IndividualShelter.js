@@ -8,7 +8,7 @@ import {faCirclePlus} from '@fortawesome/free-solid-svg-icons';
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
-  const [startTime, setStartDate] = useState(
+    const [startTime, setStartDate] = useState(
     setHours(setMinutes(new Date(), 0), new Date().getHours() + 1)
   );
   const [endTime, setEndDate] = useState(
@@ -46,7 +46,7 @@ const IndividualShelter = (props) => {
         end_time: end,
       };
       props.addShiftFunction(shift);
-    }
+          }
   }
 
   function modifyStart(date) {
@@ -85,7 +85,7 @@ const IndividualShelter = (props) => {
                 filterTime={filterPastStartTime}
                 onChange={(date) => modifyStart(date)}
                 showTimeSelect
-                dateFormat="M/dd/yy h:mm aa"
+                dateFormat="M/dd/yy hh:mm aa"
                 minDate={new Date()}
                 showDisabledMonthNavigation
                 customInput={<ExampleCustomInput />}
@@ -97,7 +97,7 @@ const IndividualShelter = (props) => {
                 filterTime={filterPastEndTime}
                 onChange={(date) => modifyEnd(date)}
                 showTimeSelect
-                dateFormat="M/dd/yy h:mm aa"
+                dateFormat="M/dd/yy hh:mm aa"
                 minDate={new Date()}
                 showDisabledMonthNavigation
                 customInput={<ExampleCustomInput />}
