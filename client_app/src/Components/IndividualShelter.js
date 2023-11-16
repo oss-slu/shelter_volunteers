@@ -171,7 +171,7 @@ const IndividualShelter = (props) => {
             </div>
           </div>
           <div class="signupcard shift-graph text-center">
-            <h3>Shift Counts for Time Ranges</h3>
+            <h3>Current Volunteer Counts</h3>
             <div class="shift-count">
               {!loading && shiftCounts && shiftCounts.length > 0 && (
                 <div>{<GraphComponent shifts={shiftCounts} />}</div>
