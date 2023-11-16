@@ -78,30 +78,41 @@ const IndividualShelter = (props) => {
           </div>
           <div className="column2">
             <div className="dates">
-              <label>Start Time: </label>
-              <DatePicker
-                className="date-picker"
-                selected={startTime}
-                filterTime={filterPastStartTime}
-                onChange={(date) => modifyStart(date)}
-                showTimeSelect
-                dateFormat="M/dd/yy hh:mm aa"
-                minDate={new Date()}
-                showDisabledMonthNavigation
-                customInput={<ExampleCustomInput />}
-              />
-              <br></br>
-              <label>End Time: </label>
-              <DatePicker
-                selected={endTime}
-                filterTime={filterPastEndTime}
-                onChange={(date) => modifyEnd(date)}
-                showTimeSelect
-                dateFormat="M/dd/yy hh:mm aa"
-                minDate={new Date()}
-                showDisabledMonthNavigation
-                customInput={<ExampleCustomInput />}
-              />
+                <div className="date-row">
+                  <div className="date-label">
+                    <p>Start Time: </p>
+                  </div>
+                  <div className="picker">
+                  <DatePicker
+                    className="date-picker"
+                    selected={startTime}
+                    filterTime={filterPastStartTime}
+                    onChange={(date) => modifyStart(date)}
+                    showTimeSelect
+                    dateFormat="M/dd/yy hh:mm aa"
+                    minDate={new Date()}
+                    showDisabledMonthNavigation
+                    customInput={<ExampleCustomInput />}
+                  />
+                  </div>
+                </div> 
+                <div className="date-row">
+                  <div className="date-label">
+                    <p>End Time: </p>
+                  </div>
+                  <div className="picker">
+                    <DatePicker
+                      selected={endTime}
+                      filterTime={filterPastEndTime}
+                      onChange={(date) => modifyEnd(date)}
+                      showTimeSelect
+                      dateFormat="M/dd/yy hh:mm aa"
+                      minDate={new Date()}
+                      showDisabledMonthNavigation
+                      customInput={<ExampleCustomInput />}
+                    />  
+                  </div>
+                </div>
             </div>
             <div className="add-btn">
               <button onClick={() => addShift()}>

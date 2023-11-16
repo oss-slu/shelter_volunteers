@@ -149,3 +149,9 @@
     color: #ffdd40;
   }
 }
+
+@media (max-width:  300px) {
+  .nav-logo{
+    font-size: 1rem;
+  }
+}
