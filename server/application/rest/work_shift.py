@@ -82,6 +82,10 @@ def work_shifts():
     repo = mongorepo.MongoRepo(app_configuration())
     user = get_user_from_token(request.headers)
 
+    if not user:
+        return jsonify({"message": "Invalid or missing token"}), \
+            ResponseTypes.AUTHORIZATION_ERROR
+
     if request.method == "GET":
         # process the GET request parameters
         request_object = list_shift_request(request.args)
@@ -128,8 +132,7 @@ def work_shifts():
 def get_user_from_token(headers):
     token = headers.get("Authorization")
     if not token:
-        return jsonify({"message": "No token provided"}), \
-            ResponseTypes.AUTHORIZATION_ERROR
+        return None
 
     try:
         response = requests.get(
@@ -138,13 +141,11 @@ def get_user_from_token(headers):
         )
 
         if response.status_code == 200:
-            return response.json(), ResponseTypes.SUCCESS
+            return response.json()
         else:
-            return jsonify({"message": "Invalid token"}), \
-       ResponseTypes.AUTHORIZATION_ERROR
-    except requests.RequestException as e:
-        return jsonify({"message": str(e)}), \
-            ResponseTypes.SYSTEM_ERROR
+            return None
+    except requests.RequestException:
+        return None
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
