@@ -3,30 +3,34 @@ import { PastShifts, UpcomingShifts } from "./Shifts";
 import Shelters from "./Shelters";
 import VolunteerDashboard from "./VolunteerDashboard";
 import NavBar from "./Components/NavBar";
-import Login from "./authentication/Login";
-import Logout from "./authentication/Logout";
-import {ProtectedRoute} from "./ProtectedRoute";
-import useToken from "./authentication/useToken";
+import Login from "./Components/authentication/Login";
+import ProtectedRoute from "./ProtectedRoute";
+//import useToken from "./authentication/useToken";
 
 import "./App.css";
 
 function App() {
   // get authentication token
+  /*
   const { token, setToken } = useToken();
   if(!token) {
     return <Login setToken={setToken} />
   }
-
+  */
+  localStorage.clear();
   return (
     <>      
       <Router>
         <NavBar/>
         <Routes>
-          <Route path="/" element={<ProtectedRoute><VolunteerDashboard /></ProtectedRoute>} />
-          <Route path="/shelters" element={<ProtectedRoute> <Shelters /> </ProtectedRoute>} />
-          <Route path="/past-shifts" element={<ProtectedRoute> <PastShifts /> </ProtectedRoute>} />
-          <Route path="/upcoming-shifts" element={<ProtectedRoute> <UpcomingShifts /> </ProtectedRoute>} />
-          <Route path="/logout" element={<ProtectedRoute> <Logout /> </ProtectedRoute>} />
+          <Route path="/" element={<Login />} />
+          {/* Protected Routes */}
+          <Route path="/" element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<VolunteerDashboard />} />
+              <Route path="/shelters" element={<Shelters />} />
+              <Route path="/past-shifts" element={<PastShifts />} />
+              <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
+          </Route>
         </Routes>
       </Router>
     </>

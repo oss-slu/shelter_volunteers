@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // temporary solution
 // permanent solution is to add a /login endpoint to our server-side
 // which authenticates through GetHelp
-async function loginUser(user, pass, setToken) {
+async function LoginUser(user, pass) {
   fetch('https://oauth-qa.gethelp.com/api/oauth/token', {
     method: 'POST',
     headers: {
@@ -20,7 +20,8 @@ async function loginUser(user, pass, setToken) {
   .then(response => response.json())
   .then(data => {
     // Handle successful login
-    setToken(data.access_token);
+    localStorage.setItem('token', JSON.stringify(data.access_token));
+    console.log(' set token to ' + data.access_token)
   })
   .catch(error => {
     // Handle login error
@@ -28,14 +29,27 @@ async function loginUser(user, pass, setToken) {
   });
 }
 
-export default function Login({ setToken }) {
+
+export default function Login() {
+
+  const token = localStorage.getItem('token')
+  const navigate = useNavigate()
+
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await loginUser(username, password, setToken);
+    await LoginUser(username, password);
+    const mytoken = localStorage.getItem('token')
+    console.log(mytoken);
+    navigate("/dashboard")
   }
+  //if user is already loggedin redirect to dashboard page
+  if (token){
+     return <Navigate to="/dashboard" />
+  }
+
 
   return(
     <div>
@@ -57,6 +71,3 @@ export default function Login({ setToken }) {
   )
 }
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired
-};

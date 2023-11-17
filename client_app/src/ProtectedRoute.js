@@ -1,11 +1,18 @@
-import { Navigate } from "react-router-dom";
-import useToken from "./authentication/useToken";
+import {Navigate, Outlet} from 'react-router-dom'
 
-export const ProtectedRoute = ({ children }) => {
-  const { token } = useToken();
-  if (!token) {
-    // user is not authenticated
-    return <Navigate to="/" />;
+const isLoggedIn = () => {
+  const token = localStorage.getItem('token')
+  if(token){
+    return true
+  } else {
+    return false
   }
-  return children;
-};
+}
+
+const ProtectedRoute = () => {
+    const auth = isLoggedIn()
+
+    return auth ? <Outlet/> : <Navigate to="/" />
+}
+
+export default ProtectedRoute
