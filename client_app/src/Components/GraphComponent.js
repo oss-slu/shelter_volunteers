@@ -53,10 +53,10 @@ const GraphComponent = (props) => {
       const highest = Math.max(...counts);
       let colors = [];
       for (let i = 0; i < data.length; i++) {
-        let color = "rgba(58,133,242,1)";
+        let color = "rgba(31,116,240,1)";
         let count = counts[i];
         if (count === highest) color = "rgba(47,45,194,1)";
-        else if (count < highest / 2) color = "rgba(187,250,248,1)";
+        else if (count < highest / 2) color = "rgba(115,171,250,1)";
         colors.push(color);
       }
       setChartData({
