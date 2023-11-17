@@ -412,6 +412,11 @@ button {
   .signup-page .column-2.active{
     order: 1;
     display: block;
+    position: fixed; 
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
   }
   
   .signup-page .column-1 {
@@ -427,7 +432,7 @@ button {
   right: 1rem;
   margin: 1rem;
   padding-left: 1rem;
-  height: 85vh;
+  height: 80vh;
   width: 35vw;
   border-radius: 1rem;
   background-color: #bde3c8;
@@ -440,9 +445,13 @@ button {
 .current-selection.active {
   @media (max-width:  960px) {
     display: block;
-    position: fixed;
-    top: 5em;
-    width: 80vw;
+    position: absolute;
+    top: 1em;
+    width: 85vw;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 1em;
     z-index: 40;
   }
 }
