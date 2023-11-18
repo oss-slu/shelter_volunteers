@@ -2,7 +2,6 @@
 This module contains the RESTful route handlers
 for work shifts in the server application.
 """
-import sys
 import json
 from flask import Blueprint, Response, request, jsonify
 from flask_cors import cross_origin
@@ -17,7 +16,7 @@ from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 import requests
-from requests import HTTPError, ConnectionError, Timeout, RequestException
+from requests.exceptions import HTTPError, Timeout, RequestException
 
 
 blueprint = Blueprint("work_shift", __name__)
@@ -146,8 +145,6 @@ def get_user_from_token(headers):
         return response.json(), None
     except HTTPError as e:
         return None, f"HTTP error: {e}"
-    except ConnectionError:
-        return None, "Connection error"
     except Timeout:
         return None, "Timeout error"
     except RequestException:
