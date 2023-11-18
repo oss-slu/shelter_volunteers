@@ -1,4 +1,4 @@
-import { useState,forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import setHours from "date-fns/setHours";
@@ -7,12 +7,12 @@ import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../config";
 import GraphComponent from "./GraphComponent";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faCirclePlus} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
-    const [startTime, setStartDate] = useState(
+  const [startTime, setStartDate] = useState(
     setHours(setMinutes(new Date(), 0), new Date().getHours() + 1)
   );
   const [endTime, setEndDate] = useState(
@@ -52,7 +52,7 @@ const IndividualShelter = (props) => {
         end_time: end,
       };
       props.addShiftFunction(shift);
-          }
+    }
   }
 
   function modifyStart(date) {
@@ -149,54 +149,25 @@ const IndividualShelter = (props) => {
               <p>{+shelter.distance.toFixed(2)} miles away</p>
             </div>
             <div className="column2">
-              <label>Start Time: </label>
-              <DatePicker
-                className="date-picker"
-                selected={startTime}
-                filterTime={filterPastStartTime}
-                onChange={(date) => modifyStart(date)}
-                showTimeSelect
-                dateFormat="M/dd/yy h:mm aa"
-                minDate={new Date()}
-                showDisabledMonthNavigation
-              />
-              <br />
-              <br />
-              <label>End Time: </label>
-              <DatePicker
-                selected={endTime}
-                filterTime={filterPastEndTime}
-                onChange={(date) => modifyEnd(date)}
-                showTimeSelect
-                dateFormat="M/dd/yy h:mm aa"
-                minDate={new Date()}
-                showDisabledMonthNavigation
-              />
-              <br />
-              <br />
-              <button onClick={() => addShift()}>Add to selection</button>
-            </div>
-          </div>
-          <div className="column2">
-            <div className="dates">
+              <div className="dates">
                 <div className="date-row">
                   <div className="date-label">
                     <p>Start Time: </p>
                   </div>
                   <div className="picker">
-                  <DatePicker
-                    className="date-picker"
-                    selected={startTime}
-                    filterTime={filterPastStartTime}
-                    onChange={(date) => modifyStart(date)}
-                    showTimeSelect
-                    dateFormat="M/dd/yy hh:mm aa"
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                    customInput={<ExampleCustomInput />}
-                  />
+                    <DatePicker
+                      className="date-picker"
+                      selected={startTime}
+                      filterTime={filterPastStartTime}
+                      onChange={(date) => modifyStart(date)}
+                      showTimeSelect
+                      dateFormat="M/dd/yy hh:mm aa"
+                      minDate={new Date()}
+                      showDisabledMonthNavigation
+                      customInput={<ExampleCustomInput />}
+                    />
                   </div>
-                </div> 
+                </div>
                 <div className="date-row">
                   <div className="date-label">
                     <p>End Time: </p>
@@ -211,17 +182,19 @@ const IndividualShelter = (props) => {
                       minDate={new Date()}
                       showDisabledMonthNavigation
                       customInput={<ExampleCustomInput />}
-                    />  
+                    />
                   </div>
                 </div>
-            </div>
-            <div className="add-btn">
-              <button onClick={() => addShift()}>
-                <FontAwesomeIcon icon={faCirclePlus} size="1x"/> 
-                <p className="label">Add shift </p>
-              </button>
+              </div>
+              <div className="add-btn">
+                <button onClick={() => addShift()}>
+                  <FontAwesomeIcon icon={faCirclePlus} size="1x" />
+                  <p className="label">Add shift </p>
+                </button>
+              </div>
             </div>
           </div>
+
           <div class="signupcard shift-graph text-center">
             <h3>Current Volunteer Counts</h3>
             <div class="shift-count">
@@ -229,7 +202,10 @@ const IndividualShelter = (props) => {
                 <div>{<GraphComponent shifts={shiftCounts} />}</div>
               )}
               {!loading && shiftCounts && shiftCounts.length === 0 && (
-                <p>There are no shifts during your selected time range.</p>
+                <p>
+                  No volunteers are currently signed up during your selected
+                  time range.
+                </p>
               )}
               {loading && <p>Loading...</p>}
             </div>

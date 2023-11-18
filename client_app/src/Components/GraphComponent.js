@@ -63,7 +63,7 @@ const GraphComponent = (props) => {
         labels,
         datasets: [
           {
-            label: "Shifts",
+            label: "Volunteers",
             data: counts,
             backgroundColor: colors,
             borderColor: colors,
