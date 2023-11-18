@@ -4,29 +4,33 @@ import { Navigate, useNavigate } from "react-router-dom";
 // temporary solution
 // permanent solution is to add a /login endpoint to our server-side
 // which authenticates through GetHelp
+
 async function LoginUser(user, pass) {
-  fetch('https://oauth-qa.gethelp.com/api/oauth/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + btoa(process.env.REACT_APP_GETHELP_AUTH_API_TOKEN)
-    },
-    body: new URLSearchParams({
-      'grant_type': 'password',
-      'username': user,
-      'password': pass
-    }).toString()
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Handle successful login
+  try {
+    const response = await fetch('https://oauth-qa.gethelp.com/api/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(process.env.REACT_APP_GETHELP_AUTH_API_TOKEN)
+      },
+      body: new URLSearchParams({
+        'grant_type': 'password',
+        'username': user,
+        'password': pass
+      }).toString()
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
     localStorage.setItem('token', JSON.stringify(data.access_token));
-    console.log(' set token to ' + data.access_token)
-  })
-  .catch(error => {
+    console.log('Set token to ' + data.access_token);
+  } catch (error) {
     // Handle login error
     console.error('Login error', error);
-  });
+  }
 }
 
 
