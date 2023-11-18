@@ -144,7 +144,7 @@ def get_user_from_token(headers):
             return response.json()
         else:
             return None
-    except requests.RequestException:
+    except Exception:
         return None
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
