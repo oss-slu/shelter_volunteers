@@ -4,7 +4,7 @@ import "./NavBar.css";
 import { HamburgerMenuClose, HamburgerMenuOpen } from "./Icons";
 
 function NavBar() {
-  const [click, setClick] = useState(true);
+  const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
   return (
     <>
