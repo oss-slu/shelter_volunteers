@@ -11,6 +11,7 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
+from use_cases.authenticate import login_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
@@ -160,6 +161,24 @@ def delete_work_shift(shift_id):
     repo = mongorepo.MongoRepo(app_configuration())
 
     response = delete_shift_use_case(repo, shift_id, user_email)
+    status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
+
+    return Response(
+        json.dumps(response.value),
+        mimetype="application/json",
+        status=status_code
+    )
+
+@blueprint.route("/login", methods=["POST"])
+@cross_origin()
+def login():
+    print("here")
+    data = request.get_json()
+    print(data)
+    print(data["user"])
+    print(data["password"])
+
+    response = login_user(data["user"], data["password"])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
 
     return Response(

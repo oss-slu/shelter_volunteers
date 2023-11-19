@@ -7,7 +7,7 @@ import os
 
 from responses import ResponseSuccess, ResponseFailure
 
-def login(user, password):
+def login_user(user, password):
     """
     The login function contacts GetHelp authentication API to retrieve
     a token for the given username and password. 
@@ -35,10 +35,10 @@ def login(user, password):
 
     response = requests.post(url, headers=headers, data=data)
 
+    print(response)
     if not response.ok:
         return ResponseFailure(response.status_code,
             "Unable to log in")
 
     # Parse the JSON response
     return ResponseSuccess(response.json())
-
