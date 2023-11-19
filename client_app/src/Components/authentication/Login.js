@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 // temporary solution
 // permanent solution is to add a /login endpoint to our server-side
@@ -71,6 +71,9 @@ export default function Login() {
           <button type="submit">Submit</button>
         </div>
       </form>
+      <Link to="/signup">
+        <button>Sign Up</button>
+      </Link>
     </div>
   )
 }

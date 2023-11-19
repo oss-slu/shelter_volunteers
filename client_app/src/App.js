@@ -5,6 +5,7 @@ import VolunteerDashboard from "./VolunteerDashboard";
 import NavBar from "./Components/NavBar";
 import Login from "./Components/authentication/Login";
 import Logout from "./Components/authentication/Logout";
+import SignUp from "./Components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 
 import "./App.css";
@@ -24,6 +25,7 @@ function App() {
         <NavBar/>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<VolunteerDashboard />} />
