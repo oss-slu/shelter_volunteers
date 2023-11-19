@@ -120,6 +120,7 @@ def work_shifts():
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[response.response_type]
             )
+
     elif request.method == "POST":
         data = request.get_json()
         for shift in data:
