@@ -1,38 +1,44 @@
-import { useState,forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faCirclePlus} from '@fortawesome/free-solid-svg-icons';
+import setSeconds from "date-fns/setSeconds";
+import setMilliseconds from "date-fns/setMilliseconds";
+import { SERVER } from "../config";
+import GraphComponent from "./GraphComponent";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
-    const [startTime, setStartDate] = useState(
+  const [startTime, setStartDate] = useState(
     setHours(setMinutes(new Date(), 0), new Date().getHours() + 1)
   );
   const [endTime, setEndDate] = useState(
     setHours(setMinutes(new Date(), 0), new Date().getHours() + 2)
   );
+  const [shiftCounts, setShiftCounts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const filterPastStartTime = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(time);
+    return currentDate.getTime() < selectedDate.getTime();
+  };
+
+  const filterPastEndTime = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(time);
+    currentDate.setHours(currentDate.getHours() + 1);
+    return currentDate.getTime() < selectedDate.getTime();
+  };
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={onClick} ref={ref}>
       {value}
     </button>
   ));
 
-    const filterPastStartTime = (time) => {
-      const currentDate = new Date();
-      const selectedDate = new Date(time);
-      return  currentDate.getTime() < selectedDate.getTime();
-      };
-        
-    const filterPastEndTime = (time) => {
-       const currentDate = new Date();
-       const selectedDate = new Date(time);
-       currentDate.setHours(currentDate.getHours() + 1);
-       return  currentDate.getTime() < selectedDate.getTime();
-       };
-    
   function addShift() {
     if (props.addShiftFunction) {
       let id = shelter.id;
@@ -46,7 +52,7 @@ const IndividualShelter = (props) => {
         end_time: end,
       };
       props.addShiftFunction(shift);
-          }
+    }
   }
 
   function modifyStart(date) {
@@ -65,37 +71,103 @@ const IndividualShelter = (props) => {
     }
   }
 
+  useEffect(() => {
+    let start = setMilliseconds(
+      setSeconds(setMinutes(setHours(startTime, 0), 0), 0),
+      0
+    );
+    let end = setMilliseconds(
+      setSeconds(setMinutes(setHours(startTime, 23), 59), 59),
+      999
+    );
+    if (shelter) {
+      setLoading(true);
+      let request_endpoint =
+        SERVER +
+        `/counts/${
+          shelter.id
+        }?filter_start_after=${start.getTime()}&filter_end_before=${end.getTime()}`;
+      fetch(request_endpoint, {
+        methods: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "volunteer@slu.edu",
+        },
+      })
+        .then((response) => response.json())
+        .then((shifts) => {
+          let newShifts = [];
+          for (let i = 0; i < shifts.length; i++) {
+            let startTime = new Date(shifts[i].start_time);
+            let endTime = new Date(shifts[i].end_time);
+            let prevBounds = start;
+            if (i > 0) prevBounds = shifts[i - 1].end_time;
+            if (prevBounds !== shifts[i].start_time) {
+              newShifts.push({
+                start_time: prevBounds,
+                end_time: shifts[i].start_time,
+                count: 0,
+              });
+            }
+            if (
+              !(
+                startTime.getHours() === endTime.getHours() &&
+                startTime.getMinutes() === endTime.getMinutes()
+              )
+            )
+              newShifts.push(shifts[i]);
+            if (i === shifts.length - 1) {
+              if (end !== shifts[i].end_time) {
+                newShifts.push({
+                  start_time: shifts[i].end_time,
+                  end_time: end,
+                  count: 0,
+                });
+              }
+            }
+          }
+          return newShifts;
+        })
+        .then((response) => {
+          setShiftCounts(response);
+          setLoading(false);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [startTime, shelter]);
+
   return (
     <div>
       {props.isSignupPage && (
-        <div class="signupcard" key={shelter.id}>
-          <div className="column1">
-            <h2>{shelter.name}</h2>
-            <p>
-              {shelter.city}, {shelter.state} {shelter.zipCode}
-            </p>
-            <p>{+shelter.distance.toFixed(2)} miles away</p>
-          </div>
-          <div className="column2">
-            <div className="dates">
+        <div key={shelter.id}>
+          <div class="signupcard">
+            <div className="column1">
+              <h2>{shelter.name}</h2>
+              <p>
+                {shelter.city}, {shelter.state} {shelter.zipCode}
+              </p>
+              <p>{+shelter.distance.toFixed(2)} miles away</p>
+            </div>
+            <div className="column2">
+              <div className="dates">
                 <div className="date-row">
                   <div className="date-label">
                     <p>Start Time: </p>
                   </div>
                   <div className="picker">
-                  <DatePicker
-                    className="date-picker"
-                    selected={startTime}
-                    filterTime={filterPastStartTime}
-                    onChange={(date) => modifyStart(date)}
-                    showTimeSelect
-                    dateFormat="M/dd/yy hh:mm aa"
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                    customInput={<ExampleCustomInput />}
-                  />
+                    <DatePicker
+                      className="date-picker"
+                      selected={startTime}
+                      filterTime={filterPastStartTime}
+                      onChange={(date) => modifyStart(date)}
+                      showTimeSelect
+                      dateFormat="M/dd/yy hh:mm aa"
+                      minDate={new Date()}
+                      showDisabledMonthNavigation
+                      customInput={<ExampleCustomInput />}
+                    />
                   </div>
-                </div> 
+                </div>
                 <div className="date-row">
                   <div className="date-label">
                     <p>End Time: </p>
@@ -110,15 +182,32 @@ const IndividualShelter = (props) => {
                       minDate={new Date()}
                       showDisabledMonthNavigation
                       customInput={<ExampleCustomInput />}
-                    />  
+                    />
                   </div>
                 </div>
+              </div>
+              <div className="add-btn">
+                <button onClick={() => addShift()}>
+                  <FontAwesomeIcon icon={faCirclePlus} size="1x" />
+                  <p className="label">Add shift </p>
+                </button>
+              </div>
             </div>
-            <div className="add-btn">
-              <button onClick={() => addShift()}>
-                <FontAwesomeIcon icon={faCirclePlus} size="1x"/> 
-                <p className="label">Add shift </p>
-              </button>
+          </div>
+
+          <div class="signupcard shift-graph text-center">
+            <h3>Current Volunteer Counts</h3>
+            <div class="shift-count">
+              {!loading && shiftCounts && shiftCounts.length > 0 && (
+                <div>{<GraphComponent shifts={shiftCounts} />}</div>
+              )}
+              {!loading && shiftCounts && shiftCounts.length === 0 && (
+                <p>
+                  No volunteers are currently signed up during your selected
+                  time range.
+                </p>
+              )}
+              {loading && <p>Loading...</p>}
             </div>
           </div>
         </div>

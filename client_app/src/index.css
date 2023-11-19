@@ -80,16 +80,25 @@ p {
 .shelter,
 .shift,
 .signupcard {
-  margin: 10px;
+  margin: 15px;
   border-radius: 1em;
   border: 1px solid #000000;
   background-color: #ecececfc;
   padding: 0.5rem;
 }
+
 .signupcard {
   display: flex;
   flex-direction: row;
+  margin-bottom: 0;
 }
+
+.signupcard.shift-graph {
+  display: block;
+  margin-top: 0;
+  background-color: #fcfff1;
+}
+
 .signupcard h2{
   margin-top: 0;
 }
@@ -97,6 +106,7 @@ p {
 .signupcard .column1 {
   flex: 4;
 }
+
 .signupcard .column2 {
   flex: 4;
   display: flex;
@@ -508,6 +518,25 @@ button {
 
 .cta-button button:hover {
   background-color: #2980b9;
+}
+
+.shift-count {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.shift-count {
+  height: 250px;
+}
+
+.shift-count canvas {
+  height: 225px;
+}
+
+.signupcard.shift-graph h3,
+.signupcard.shift-graph h4 {
+  margin: 0;
 }
 
 .continue-bottom-row {
