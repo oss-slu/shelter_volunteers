@@ -180,9 +180,32 @@ p {
   padding: 0;
 }
 
+#radius-select {
+  margin-top: 1em;
+}
+
 .shift.upcoming {
-  border: 1px solid black;
-  background-color: #219d46a9;
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  background-color: #bde3c8;
+  margin: 15px;
+  padding: 0.5em;
+}
+
+.cancelbtn {
+  background-color: #D22730;
+  color: #fdfaf6;
+  border: none;
+  padding: 0.75em;
+  cursor: pointer;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  width: 7em;
+}
+
+.shift.upcoming .details {
+  width: 100%; 
   text-align: center;
 }
 

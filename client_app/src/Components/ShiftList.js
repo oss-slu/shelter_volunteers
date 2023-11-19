@@ -11,6 +11,13 @@ const ShiftList = (props) => {
       props.onClose(event);
     }
   }
+  // This function asks user to confirm the cancel action
+  function onCancelShiftClick(shiftCode) {
+    if (window.confirm("Are you sure you want to cancel this shift?")) {
+      props.onCancelShift(shiftCode);
+    }
+  }
+
   return (
     <div>
       {/* Display the shift*/}
@@ -65,6 +72,7 @@ const ShiftList = (props) => {
                 {" "}
                 {formattedStartTime} - {formattedEndTime}{" "}
               </p>
+              <button class="cancelbtn" onClick={() => onCancelShiftClick(shift.code)}>Cancel Shift</button>
             </div>)}
             </>
           );
