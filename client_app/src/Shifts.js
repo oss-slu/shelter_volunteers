@@ -20,11 +20,6 @@ function Shifts(request_endpoint) {
   },[]);
 
   const handleCancelShift = (shiftCode) => {
-    const shiftEndTime = new Date(shiftCode.end_time).getTime();
-    if (shiftEndTime < Date.now()) {
-      console.error("Cannot cancel past shifts.");
-    return;
-    }
     fetch(`${SERVER}/shifts/${shiftCode}`, {
       method: "DELETE",
       headers: {
