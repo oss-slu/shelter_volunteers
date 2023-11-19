@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
-
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { useSpring, animated } from '@react-spring/web'
+
+
 
 const Shelters = (props) => {
-  let defaultRadius = "10";
+  let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
   const [latitude, setLatitude] = useState(41.8781);
@@ -18,6 +22,12 @@ const Shelters = (props) => {
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [onMobileContinueclicked,setOnMobileContinueclicked]=useState(false);
+  const [shaking, setShaking] = useState(false)
+
+  const shakeAnimation = useSpring({
+    transform: shaking ? 'translateY(-20px)' : 'translateY(0px)'  
+  })
 
   let shelters_endpoint =
     "https://api2-qa.gethelp.com/v2/facilities?page=0&pageSize=1000";
@@ -68,13 +78,16 @@ const Shelters = (props) => {
     let id = event.target.id;
     let shift =
       id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+    
     const codes = selectedShifts.map((s) => s.code);
     if (codes.includes(shift)) {
-      let index = selectedShifts.indexOf(shift);
-      const newSelected = [...selectedShifts];
-      newSelected.splice(index, 1);
-      setSelectedShifts(newSelected);
-      setButtonDisabled(selectedShifts.length === 0);
+      let index = selectedShifts.findIndex((s) => s.code === shift)
+      if (index !== -1) {
+        const newSelected = [...selectedShifts];
+        newSelected.splice(index, 1);
+        setSelectedShifts(newSelected);
+        setButtonDisabled(selectedShifts.length === 0);
+      }
     }
   }
 
@@ -88,6 +101,8 @@ const Shelters = (props) => {
   }
 
   function manageShifts(shift) {
+    setShaking(true)
+    setTimeout(() => setShaking(false), 200)
     setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
   }
@@ -104,6 +119,16 @@ const Shelters = (props) => {
     })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
+  }
+
+  function onMobileContinueClick(){
+    if (selectedShifts.length<1) {
+      return
+    }
+    setOnMobileContinueclicked(true);
+  }
+  function handleCurrentSelectionClose(){
+    setOnMobileContinueclicked(false);
   }
 
   useEffect(() => {
@@ -159,9 +184,14 @@ const Shelters = (props) => {
                     isSignupPage={true}
                   />
                 </div>
-                <div className="column column-2">
-                  <div className="current-selection">
+                <div className={onMobileContinueclicked?"column column-2 active":"column column-2"}>
+                  <div className={onMobileContinueclicked?"current-selection active":"current-selection"}>
                     <h2>Current Selection</h2>
+                    {onMobileContinueclicked&&(
+                      <div className="close-btn" onClick={handleCurrentSelectionClose}>
+                        <FontAwesomeIcon icon={faCircleXmark} size="2x" />
+                      </div>
+                    )}
                     {selectedShifts && (
                       <div>
                         <ShiftList
@@ -181,6 +211,20 @@ const Shelters = (props) => {
                     </div>
                   </div>
                 </div>
+                {!onMobileContinueclicked&&(<div className="continue-bottom-row">
+                  <animated.div className="cart" onClick={onMobileContinueClick} style={shakeAnimation}>
+                    <div className="circle">
+                      <FontAwesomeIcon icon={faCalendarDays} size="2x"/>
+                    </div>
+                    <div className="count-bubble">
+                        {selectedShifts.length}
+                    </div>
+                  </animated.div>
+                  <button className={selectedShifts.length>0?"cont-btn":"cont-btn disabled"} onClick={onMobileContinueClick}>
+                    Continue 
+                    {selectedShifts.length>0 && (<FontAwesomeIcon icon={faArrowRight} style={{"marginLeft":"1em"}}/>)}
+                  </button>
+                </div>)}
               </div>
             </div>
           )}
