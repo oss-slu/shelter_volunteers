@@ -162,9 +162,9 @@ const Shelters = (props) => {
               <div className="signup-page">
                 <div className="column column-1">
                   <div className="text-center">
-                    <h1>Volunteering Oppotunities</h1>
+                    <h1>Volunteering Opportunities</h1>
                     <button onClick={getLocation}>
-                      Show oppotunities near me
+                      Show opportunities near me
                     </button>
                     <br />
                     <label htmlFor="radius-select">Radius (miles): </label>

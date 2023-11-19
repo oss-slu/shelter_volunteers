@@ -19,11 +19,30 @@ function Shifts(request_endpoint) {
       .catch((error) => console.log(error));
   },[]);
 
+  const handleCancelShift = (shiftCode) => {
+    fetch(`${SERVER}/shifts/${shiftCode}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "volunteer@slu.edu",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setData((prevData) => prevData.filter((shift) => shift.code !== shiftCode));
+        } else {
+          console.error("Failed to cancel shift");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
   return (
     <div>
-      <ShiftList shifts={data} />
+      <ShiftList shifts={data} onCancelShift={handleCancelShift} />
     </div>
   );
+
 }
 export function UpcomingShifts() {
   const time_now = new Date().getTime();

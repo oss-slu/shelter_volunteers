@@ -11,6 +11,13 @@ const ShiftList = (props) => {
       props.onClose(event);
     }
   }
+  // This function asks user to confirm the cancel action
+  function onCancelShiftClick(shiftCode) {
+    if (window.confirm("Are you sure you want to cancel this shift?")) {
+      props.onCancelShift(shiftCode);
+    }
+  }
+
   return (
     <div>
       {/* Display the shift*/}
@@ -22,6 +29,8 @@ const ShiftList = (props) => {
           // format the start and end time to human-readable strings
           const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
           const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
+          // helps keep track of whether or not the end time of the shift is in the past
+          const isPastShift = endTime.getTime() < Date.now();
           return (
             <>
             {props.currentSelectionSection === true && (<div className= "currentselection"
@@ -65,6 +74,13 @@ const ShiftList = (props) => {
                 {" "}
                 {formattedStartTime} - {formattedEndTime}{" "}
               </p>
+              {/* using the newly created boolean variable to ensure the cancel button only appears for
+              upcoming shifts */}
+              {!isPastShift && (
+                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift.code)}>
+                  Cancel Shift
+                </button>
+              )}
             </div>)}
             </>
           );
