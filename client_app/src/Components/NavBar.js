@@ -34,7 +34,7 @@ function NavBar() {
                 className="nav-links"
                 onClick={handleClick}
               >
-                Sign up For Shifts
+                Sign Up For Shifts
               </NavLink>
             </li>
             <li className="nav-item">
