@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from "react-router-dom";
+import {Link, Navigate, useNavigate } from "react-router-dom";
 
 function RegistrationForm() {
   const [formData, setFormData] = useState({
@@ -9,6 +9,8 @@ function RegistrationForm() {
     password: '',
     phone: '',
   });
+
+  const [signedUp, setSignedUp] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +32,7 @@ function RegistrationForm() {
 
       if (response.ok) {
         // Registration was successful
-        alert('Registration successful!');
+        setSignedUp(true)
       } else {
         // Handle registration errors
         alert('Registration failed. Please try again.');
@@ -44,7 +46,15 @@ function RegistrationForm() {
   return (
     <div>
       <h2>Registration Form</h2>
-      <form onSubmit={handleSubmit}>
+      {signedUp ? (
+        <div>
+            <h1> Your account has been created </h1>
+            <Link to="/">
+                <button>Sign In</button>
+            </Link>
+        </div>
+        ):(
+        <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} required />
@@ -69,6 +79,7 @@ function RegistrationForm() {
           <button type="submit">Register</button>
         </div>
       </form>
+     )}
     </div>
   );
 }
