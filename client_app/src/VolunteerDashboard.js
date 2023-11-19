@@ -1,7 +1,12 @@
+import { Link,useNavigate } from "react-router-dom";
 import Shelters from "./Shelters";
 import { UpcomingShifts } from "./Shifts";
 
 function VolunteerDashboard() {
+  const navigate = useNavigate();
+  function signupClick() {
+    navigate("/shelters");
+  }
   return (
     <div class="volunteer-dashboard">
       <div class="column column-1">
@@ -34,7 +39,7 @@ function VolunteerDashboard() {
         </div>
       </div>
       <div className="cta-button">
-        <button>Sign up for shifts </button>
+        <button onClick={signupClick}>Sign up for shifts</button>
       </div>
     </div>
   );
