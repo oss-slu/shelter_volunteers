@@ -18,10 +18,10 @@ def login_user(user, password):
     """
 
     url = 'https://oauth-qa.gethelp.com/api/oauth/token'
-    getHelpToken = os.environ['REACT_APP_GETHELP_AUTH_API_TOKEN']
+    get_help_token = os.environ['REACT_APP_GETHELP_AUTH_API_TOKEN']
 
     # Encode the authorization token
-    auth_token = base64.b64encode(getHelpToken.encode()).decode('utf-8')
+    auth_token = base64.b64encode(get_help_token.encode()).decode('utf-8')
 
     # Set up the headers and data
     headers = {
