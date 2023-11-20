@@ -6,12 +6,13 @@ import base64
 import os
 
 from responses import ResponseSuccess, ResponseFailure
+from requests.exceptions import HTTPError, Timeout, RequestException
 
 def login_user(user, password):
     """
     The login function contacts GetHelp authentication API to retrieve
-    a token for the given username and password. 
-    We are doing this on the server because login through GetHelp 
+    a token for the given username and password.
+    We are doing this on the server because login through GetHelp
     requires the use of GetHelp API token. We don't
     want to store this token on the client side.
     """
@@ -38,7 +39,22 @@ def login_user(user, password):
     print(response)
     if not response.ok:
         return ResponseFailure(response.status_code,
-            "Unable to log in")
+            'Unable to log in')
 
     # Parse the JSON response
     return ResponseSuccess(response.json())
+
+def get_user(token):
+    try:
+        response = requests.get(
+            'https://api2-qa.gethelp.com/v1/users/current',
+            headers={'Authorization': f'Bearer {token}'}
+        )
+        response.raise_for_status()
+        return response.json(), None
+    except HTTPError as e:
+        return None, f'HTTP error: {e}'
+    except Timeout:
+        return None, 'Timeout error'
+    except RequestException:
+        return None, 'Request error'
