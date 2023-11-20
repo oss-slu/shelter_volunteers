@@ -158,11 +158,12 @@ def delete_work_shift(shift_id):
 @blueprint.route("/login", methods=["POST"])
 @cross_origin()
 def login():
-    print("here")
     data = request.get_json()
-    print(data)
-    print(data["user"])
-    print(data["password"])
+    if not ("user" in data and "password" in data):
+        return Response([],
+            mimetype="application/json",
+            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        )
 
     response = login_user(data["user"], data["password"])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]

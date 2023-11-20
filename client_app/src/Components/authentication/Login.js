@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { SERVER } from "../../config";
 
 // temporary solution
 // permanent solution is to add a /login endpoint to our server-side
@@ -7,17 +8,15 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 async function LoginUser(user, pass) {
   try {
-    const response = await fetch('https://oauth-qa.gethelp.com/api/oauth/token', {
+    const response = await fetch(SERVER + "/login", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(process.env.REACT_APP_GETHELP_AUTH_API_TOKEN)
+        'Content-Type': 'application/json',
       },
-      body: new URLSearchParams({
-        'grant_type': 'password',
-        'username': user,
+      body: JSON.stringify({
+        'user': user,
         'password': pass
-      }).toString()
+      })
     });
 
     if (!response.ok) {
