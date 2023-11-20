@@ -11,11 +11,11 @@ from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
+from use_cases.authenticate import get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
-from use_cases.authenticate import get_user
 
 
 blueprint = Blueprint("work_shift", __name__)
