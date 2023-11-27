@@ -20,5 +20,5 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     """Testing configuration"""
-
+    os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
     TESTING = True

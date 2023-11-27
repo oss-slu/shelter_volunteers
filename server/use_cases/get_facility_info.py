@@ -9,8 +9,8 @@ import json
 
 def get_facility_info_use_case(facility_id):
     try:
-        GETHELP_API = os.environ["GETHELP_API"]
-        url = GETHELP_API + f"v2/facilities/{facility_id}"
+        gethelp_api = os.environ["GETHELP_API"]
+        url = gethelp_api + f"v2/facilities/{facility_id}"
         with request.urlopen(url) as response:
             if response.status == 200:
                 data = json.loads(response.read().decode())
