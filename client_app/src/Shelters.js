@@ -51,7 +51,6 @@ const Shelters = (props) => {
     })
       .then(async (response) => (await response.json())["content"])
       .then((shelters) => {
-        console.log(shelters);
         if (props.condensed) {
           shelters = shelters.slice(0, 3);
         }

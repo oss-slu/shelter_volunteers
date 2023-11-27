@@ -16,7 +16,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     """Development configuration"""
-
+    os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
 
 class TestingConfig(Config):
     """Testing configuration"""
