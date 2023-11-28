@@ -16,7 +16,9 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     """Development configuration"""
-
+    #BYPASS_LOGIN = True
+    DEV_USER = 'developer@slu.edu'
+    DEV_TOKEN = '1234567890-developer-token'
 
 class TestingConfig(Config):
     """Testing configuration"""

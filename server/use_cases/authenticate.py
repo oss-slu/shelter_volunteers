@@ -35,14 +35,7 @@ def login_user(user, password):
     }
 
     response = requests.post(url, headers=headers, data=data)
-
-    print(response)
-    if not response.ok:
-        return ResponseFailure(response.status_code,
-            'Unable to log in')
-
-    # Parse the JSON response
-    return ResponseSuccess(response.json())
+    return response
 
 def get_user(token):
     try:
@@ -51,7 +44,9 @@ def get_user(token):
             headers={'Authorization': f'Bearer {token}'}
         )
         response.raise_for_status()
-        return response.json(), None
+        user_info = response.json()
+        print(user_info)
+        return user_info['id'], None
     except HTTPError as e:
         return None, f'HTTP error: {e}'
     except Timeout:
