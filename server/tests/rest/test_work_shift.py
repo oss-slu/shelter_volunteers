@@ -96,7 +96,7 @@ def test_delete_work_shift(mock_get_user_from_token, mock_use_case):
     mock_get_user_from_token.return_value = 'test'
     mock_response = ResponseSuccess({'message': 'Shift deleted successfully'})
     mock_use_case.return_value = mock_response
-   
+
     app = create_app('testing')
     client = app.test_client()
     headers = {'Authorization': 'volunteer@slu.edu'}

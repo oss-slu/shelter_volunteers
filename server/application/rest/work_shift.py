@@ -15,7 +15,7 @@ from use_cases.authenticate import login_user
 from use_cases.authenticate import get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
-from responses import ResponseTypes, ResponseSuccess
+from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 
 
@@ -145,7 +145,7 @@ def get_user_from_token(headers):
         return current_app.config["DEV_USER"]
 
     user = get_user(token)
-    if user[0] == None:
+    if user[0] is None:
         raise ValueError
 
     return user[0]
@@ -184,7 +184,8 @@ def login():
         "DEV_TOKEN" in current_app.config and
         "DEV_USER" in current_app.config and
         data["user"] == current_app.config["DEV_USER"]):
-        return Response(json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
+        return Response(
+            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[status])
 

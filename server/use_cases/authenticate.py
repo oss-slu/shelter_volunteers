@@ -5,7 +5,6 @@ import requests
 import base64
 import os
 
-from responses import ResponseSuccess, ResponseFailure
 from requests.exceptions import HTTPError, Timeout, RequestException
 
 def login_user(user, password):
