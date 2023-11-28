@@ -2,10 +2,6 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { SERVER } from "../../config";
 
-// temporary solution
-// permanent solution is to add a /login endpoint to our server-side
-// which authenticates through GetHelp
-
 async function LoginUser(user, pass) {
   try {
     const response = await fetch(SERVER + "/login", {

@@ -11,14 +11,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import "./App.css";
 
 function App() {
-  // get authentication token
-  /*
-  const { token, setToken } = useToken();
-  if(!token) {
-    return <Login setToken={setToken} />
-  }
-  */
-  localStorage.clear();
   return (
     <>      
       <Router>
