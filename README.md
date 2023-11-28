@@ -13,4 +13,4 @@ To run the code, please follow the below instructions:
 <code>docker-compose up</code>
 5. Start up the Flask server using instructions in the <code>server</code> directory
 6. Run the client, using the instructions in the <code>client_app</code> directory
-
+7. For development purposes, use developer@slu.edu as the username and any password, to bypass authentication. This only works when server is running in DEBUG mode and DEV_USER and DEV_CONFIG configurations are enabled.
