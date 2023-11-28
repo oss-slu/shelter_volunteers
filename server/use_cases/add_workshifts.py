@@ -12,3 +12,12 @@ def workshift_add_multiple_use_case(repo, work_shifts):
     """
     for work_shift in work_shifts:
         workshift_add_use_case(repo, work_shift)
+
+def is_duplicate_shift(new_shift, repo):
+    """
+    Checks for a duplicate shift based on its unique code.
+    """
+    shift_code = new_shift['code']
+    existing_shift = repo.shifts.find_one({"code": shift_code})
+    return existing_shift is not None
+

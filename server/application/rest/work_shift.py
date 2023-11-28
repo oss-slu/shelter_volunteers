@@ -8,6 +8,7 @@ from flask_cors import cross_origin
 from repository import mongorepo, manage
 from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
+from use_cases.add_workshifts import is_duplicate_shift
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
@@ -117,6 +118,13 @@ def work_shifts():
         data = request.get_json()
         for shift in data:
             shift["worker"] = user
+        # Check for duplicate shifts
+        if is_duplicate_shift(shift, repo):
+            return Response(
+                json.dumps({"error": "Duplicate shift"}),
+                mimetype="application/json",
+                status=400,
+            )
         workshift_add_multiple_use_case(repo, data)
         return Response(
             json.dumps(data, cls=WorkShiftJsonEncoder),
