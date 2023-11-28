@@ -136,17 +136,17 @@ def get_user_from_token(headers):
     token = headers.get("Authorization")
     if not token:
         raise ValueError
-    user = get_user(token)
-    print(user)
-    if user[0] == None:
-            if (current_app.config['DEBUG'] and
-                'DEV_USER' in current_app.config and
-                'DEV_TOKEN' in current_app.config and
-                token == current_app.config['DEV_TOKEN']):
 
-                return current_app.config['DEV_USER']
-            else:
-                raise ValueError
+    # in debug mode, see if real authentication should be bypassed
+    if (current_app.config['DEBUG'] and
+        'DEV_USER' in current_app.config and
+        'DEV_TOKEN' in current_app.config and
+        token == current_app.config['DEV_TOKEN']):
+        return current_app.config['DEV_USER']
+
+    user = get_user(token)
+    if user[0] == None:
+        raise ValueError
 
     return user[0]
 
@@ -177,39 +177,25 @@ def login():
             status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
-        
-    response = login_user(data["user"], data["password"])
-
     status = ResponseTypes.SUCCESS
-    # if the login failed, see if this is a DEV_USER login
-    # which is allowed to bypass authentication
-    # This is allowed only in DEBUG mode
-    print(current_app.config)
 
-    if not response.ok: #response.response_type != ResponseTypes.SUCCESS:
-        if (current_app.config['DEBUG'] and 
-            'DEV_TOKEN' in current_app.config and 
-            'DEV_USER' in current_app.config and
-            data['user'] == current_app.config['DEV_USER']):
-            return Response(json.dumps({'access_token':current_app.config['DEV_TOKEN']}),
-                mimetype="application/json",
-                status = HTTP_STATUS_CODES_MAPPING[status])
+    # check if authentication should be bypassed for development purposes
+    if (current_app.config['DEBUG'] and 
+        'DEV_TOKEN' in current_app.config and 
+        'DEV_USER' in current_app.config and
+        data['user'] == current_app.config['DEV_USER']):
+        return Response(json.dumps({'access_token':current_app.config['DEV_TOKEN']}),
+            mimetype="application/json",
+            status = HTTP_STATUS_CODES_MAPPING[status])
 
-    print(response.json())
-    #status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
+    # go through the login process   
+    response = login_user(data["user"], data["password"])
     if not response.ok:
         status = ResponseTypes.AUTHORIZATION_ERROR
 
     return Response(json.dumps(response.json()),
         mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
 
-"""
-    return Response(
-        json.dumps(response.value),
-        mimetype="application/json",
-        status=status_code
-    )
-"""
 def app_configuration():
     result = manage.read_json_configuration("mongo_config")
     return result

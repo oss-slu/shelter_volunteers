@@ -15,8 +15,8 @@ const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
-  const [latitude, setLatitude] = useState(41.8781);
-  const [longitude, setLongitude] = useState(-87.6298);
+  const [latitude, setLatitude] = useState(33.997103);
+  const [longitude, setLongitude] = useState(-118.4472731);
   const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
