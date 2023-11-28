@@ -138,11 +138,11 @@ def get_user_from_token(headers):
         raise ValueError
 
     # in debug mode, see if real authentication should be bypassed
-    if (current_app.config['DEBUG'] and
-        'DEV_USER' in current_app.config and
-        'DEV_TOKEN' in current_app.config and
-        token == current_app.config['DEV_TOKEN']):
-        return current_app.config['DEV_USER']
+    if (current_app.config["DEBUG"] and
+        "DEV_USER" in current_app.config and
+        "DEV_TOKEN" in current_app.config and
+        token == current_app.config["DEV_TOKEN"]):
+        return current_app.config["DEV_USER"]
 
     user = get_user(token)
     if user[0] == None:
@@ -180,15 +180,15 @@ def login():
     status = ResponseTypes.SUCCESS
 
     # check if authentication should be bypassed for development purposes
-    if (current_app.config['DEBUG'] and 
-        'DEV_TOKEN' in current_app.config and 
-        'DEV_USER' in current_app.config and
-        data['user'] == current_app.config['DEV_USER']):
-        return Response(json.dumps({'access_token':current_app.config['DEV_TOKEN']}),
+    if (current_app.config["DEBUG"] and
+        "DEV_TOKEN" in current_app.config and
+        "DEV_USER" in current_app.config and
+        data["user"] == current_app.config["DEV_USER"]):
+        return Response(json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[status])
 
-    # go through the login process   
+    # go through the login process
     response = login_user(data["user"], data["password"])
     if not response.ok:
         status = ResponseTypes.AUTHORIZATION_ERROR
