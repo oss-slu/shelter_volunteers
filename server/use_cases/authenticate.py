@@ -19,6 +19,8 @@ def login_user(user, password):
     url = 'https://oauth-qa.gethelp.com/api/oauth/token'
     get_help_token = os.environ['REACT_APP_GETHELP_AUTH_API_TOKEN']
 
+    print('logging in user', user)
+    print('got api token', get_help_token)
     # Encode the authorization token
     auth_token = base64.b64encode(get_help_token.encode()).decode('utf-8')
 
@@ -34,6 +36,7 @@ def login_user(user, password):
     }
 
     response = requests.post(url, headers=headers, data=data)
+    print('sent request to gethelp, response is', response)
     return response
 
 def get_user(token):
