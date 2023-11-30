@@ -27,7 +27,6 @@ function Shifts(request_endpoint) {
 }
 export function UpcomingShifts() {
   const time_now = new Date().getTime();
-  console.log(time_now);
   const shelters_endpoint = SERVER + "/shifts?filter_start_after=" + time_now;
   return (
     <div>

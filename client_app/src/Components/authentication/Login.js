@@ -21,7 +21,6 @@ async function LoginUser(user, pass) {
 
     const data = await response.json();
     localStorage.setItem('token', JSON.stringify(data.access_token));
-    console.log('Set token to ' + data.access_token);
   } catch (error) {
     // Handle login error
     console.error('Login error', error);
@@ -41,7 +40,6 @@ export default function Login() {
     e.preventDefault();
     await LoginUser(username, password);
     const mytoken = localStorage.getItem('token')
-    console.log(mytoken);
     navigate("/dashboard")
   }
   //if user is already loggedin redirect to dashboard page

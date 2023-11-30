@@ -189,8 +189,6 @@ def login():
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[status])
 
-    print("not a dev user")
-
     # go through the login process
     response = login_user(data["user"], data["password"])
     if not response.ok:
