@@ -4,6 +4,7 @@ import ConfirmationPage from "./Components/ConfirmationPage";
 import { SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
+import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useSpring, animated } from '@react-spring/web'
@@ -14,8 +15,8 @@ const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
-  const [latitude, setLatitude] = useState(41.8781);
-  const [longitude, setLongitude] = useState(-87.6298);
+  const [latitude, setLatitude] = useState(33.997103);
+  const [longitude, setLongitude] = useState(-118.4472731);
   const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -109,13 +110,12 @@ const Shelters = (props) => {
   function submitShifts() {
     let shifts = selectedShifts;
     const shiftsEndpoint = SERVER + "/shifts";
+    const header = getAuthHeader();
+
     fetch(shiftsEndpoint, {
       method: "POST",
       body: JSON.stringify(shifts),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: "volunteer@slu.edu",
-      },
+      headers: header,
     })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
