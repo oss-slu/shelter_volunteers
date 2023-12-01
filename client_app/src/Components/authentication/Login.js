@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { SERVER } from "../../config";
+import { Form, Button, Container, Card } from 'react-bootstrap';
 
 async function LoginUser(user, pass) {
   try {
@@ -28,7 +29,7 @@ async function LoginUser(user, pass) {
 }
 
 
-export default function Login() {
+export default function Login({ setAuth }) {
 
   const token = localStorage.getItem('token')
   const navigate = useNavigate()
@@ -40,34 +41,48 @@ export default function Login() {
     e.preventDefault();
     await LoginUser(username, password);
     const mytoken = localStorage.getItem('token')
+    setAuth(true);
     navigate("/dashboard")
   }
   //if user is already loggedin redirect to dashboard page
-  if (token){
-     return <Navigate to="/dashboard" />
+  if (token) {
+    return <Navigate to="/dashboard" />
   }
 
+  return (
+    <Container>
+      <br>
+      </br>
+      <Card>
+        <Card.Body>
+          <Card.Title>Sign in</Card.Title>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Username</Form.Label>
+              <Form.Control type="text"
+                onChange={e => setUserName(e.target.value)}
+              />
+            </Form.Group>
 
-  return(
-    <div>
-      <h1>Please Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <p>Username</p>
-          <input type="text" onChange={e => setUserName(e.target.value)} />
-        </label>
-        <label>
-          <p>Password</p>
-          <input type="password" onChange={e => setPassword(e.target.value)} />
-        </label>
-        <div>
-          <button type="submit">Sign In</button>
-        </div>
-      </form>
-      <Link to="/signup">
-        <button>Create an Account</button>
-      </Link>
-    </div>
-  )
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password"
+                onChange={e => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <br>
+            </br>
+            <Button variant="dark" type="submit">
+              Login
+            </Button>
+
+            <div className="py-2">
+              Don't have an account? <Link to="/signup">Sign Up</Link>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
+  );
 }
 
