@@ -14,8 +14,8 @@ function About() {
             
             <ListGroup.Item>
             <Row>
-                <Col xs={2} md={2} style={{ backgroundColor: 'black' }} order={1} className="d-flex align-items-center">
-                    <Image src="gethelplogo.png" fluid/>
+                <Col xs={2} md={2} order={1} className="d-flex align-items-center">
+                    <Image src="gethelplogoorig.png" fluid rounded/>
                 </Col>
                 <Col xs={10} md={10} order={2}>
                 We use <Card.Link href="https://gethelp.com/">GetHelp</Card.Link> API to get shelter information and volunteer opportunities.
