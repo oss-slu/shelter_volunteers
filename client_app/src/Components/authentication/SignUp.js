@@ -169,7 +169,7 @@ function RegistrationForm() {
                       placeholder='3141231234'
                     />
                   </FloatingLabel>
-                  <Button variant="dark" type="submit">
+                  <Button variant="dark" type="submit" disabled={formData.password !== formData.confirmPass}>
                     Register
                   </Button>
                 </Form>
