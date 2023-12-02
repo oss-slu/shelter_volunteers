@@ -65,7 +65,7 @@ function RegistrationForm() {
   return (
     <>
       {showSuccessModal && (
-        <Alert variant="success">Account created! <Link to="/login">Sign In</Link></Alert>
+        <Alert variant="success">Account created! <Link to="/">Sign In</Link></Alert>
       )}
       {showErrorModal && (
         <Alert variant="danger" onClose={() => setShowErrorModal(false)} dismissible>Error creating an accout!, Please try again </Alert>
