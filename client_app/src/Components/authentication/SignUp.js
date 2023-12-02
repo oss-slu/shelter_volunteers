@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Form, Button, Alert, Card, Container, Row, Col } from 'react-bootstrap';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import About from '../About';
 
 function RegistrationForm() {
   const [formData, setFormData] = useState({
@@ -72,93 +74,115 @@ function RegistrationForm() {
         <br>
         </br>
         <Row>
-          <Col md={6}>
+          <Col md={6}  style={{ marginBottom: '2rem' }}>
             <Card>
+              <Card.Header>Sign up</Card.Header>
               <Card.Body>
-                <Card.Title>Sign up</Card.Title>
                 <Form onSubmit={handleSubmit}>
-                  <Form.Group>
-                    <Form.Label>Email</Form.Label>
+                  <FloatingLabel
+                    controlId="email"
+                    label="Email address"
+                    className="mb-2"
+                  >
                     <Form.Control
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      placeholder="name@example.com"
                     />
-                  </Form.Group>
-
-                  <Form.Group>
-                    <Form.Label>First Name</Form.Label>
+                    </FloatingLabel>
+                    <FloatingLabel
+                    controlId="firstName"
+                    label="First Name"
+                    className="mb-2"
+                  >
                     <Form.Control
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
                       required
+                      placeholder='First Name'
                     />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Last Name</Form.Label>
+                  </FloatingLabel>
+                  <FloatingLabel
+                    controlId="lastName"
+                    label="Last Name"
+                    className="mb-2"
+                  >
                     <Form.Control
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
                       required
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Password</Form.Label>
+                      placeholder='Last Name'
+                    /></FloatingLabel>
+                  
+                  <FloatingLabel
+                    controlId="password"
+                    label="Password"
+                    className="mb-2"
+                  >
                     <Form.Control
                       type="password"
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
                       required
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Confirm Password</Form.Label>
+                      placeholder='Password'
+                    /></FloatingLabel>
+                  
+                  <FloatingLabel
+                    controlId="confirmPass"
+                    label="Confirm Password"
+                    className="mb-2"
+                  >
                     <Form.Control
                       type="password"
                       name="confirmPass"
                       value={formData.confirmPass}
                       onChange={handleChange}
                       required
+                      placeholder='Re-type Password'
                     />
                     {!isPasswordSame && (
                       <Form.Text className="text-muted">
                         Passwords do not match
-                      </Form.Text>
+                      </Form.Text>  
                     )}
                     
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Phone</Form.Label>
+                    </FloatingLabel>
+                    <FloatingLabel
+                      controlId="phone"
+                      label="Phone number"
+                      className="mb-2"
+                    >
                     <Form.Control
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
                       required
+                      placeholder='3141231234'
                     />
-                  </Form.Group>
-                  <br>
-                  </br>
+                  </FloatingLabel>
                   <Button variant="dark" type="submit">
                     Register
                   </Button>
                 </Form>
               </Card.Body>
+              <Card.Footer>
+                  Already have an account? <Link to="/">Sign in</Link>
+                </Card.Footer>
             </Card>
-          </Col>
-
+          </Col>    
           <Col md={6}>
-            <div> <h2>About</h2> </div>
+            <About/>
           </Col>
         </Row>
-
       </Container>
     </>
   );

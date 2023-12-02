@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { SERVER } from "../../config";
-import { Form, Button, Container, Card } from 'react-bootstrap';
+import { Form, Button, Container, Card, Col, Row, FloatingLabel} from 'react-bootstrap';
+import About from "../About";
 
 async function LoginUser(user, pass) {
   try {
@@ -53,35 +54,52 @@ export default function Login({ setAuth }) {
     <Container>
       <br>
       </br>
-      <Card>
-        <Card.Body>
-          <Card.Title>Sign in</Card.Title>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Username</Form.Label>
-              <Form.Control type="text"
-                onChange={e => setUserName(e.target.value)}
-              />
-            </Form.Group>
+      <Row>
+        <Col md={6} order={1} style={{ marginBottom: '2rem' }}>
+          <Card>
+            <Card.Header>
+              Sign in
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleSubmit}>
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password"
-                onChange={e => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <br>
-            </br>
-            <Button variant="dark" type="submit">
-              Login
-            </Button>
+                <FloatingLabel
+                    controlId="formBasicEmail"
+                    label="Email address"
+                    className="mb-2"
+                  >
+                  <Form.Control type="text"
+                    onChange={e => setUserName(e.target.value)}
+                    placeholder="Email Address"
+                  />
+                </FloatingLabel>
 
-            <div className="py-2">
-              Don't have an account? <Link to="/signup">Sign Up</Link>
-            </div>
-          </Form>
-        </Card.Body>
-      </Card>
+
+                <FloatingLabel
+                    controlId="formBasicPassword"
+                    label="Password"
+                    className="mb-2"
+                  >
+                  <Form.Control type="password"
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Password"
+                  />
+                </FloatingLabel>
+                <Button variant="dark" type="submit">
+                  Login
+                </Button>
+
+                <div className="py-2">
+                  Don't have an account? <Link to="/signup">Sign Up</Link>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} order={2}>
+          <About />
+        </Col>
+      </Row>
     </Container>
   );
 }
