@@ -1,2 +1,2 @@
 export FLASK_CONFIG="development"
-flask run
+flask run --debug

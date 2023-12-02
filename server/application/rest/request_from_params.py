@@ -3,7 +3,7 @@ This module contains functions to build request objects based
 on parameters passed along with the http request
 """
 
-from requests.work_shift_list import build_work_shift_list_request
+from request.work_shift_list import build_work_shift_list_request
 def list_shift_request(params):
     """
     Creates a WorkShiftList request object (either valid or invalid)
