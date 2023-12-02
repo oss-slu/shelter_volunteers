@@ -176,8 +176,8 @@ p {
 }
 
 p {
-  margin: 0;
-  padding: 0;
+  margin: 0  !important;
+  padding: 0 !important;
 }
 
 #radius-select {
@@ -296,14 +296,12 @@ p {
 }
 
 button {
-  background-color: #193b45;
-  border-radius: 5px;
-  color: #fdfaf6;
-  border: none;
-  padding: 1em;
-  cursor: pointer;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  background-color: #193b45 ;
+  border-radius: 5px ;
+  color: #fdfaf6 ;
+  border: none ;
+  padding: 0.7em ;
+  cursor: pointer ;
 }
 
 @media screen and (max-width: 960px) {
@@ -378,7 +376,6 @@ button {
 #submit-shifts {
   margin-top: auto;
   margin-bottom: 20px;
-  font-size: 20px;
   @media (max-width:  960px) {
     position: fixed;
     bottom: 1em;
@@ -398,6 +395,7 @@ button {
   border: transparent;
   background-color: #142f37;
   cursor: not-allowed;
+  padding: 0.7em;
 }
 
 #submit-shifts button:disabled {
@@ -654,3 +652,4 @@ button {
   text-align: left;
   flex: 1;
 }
+

@@ -1,5 +1,8 @@
-import { useState } from 'react';
-import {Link, Navigate, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import { Form, Button, Alert, Card, Container, Row, Col } from 'react-bootstrap';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import About from '../About';
 
 function RegistrationForm() {
   const [formData, setFormData] = useState({
@@ -8,10 +11,18 @@ function RegistrationForm() {
     lastName: '',
     password: '',
     phone: '',
+    confirmPass: '',
   });
-
-  const [signedUp, setSignedUp] = useState(false)
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [isPasswordSame, setIsPasswordSame] = useState(false);
+  useEffect(() => {
+    if (formData.password === formData.confirmPass) {
+      setIsPasswordSame(true);
+    } else {
+      setIsPasswordSame(false);
+    }
+  }, [formData.password, formData.confirmPass]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -32,55 +43,148 @@ function RegistrationForm() {
 
       if (response.ok) {
         // Registration was successful
-        setSignedUp(true)
+        setShowSuccessModal(true);
+        setFormData({
+          email: '',
+          firstName: '',
+          lastName: '',
+          password: '',
+          confirmPass: '',
+          phone: ''
+        })
       } else {
         // Handle registration errors
-        alert('Registration failed. Please try again.');
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while registering. Please try again later.');
+      setShowErrorModal(true);
     }
   };
 
   return (
-    <div>
-      <h2>Registration Form</h2>
-      {signedUp ? (
-        <div>
-            <h1> Your account has been created </h1>
-            <Link to="/">
-                <button>Sign In</button>
-            </Link>
-        </div>
-        ):(
-        <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>First Name:</label>
-          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Last Name:</label>
-          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Phone:</label>
-          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
-        </div>
-        <div>
-          <button type="submit">Register</button>
-        </div>
-      </form>
-     )}
-    </div>
+    <>
+      {showSuccessModal && (
+        <Alert variant="success">Account created! <Link to="/">Sign In</Link></Alert>
+      )}
+      {showErrorModal && (
+        <Alert variant="danger" onClose={() => setShowErrorModal(false)} dismissible>Error creating an accout!, Please try again </Alert>
+      )}
+      <Container>
+        <br>
+        </br>
+        <Row>
+          <Col md={6}  style={{ marginBottom: '2rem' }}>
+            <Card>
+              <Card.Header>Sign up</Card.Header>
+              <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                  <FloatingLabel
+                    controlId="email"
+                    label="Email address"
+                    className="mb-2"
+                  >
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="name@example.com"
+                    />
+                    </FloatingLabel>
+                    <FloatingLabel
+                    controlId="firstName"
+                    label="First Name"
+                    className="mb-2"
+                  >
+                    <Form.Control
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                      placeholder='First Name'
+                    />
+                  </FloatingLabel>
+                  <FloatingLabel
+                    controlId="lastName"
+                    label="Last Name"
+                    className="mb-2"
+                  >
+                    <Form.Control
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                      placeholder='Last Name'
+                    /></FloatingLabel>
+                  
+                  <FloatingLabel
+                    controlId="password"
+                    label="Password"
+                    className="mb-2"
+                  >
+                    <Form.Control
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      placeholder='Password'
+                    /></FloatingLabel>
+                  
+                  <FloatingLabel
+                    controlId="confirmPass"
+                    label="Confirm Password"
+                    className="mb-2"
+                  >
+                    <Form.Control
+                      type="password"
+                      name="confirmPass"
+                      value={formData.confirmPass}
+                      onChange={handleChange}
+                      required
+                      placeholder='Re-type Password'
+                    />
+                    {!isPasswordSame && (
+                      <Form.Text className="text-muted">
+                        Passwords do not match
+                      </Form.Text>  
+                    )}
+                    
+                    </FloatingLabel>
+                    <FloatingLabel
+                      controlId="phone"
+                      label="Phone number"
+                      className="mb-2"
+                    >
+                    <Form.Control
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                      placeholder='3141231234'
+                    />
+                  </FloatingLabel>
+                  <Button variant="dark" type="submit" disabled={formData.password !== formData.confirmPass}>
+                    Register
+                  </Button>
+                </Form>
+              </Card.Body>
+              <Card.Footer>
+                  Already have an account? <Link to="/">Sign in</Link>
+                </Card.Footer>
+            </Card>
+          </Col>    
+          <Col md={6}>
+            <About/>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 
