@@ -22,10 +22,7 @@ function Shifts(request_endpoint) {
   const handleCancelShift = (shiftCode) => {
     fetch(`${SERVER}/shifts/${shiftCode}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "volunteer@slu.edu",
-      },
+      headers: header,
     })
       .then((response) => {
         if (response.ok) {
