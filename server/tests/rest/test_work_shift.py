@@ -52,9 +52,10 @@ def test_list_work_shifts(mock_get_user_from_token,
     mock_workshift_list_use_case.assert_called()
     mock_facility_info_use_case.assert_called_with('existing-shelter-id')
 
+@mock.patch('repository.mongorepo.MongoRepo')
 @mock.patch('application.app.work_shift.workshift_add_multiple_use_case')
 @mock.patch('application.rest.work_shift.get_user_from_token')
-def test_add_work_shifts(mock_get_user_from_token, mock_use_case):
+def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
     mock_get_user_from_token.return_value = 'test'
     mock_use_case.return_value = [
         {
