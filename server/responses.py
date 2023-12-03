@@ -12,6 +12,7 @@ class ResponseTypes:
     AUTHORIZATION_ERROR = "AuthorizationError"
     PARAMETER_ERROR = "ParameterError"
     SUCCESS = "Success"
+    CONFLICT = "Conflict"
 
 
 class ResponseFailure:
