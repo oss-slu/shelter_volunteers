@@ -122,15 +122,39 @@ def work_shifts():
             )
 
     elif request.method == "POST":
+
         data = request.get_json()
-        for shift in data:
-            shift["worker"] = user
+        existing_shifts_response = workshift_list_use_case(repo, {}, user)
+        if existing_shifts_response.response_type != ResponseTypes.SUCCESS:
+            return Response(
+                json.dumps({"message": "Failed to retrieve existing shifts"}),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
+            )
+        existing_shifts = existing_shifts_response.value
+
+        for new_shift in data:
+            if shift_already_exists(new_shift, existing_shifts):
+                return jsonify({"message": "Duplicate or overlapping shift detected"}), 400
+            new_shift["worker"] = user
+
         workshift_add_multiple_use_case(repo, data)
         return Response(
             json.dumps(data, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
-            status=200,
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
         )
+
+def shift_already_exists(new_shift, existing_shifts):
+    new_shift_start = new_shift['start_time']
+    new_shift_end = new_shift['end_time']
+    for shift in existing_shifts:
+        existing_start = shift['start_time']
+        existing_end = shift['end_time']
+        if max(existing_start, new_shift_start) < min(existing_end, new_shift_end):
+            return True
+    return False
+
 
 def get_user_from_token(headers):
     token = headers.get("Authorization")
