@@ -17,7 +17,7 @@ from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
-from datetime import datetime
+
 
 
 blueprint = Blueprint("work_shift", __name__)
@@ -125,45 +125,32 @@ def work_shifts():
     elif request.method == "POST":
         repo = mongorepo.MongoRepo(app_configuration())
         user = get_user_from_token(request.headers)
+        if not user:
+            return jsonify({"message": "Invalid or missing token"}), \
+                            ResponseTypes.AUTHORIZATION_ERROR
         request_object = list_shift_request(request.args)
         existing_shifts_response = workshift_list_use_case(repo,
-                                            request_object, user)
+                                             request_object, user)
+        if existing_shifts_response.response_type != ResponseTypes.SUCCESS:
+            return Response(
+                json.dumps({"message": "Failed to retrieve existing shifts"}),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
+            )
         existing_shifts = existing_shifts_response.value
-
         data = request.get_json()
-        for new_shift in data:
-            if shift_already_exists(new_shift, existing_shifts):
-                return jsonify({
-                   "message": "Duplicate or overlapping shift detected"
-                    }), 400
+        for shift in data:
+            shift["worker"] = user
+        add_responses = workshift_add_multiple_use_case(repo, 
+                                                data, existing_shifts)
+        success = all(item['success'] for item in add_responses)
+        status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS] if success else 400
 
-            new_shift["worker"] = user
-
-        workshift_add_multiple_use_case(repo, data)
         return Response(
-            json.dumps(data, cls=WorkShiftJsonEncoder),
+            json.dumps(add_responses, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
+            status=status_code
         )
-
-
-def shift_already_exists(new_shift, existing_shifts):
-    new_shift_start = convert_timestamp_to_datetime(new_shift["start_time"])
-    new_shift_end = convert_timestamp_to_datetime(new_shift["end_time"])
-
-    for shift in existing_shifts:
-        existing_start = convert_timestamp_to_datetime(shift.start_time)
-        existing_end = convert_timestamp_to_datetime(shift.end_time)
-
-        if (max(existing_start, new_shift_start) <
-            min(existing_end, new_shift_end)):
-            return True
-
-    return False
-
-
-def convert_timestamp_to_datetime(timestamp_millis):
-    return datetime.fromtimestamp(timestamp_millis / 1000)
 
 def get_user_from_token(headers):
     token = headers.get("Authorization")

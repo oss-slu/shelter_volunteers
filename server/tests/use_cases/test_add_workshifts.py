@@ -43,13 +43,15 @@ def domain_work_shifts():
 # pylint: disable=redefined-outer-name
 def test_workshift_add_use_case(domain_work_shifts):
     repo = mock.Mock()
-    workshift_add_use_case(repo, domain_work_shifts[0])
+    existing_shifts = []
+    workshift_add_use_case(repo, domain_work_shifts[0], existing_shifts)
     repo.add.assert_called_with(domain_work_shifts[0])
     repo.add.return_value = None
 
 def test_workshift_add_multiple_use_case(domain_work_shifts):
     repo = mock.Mock()
-    workshift_add_multiple_use_case(repo, domain_work_shifts)
+    existing_shifts = []
+    workshift_add_multiple_use_case(repo, domain_work_shifts, existing_shifts)
     assert repo.add.call_count == len(domain_work_shifts)
     repo.add.assert_any_call(domain_work_shifts[0])
     repo.add.assert_any_call(domain_work_shifts[1])
