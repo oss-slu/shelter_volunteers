@@ -126,7 +126,7 @@ def work_shifts():
         repo = mongorepo.MongoRepo(app_configuration())
         user = get_user_from_token(request.headers)
         request_object = list_shift_request(request.args)
-        existing_shifts_response = workshift_list_use_case(repo, 
+        existing_shifts_response = workshift_list_use_case(repo,
                                             request_object, user)
         existing_shifts = existing_shifts_response.value
 
@@ -155,7 +155,8 @@ def shift_already_exists(new_shift, existing_shifts):
         existing_start = convert_timestamp_to_datetime(shift.start_time)
         existing_end = convert_timestamp_to_datetime(shift.end_time)
 
-        if max(existing_start, new_shift_start) < min(existing_end, new_shift_end):
+        if (max(existing_start, new_shift_start) <
+            min(existing_end, new_shift_end)):
             return True
 
     return False
