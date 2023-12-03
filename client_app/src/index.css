@@ -189,6 +189,7 @@ p {
   flex-direction: column; 
   align-items: center; 
   background-color: #bde3c8;
+  text-align: center;
 }
 
 .cancelbtn {
