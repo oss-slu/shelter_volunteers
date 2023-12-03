@@ -71,8 +71,8 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case):
     new_shift = {
         'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35d',
         'shelter': 'new-shelter-id',
-        'start_time': 1701442800000,
-        'end_time': 1701453600000
+        'start_time': 1703134800000,
+        'end_time': 1703138400000
     }
     headers = {
         'Authorization': 'volunteer@slu.edu',
@@ -85,8 +85,8 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case):
 
     assert response.status_code == 200
     assert data[0]['shelter'] == 'new-shelter-id'
-    assert data[0]['start_time'] == 1701442800000
-    assert data[0]['end_time'] == 1701453600000
+    assert data[0]['start_time'] == 1703134800000
+    assert data[0]['end_time'] == 1703138400000
     mock_use_case.assert_called()
 
 
