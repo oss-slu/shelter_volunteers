@@ -54,7 +54,7 @@ const MapView = (props) => {
   };
 
   const onLoad = (map) => {
-    const radiusInMeters = props.radius * 1609.34; // Assuming radius is in miles, convert to meters
+    const radiusInMeters = props.radius * 1609.34;
     const bounds = new window.google.maps.Circle({
       center: center,
       radius: radiusInMeters,
