@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDays,faArrowRight,faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDays,faArrowRight,faCircleXmark, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { useSpring, animated } from '@react-spring/web'
-
+import MapView from "./Components/MapView";
 
 
 const Shelters = (props) => {
@@ -24,7 +24,10 @@ const Shelters = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked,setOnMobileContinueclicked]=useState(false);
   const [shaking, setShaking] = useState(false)
-
+  const [showMap, setShowMap] = useState(false);
+  const toggleMap = () => {
+    setShowMap(!showMap);
+  };
   const shakeAnimation = useSpring({
     transform: shaking ? 'translateY(-20px)' : 'translateY(0px)'  
   })
@@ -175,6 +178,14 @@ const Shelters = (props) => {
                       <option value="50">50</option>
                       <option value="100">100</option>
                     </select>
+                    <br>
+                    </br>
+                    <br>
+                    </br>
+                    <button onClick={toggleMap}> <FontAwesomeIcon icon={faLocationDot} /> Open Map</button>
+                    <div className={`${showMap ? 'showmap' : 'dontshow'}`}>
+                      <MapView data={data} radius={radius} latitude= {latitude} longitude = {longitude} onClose={toggleMap} />
+                    </div>
                   </div>
                   {loading && <div class="loader"></div>}
                   <ShelterList
