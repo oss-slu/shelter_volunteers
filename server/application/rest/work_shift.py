@@ -144,10 +144,10 @@ def work_shifts():
             shift["worker"] = user
         add_responses = workshift_add_multiple_use_case(repo,
                                                 data, existing_shifts)
-        success = all(item['success'] for item in add_responses)
+        success = all(item["success"] for item in add_responses)
         status_code = (
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS] 
-            if success 
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+            if success
             else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
         )
         return Response(

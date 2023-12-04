@@ -1,15 +1,17 @@
-from datetime import datetime
-from domains.work_shift import WorkShift
 """
 This module contains the use case for adding work shifts.
 """
+from datetime import datetime
+from domains.work_shift import WorkShift
+
 def workshift_add_use_case(repo, new_shift, existing_shifts):
     """
     The function adds a work shift into the chosen database
     after checking for overlaps with existing shifts.
     """
     if shift_already_exists(new_shift, existing_shifts):
-        return {"success": False, "message": "Duplicate or overlapping shift detected"}
+        return {"success": False, 
+                "message": "Duplicate or overlapping shift detected"}
 
     repo.add(new_shift)
     return {"success": True, "message": "Shift added successfully"}
@@ -40,7 +42,8 @@ def shift_already_exists(new_shift, existing_shifts):
         existing_start = convert_timestamp_to_datetime(shift.start_time)
         existing_end = convert_timestamp_to_datetime(shift.end_time)
 
-        if max(existing_start, new_shift_start) < min(existing_end, new_shift_end):
+        if (max(existing_start, new_shift_start) <
+            min(existing_end, new_shift_end)):
             return True
 
     return False

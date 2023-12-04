@@ -56,11 +56,11 @@ def test_list_work_shifts(mock_get_user_from_token,
 @mock.patch('application.app.work_shift.workshift_add_multiple_use_case')
 @mock.patch('application.rest.work_shift.get_user_from_token')
 def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
+    # pylint: disable=unused-argument
     mock_get_user_from_token.return_value = 'test_user'
     mock_use_case.return_value = [
-        {"success": True, "message": "Shift added successfully"}
+        {'success': True, 'message': 'Shift added successfully'}
     ]
-    mock_repo_instance = mock_repo.return_value
     app = create_app('testing')
     client = app.test_client()
     new_shift = {
@@ -80,7 +80,7 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
 
     assert response.status_code == 200
     assert isinstance(data, list)
-    assert data[0]['message'] == "Shift added successfully"
+    assert data[0]['message'] == 'Shift added successfully'
     mock_use_case.assert_called()
 
 
