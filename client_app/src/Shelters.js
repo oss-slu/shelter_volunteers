@@ -184,7 +184,7 @@ const Shelters = (props) => {
                     </br>
                     <button onClick={toggleMap}> <FontAwesomeIcon icon={faLocationDot} /> Open Map</button>
                     <div className={`${showMap ? 'showmap' : 'dontshow'}`}>
-                      <MapView data={data} radius={radius} latitude= {latitude} longitude = {longitude} onClose={toggleMap} />
+                      <MapView data={data} radius={radius} latitude= {latitude} longitude = {longitude} onClose={toggleMap} manageShiftsFunction={manageShifts}/>
                     </div>
                   </div>
                   {loading && <div class="loader"></div>}
