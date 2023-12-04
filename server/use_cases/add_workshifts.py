@@ -10,7 +10,7 @@ def workshift_add_use_case(repo, new_shift, existing_shifts):
     after checking for overlaps with existing shifts.
     """
     if shift_already_exists(new_shift, existing_shifts):
-        return {"success": False, 
+        return {"success": False,
                 "message": "Duplicate or overlapping shift detected"}
 
     repo.add(new_shift)
