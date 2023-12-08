@@ -145,6 +145,10 @@ const IndividualShelter = (props) => {
               <p>
                 {shelter.city}, {shelter.state} {shelter.zipCode}
               </p>
+              <p>
+                {shelter.phone}
+              </p>
+              <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
             </div>
             <div className="column2">

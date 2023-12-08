@@ -67,7 +67,10 @@ const ShiftList = (props) => {
               )}
               {props.fromShelter !== true && (
                 <div>
-                  <h2>{shift.shelter}</h2>
+                  <h2>{shift.facility_info.name}</h2>
+                  <p>{shift.facility_info.city}, {shift.facility_info.state}, {shift.facility_info.zipCode}</p>
+                  <p>{shift.facility_info.phone}</p>
+                  <p><a href={shift.facility_info.website}>{shift.facility_info.website}</a></p>
                 </div>
               )}
               <p>

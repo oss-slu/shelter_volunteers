@@ -7,16 +7,18 @@ import Login from "./Components/authentication/Login";
 import Logout from "./Components/authentication/Logout";
 import SignUp from "./Components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
+import React,{useState} from "react";
 
 import "./App.css";
 
 function App() {
+  const [auth, setAuth] = useState(false);
   return (
     <>      
       <Router>
-        <NavBar/>
+        <NavBar auth={auth}/>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Login setAuth={setAuth}/>} />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
