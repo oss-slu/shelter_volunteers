@@ -71,7 +71,7 @@ def test_workshift_add_use_case_with_overlap(domain_work_shifts):
 
     response = workshift_add_use_case(repo, overlapping_shift, existing_shifts)
     assert response == {"success": False,
-                    "message": "Duplicate or overlapping shift detected"}
+                "message": "You are signed up for another shift at this time"}
     repo.add.assert_not_called()
 
 def test_workshift_add_multiple_use_case_with_overlap(domain_work_shifts):
