@@ -33,14 +33,15 @@ def login_user(user, password):
         'password': password
     }
 
-    response = requests.post(url, headers=headers, data=data)
+    response = requests.post(url, headers=headers, data=data, timeout=10)
     return response
 
 def get_user(token):
     try:
         response = requests.get(
             'https://api2-qa.gethelp.com/v1/users/current',
-            headers={'Authorization': f'Bearer {token}'}
+            headers={'Authorization': f'Bearer {token}'},
+            timeout=10
         )
         response.raise_for_status()
         user_info = response.json()
