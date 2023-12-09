@@ -128,22 +128,11 @@ def work_shifts():
         user = get_user_from_token(request.headers)
         if not user:
             return jsonify({"message": "Invalid or missing token"}), \
-                            ResponseTypes.AUTHORIZATION_ERROR
-        request_object = list_shift_request(request.args)
-        existing_shifts_response = workshift_list_use_case(repo,
-                                             request_object, user)
-        if existing_shifts_response.response_type != ResponseTypes.SUCCESS:
-            return Response(
-                json.dumps({"message": "Failed to retrieve existing shifts"}),
-                mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
-            )
-        existing_shifts = existing_shifts_response.value
+                           ResponseTypes.AUTHORIZATION_ERROR
         data = request.get_json()
         for shift in data:
             shift["worker"] = user
-        add_responses = workshift_add_multiple_use_case(repo,
-                                                data, existing_shifts)
+        add_responses = workshift_add_multiple_use_case(repo, data)
         success = all(item["success"] for item in add_responses)
         status_code = (
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]

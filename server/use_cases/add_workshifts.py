@@ -1,7 +1,6 @@
 """
 This module contains the use case for adding work shifts.
 """
-from datetime import datetime
 from domains.work_shift import WorkShift
 
 def workshift_add_use_case(repo, new_shift, existing_shifts):
@@ -16,16 +15,22 @@ def workshift_add_use_case(repo, new_shift, existing_shifts):
     repo.add(new_shift)
     return {"success": True, "message": "Shift added successfully"}
 
-def workshift_add_multiple_use_case(repo, work_shifts, existing_shifts):
+def workshift_add_multiple_use_case(repo, work_shifts):
     """
-    The function adds multiple work shifts into the chosen database.
-    It checks each shift for overlap and only adds non-overlapping shifts.
+    Adds multiple work shifts into the database after checking for overlap.
     """
+    if not work_shifts:
+        return []
+
+    user_id = work_shifts[0]["worker"] \
+        if isinstance(work_shifts[0], dict) else work_shifts[0].worker
+    existing_shifts = repo.get_shifts_for_user(user_id)
     responses = []
+
     for work_shift in work_shifts:
-        shift_id = (work_shift.code if isinstance(work_shift, WorkShift)
-            else work_shift["code"])
         add_response = workshift_add_use_case(repo, work_shift, existing_shifts)
+        shift_id = work_shift.code \
+            if isinstance(work_shift, WorkShift) else work_shift["code"]
         response_item = {"id": shift_id, "success": add_response["success"]}
         if not add_response["success"]:
             response_item["error"] = add_response["message"]
@@ -35,29 +40,24 @@ def workshift_add_multiple_use_case(repo, work_shifts, existing_shifts):
 
     return responses
 
+
 def shift_already_exists(new_shift, existing_shifts):
-    if isinstance(new_shift, WorkShift):
-        new_shift_start = convert_timestamp_to_datetime(new_shift.start_time)
-        new_shift_end = convert_timestamp_to_datetime(new_shift.end_time)
-    elif isinstance(new_shift, dict):
-        new_shift_start = convert_timestamp_to_datetime(new_shift["start_time"])
-        new_shift_end = convert_timestamp_to_datetime(new_shift["end_time"])
-    else:
-        raise ValueError("Invalid shift format")
+    """
+    Checks if the new_shift overlaps with any of the existing_shifts.
+    Assumes that new_shift and existing_shifts are dictionaries.
+    """
+    new_shift_dict = new_shift.to_dict() \
+        if isinstance(new_shift, WorkShift) else new_shift
+    new_shift_start = new_shift_dict["start_time"]
+    new_shift_end = new_shift_dict["end_time"]
 
     for shift in existing_shifts:
-        if isinstance(shift, WorkShift):
-            existing_start = convert_timestamp_to_datetime(shift.start_time)
-            existing_end = convert_timestamp_to_datetime(shift.end_time)
-        elif isinstance(shift, dict):
-            existing_start = convert_timestamp_to_datetime(shift["start_time"])
-            existing_end = convert_timestamp_to_datetime(shift["end_time"])
-        else:
-            continue
+        shift_dict = shift.to_dict() \
+            if isinstance(shift, WorkShift) else shift
+        existing_start = shift_dict["start_time"]
+        existing_end = shift_dict["end_time"]
         if (max(existing_start, new_shift_start) <
             min(existing_end, new_shift_end)):
             return True
     return False
 
-def convert_timestamp_to_datetime(timestamp_millis):
-    return datetime.fromtimestamp(timestamp_millis / 1000)
