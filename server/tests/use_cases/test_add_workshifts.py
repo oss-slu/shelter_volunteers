@@ -45,17 +45,17 @@ def test_workshift_add_use_case(domain_work_shifts):
     repo = mock.Mock()
     existing_shifts = []
     workshift_add_use_case(repo, domain_work_shifts[0], existing_shifts)
-    repo.add.assert_called_with(domain_work_shifts[0])
-    repo.add.return_value = None
+    repo.add.assert_called_with(domain_work_shifts[0].to_dict())
 
 def test_workshift_add_multiple_use_case(domain_work_shifts):
     repo = mock.Mock()
     repo.get_shifts_for_user.return_value = []
-    workshift_add_multiple_use_case(repo, domain_work_shifts)
+    work_shift_dicts = [work_shift.to_dict()
+                        for work_shift in domain_work_shifts]
+    workshift_add_multiple_use_case(repo, work_shift_dicts)
     assert repo.add.call_count == len(domain_work_shifts)
-    repo.add.assert_any_call(domain_work_shifts[0])
-    repo.add.assert_any_call(domain_work_shifts[1])
-    repo.add.assert_any_call(domain_work_shifts[2])
+    for work_shift_dict in work_shift_dicts:
+        repo.add.assert_any_call(work_shift_dict)
 
 def test_workshift_add_use_case_with_overlap(domain_work_shifts):
     repo = mock.Mock()
@@ -77,14 +77,14 @@ def test_workshift_add_multiple_use_case_with_overlap(domain_work_shifts):
     repo = mock.Mock()
     repo.get_shifts_for_user.return_value = [domain_work_shifts[0]]
     new_shifts = [
-        domain_work_shifts[1],
+        domain_work_shifts[1].to_dict(),
         WorkShift(
             code=uuid.uuid4(),
             worker="volunteer3@slu.edu",
             shelter="shelter-id-for-st-patric-center",
             start_time=domain_work_shifts[0].start_time,
             end_time=domain_work_shifts[0].end_time + 10000,
-        ),
+        ).to_dict(),
     ]
     responses = workshift_add_multiple_use_case(repo, new_shifts)
     assert len(responses) == 2
