@@ -1,13 +1,15 @@
 """
 This module contains the use case for get facility information.
 """
+import os
+
 from urllib import request, error
 from responses import ResponseFailure, ResponseSuccess, ResponseTypes
 import json
 
 def get_facility_info_use_case(facility_id):
     try:
-        url = f"https://api2-qa.gethelp.com/v2/facilities/{facility_id}"
+        url = os.environ["GETHELP_API"] + f"v2/facilities/{facility_id}"
         with request.urlopen(url) as response:
             if response.status == 200:
                 data = json.loads(response.read().decode())

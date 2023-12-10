@@ -39,7 +39,7 @@ def login_user(user, password):
 def get_user(token):
     try:
         response = requests.get(
-            'https://api2-qa.gethelp.com/v1/users/current',
+            os.environ['GETHELP_API'] + 'v1/users/current',
             headers={'Authorization': f'Bearer {token}'},
             timeout=10
         )
