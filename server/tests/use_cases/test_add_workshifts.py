@@ -90,4 +90,30 @@ def test_workshift_add_multiple_use_case_with_overlap(domain_work_shifts):
     assert len(responses) == 2
     assert responses[0]["success"] is True
     assert responses[1]["success"] is False
+
+def test_workshift_add_use_case_no_overlap():
+    repo = mock.Mock()
+    existing_shifts = []
+    shift_1 = WorkShift(
+        code=uuid.uuid4(),
+        worker="volunteer@slu.edu",
+        shelter="shelter-id-for-st-patric-center",
+        start_time=1000,
+        end_time=2000,
+    )
+    shift_2 = WorkShift(
+        code=uuid.uuid4(),
+        worker="volunteer@slu.edu",
+        shelter="shelter-id-for-st-patric-center",
+        start_time=2000,
+        end_time=3000,
+    )
+    response_1 = workshift_add_use_case(repo, shift_1, existing_shifts)
+    assert response_1 == {"success": True,
+                          "message": "Shift added successfully"}
+    response_2 = workshift_add_use_case(repo, shift_2, existing_shifts)
+    assert response_2 == {"success": True,
+                          "message": "Shift added successfully"}
+    repo.add.assert_any_call(shift_1.to_dict())
+    repo.add.assert_any_call(shift_2.to_dict())
 # pylint: enable=redefined-outer-name
