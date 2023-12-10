@@ -52,27 +52,22 @@ def test_list_work_shifts(mock_get_user_from_token,
     mock_workshift_list_use_case.assert_called()
     mock_facility_info_use_case.assert_called_with('existing-shelter-id')
 
+@mock.patch('repository.mongorepo.MongoRepo')
 @mock.patch('application.app.work_shift.workshift_add_multiple_use_case')
 @mock.patch('application.rest.work_shift.get_user_from_token')
-def test_add_work_shifts(mock_get_user_from_token, mock_use_case):
-    mock_get_user_from_token.return_value = 'test'
+def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
+    # pylint: disable=unused-argument
+    mock_get_user_from_token.return_value = 'test_user'
     mock_use_case.return_value = [
-        {
-            'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35d',
-            'worker': 'volunteer@slu.edu',
-            'shelter': 'new-shelter-id',
-            'start_time': 1701442800000,
-            'end_time': 1701453600000
-        }
+        {'success': True, 'message': 'Shift added successfully'}
     ]
-
     app = create_app('testing')
     client = app.test_client()
     new_shift = {
         'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35d',
         'shelter': 'new-shelter-id',
-        'start_time': 1701442800000,
-        'end_time': 1701453600000
+        'start_time': 1703134800000,
+        'end_time': 1703138400000
     }
     headers = {
         'Authorization': 'volunteer@slu.edu',
@@ -84,9 +79,8 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case):
     data = json.loads(response.data)
 
     assert response.status_code == 200
-    assert data[0]['shelter'] == 'new-shelter-id'
-    assert data[0]['start_time'] == 1701442800000
-    assert data[0]['end_time'] == 1701453600000
+    assert isinstance(data, list)
+    assert data[0]['message'] == 'Shift added successfully'
     mock_use_case.assert_called()
 
 
