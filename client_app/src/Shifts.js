@@ -46,7 +46,8 @@ export function UpcomingShifts() {
   const shelters_endpoint = SERVER + "/shifts?filter_start_after=" + time_now;
   return (
     <div>
-      <h1 class="text-center">Upcoming Shifts</h1>
+      {/* <h1>Upcoming Shifts</h1> */}
+      {/* <h1 class="text-center">Upcoming Shifts</h1> */}
       {Shifts(shelters_endpoint)}
     </div>
   );
