@@ -22,7 +22,7 @@ const ShelterList = (props) => {
                 props.loadingFunction(false);
               }
               return (
-                <div>
+                <div key={shelter.id}>
                   <IndividualShelter
                     shelter={shelter}
                     isSignupPage={props.isSignupPage}
