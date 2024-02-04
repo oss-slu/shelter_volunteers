@@ -151,7 +151,7 @@ const Shelters = (props) => {
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
               />
-              <div class="text-center">
+              <div className="text-center">
                 <Link to="/shelters">
                   <button>View All Shelters</button>
                 </Link>

@@ -139,7 +139,7 @@ const IndividualShelter = (props) => {
     <div>
       {props.isSignupPage && (
         <div key={shelter.id}>
-          <div class="signupcard">
+          <div className="signupcard">
             <div className="column1">
               <h2>{shelter.name}</h2>
               <p>
@@ -198,9 +198,9 @@ const IndividualShelter = (props) => {
             </div>
           </div>
 
-          <div class="signupcard shift-graph text-center">
+          <div className="signupcard shift-graph text-center">
             <h3>Current Volunteer Counts</h3>
-            <div class="shift-count">
+            <div className="shift-count">
               {!loading && shiftCounts && shiftCounts.length > 0 && (
                 <div>{<GraphComponent shifts={shiftCounts} />}</div>
               )}
@@ -216,7 +216,7 @@ const IndividualShelter = (props) => {
         </div>
       )}
       {!props.isSignupPage && (
-        <div class="shelter text-center" key={shelter.id}>
+        <div className="shelter text-center" key={shelter.id}>
           <h2>{shelter.name}</h2>
           <p>
             {shelter.city}, {shelter.state} {shelter.zipCode}
