@@ -10,4 +10,6 @@ The first time you want to run this code, you will need to:
 
 On all subsequent runs, you will need to:
 1. Activate virtual environment: <code>source venv/bin/activate</code>
-2. Run the development server: <code>bash run_dev_server.sh</code>
+2. Run the development server:
+   * On Mac or Linux: <code>bash run_dev_server.sh</code>
+   * On Windows: <code>source ./venv/Scripts/activate</code>
