@@ -177,7 +177,7 @@ const Shelters = (props) => {
                       <option value="100">100</option>
                     </select>
                   </div>
-                  {loading && <div class="loader"></div>}
+                  {loading && <div className="loader"></div>}
                   <ShelterList
                     shelters={data}
                     loadingFunction={setLoading}
