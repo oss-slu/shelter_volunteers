@@ -151,7 +151,7 @@ const Shelters = (props) => {
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
               />
-              <div class="text-center">
+              <div className="text-center">
                 <Link to="/shelters">
                   <button>View All Shelters</button>
                 </Link>
@@ -177,7 +177,7 @@ const Shelters = (props) => {
                       <option value="100">100</option>
                     </select>
                   </div>
-                  {loading && <div class="loader"></div>}
+                  {loading && <div className="loader"></div>}
                   <ShelterList
                     shelters={data}
                     loadingFunction={setLoading}
