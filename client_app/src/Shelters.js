@@ -26,6 +26,7 @@ const Shelters = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("Upward"); // Initialize search query
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
@@ -55,9 +56,13 @@ const Shelters = (props) => {
         if (props.condensed) {
           shelters = shelters.slice(0, 3);
         }
-        return shelters;
+        if (searchQuery) { // Filter data locally if searchQuery exists
+          shelters = shelters.filter((shelter) =>
+            shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+        setData(shelters);
       })
-      .then((shelters) => setData(shelters))
       .catch((error) => console.log(error));
   }, [
     latitude,
@@ -66,6 +71,7 @@ const Shelters = (props) => {
     shelters_endpoint,
     volunteers_endpoint,
     props.condensed,
+    searchQuery, // Add searchQuery to dependency array
   ]);
 
   function getLocation() {
