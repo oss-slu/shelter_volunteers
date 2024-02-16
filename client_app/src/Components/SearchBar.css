@@ -10,6 +10,10 @@
 
 }
 
+button:disabled {
+    background: grey;
+}
+
 .search-button,
 .clear-button {
     margin: 5px;
