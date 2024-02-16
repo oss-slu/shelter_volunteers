@@ -12,6 +12,7 @@ export const SearchBar = () => {
   const handleClear = () => {
     // Implement your clear logic here
     console.log("Clearing...");
+    setInput("");
   };
 
     const [input, setInput]= useState("")
