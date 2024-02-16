@@ -3,9 +3,11 @@ import "./SearchBar.css"
 
 export const SearchBar = () => {
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
     // Implement your search logic here
     console.log("Searching...");
+    console.log(input)
+    fetchData(input)
 
   };
 
@@ -37,12 +39,12 @@ export const SearchBar = () => {
     const handleChange = (value) => {
         console.log(value)
         setInput(value);
-        fetchData(value);
+        //fetchData(value);
     }
 
     return <div className="input-wrapper">
         <input 
-        placeholder = "search" 
+        placeholder = "search for a shelter" 
         value={input} 
         onChange={(e) => handleChange(e.target.value)}/>
         <button type="button" className="clear-button" onClick={handleClear}>
