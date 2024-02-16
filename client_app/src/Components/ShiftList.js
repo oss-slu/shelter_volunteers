@@ -32,9 +32,10 @@ const ShiftList = (props) => {
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
-            <>
+            <div key={shift.id}>
             {props.currentSelectionSection === true && (<div className= "currentselection"
-              key={shift.code}>
+              key = {shift.code}
+              >
                 <table>
                   <tr>
                     <td><p>{shift.shelter}</p></td>
@@ -85,7 +86,7 @@ const ShiftList = (props) => {
                 </button>
               )}
             </div>)}
-            </>
+            </div>
           );
         })}
       {props.shifts.length === 0 && !props.currentSelectionSection &&(

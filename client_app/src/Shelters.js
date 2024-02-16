@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SearchBar } from "./Components/SearchBar"
 import {
   faCalendarDays,
   faArrowRight,
@@ -167,7 +168,13 @@ const Shelters = (props) => {
                     <button onClick={getLocation}>
                       Show opportunities near me
                     </button>
+
                     <br />
+                    
+                    <div className = "search-bar-container">
+                      <SearchBar />
+                    </div>
+                    
                     <label htmlFor="radius-select">Radius (miles): </label>
                     <select id="radius-select" onChange={setRadiusfromLocation}>
                       <option value="5">5</option>
