@@ -20,6 +20,7 @@ const IndividualShelter = (props) => {
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
@@ -34,7 +35,7 @@ const IndividualShelter = (props) => {
     return currentDate.getTime() < selectedDate.getTime();
   };
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button className="example-custom-input" onClick={onClick} ref={ref}>
+    <button className="example-custom-input" onClick={() => setHidden(!hidden)} ref={ref}>
       {value}
     </button>
   ));
@@ -150,6 +151,9 @@ const IndividualShelter = (props) => {
               </p>
               <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
+              <button onClick={() => setHidden(!hidden)}>
+                {hidden ? "View Current Volunteer Counts" : "Hide Current Volunteer Counts"}
+              </button>
             </div>
             <div className="column2">
               <div className="dates">
@@ -198,7 +202,7 @@ const IndividualShelter = (props) => {
             </div>
           </div>
 
-          <div className="signupcard shift-graph text-center">
+          <div className="signupcard shift-graph text-center" style={{ display: hidden ? "none" : "block" }}>
             <h3>Current Volunteer Counts</h3>
             <div className="shift-count">
               {!loading && shiftCounts && shiftCounts.length > 0 && (
