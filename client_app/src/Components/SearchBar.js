@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import "./SearchBar.css"
-import "../"
 
 export const SearchBar = () => {
 
