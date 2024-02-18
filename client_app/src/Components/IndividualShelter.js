@@ -35,7 +35,10 @@ const IndividualShelter = (props) => {
     return currentDate.getTime() < selectedDate.getTime();
   };
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button className="example-custom-input" onClick={() => setHidden(!hidden)} ref={ref}>
+    <button className="example-custom-input" onClick={(event) => {
+      onClick(event); 
+      setHidden(!hidden);
+    }} ref={ref}>
       {value}
     </button>
   ));
@@ -151,6 +154,7 @@ const IndividualShelter = (props) => {
               </p>
               <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
+              
               <button onClick={() => setHidden(!hidden)}>
                 {hidden ? "View Current Volunteer Counts" : "Hide Current Volunteer Counts"}
               </button>
@@ -202,21 +206,23 @@ const IndividualShelter = (props) => {
             </div>
           </div>
 
-          <div className="signupcard shift-graph text-center" style={{ display: hidden ? "none" : "block" }}>
-            <h3>Current Volunteer Counts</h3>
-            <div className="shift-count">
-              {!loading && shiftCounts && shiftCounts.length > 0 && (
-                <div>{<GraphComponent shifts={shiftCounts} />}</div>
-              )}
-              {!loading && shiftCounts && shiftCounts.length === 0 && (
-                <p>
-                  No volunteers are currently signed up during your selected
-                  time range.
-                </p>
-              )}
-              {loading && <p>Loading...</p>}
+          {!hidden && (
+            <div className="signupcard shift-graph text-center">
+              <h3>Current Volunteer Counts</h3>
+              <div className="shift-count">
+                {!loading && shiftCounts && shiftCounts.length > 0 && (
+                  <div>{<GraphComponent shifts={shiftCounts} />}</div>
+                )}
+                {!loading && shiftCounts && shiftCounts.length === 0 && (
+                  <p>
+                    No volunteers are currently signed up during your selected
+                    time range.
+                  </p>
+                )}
+                {loading && <p>Loading...</p>}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       {!props.isSignupPage && (
