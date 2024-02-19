@@ -19,7 +19,7 @@ const ShiftList = (props) => {
   }
 
   return (
-    <div>
+    <>
       {/* Display the shift*/}
       {props.shifts &&
         props.shifts.map((shift) => {
@@ -32,10 +32,10 @@ const ShiftList = (props) => {
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
-            <>
-            {props.currentSelectionSection === true && (<div className= "currentselection"
-              key={shift.code}>
+            <div key={shift.code}>
+            {props.currentSelectionSection === true && (<div className= "currentselection">
                 <table>
+                  <tbody>
                   <tr>
                     <td><p>{shift.shelter}</p></td>
                     <td><p>
@@ -47,14 +47,13 @@ const ShiftList = (props) => {
                         onClick={onCloseBtnClick}
                         >X</button></td>
                   </tr>
+                  </tbody>
                 </table>
-
             </div>)}
             {props.currentSelectionSection !== true && (<div
               className={
                 endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"
               }
-              key={shift.code}
             >
               {props.fromShelter === true && (
                 <div className="text-right">
@@ -85,7 +84,7 @@ const ShiftList = (props) => {
                 </button>
               )}
             </div>)}
-            </>
+            </div>
           );
         })}
       {props.shifts.length === 0 && !props.currentSelectionSection &&(
@@ -98,7 +97,7 @@ const ShiftList = (props) => {
           Please add your desired shifts from the list
         </p>
       )}
-    </div>
+    </>
   );
 };
 

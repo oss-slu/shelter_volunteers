@@ -38,6 +38,7 @@ const IndividualShelter = (props) => {
       {value}
     </button>
   ));
+  const { v4: uuidv4 } = require('uuid');
 
   function addShift() {
     if (props.addShiftFunction) {
@@ -45,7 +46,7 @@ const IndividualShelter = (props) => {
       let start = startTime.getTime();
       let end = endTime.getTime();
       let shift = {
-        code: `${id}-${start}-${end}`,
+        code: `${uuidv4()}-${id}`,
         shelter: id,
         start_time: start,
         end_time: end,
