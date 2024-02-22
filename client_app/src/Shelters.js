@@ -168,6 +168,13 @@ const Shelters = (props) => {
                       Show opportunities near me
                     </button>
                     <br />
+                    
+                    <SearchBar onSearch={handleSearch}/>
+                    {noDataAvailable && (
+                      <div className="no-data-message">
+                        <h1>No shelters found with that name. Explore the list below for available shelters.</h1>
+                      </div>
+                    )}
                     <label htmlFor="radius-select">Radius (miles): </label>
                     <select id="radius-select" onChange={setRadiusfromLocation}>
                       <option value="5">5</option>
