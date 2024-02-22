@@ -30,14 +30,13 @@ export const SearchBar = ({ onSearch }) => {
       if ((validInputs.test(value) || value === "") && value.length <= 55)
         setInput(value);
         if (value==="") {
-          onSearch("")
+          onSearch("");
         }
-        if (value.length >= 5)
+        if (value.length >= 5 && value.trim()!== "")
         {
-          if (value.trim()!== "")
-          {
-            setIsSearchButtonDisabled(false);
-          }
+          setIsSearchButtonDisabled(false);
+        } else {
+          setIsSearchButtonDisabled(true);
         }}
 
     return (
