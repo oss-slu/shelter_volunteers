@@ -6,17 +6,25 @@ export const SearchBar = () => {
   const handleSearch = () => {
     console.log("search button pressed");
     console.log(input);
-    if (input.trim() != "")
+    if (input.trim() !== "")
     {
         fetchData(input);
         console.log("fetching data");
+    }
+  };
 
+  const validateSearch = (e) => {
+    if (e === "Enter") {
+      if (input.length >= 5 && input.trim() !== ""){
+        handleSearch();
+      }
     }
   };
 
   const handleClear = () => {
     console.log("clear button pressed");
     setInput("");
+    setIsSearchButtonDisabled(true);
   };
 
     const [input, setInput]= useState("");
@@ -34,18 +42,21 @@ export const SearchBar = () => {
             });
             console.log(json);
             console.log(results);
-
     });
     }
 
     const handleChange = (value) => {
         console.log(value);
-        const validInputs = /^[a-zA-Z0-9\s\-\'\&\/\(\):,]+$/;
-        if (validInputs.test(value) || value==="")
-            setInput(value);
+        const validInputs = /^[a-zA-Z0-9\s-'&/():,]+$/;
+        if ((validInputs.test(value) || value === "") && value.length <= 55)
+          setInput(value);
+          if (value==="") {
+            //onSearch("")
+            console.log("empty bar")
+          }
             if (value.length >= 5)
             {
-                if (value.trim()!= "")
+                if (value.trim()!== "")
                 {
                     console.log("here");
                     setIsSearchButtonDisabled(false);
@@ -60,12 +71,13 @@ export const SearchBar = () => {
         <input 
         placeholder = "search for a shelter" 
         value={input}  
-        onChange={(e) => handleChange(e.target.value)}/>
+        onChange={(e) => handleChange(e.target.value)}
+        onKeyDown={(e) => validateSearch(e.code)}/>
         <button type="button" className="clear-button" onClick={handleClear}>
             Clear
         </button>
         <button type="button" className="search-button" disabled={searchButtonDisabled} onClick={handleSearch}>
             Search
         </button>             
-        </div>
+        </div>  
 }
