@@ -9,6 +9,7 @@ import { SERVER } from "../config";
 import GraphComponent from "./GraphComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
@@ -37,7 +38,7 @@ const IndividualShelter = (props) => {
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={(event) => {
       onClick(event); 
-      setHidden(!hidden);
+      setHidden(false);
     }} ref={ref}>
       {value}
     </button>
@@ -155,8 +156,9 @@ const IndividualShelter = (props) => {
               <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               
-              <button onClick={() => setHidden(!hidden)}>
-                {hidden ? "View Current Volunteer Counts" : "Hide Current Volunteer Counts"}
+              <button className="current-count" onClick={() => setHidden(!hidden)}>
+                {hidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
+                <FontAwesomeIcon icon={hidden ? faChevronDown : faChevronUp} size="lg"/>
               </button>
             </div>
             <div className="column2">
