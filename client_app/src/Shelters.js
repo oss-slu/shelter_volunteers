@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SearchBar } from "./Components/SearchBar"
 import {
   faCalendarDays,
   faArrowRight,
@@ -26,6 +27,10 @@ const Shelters = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [originalData, setOriginalData] = useState([]);
+  const [noDataAvailable, setNoDataAvailable] = useState(false);
+
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
@@ -55,9 +60,11 @@ const Shelters = (props) => {
         if (props.condensed) {
           shelters = shelters.slice(0, 3);
         }
+        setOriginalData(shelters);
+        setData(shelters); 
+        setLoading(false); 
         return shelters;
       })
-      .then((shelters) => setData(shelters))
       .catch((error) => console.log(error));
   }, [
     latitude,
@@ -136,6 +143,30 @@ const Shelters = (props) => {
     setButtonDisabled(selectedShifts.length === 0);
   }, [selectedShifts]);
 
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      if (originalData) {
+        const filteredData = originalData.filter((shelter) =>
+          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        if(filteredData.length === 0){
+          setNoDataAvailable(true);
+        } else{
+          setData(filteredData);
+          setNoDataAvailable(false);
+        }
+        
+      }
+    } else {
+      setData(originalData);
+      setNoDataAvailable(false);
+    }
+  }, [searchQuery, originalData]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   return (
     <>
       {!showConfirmation && (
@@ -151,7 +182,7 @@ const Shelters = (props) => {
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
               />
-              <div className="text-center">
+              <div class="text-center">
                 <Link to="/shelters">
                   <button>View All Shelters</button>
                 </Link>
@@ -167,6 +198,7 @@ const Shelters = (props) => {
                     <button onClick={getLocation}>
                       Show opportunities near me
                     </button>
+
                     <br />
                     
                     <SearchBar onSearch={handleSearch}/>
