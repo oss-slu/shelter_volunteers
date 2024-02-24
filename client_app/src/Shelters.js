@@ -29,7 +29,7 @@ const Shelters = (props) => {
   const [shaking, setShaking] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [originalData, setOriginalData] = useState([]);
-  const [noDataAvailable, setNoDataAvailable] = useState(false);
+  const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
 
 
   const shakeAnimation = useSpring({
@@ -150,20 +150,21 @@ const Shelters = (props) => {
           shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
         if(filteredData.length === 0){
-          setNoDataAvailable(true);
+          setNoSearchDataAvailable(true);
         } else{
           setData(filteredData);
-          setNoDataAvailable(false);
+          setNoSearchDataAvailable(false);
         }
         
       }
     } else {
       setData(originalData);
-      setNoDataAvailable(false);
+      setNoSearchDataAvailable(false);
     }
   }, [searchQuery, originalData]);
 
   const handleSearch = (query) => {
+    setLoading(true);
     setSearchQuery(query);
   };
 
@@ -202,7 +203,7 @@ const Shelters = (props) => {
                     <br />
                     
                     <SearchBar onSearch={handleSearch}/>
-                    {noDataAvailable && (
+                    {noSearchDataAvailable && (
                       <div className="no-data-message">
                         <h1>No shelters found with that name. Explore the list below for available shelters.</h1>
                       </div>
