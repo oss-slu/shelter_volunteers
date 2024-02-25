@@ -21,7 +21,7 @@ const IndividualShelter = (props) => {
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hidden, setHidden] = useState(true);
+  const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
 
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
@@ -38,7 +38,7 @@ const IndividualShelter = (props) => {
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={(event) => {
       onClick(event); 
-      setHidden(false);
+      setVolunteerCountsHidden(false);
     }} ref={ref}>
       {value}
     </button>
@@ -156,9 +156,9 @@ const IndividualShelter = (props) => {
               <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               
-              <button className="current-count" onClick={() => setHidden(!hidden)}>
-                {hidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
-                <FontAwesomeIcon icon={hidden ? faChevronDown : faChevronUp} size="lg"/>
+              <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
+                {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
+                <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
               </button>
             </div>
             <div className="column2">
@@ -208,7 +208,7 @@ const IndividualShelter = (props) => {
             </div>
           </div>
 
-          {!hidden && (
+          {!volunteerCountsHidden && (
             <div className="signupcard shift-graph text-center">
               <h3>Current Volunteer Counts</h3>
               <div className="shift-count">
