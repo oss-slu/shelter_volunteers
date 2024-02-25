@@ -22,14 +22,17 @@ input:focus {
     outline: none;
 }
 
-button:disabled {
+.search-button:disabled,
+.clear-button:disabled {
     color: #aaa;
 }
-button:enabled:hover {
+.search-button:enabled:hover,
+.clear-button:enabled:hover {
     cursor: pointer;
   }
   
-button:enabled:after {
+.search-button:enabled:after,
+.clear-button:enabled:after {
     content: "";
     display: block;
     height: 3px;
@@ -37,7 +40,8 @@ button:enabled:after {
     transition: width 0.7s ease, background-color 0.5s ease;
   }
   
- button:enabled:hover:after {
+  .search-button:enabled:hover:after,
+  .clear-button:enabled:hover:after {
     width: 100%;
     background: #ffdd40;
   }
