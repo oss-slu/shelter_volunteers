@@ -1,11 +1,20 @@
 import IndividualShelter from "./IndividualShelter";
+import { useEffect } from "react";
 
 const ShelterList = (props) => {
-  function addShift(shift) {
-    if (props.manageShiftsFunction) {
-      props.manageShiftsFunction(shift);
+  
+    useEffect(() => {
+      if (props.loadingFunction) {
+        props.loadingFunction(false);
+      }
+    });
+
+    function addShift(shift) {
+      if (props.manageShiftsFunction) {
+        props.manageShiftsFunction(shift);
+      }
     }
-  }
+  
 
   return (
     <div>
@@ -15,14 +24,8 @@ const ShelterList = (props) => {
           props.shelters
             .sort((a, b) => a.distance - b.distance)
             .map((shelter, index) => {
-              if (
-                props.loadingFunction &&
-                index === props.shelters.length - 1
-              ) {
-                props.loadingFunction(false);
-              }
               return (
-                <div>
+                <div key={shelter.id}>
                   <IndividualShelter
                     shelter={shelter}
                     isSignupPage={props.isSignupPage}

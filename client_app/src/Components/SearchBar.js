@@ -7,8 +7,8 @@ export const SearchBar = ({ onSearch }) => {
     const [searchButtonDisabled, setIsSearchButtonDisabled] = useState(true);
 
   const handleSearch = () => {
-    const trimmedInput = input.trim();
-      onSearch(trimmedInput);
+    const trimmedInput = input.trim().replace(/\s{2,}/g, " ");
+    onSearch(trimmedInput);
   };
 
   const validateSearch = (e) => {
@@ -37,26 +37,27 @@ export const SearchBar = ({ onSearch }) => {
           setIsSearchButtonDisabled(false);
         } else {
           setIsSearchButtonDisabled(true);
-        }}
+        }
+    }
 
-    return (
-        <div className="input-wrapper">
-          <input
-            placeholder="search for a shelter"
-            value={input}
-            onChange={(e) => handleChange(e.target.value)}
-            onKeyDown={(e) => validateSearch(e.code)}/>
-          <button type="button" className="clear-button" onClick={handleClear}>
-            Clear
-          </button>
-          <button
-            type="button"
-            className="search-button"
-            disabled={searchButtonDisabled}
-            onClick={handleSearch}
-          >
-            Search
-          </button>
-        </div>
-      );
+  return (
+    <div className="input-wrapper">
+      <input
+        placeholder="search for a shelter"
+        value={input}
+        onChange={(e) => handleChange(e.target.value)}
+        onKeyDown={(e) => validateSearch(e.code)}/>
+      <button type="button" className="clear-button" onClick={handleClear}>
+        Clear
+      </button>
+      <button
+        type="button"
+        className="search-button"
+        disabled={searchButtonDisabled}
+        onClick={handleSearch}
+      >
+        Search
+      </button>
+    </div>
+  );
 }
