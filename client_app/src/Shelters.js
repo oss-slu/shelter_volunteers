@@ -59,11 +59,12 @@ const Shelters = (props) => {
       .then((shelters) => {
         if (props.condensed) {
           shelters = shelters.slice(0, 3);
-        }
-        setOriginalData(shelters);
-        setData(shelters); 
-        setLoading(false); 
+        } 
         return shelters;
+      })
+      .then((shelters) => {
+        setData(shelters);
+        setOriginalData(shelters);
       })
       .catch((error) => console.log(error));
   }, [
@@ -183,7 +184,7 @@ const Shelters = (props) => {
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
               />
-              <div class="text-center">
+              <div className="text-center">
                 <Link to="/shelters">
                   <button>View All Shelters</button>
                 </Link>
