@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SearchBar } from "./Components/SearchBar"
 import {
   faCalendarDays,
   faArrowRight,
@@ -26,6 +27,10 @@ const Shelters = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [originalData, setOriginalData] = useState([]);
+  const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
+
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
@@ -54,10 +59,13 @@ const Shelters = (props) => {
       .then((shelters) => {
         if (props.condensed) {
           shelters = shelters.slice(0, 3);
-        }
+        } 
         return shelters;
       })
-      .then((shelters) => setData(shelters))
+      .then((shelters) => {
+        setData(shelters);
+        setOriginalData(shelters);
+      })
       .catch((error) => console.log(error));
   }, [
     latitude,
@@ -136,6 +144,31 @@ const Shelters = (props) => {
     setButtonDisabled(selectedShifts.length === 0);
   }, [selectedShifts]);
 
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      if (originalData) {
+        const filteredData = originalData.filter((shelter) =>
+          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        if(filteredData.length === 0){
+          setNoSearchDataAvailable(true);
+        } else{
+          setData(filteredData);
+          setNoSearchDataAvailable(false);
+        }
+        
+      }
+    } else {
+      setData(originalData);
+      setNoSearchDataAvailable(false);
+    }
+  }, [searchQuery, originalData]);
+
+  const handleSearch = (query) => {
+    setLoading(true);
+    setSearchQuery(query);
+  };
+
   return (
     <>
       {!showConfirmation && (
@@ -167,7 +200,15 @@ const Shelters = (props) => {
                     <button onClick={getLocation}>
                       Show opportunities near me
                     </button>
+
                     <br />
+                    
+                    <SearchBar onSearch={handleSearch}/>
+                    {noSearchDataAvailable && (
+                      <div className="no-data-message">
+                        <h1>No shelters found with that name. Explore the list below for available shelters.</h1>
+                      </div>
+                    )}
                     <label htmlFor="radius-select">Radius (miles): </label>
                     <select id="radius-select" onChange={setRadiusfromLocation}>
                       <option value="5">5</option>
