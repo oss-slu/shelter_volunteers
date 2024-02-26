@@ -305,6 +305,16 @@ button {
   cursor: pointer ;
 }
 
+.current-volunteer-count {
+  background-color: #ecececfc;
+  border: none;
+  outline: none;
+  color: #0066b2;
+  padding: 0.1em;
+  font-size: 16px;
+  text-decoration: underline;
+}
+
 @media screen and (max-width: 960px) {
   .volunteer-dashboard {
     display: block;
