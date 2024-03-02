@@ -21,7 +21,7 @@ const IndividualShelter = (props) => {
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
+
 
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
@@ -38,11 +38,12 @@ const IndividualShelter = (props) => {
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={(event) => {
       onClick(event); 
-      setVolunteerCountsHidden(false);
+      props.setVolunteerCountsHidden(false);
     }} ref={ref}>
       {value}
     </button>
   ));
+
 
   function addShift() {
     if (props.addShiftFunction) {
@@ -84,7 +85,7 @@ const IndividualShelter = (props) => {
       setSeconds(setMinutes(setHours(startTime, 23), 59), 59),
       999
     );
-    if (shelter) {
+    if (!props.volunteerCountsHidden) {
       setLoading(true);
       let request_endpoint =
         SERVER +
@@ -138,7 +139,7 @@ const IndividualShelter = (props) => {
         })
         .catch((error) => console.log(error));
     }
-  }, [startTime, shelter]);
+  }, [startTime, props.volunteerCountsHidden, shelter.id]);
 
   return (
     <div>
@@ -156,9 +157,9 @@ const IndividualShelter = (props) => {
               <a href={shelter.website}>{shelter.website}</a>
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               
-              <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
-                {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
-                <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
+              <button className="current-volunteer-count" onClick={() => props.setVolunteerCountsHidden(!props.volunteerCountsHidden)}>
+                {props.volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
+                <FontAwesomeIcon icon={props.volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
               </button>
             </div>
             <div className="column2">
@@ -208,7 +209,7 @@ const IndividualShelter = (props) => {
             </div>
           </div>
 
-          {!volunteerCountsHidden && (
+          {!props.volunteerCountsHidden && (
             <div className="signupcard shift-graph text-center">
               <h3>Current Volunteer Counts</h3>
               <div className="shift-count">

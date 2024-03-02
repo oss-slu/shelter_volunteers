@@ -1,7 +1,9 @@
 import IndividualShelter from "./IndividualShelter";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ShelterList = (props) => {
+
+  const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
   
     useEffect(() => {
       if (props.loadingFunction) {
@@ -30,6 +32,8 @@ const ShelterList = (props) => {
                     shelter={shelter}
                     isSignupPage={props.isSignupPage}
                     addShiftFunction={addShift}
+                    volunteerCountsHidden={volunteerCountsHidden}
+                    setVolunteerCountsHidden={setVolunteerCountsHidden}
                   />
                 </div>
               );
