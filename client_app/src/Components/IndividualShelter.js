@@ -153,7 +153,7 @@ const IndividualShelter = (props) => {
               <p>
                 {shelter.phone}
               </p>
-              <a href={shelter.website}>{shelter.website}</a>
+              {shelter.website ? <a href={shelter.website}>View website</a> : null}
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               
               <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
