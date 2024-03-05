@@ -1,0 +1,38 @@
+Pagination.css
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.pagination-button {
+  padding: 10px 20px; /* Increased padding for larger button size */
+  margin: 0 5px;
+  background-color: #ffdd40; /* Match the background color */
+  color: #000; /* Change text color to black */
+  border: none;
+  border-radius: 10px; /* Increased border radius */
+  cursor: pointer;
+}
+
+.pagination-button:hover {
+  background-color: #ffd000; /* Darker yellow on hover */
+}
+
+.pagination-input {
+  width: 50px;
+  margin: 0 5px;
+  padding: 5px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+}
+
+.pagination-total-pages {
+  margin: 0 5px;
+}
