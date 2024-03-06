@@ -26,7 +26,7 @@ function Shifts(request_endpoint) {
     })
       .then((response) => {
         if (response.ok) {
-          setData((prevData) => prevData.filter((shift) => shift.code !== shiftCode));
+          setData((prevData) => prevData.filter((shift) => shift._id !== shiftCode));
         } else {
           console.error("Failed to cancel shift");
         }

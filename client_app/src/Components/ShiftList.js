@@ -32,8 +32,9 @@ const ShiftList = (props) => {
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
-            <div key={shift.code}>
-            {props.currentSelectionSection === true && (<div className= "currentselection">
+            <div key={shift._id || shift.code}>
+            {props.currentSelectionSection === true && (
+              <div className= "currentselection">
                 <table>
                   <tbody>
                   <tr>
@@ -43,7 +44,7 @@ const ShiftList = (props) => {
                     <td>
                       <button 
                         className="closebtn"
-                        id={"shift-closebtn-" + shift.code}
+                        id={"shift_closebtn_" + shift.code}                        
                         onClick={onCloseBtnClick}
                         >X</button></td>
                   </tr>
@@ -79,7 +80,7 @@ const ShiftList = (props) => {
               {/* using the newly created boolean variable to ensure the cancel button only appears for
               upcoming shifts */}
               {!isPastShift && (
-                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift.code)}>
+                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift._id)}>
                   Cancel Shift
                 </button>
               )}
