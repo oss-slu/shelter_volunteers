@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
+import { Pagination } from "./Components/Pagination";
 import { GETHELP_API, SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
@@ -15,12 +16,14 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 
 const Shelters = (props) => {
-  let defaultRadius = "5";
-  if (props.condensed) defaultRadius = "25";
+  const [currentPage, setCurrentPage] = useState(1);
+  const [shelters, setShelters] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [data, setData] = useState([]);
   const [latitude, setLatitude] = useState(33.997103);
   const [longitude, setLongitude] = useState(-118.4472731);
-  const [radius, setRadius] = useState(defaultRadius);
+  const [radius, setRadius] = useState("5");
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
@@ -31,26 +34,20 @@ const Shelters = (props) => {
   const [originalData, setOriginalData] = useState([]);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
 
-
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
 
-  let shelters_endpoint = GETHELP_API + "v2/facilities?page=0&pageSize=1000";
-  let volunteers_endpoint = GETHELP_API + "volunteers";
-
   useEffect(() => {
+    fetchData();
+  }, [currentPage, latitude, longitude, radius, props.condensed]);
+
+  const fetchData = () => {
     setLoading(true);
-    let new_endpoint =
-      shelters_endpoint +
-      "&latitude=" +
-      latitude.toString() +
-      "&longitude=" +
-      longitude.toString() +
-      "&radius=" +
-      radius.toString();
-    fetch(new_endpoint, {
-      methods: "GET",
+    let newEndpoint = GETHELP_API + "v2/facilities?page=" + currentPage + "&pageSize=10&latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius;
+    
+    fetch(newEndpoint, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
@@ -65,38 +62,19 @@ const Shelters = (props) => {
       .then((shelters) => {
         setData(shelters);
         setOriginalData(shelters);
+        setLoading(false);
       })
       .catch((error) => console.log(error));
-  }, [
-    latitude,
-    longitude,
-    radius,
-    shelters_endpoint,
-    volunteers_endpoint,
-    props.condensed,
-  ]);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   function getLocation() {
     setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(setLocation);
-    }
-  }
-
-  function onShiftClose(event) {
-    let id = event.target.id;
-    let shift =
-      id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
-
-    const codes = selectedShifts.map((s) => s.code);
-    if (codes.includes(shift)) {
-      let index = selectedShifts.findIndex((s) => s.code === shift);
-      if (index !== -1) {
-        const newSelected = [...selectedShifts];
-        newSelected.splice(index, 1);
-        setSelectedShifts(newSelected);
-        setButtonDisabled(selectedShifts.length === 0);
-      }
     }
   }
 
@@ -109,11 +87,32 @@ const Shelters = (props) => {
     setRadius(event.target.value);
   }
 
+  function handleSearch(query) {
+    setLoading(true);
+    setSearchQuery(query);
+  }
+
   function manageShifts(shift) {
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
     setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
+  }
+
+  function onShiftClose(event) {
+    let id = event.target.id;
+    let shift = id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+
+    const codes = selectedShifts.map((s) => s.code);
+    if (codes.includes(shift)) {
+      let index = selectedShifts.findIndex((s) => s.code === shift);
+      if (index !== -1) {
+        const newSelected = [...selectedShifts];
+        newSelected.splice(index, 1);
+        setSelectedShifts(newSelected);
+        setButtonDisabled(selectedShifts.length === 0);
+      }
+    }
   }
 
   function submitShifts() {
@@ -136,6 +135,7 @@ const Shelters = (props) => {
     }
     setOnMobileContinueclicked(true);
   }
+
   function handleCurrentSelectionClose() {
     setOnMobileContinueclicked(false);
   }
@@ -163,11 +163,6 @@ const Shelters = (props) => {
       setNoSearchDataAvailable(false);
     }
   }, [searchQuery, originalData]);
-
-  const handleSearch = (query) => {
-    setLoading(true);
-    setSearchQuery(query);
-  };
 
   return (
     <>
@@ -310,6 +305,11 @@ const Shelters = (props) => {
           <ConfirmationPage selectedShifts={selectedShifts} />
         </div>
       )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 };
