@@ -85,7 +85,7 @@ p {
   border: 1px solid #000000;
   background-color: #ecececfc;
   padding: 0.5rem;
-  flex-wrap: wrap;
+  /*flex-wrap: wrap;*/
 }
 
 .signupcard {
@@ -311,9 +311,11 @@ button {
   border: none;
   outline: none;
   color: #0066b2;
-  padding: 0.1em;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-decoration: underline;
+  padding-left: 0px;
+  text-align: left;
+  margin: .717vw 0;
 }
 
 @media screen and (max-width: 960px) {
@@ -565,22 +567,21 @@ button {
 }
 
 .shift-count {
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
   justify-content: center;
 }
 
-.shift-count {
-  height: 36.179vh;
-}
-
 .shift-count canvas {
-  height: 32.561vh;
+  height: auto;
+  width: 100%;
+  padding: 0;
 }
 
 .signupcard.shift-graph h3,
 .signupcard.shift-graph h4 {
   margin: 0;
+  height: auto;
+  width: auto;
 }
 
 .continue-bottom-row {

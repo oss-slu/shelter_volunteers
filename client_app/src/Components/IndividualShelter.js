@@ -157,7 +157,7 @@ const IndividualShelter = (props) => {
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               
               <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
-                {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
+                {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Current Volunteer Counts  "}
                 <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
               </button>
             </div>
