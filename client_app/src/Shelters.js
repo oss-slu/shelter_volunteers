@@ -305,11 +305,13 @@ const Shelters = (props) => {
           <ConfirmationPage selectedShifts={selectedShifts} />
         </div>
       )}
+    {!props.condensed && (
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+    )}
     </>
   );
 };
