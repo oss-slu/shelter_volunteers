@@ -2,6 +2,13 @@
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+.pagination-wrapper-mobile {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
   padding-bottom: 120px;
 }
 

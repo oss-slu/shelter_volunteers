@@ -1,13 +1,13 @@
 import React from "react";
 import "./Pagination.css";
 
-export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange, className }) => {
   const handlePageChange = (pageNumber) => {
     onPageChange(pageNumber);
   };
 
   return (
-    <div className="pagination-wrapper">
+    <div className={`${className}`}>
       <div className="pagination">
         <button
           className="pagination-button"

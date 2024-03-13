@@ -32,13 +32,21 @@ const Shelters = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [originalData, setOriginalData] = useState([]);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
+  const handleResize = () => {
+    setScreenSize(window.innerWidth);
+  };
 
   useEffect(() => {
     fetchData();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [currentPage, latitude, longitude, radius, props.condensed]);
 
   const fetchData = () => {
@@ -73,6 +81,15 @@ const Shelters = (props) => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const getPaginationClassName = () => {
+    if (screenSize <= 970) {
+      console.log("Screen Size: ", window.innerWidth);
+      return 'pagination-wrapper-mobile';
+    } else {
+      return 'pagination-wrapper';
+    }
   };
 
   function getLocation() {
@@ -314,6 +331,7 @@ const Shelters = (props) => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+        className={getPaginationClassName()}
       />
     )}
     </>
