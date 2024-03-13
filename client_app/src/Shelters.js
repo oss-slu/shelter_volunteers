@@ -19,7 +19,6 @@ const Shelters = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [shelters, setShelters] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-
   const [data, setData] = useState([]);
   const [latitude, setLatitude] = useState(33.997103);
   const [longitude, setLongitude] = useState(-118.4472731);
@@ -52,7 +51,12 @@ const Shelters = (props) => {
         "Content-Type": "application/json",
       },
     })
-      .then(async (response) => (await response.json())["content"])
+    .then(async (response) => response.json())
+    .then((data) => {
+      const calculatedTotalPages = Math.ceil(data.totalElements / 10);
+      setTotalPages(calculatedTotalPages);
+      return data.content;
+    })
       .then((shelters) => {
         if (props.condensed) {
           shelters = shelters.slice(0, 3);

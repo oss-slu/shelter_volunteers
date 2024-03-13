@@ -1,9 +1,8 @@
-Pagination.css
-
 .pagination-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  padding-bottom: 120px;
 }
 
 .pagination {
@@ -12,17 +11,31 @@ Pagination.css
 }
 
 .pagination-button {
-  padding: 10px 20px; /* Increased padding for larger button size */
+  padding: 10px 20px;
   margin: 0 5px;
-  background-color: #ffdd40; /* Match the background color */
-  color: #000; /* Change text color to black */
+  background-color: #ffdd40;
+  color: #000;
   border: none;
-  border-radius: 10px; /* Increased border radius */
+  border-radius: 10px;
   cursor: pointer;
+  transition: background-color 0.5s ease;
 }
 
 .pagination-button:hover {
-  background-color: #ffd000; /* Darker yellow on hover */
+  background-color: #ffd000;
+}
+
+.pagination-button:after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0;
+  transition: width 0.7s ease, background-color 0.5s ease;
+}
+
+.pagination-button:hover:after {
+  width: 100%;
+  background: #ffdd40;
 }
 
 .pagination-input {
