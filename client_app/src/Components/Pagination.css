@@ -20,8 +20,8 @@
 .pagination-button {
   padding: 10px 20px;
   margin: 0 5px;
-  background-color: #ffdd40;
-  color: #000;
+  background-color: #193b45;
+  color: #fff;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -30,6 +30,7 @@
 
 .pagination-button:hover {
   background-color: #ffd000;
+  color: #000;
 }
 
 .pagination-button:after {
@@ -42,7 +43,8 @@
 
 .pagination-button:hover:after {
   width: 100%;
-  background: #ffdd40;
+  background: #000;
+  color: #000;
 }
 
 .pagination-input {
