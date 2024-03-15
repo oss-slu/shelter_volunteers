@@ -23,7 +23,6 @@ const IndividualShelter = (props) => {
   const [loading, setLoading] = useState(false);
   const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
 
-
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
     const selectedDate = new Date(time);
@@ -36,6 +35,7 @@ const IndividualShelter = (props) => {
     currentDate.setHours(currentDate.getHours() + 1);
     return currentDate.getTime() < selectedDate.getTime();
   };
+  
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={(event) => {
       onClick(event); 
@@ -44,7 +44,6 @@ const IndividualShelter = (props) => {
       {value}
     </button>
   ));
-
 
   function addShift() {
     if (props.addShiftFunction) {
@@ -156,8 +155,7 @@ const IndividualShelter = (props) => {
                 {shelter.phone}
               </p>
               <a href={shelter.website}>{shelter.website}</a>
-              <p>{+shelter.distance.toFixed(2)} miles away</p>
-              
+              <p>{+shelter.distance.toFixed(2)} miles away</p>  
               <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
                 {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
                 <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
