@@ -312,9 +312,9 @@ button {
   color: #0066b2;
   font-size: 0.9rem;
   text-decoration: underline;
-  padding-left: 0px;
-  text-align: left;
-  margin: .717vw 0;
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 @media screen and (max-width: 960px) {
@@ -569,6 +569,7 @@ button {
   display: block;
   justify-content: center;
   width: 70%;
+  min-width: 250px;
   margin: 0 auto;
 }
 
