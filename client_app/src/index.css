@@ -85,7 +85,6 @@ p {
   border: 1px solid #000000;
   background-color: #ecececfc;
   padding: 0.5rem;
-  /*flex-wrap: wrap;*/
 }
 
 .signupcard {
@@ -569,12 +568,12 @@ button {
 .shift-count {
   display: block;
   justify-content: center;
+  width: 70%;
+  margin: 0 auto;
 }
 
 .shift-count canvas {
-  height: auto;
-  width: 100%;
-  padding: 0;
+  width: 100%
 }
 
 .signupcard.shift-graph h3,
