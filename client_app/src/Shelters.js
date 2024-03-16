@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
 import { Pagination } from "./Components/Pagination";
@@ -16,13 +16,12 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 
 const Shelters = (props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [shelters, setShelters] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  let defaultRadius = "5";
+  if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
   const [latitude, setLatitude] = useState(33.997103);
   const [longitude, setLongitude] = useState(-118.4472731);
-  const [radius, setRadius] = useState("5");
+  const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
@@ -32,26 +31,68 @@ const Shelters = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [originalData, setOriginalData] = useState([]);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
+
   const handleResize = () => {
     setScreenSize(window.innerWidth);
   };
 
   useEffect(() => {
     fetchData();
+  }, [latitude, longitude, radius]);
+
+  useEffect(() => {
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [currentPage, latitude, longitude, radius, props.condensed]);
+  }, []);
+
+  function handleSearch(query) {
+    setLoading(true);
+    setSearchQuery(query);
+    setCurrentPage(1);
+  }
+
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      if (originalData) {
+        const filteredData = originalData.filter((shelter) =>
+          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        if (filteredData.length === 0) {
+          setNoSearchDataAvailable(true);
+          setData([]);
+          setTotalPages(0);
+        } else {
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = startIndex + itemsPerPage;
+          const paginatedData = filteredData.slice(startIndex, endIndex);
+          setData(paginatedData);
+          setNoSearchDataAvailable(false);
+          setTotalPages(Math.ceil(filteredData.length / itemsPerPage));
+        }
+      }
+    } else {
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedData = originalData.slice(startIndex, endIndex);
+      setData(paginatedData);
+      setNoSearchDataAvailable(false);
+      setTotalPages(Math.ceil(originalData.length / itemsPerPage));
+    }
+  }, [searchQuery, originalData, currentPage, itemsPerPage]);
 
   const fetchData = () => {
     setLoading(true);
-    let newEndpoint = GETHELP_API + "v2/facilities?page=" + currentPage + "&pageSize=10&latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius;
+    let newEndpoint = GETHELP_API + "v2/facilities?page=0&pageSize=1000&latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius;
     
     fetch(newEndpoint, {
       method: "GET",
@@ -59,33 +100,16 @@ const Shelters = (props) => {
         "Content-Type": "application/json",
       },
     })
-    .then(async (response) => response.json())
-    .then((data) => {
-      const calculatedTotalPages = Math.ceil(data.totalElements / 10);
-      setTotalPages(calculatedTotalPages);
-      return data.content;
-    })
-      .then((shelters) => {
-        if (props.condensed) {
-          shelters = shelters.slice(0, 3);
-        } 
-        return shelters;
-      })
-      .then((shelters) => {
-        setData(shelters);
-        setOriginalData(shelters);
+      .then((response) => response.json())
+      .then((data) => {
+        setOriginalData(data.content);
         setLoading(false);
       })
       .catch((error) => console.log(error));
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   const getPaginationClassName = () => {
-    if (screenSize <= 970) {
-      console.log("Screen Size: ", window.innerWidth);
+    if (screenSize <= 768) {
       return 'pagination-wrapper-mobile';
     } else {
       return 'pagination-wrapper';
@@ -106,11 +130,6 @@ const Shelters = (props) => {
 
   function setRadiusfromLocation(event) {
     setRadius(event.target.value);
-  }
-
-  function handleSearch(query) {
-    setLoading(true);
-    setSearchQuery(query);
   }
 
   function manageShifts(shift) {
@@ -165,25 +184,9 @@ const Shelters = (props) => {
     setButtonDisabled(selectedShifts.length === 0);
   }, [selectedShifts]);
 
-  useEffect(() => {
-    if (searchQuery.trim() !== "") {
-      if (originalData) {
-        const filteredData = originalData.filter((shelter) =>
-          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        if(filteredData.length === 0){
-          setNoSearchDataAvailable(true);
-        } else{
-          setData(filteredData);
-          setNoSearchDataAvailable(false);
-        }
-        
-      }
-    } else {
-      setData(originalData);
-      setNoSearchDataAvailable(false);
-    }
-  }, [searchQuery, originalData]);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -195,7 +198,7 @@ const Shelters = (props) => {
                 Get Shelters from Current Location
               </button>
               <ShelterList
-                shelters={data}
+                shelters={originalData.slice(0, 3)}
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
@@ -240,6 +243,12 @@ const Shelters = (props) => {
                     loadingFunction={setLoading}
                     manageShiftsFunction={manageShifts}
                     isSignupPage={true}
+                  />
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    className={getPaginationClassName()}
                   />
                 </div>
                 <div
@@ -326,14 +335,6 @@ const Shelters = (props) => {
           <ConfirmationPage selectedShifts={selectedShifts} />
         </div>
       )}
-    {!props.condensed && (
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        className={getPaginationClassName()}
-      />
-    )}
     </>
   );
 };
