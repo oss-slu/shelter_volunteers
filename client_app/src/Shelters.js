@@ -32,7 +32,7 @@ const Shelters = (props) => {
   const [originalData, setOriginalData] = useState([]);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
@@ -55,10 +55,26 @@ const Shelters = (props) => {
     };
   }, []);
 
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(parseInt(e.target.value));
+  };
+
   function handleSearch(query) {
     setLoading(true);
     setSearchQuery(query);
     setCurrentPage(1);
+  }
+
+  function handlePagination(data) {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedData = data.slice(startIndex, endIndex);
+    return paginatedData;
+  }
+
+  function totalPagesCount(data){
+    const newTotalPages = Math.ceil(data.length / itemsPerPage);
+    return newTotalPages
   }
 
   useEffect(() => {
@@ -69,24 +85,18 @@ const Shelters = (props) => {
         );
         if (filteredData.length === 0) {
           setNoSearchDataAvailable(true);
-          setData([]);
-          setTotalPages(0);
+          setData(handlePagination(originalData));
+          setTotalPages(totalPagesCount(originalData));
         } else {
-          const startIndex = (currentPage - 1) * itemsPerPage;
-          const endIndex = startIndex + itemsPerPage;
-          const paginatedData = filteredData.slice(startIndex, endIndex);
-          setData(paginatedData);
+          setData(handlePagination(filteredData));
           setNoSearchDataAvailable(false);
-          setTotalPages(Math.ceil(filteredData.length / itemsPerPage));
+          setTotalPages(totalPagesCount(filteredData));
         }
       }
     } else {
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const paginatedData = originalData.slice(startIndex, endIndex);
-      setData(paginatedData);
+      setData(handlePagination(originalData));
       setNoSearchDataAvailable(false);
-      setTotalPages(Math.ceil(originalData.length / itemsPerPage));
+      setTotalPages(totalPagesCount(originalData));
     }
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
 
@@ -248,6 +258,8 @@ const Shelters = (props) => {
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    itemsPerPage={itemsPerPage}
                     className={getPaginationClassName()}
                   />
                 </div>
