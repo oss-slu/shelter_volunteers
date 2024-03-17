@@ -18,15 +18,6 @@ export const Pagination = (props) => {
             <option value="100">100</option>
           </select>
         </div>
-        <div className="pagination-first">
-          <button
-            className="pagination-button"
-            onClick={() => handlePageChange(1)}
-            disabled={props.currentPage === 1}
-          >
-            First
-          </button>
-        </div>
         <div className="pagination-navigation">
           <button
             className="pagination-button"
@@ -43,16 +34,6 @@ export const Pagination = (props) => {
             disabled={props.currentPage === props.totalPages}
           >
             Next
-          </button>
-        </div>
-
-        <div className="pagination-last">
-          <button
-            className="pagination-button"
-            onClick={() => handlePageChange(props.totalPages)}
-            disabled={props.currentPage === props.totalPages}
-          >
-            Last
           </button>
         </div>
       </div>

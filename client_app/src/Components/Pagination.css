@@ -28,7 +28,6 @@
 .pagination-navigation {
   display: flex;
   align-items: center;
-  margin-left: -25px;
 }
 
 .pagination-button {
@@ -89,10 +88,6 @@
   }
 
   .pagination-navigation {
-    margin-bottom: 10px;
-  }
-
-  .pagination-first{
     margin-bottom: 10px;
   }
 }
