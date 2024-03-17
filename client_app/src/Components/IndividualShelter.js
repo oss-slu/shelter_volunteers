@@ -201,7 +201,7 @@ const IndividualShelter = (props) => {
               </div>
               <div className="add-btn">
                 <button onClick={() => addShift()}>
-                  <FontAwesomeIcon icon={faCirclePlus} size="1x" />
+                  <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
                   <p className="label">Add shift </p>
                 </button>
               </div>

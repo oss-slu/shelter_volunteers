@@ -29,6 +29,11 @@ table {
   margin: 0 auto;
 }
 
+.conf-page button {
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
+
 td,
 th {
   padding: 8px;
@@ -119,6 +124,7 @@ p {
 }
 .signupcard .column2 .add-btn{
   flex: 2;
+  margin: .7vh 1vw;
 }
 
 .signupcard .column2 button {
@@ -153,6 +159,9 @@ p {
   .signupcard .column2 .add-btn button .label{
     margin-left: 0.5em;
     font-size: 1rem;
+  }
+  .signupcard .column2 .add-btn button .plus-icon{
+    margin-right: 2vw;
   }
 }
 @media (max-width:  700px) {
