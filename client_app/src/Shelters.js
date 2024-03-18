@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
+import { Pagination } from "./Components/Pagination";
 import { GETHELP_API, SERVER } from "./config";
 import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDays,faArrowRight,faCircleXmark, faLocationDot } from '@fortawesome/free-solid-svg-icons'
-import { useSpring, animated } from '@react-spring/web'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SearchBar } from "./Components/SearchBar"
+import {
+  faCalendarDays,
+  faArrowRight,
+  faCircleXmark,
+  faLocationDot
+} from "@fortawesome/free-solid-svg-icons";
+import { useSpring, animated } from "@react-spring/web";
 import MapView from "./Components/MapView";
-
 
 const Shelters = (props) => {
   let defaultRadius = "5";
@@ -22,8 +28,14 @@ const Shelters = (props) => {
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [onMobileContinueclicked,setOnMobileContinueclicked]=useState(false);
-  const [shaking, setShaking] = useState(false)
+  const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
+  const [shaking, setShaking] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [originalData, setOriginalData] = useState([]);
+  const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [totalPages, setTotalPages] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const toggleMap = () => {
     setShowMap(!showMap);
@@ -32,64 +44,79 @@ const Shelters = (props) => {
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
 
-  let shelters_endpoint = GETHELP_API + "v2/facilities?page=0&pageSize=1000";
-  let volunteers_endpoint = GETHELP_API + "volunteers";
 
   useEffect(() => {
+    fetchData();
+  }, [latitude, longitude, radius]);
+
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(parseInt(e.target.value));
+  };
+
+  function handleSearch(query) {
     setLoading(true);
-    let new_endpoint =
-      shelters_endpoint +
-      "&latitude=" +
-      latitude.toString() +
-      "&longitude=" +
-      longitude.toString() +
-      "&radius=" +
-      radius.toString();
-    fetch(new_endpoint, {
-      methods: "GET",
+    setSearchQuery(query);
+    setCurrentPage(1);
+  }
+
+  function handlePagination(data) {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedData = data.slice(startIndex, endIndex);
+    return paginatedData;
+  }
+
+  function totalPagesCount(data){
+    const newTotalPages = Math.ceil(data.length / itemsPerPage);
+    return newTotalPages
+  }
+
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      if (originalData) {
+        const filteredData = originalData.filter((shelter) =>
+          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        if (filteredData.length === 0) {
+          setNoSearchDataAvailable(true);
+          setData(handlePagination(originalData));
+          setTotalPages(totalPagesCount(originalData));
+        } else {
+          setData(handlePagination(filteredData));
+          setNoSearchDataAvailable(false);
+          setTotalPages(totalPagesCount(filteredData));
+        }
+      }
+    } else {
+      setData(handlePagination(originalData));
+      setNoSearchDataAvailable(false);
+      setTotalPages(totalPagesCount(originalData));
+    }
+  }, [searchQuery, originalData, currentPage, itemsPerPage]);
+
+  const fetchData = () => {
+    setLoading(true);
+    let newEndpoint = GETHELP_API + "v2/facilities?page=0&pageSize=1000&latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius;
+    
+    fetch(newEndpoint, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     })
-      .then(async (response) => (await response.json())["content"])
-      .then((shelters) => {
-        if (props.condensed) {
-          shelters = shelters.slice(0, 3);
-        }
-        return shelters;
+      .then((response) => response.json())
+      .then((data) => {
+        setOriginalData(data.content);
+        setLoading(false);
       })
-      .then((shelters) => setData(shelters))
       .catch((error) => console.log(error));
-  }, [
-    latitude,
-    longitude,
-    radius,
-    shelters_endpoint,
-    volunteers_endpoint,
-    props.condensed,
-  ]);
+  };
 
   function getLocation() {
     setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(setLocation);
-    }
-  }
-
-  function onShiftClose(event) {
-    let id = event.target.id;
-    let shift =
-      id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
-
-    const codes = selectedShifts.map((s) => s.code);
-    if (codes.includes(shift)) {
-      let index = selectedShifts.findIndex((s) => s.code === shift);
-      if (index !== -1) {
-        const newSelected = [...selectedShifts];
-        newSelected.splice(index, 1);
-        setSelectedShifts(newSelected);
-        setButtonDisabled(selectedShifts.length === 0);
-      }
     }
   }
 
@@ -107,6 +134,22 @@ const Shelters = (props) => {
     setTimeout(() => setShaking(false), 200);
     setSelectedShifts([...selectedShifts, shift]);
     setButtonDisabled(selectedShifts.length === 0);
+  }
+
+  function onShiftClose(event) {
+    let id = event.target.id;
+    let shift = id.split("-")[2] + "-" + id.split("-")[3] + "-" + id.split("-")[4];
+
+    const codes = selectedShifts.map((s) => s.code);
+    if (codes.includes(shift)) {
+      let index = selectedShifts.findIndex((s) => s.code === shift);
+      if (index !== -1) {
+        const newSelected = [...selectedShifts];
+        newSelected.splice(index, 1);
+        setSelectedShifts(newSelected);
+        setButtonDisabled(selectedShifts.length === 0);
+      }
+    }
   }
 
   function submitShifts() {
@@ -129,6 +172,7 @@ const Shelters = (props) => {
     }
     setOnMobileContinueclicked(true);
   }
+
   function handleCurrentSelectionClose() {
     setOnMobileContinueclicked(false);
   }
@@ -136,6 +180,10 @@ const Shelters = (props) => {
   useEffect(() => {
     setButtonDisabled(selectedShifts.length === 0);
   }, [selectedShifts]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -147,12 +195,12 @@ const Shelters = (props) => {
                 Get Shelters from Current Location
               </button>
               <ShelterList
-                shelters={data}
+                shelters={originalData.slice(0, 3)}
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
               />
-              <div class="text-center">
+              <div className="text-center">
                 <Link to="/shelters">
                   <button>View All Shelters</button>
                 </Link>
@@ -168,7 +216,15 @@ const Shelters = (props) => {
                     <button onClick={getLocation}>
                       Show opportunities near me
                     </button>
+
                     <br />
+                    
+                    <SearchBar onSearch={handleSearch}/>
+                    {noSearchDataAvailable && (
+                      <div className="no-data-message">
+                        <h1>No shelters found with that name. Explore the list below for available shelters.</h1>
+                      </div>
+                    )}
                     <label htmlFor="radius-select">Radius (miles): </label>
                     <select id="radius-select" onChange={setRadiusfromLocation}>
                       <option value="5">5</option>
@@ -186,12 +242,19 @@ const Shelters = (props) => {
                       <MapView data={data} radius={radius} latitude= {latitude} longitude = {longitude} onClose={toggleMap} manageShiftsFunction={manageShifts}/>
                     </div>
                   </div>
-                  {loading && <div class="loader"></div>}
+                  {loading && <div className="loader"></div>}
                   <ShelterList
                     shelters={data}
                     loadingFunction={setLoading}
                     manageShiftsFunction={manageShifts}
                     isSignupPage={true}
+                  />
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    itemsPerPage={itemsPerPage}
                   />
                 </div>
                 <div

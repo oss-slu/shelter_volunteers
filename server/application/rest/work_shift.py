@@ -19,6 +19,7 @@ from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 
 
+
 blueprint = Blueprint("work_shift", __name__)
 
 shifts = [
@@ -51,7 +52,8 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.SYSTEM_ERROR: 500,
     ResponseTypes.AUTHORIZATION_ERROR: 403,
     ResponseTypes.PARAMETER_ERROR: 400,
-    ResponseTypes.SUCCESS: 200
+    ResponseTypes.SUCCESS: 200,
+    ResponseTypes.CONFLICT: 409
 }
 
 
@@ -122,14 +124,25 @@ def work_shifts():
             )
 
     elif request.method == "POST":
+        repo = mongorepo.MongoRepo(app_configuration())
+        user = get_user_from_token(request.headers)
+        if not user:
+            return jsonify({"message": "Invalid or missing token"}), \
+                           ResponseTypes.AUTHORIZATION_ERROR
         data = request.get_json()
         for shift in data:
             shift["worker"] = user
-        workshift_add_multiple_use_case(repo, data)
+        add_responses = workshift_add_multiple_use_case(repo, data)
+        success = all(item["success"] for item in add_responses)
+        status_code = (
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+            if success
+            else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
+        )
         return Response(
-            json.dumps(data, cls=WorkShiftJsonEncoder),
+            json.dumps(add_responses, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
-            status=200,
+            status=status_code
         )
 
 def get_user_from_token(headers):

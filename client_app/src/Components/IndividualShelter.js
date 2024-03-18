@@ -9,6 +9,7 @@ import { SERVER } from "../config";
 import GraphComponent from "./GraphComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
@@ -20,6 +21,7 @@ const IndividualShelter = (props) => {
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
 
   const filterPastStartTime = (time) => {
     const currentDate = new Date();
@@ -33,8 +35,12 @@ const IndividualShelter = (props) => {
     currentDate.setHours(currentDate.getHours() + 1);
     return currentDate.getTime() < selectedDate.getTime();
   };
+  
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button className="example-custom-input" onClick={onClick} ref={ref}>
+    <button className="example-custom-input" onClick={(event) => {
+      onClick(event); 
+      setVolunteerCountsHidden(false);
+    }} ref={ref}>
       {value}
     </button>
   ));
@@ -79,7 +85,7 @@ const IndividualShelter = (props) => {
       setSeconds(setMinutes(setHours(startTime, 23), 59), 59),
       999
     );
-    if (shelter) {
+    if (!volunteerCountsHidden && shelter) {
       setLoading(true);
       let request_endpoint =
         SERVER +
@@ -133,13 +139,13 @@ const IndividualShelter = (props) => {
         })
         .catch((error) => console.log(error));
     }
-  }, [startTime, shelter]);
+  }, [startTime, volunteerCountsHidden, shelter]);
 
   return (
     <div>
       {props.isSignupPage && (
         <div key={shelter.id}>
-          <div class="signupcard">
+          <div className="signupcard">
             <div className="column1">
               <h2>{shelter.name}</h2>
               <p>
@@ -148,8 +154,13 @@ const IndividualShelter = (props) => {
               <p>
                 {shelter.phone}
               </p>
-              <a href={shelter.website}>{shelter.website}</a>
+              {shelter.website ? <a href={shelter.website}>View website</a> : null}
               <p>{+shelter.distance.toFixed(2)} miles away</p>
+
+              <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
+                {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Volunteer Counts  "}
+                <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
+              </button>
             </div>
             <div className="column2">
               <div className="dates">
@@ -191,32 +202,34 @@ const IndividualShelter = (props) => {
               </div>
               <div className="add-btn">
                 <button onClick={() => addShift()}>
-                  <FontAwesomeIcon icon={faCirclePlus} size="1x" />
+                  <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
                   <p className="label">Add shift </p>
                 </button>
               </div>
             </div>
           </div>
 
-          <div class="signupcard shift-graph text-center">
-            <h3>Current Volunteer Counts</h3>
-            <div class="shift-count">
-              {!loading && shiftCounts && shiftCounts.length > 0 && (
-                <div>{<GraphComponent shifts={shiftCounts} />}</div>
-              )}
-              {!loading && shiftCounts && shiftCounts.length === 0 && (
-                <p>
-                  No volunteers are currently signed up during your selected
-                  time range.
-                </p>
-              )}
-              {loading && <p>Loading...</p>}
+          {!volunteerCountsHidden && (
+            <div className="signupcard shift-graph text-center">
+              <h3>Current Volunteer Counts</h3>
+              <div className="shift-count">
+                {!loading && shiftCounts && shiftCounts.length > 0 && (
+                  <div>{<GraphComponent shifts={shiftCounts} />}</div>
+                )}
+                {!loading && shiftCounts && shiftCounts.length === 0 && (
+                  <p>
+                    No volunteers are currently signed up during your selected
+                    time range.
+                  </p>
+                )}
+                {loading && <p>Loading...</p>}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       {!props.isSignupPage && (
-        <div class="shelter text-center" key={shelter.id}>
+        <div className="shelter text-center" key={shelter.id}>
           <h2>{shelter.name}</h2>
           <p>
             {shelter.city}, {shelter.state} {shelter.zipCode}

@@ -57,7 +57,7 @@ const ShiftList = (props) => {
               key={shift.code}
             >
               {props.fromShelter === true && (
-                <div class="text-right">
+                <div className="text-right">
                   <input
                     type="checkbox"
                     id={"shift-checkbox-" + shift.code}

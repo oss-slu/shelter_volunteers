@@ -73,3 +73,10 @@ class MongoRepo:
         """
         self.collection.delete_one({"code": shift_id})
         return
+
+    def get_shifts_for_user(self, user_id):
+        """
+        Retrieves all work shifts for a specific user from the database.
+        """
+        user_shifts = self.collection.find({"worker": user_id}, {"_id": 0})
+        return [WorkShift.from_dict(shift) for shift in user_shifts]
