@@ -7,7 +7,7 @@ export const Pagination = (props) => {
   };
 
   return (
-    <div className={`${props.className}`}>
+    <div className="pagination-wrapper">
       <div className="pagination">
         <div className="pagination-items-per-page">
           <p>Shelters per page</p>

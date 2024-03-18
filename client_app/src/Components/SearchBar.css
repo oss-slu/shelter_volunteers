@@ -44,7 +44,7 @@ input:focus {
   .search-button:enabled:hover:after,
   .clear-button:enabled:hover:after {
     width: 100%;
-    background: #193b45;
+    background: #ffdd40;
   }
 
 .search-button,

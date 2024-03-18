@@ -118,14 +118,6 @@ const Shelters = (props) => {
       .catch((error) => console.log(error));
   };
 
-  const getPaginationClassName = () => {
-    if (screenSize <= 768) {
-      return 'pagination-wrapper-mobile';
-    } else {
-      return 'pagination-wrapper';
-    }
-  };
-
   function getLocation() {
     setLoading(true);
     if (navigator.geolocation) {
@@ -260,7 +252,6 @@ const Shelters = (props) => {
                     onPageChange={handlePageChange}
                     onItemsPerPageChange={handleItemsPerPageChange}
                     itemsPerPage={itemsPerPage}
-                    className={getPaginationClassName()}
                   />
                 </div>
                 <div
