@@ -34,26 +34,16 @@ const Shelters = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
-  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
 
-  const handleResize = () => {
-    setScreenSize(window.innerWidth);
-  };
 
   useEffect(() => {
     fetchData();
   }, [latitude, longitude, radius]);
 
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
