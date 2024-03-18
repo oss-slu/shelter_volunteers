@@ -29,6 +29,11 @@ table {
   margin: 0 auto;
 }
 
+.conf-page button {
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
+
 td,
 th {
   padding: 8px;
@@ -80,7 +85,7 @@ p {
 .shelter,
 .shift,
 .signupcard {
-  margin: 15px;
+  margin: 1.063vw;
   border-radius: 1em;
   border: 1px solid #000000;
   background-color: #ecececfc;
@@ -119,6 +124,7 @@ p {
 }
 .signupcard .column2 .add-btn{
   flex: 2;
+  margin: .7vh 1vw;
 }
 
 .signupcard .column2 button {
@@ -153,6 +159,9 @@ p {
   .signupcard .column2 .add-btn button .label{
     margin-left: 0.5em;
     font-size: 1rem;
+  }
+  .signupcard .column2 .add-btn button .plus-icon{
+    margin-right: 2vw;
   }
 }
 @media (max-width:  700px) {
@@ -310,9 +319,11 @@ button {
   border: none;
   outline: none;
   color: #0066b2;
-  padding: 0.1em;
-  font-size: 16px;
+  font-size: 0.9rem;
   text-decoration: underline;
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 @media screen and (max-width: 960px) {
@@ -325,7 +336,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 20px;
+  padding: 1.43vw;
 }
 
 .shelter-dashboard .container {
@@ -335,22 +346,22 @@ button {
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 2px 2px 5px #888888;
-  padding: 20px;
+  padding: 1.43vw;
   width: 45%;
 }
 
 .shelter-dashboard .container h1 {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 2.894vh;
 }
 
 .shelter-dashboard .shift-card,
 .shelter-dashboard .volunteer-card {
   background-color: #3498db; /* Adjusted card color */
   border-radius: 10px;
-  margin: 10px 0;
-  padding: 15px; /* Increased padding for better appearance */
+  margin: .717vw 0;
+  padding: 1.076vw; /* Increased padding for better appearance */
   display: flex;
   flex-direction: column; /* Adjusted layout to stack content */
   align-items: center; /* Centered content horizontally */
@@ -358,20 +369,20 @@ button {
 
 .shelter-dashboard .shift-card h4,
 .shelter-dashboard .volunteer-card h4 {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #fff; /* Changed text color to white */
   margin: 0;
 }
 
 .shelter-dashboard .shift-card p,
 .shelter-dashboard .volunteer-card p {
-  font-size: 16px;
+  font-size: 1rem;
   color: #fff; /* Changed text color to white */
   margin: 0;
 }
 
 .shelter-dashboard .volunteer-card {
-  margin-left: 20px; /* Added space between columns */
+  margin-left: 1.434vw; /* Added space between columns */
 }
 
 .shelter-dashboard button {
@@ -379,14 +390,14 @@ button {
   border-radius: 5px;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: .717vw 1.434vw;
   cursor: pointer;
-  margin-top: 10px; /* Added space between button and content */
+  margin-top: .717vw; /* Added space between button and content */
 }
 
 #submit-shifts {
   margin-top: auto;
-  margin-bottom: 20px;
+  margin-bottom: 2.894vh;
   @media (max-width:  960px) {
     position: fixed;
     bottom: 1em;
@@ -420,7 +431,7 @@ button {
 #submit-shifts button:enabled:after {
   content: "";
   display: block;
-  height: 3px;
+  height: .434vh;
   width: 0;
   transition: width 0.7s ease, background-color 0.5s ease;
 }
@@ -456,7 +467,7 @@ button {
   }
   
   .signup-page .column {
-    padding: 10px;
+    padding: .717vw;
   }
   .signup-page .column-2 {
     order: 1;
@@ -491,7 +502,7 @@ button {
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;
   overflow-y: auto;
-  @media (max-width:  960px) {
+  @media (max-width:  68.866vw) {
     display: none;
   }
 }
@@ -543,13 +554,13 @@ button {
     position: fixed;
     display: block;
     z-index: 30;
-    bottom: 20px;
-    right: 20px;
+    bottom: 2.894vh;
+    right: 1.417vw;
   }
 }
 
 .cta-button button {
-  padding: 10px 20px;
+  padding: .708vw 1.417vw;
   background-color: #132b32;
   color: #fff;
   border: none;
@@ -564,22 +575,22 @@ button {
 }
 
 .shift-count {
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
   justify-content: center;
-}
-
-.shift-count {
-  height: 250px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .shift-count canvas {
-  height: 225px;
+  width: 100%
 }
 
 .signupcard.shift-graph h3,
 .signupcard.shift-graph h4 {
   margin: 0;
+  height: auto;
+  width: auto;
 }
 
 .continue-bottom-row {
@@ -588,7 +599,7 @@ button {
     position: fixed;
     display: block;
     z-index: 30;
-    bottom: 20px;
+    bottom: 2.894vh;
     display: flex;
     flex-direction: row;
     width: 100vw;

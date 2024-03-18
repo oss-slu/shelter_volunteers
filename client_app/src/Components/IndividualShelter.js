@@ -154,10 +154,11 @@ const IndividualShelter = (props) => {
               <p>
                 {shelter.phone}
               </p>
-              <a href={shelter.website}>{shelter.website}</a>
-              <p>{+shelter.distance.toFixed(2)} miles away</p>  
+              {shelter.website ? <a href={shelter.website}>View website</a> : null}
+              <p>{+shelter.distance.toFixed(2)} miles away</p>
+
               <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
-                {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
+                {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Volunteer Counts  "}
                 <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
               </button>
             </div>
@@ -201,7 +202,7 @@ const IndividualShelter = (props) => {
               </div>
               <div className="add-btn">
                 <button onClick={() => addShift()}>
-                  <FontAwesomeIcon icon={faCirclePlus} size="1x" />
+                  <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
                   <p className="label">Add shift </p>
                 </button>
               </div>
