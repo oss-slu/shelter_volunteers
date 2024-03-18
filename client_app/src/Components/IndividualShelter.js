@@ -35,6 +35,7 @@ const IndividualShelter = (props) => {
     currentDate.setHours(currentDate.getHours() + 1);
     return currentDate.getTime() < selectedDate.getTime();
   };
+  
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="example-custom-input" onClick={(event) => {
       onClick(event); 
@@ -84,7 +85,7 @@ const IndividualShelter = (props) => {
       setSeconds(setMinutes(setHours(startTime, 23), 59), 59),
       999
     );
-    if (shelter) {
+    if (!volunteerCountsHidden && shelter) {
       setLoading(true);
       let request_endpoint =
         SERVER +
@@ -138,7 +139,7 @@ const IndividualShelter = (props) => {
         })
         .catch((error) => console.log(error));
     }
-  }, [startTime, shelter]);
+  }, [startTime, volunteerCountsHidden, shelter]);
 
   return (
     <div>
@@ -154,8 +155,7 @@ const IndividualShelter = (props) => {
                 {shelter.phone}
               </p>
               <a href={shelter.website}>{shelter.website}</a>
-              <p>{+shelter.distance.toFixed(2)} miles away</p>
-              
+              <p>{+shelter.distance.toFixed(2)} miles away</p>  
               <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
                 {volunteerCountsHidden ? "View Current Volunteer Counts  " : "Hide Current Volunteer Counts  "}
                 <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
