@@ -31,7 +31,6 @@ const Shelters = (props) => {
   const [originalData, setOriginalData] = useState([]);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
 
-
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
