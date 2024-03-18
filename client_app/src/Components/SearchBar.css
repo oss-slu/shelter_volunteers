@@ -1,20 +1,21 @@
 .input-wrapper{
     background-color: white;
+    max-height: fit-content;
     margin-top: 2vh;
-    margin-left: 15px;
-    width: 96.5%;
-    border-radius: 10px;
-    padding: 0px 10px;
-    box-shadow: 0px 0px 8px #ddd;
+    margin-left: 1.297vw;
+    margin-right: 1.297vw;
+    padding: 0 1.43vw;
     display: flex;
     align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 8px #ddd;
+    
 }
 
 input {
     background-color: transparent;
     border: none;
-    height: 60px;
-    font-size: 20px;
+    font-size: 1.0rem;
     width: 100%;
 }
 
@@ -35,8 +36,8 @@ input:focus {
 .clear-button:enabled:after {
     content: "";
     display: block;
-    height: 3px;
-    width: 0;
+    height: .4347vh;
+    width: 100%;
     transition: width 0.7s ease, background-color 0.5s ease;
   }
   
@@ -48,5 +49,6 @@ input:focus {
 
 .search-button,
 .clear-button {
-    margin: 5px;
+    margin: .432vw;
+    -ms-flex-align: end;
 }
