@@ -2,6 +2,7 @@ import IndividualShelter from "./IndividualShelter";
 import { useEffect } from "react";
 
 const ShelterList = (props) => {
+
   
     useEffect(() => {
       if (props.loadingFunction) {
