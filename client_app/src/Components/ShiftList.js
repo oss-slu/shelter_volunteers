@@ -36,17 +36,19 @@ const ShiftList = (props) => {
             {props.currentSelectionSection === true && (<div className= "currentselection"
               key={shift.code}>
                 <table>
-                  <tr>
-                    <td><p>{shift.shelter}</p></td>
-                    <td><p>
-                      {formattedStartTime} to {formattedEndTime}</p></td>
-                    <td>
-                      <button 
-                        className="closebtn"
-                        id={"shift-closebtn-" + shift.code}
-                        onClick={onCloseBtnClick}
-                        >X</button></td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <td><p>{shift.shelter}</p></td>
+                      <td><p>
+                        {formattedStartTime} to {formattedEndTime}</p></td>
+                      <td>
+                        <button 
+                          className="closebtn"
+                          id={"shift-closebtn-" + shift.code}
+                          onClick={onCloseBtnClick}
+                          >X</button></td>
+                    </tr>
+                  </tbody>
                 </table>
 
             </div>)}
