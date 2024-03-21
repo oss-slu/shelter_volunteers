@@ -51,9 +51,10 @@ class MongoRepo:
         Add a WorkShift object to the data.
         A unique id gets generated in mongoDB and is added to workShift object
         """
-        # Remove the _id field from the dictionary, so that when we call insert_one
-        # mongoDB will add an _id field to the work_shift dictionary object with a unique
-        # value before inserting it into the collection. This ensures that each work shift
+        # Remove the _id field from the dictionary, so that when we call
+        # insert_one mongoDB will add an _id field to the work_shift
+        # dictionary object with a unique value before inserting it into
+        # the collection. This ensures that each work shift
         # stored in our database has a unique _id
         work_shift.pop("_id")
         self.collection.insert_one(work_shift)
