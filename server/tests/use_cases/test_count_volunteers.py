@@ -37,14 +37,18 @@ def compare(expected_staff, shifts_data, request):
 def test_nonoverlapping_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -70,14 +74,18 @@ def test_nonoverlapping_shifts():
 def test_identical_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 1,
@@ -101,14 +109,18 @@ def test_identical_shifts():
 def test_overlapping_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 1,
@@ -133,14 +145,18 @@ def test_overlapping_shifts():
 def test_overlapping2_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 3
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -166,14 +182,18 @@ def test_overlapping2_shifts():
 def test_overlapping3_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -199,14 +219,18 @@ def test_overlapping3_shifts():
 def test_overlapping4_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -232,21 +256,27 @@ def test_overlapping4_shifts():
 def test_many_overlapping_shifts():
     shifts_data = [
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
         },
         {
-            "code": "3",
+            "_id": {
+                "$oid": "3"
+            },
             "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
@@ -278,21 +308,27 @@ def test_many_overlapping_shifts():
 def test_many_overlapping2_shifts():
     shifts_data = [
         {
-            "code": "3",
+            "_id": {
+                "$oid": "3"
+            },
             "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4
         },
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -323,21 +359,27 @@ def test_many_overlapping2_shifts():
 def test_many_overlapping3_shifts():
     shifts_data = [
         {
-            "code": "3",
+            "_id": {
+                "$oid": "3"
+            },
             "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
         },
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 3,
@@ -368,21 +410,27 @@ def test_many_overlapping3_shifts():
 def test_many_overlapping4_shifts():
     shifts_data = [
         {
-            "code": "3",
+            "_id": {
+                "$oid": "3"
+            },
             "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
             "end_time": 5
         },
         {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
         },
         {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
@@ -410,7 +458,9 @@ def test_many_overlapping4_shifts():
 def test_workers_in_range():
     shifts_data = [
        {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
@@ -437,21 +487,27 @@ def test_workers_in_range():
 def test_workers_in_range_overlap():
     shifts_data = [
        {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
        },
        {
-            "code": "2",
+            "_id": {
+                "$oid": "2"
+            },
             "worker": "volunteer2@slu.edu",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
        },
        {
-            "code": "3",
+            "_id": {
+                "$oid": "3"
+            },
             "worker": "volunteer3@slu.edu",
             "shelter": 1,
             "start_time": 3,
@@ -476,7 +532,9 @@ def test_workers_in_range_overlap():
 def test_no_workers_in_range():
     shifts_data = [
        {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 1,
@@ -499,7 +557,9 @@ def test_no_workers_in_range():
 def test_no_workers_in_range2():
     shifts_data = [
        {
-            "code": "1",
+            "_id": {
+                "$oid": "1"
+            },
             "worker": "volunteer1@slu.edu",
             "shelter": 1,
             "start_time": 3,

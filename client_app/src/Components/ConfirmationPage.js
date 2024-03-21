@@ -27,7 +27,7 @@ const ConfirmationPage = ({ selectedShifts }) => {
           </thead>
           <tbody>
             {selectedShifts.map(shift => (
-              <tr key={shift.id}>
+              <tr key={shift.code}>
                 <td>
                   <p>{shift.shelter}</p>
                 </td>

@@ -19,7 +19,7 @@ const ShiftList = (props) => {
   }
 
   return (
-    <div>
+    <>
       {/* Display the shift*/}
       {props.shifts &&
         props.shifts.map((shift) => {
@@ -32,10 +32,11 @@ const ShiftList = (props) => {
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
-            <>
-            {props.currentSelectionSection === true && (<div className= "currentselection"
-              key={shift.code}>
+            <div key={shift._id || shift.code}>
+            {props.currentSelectionSection === true && (
+              <div className= "currentselection">
                 <table>
+                  <tbody>
                   <tr>
                     <td><p>{shift.shelter}</p></td>
                     <td><p>
@@ -43,18 +44,17 @@ const ShiftList = (props) => {
                     <td>
                       <button 
                         className="closebtn"
-                        id={"shift-closebtn-" + shift.code}
+                        id={"shift_closebtn_" + shift.code}                        
                         onClick={onCloseBtnClick}
                         >X</button></td>
                   </tr>
+                  </tbody>
                 </table>
-
             </div>)}
             {props.currentSelectionSection !== true && (<div
               className={
                 endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"
               }
-              key={shift.code}
             >
               {props.fromShelter === true && (
                 <div className="text-right">
@@ -80,12 +80,12 @@ const ShiftList = (props) => {
               {/* using the newly created boolean variable to ensure the cancel button only appears for
               upcoming shifts */}
               {!isPastShift && (
-                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift.code)}>
+                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift._id)}>
                   Cancel Shift
                 </button>
               )}
             </div>)}
-            </>
+            </div>
           );
         })}
       {props.shifts.length === 0 && !props.currentSelectionSection &&(
@@ -98,7 +98,7 @@ const ShiftList = (props) => {
           Please add your desired shifts from the list
         </p>
       )}
-    </div>
+    </>
   );
 };
 
