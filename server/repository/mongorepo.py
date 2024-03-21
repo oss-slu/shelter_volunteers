@@ -49,6 +49,7 @@ class MongoRepo:
     def add(self, work_shift):
         """
         Add a WorkShift object to the data.
+        A unique id gets generated in mongoDB and is added to workShift object
         """
         work_shift.pop("_id")
         self.collection.insert_one(work_shift)
