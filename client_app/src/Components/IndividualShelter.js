@@ -14,10 +14,10 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
   const [startTime, setStartDate] = useState(
-    setHours(setMinutes(new Date(), 0), new Date().getHours() + 1)
+    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 1)
   );
   const [endTime, setEndDate] = useState(
-    setHours(setMinutes(new Date(), 0), new Date().getHours() + 2)
+    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 2)
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
