@@ -37,6 +37,7 @@ const ConfirmationPage = ({ selectedShifts }) => {
                 <td>
                   <p>{format(shift.end_time, 'MMM, dd, yyyy HH:mm aa')}</p>
                 </td>
+                
               </tr>
             ))}
           </tbody>

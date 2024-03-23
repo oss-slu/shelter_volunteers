@@ -162,6 +162,11 @@ const Shelters = (props) => {
       body: JSON.stringify(shiftsPayload),
       headers: header,
     })
+      .then(response => response.json())
+      .then (data => {
+        const successList = data.map(item => item.success);
+        console.log("Success List:", successList);
+      })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
   }

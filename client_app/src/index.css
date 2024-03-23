@@ -488,6 +488,14 @@ button {
   }
 }
 
+.error-message {
+  color: rgb(255, 36, 0);
+}
+
+.error-message .closebtn {
+  background-color: rgb(255, 36, 0);
+}
+
 .current-selection {
   display: flex;
   flex-direction: column;
