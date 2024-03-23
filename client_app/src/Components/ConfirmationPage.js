@@ -6,7 +6,7 @@ const handleReload = () => {
     window.location.reload();
   };
 
-const ConfirmationPage = ({ selectedShifts }) => {
+const ConfirmationPage = ({ selectedShifts, successList }) => {
   return (
     <>
       <div className="conf-page">
@@ -23,10 +23,13 @@ const ConfirmationPage = ({ selectedShifts }) => {
               <th>
                 <h2>To</h2>
               </th>
+              <th>
+                <h2>Status</h2>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {selectedShifts.map(shift => (
+            {selectedShifts.map((shift, index) => (
               <tr key={shift.code}>
                 <td>
                   <p>{shift.shelter}</p>
@@ -37,7 +40,9 @@ const ConfirmationPage = ({ selectedShifts }) => {
                 <td>
                   <p>{format(shift.end_time, 'MMM, dd, yyyy HH:mm aa')}</p>
                 </td>
-                
+                <td>
+                  <p>{successList[index] ? 'Success' : 'Failure'}</p>
+                </td>  
               </tr>
             ))}
           </tbody>
