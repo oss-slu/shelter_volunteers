@@ -1,16 +1,21 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const handleReload = () => {
     window.location.reload();
-  };
+};
 
-const ConfirmationPage = ({ selectedShifts, successList }) => {
+
+const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
   return (
     <>
       <div className="conf-page">
-        <h1>Thank you for registering to volunteer!</h1>
+        <h1>Shift Registration</h1>
         <table>
           <thead>
             <tr>
@@ -41,7 +46,25 @@ const ConfirmationPage = ({ selectedShifts, successList }) => {
                   <p>{format(shift.end_time, 'MMM, dd, yyyy HH:mm aa')}</p>
                 </td>
                 <td>
-                  <p>{successList[index] ? 'Success' : 'Failure'}</p>
+                  <p className={shiftStatusList[index] ? 'success' : 'failure'}>
+                    {shiftStatusList[index] ? (
+                      <>
+                        Success
+                        <IconButton>
+                          <CheckCircleIcon className="check-icon" />
+                        </IconButton>
+                      </>
+                    ) : (
+                      <>
+                       Failure &nbsp;
+                       <Tooltip title="Shift conflict exists" followCursor>
+                       <IconButton>
+                          <InfoIcon className="info-icon" />
+                        </IconButton>
+                        </Tooltip>
+                      </>
+                    )}
+                  </p>
                 </td>  
               </tr>
             ))}

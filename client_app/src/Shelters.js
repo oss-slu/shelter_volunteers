@@ -25,7 +25,7 @@ const Shelters = (props) => {
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
-  const [successList, setSuccessList] = useState([]);
+  const [shiftStatusList, setShiftStatusList] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
@@ -149,8 +149,8 @@ const Shelters = (props) => {
   }
 
   useEffect(() => {
-    console.log("Success List:", successList);
-  }, [successList]);
+    console.log("Success List:", shiftStatusList);
+  }, [shiftStatusList]);
 
   function submitShifts() {
     let shifts = [...selectedShifts];
@@ -168,7 +168,7 @@ const Shelters = (props) => {
     })
       .then(response => response.json())
       .then (data => {
-        setSuccessList(data.map(item => item.success));
+        setShiftStatusList(data.map(item => item.success));
       })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
@@ -336,9 +336,9 @@ const Shelters = (props) => {
           )}
         </div>
       )}
-      {showConfirmation && successList && (
+      {showConfirmation && shiftStatusList && (
         <div>
-          <ConfirmationPage selectedShifts={selectedShifts} successList={successList} />
+          <ConfirmationPage selectedShifts={selectedShifts} shiftStatusList={shiftStatusList} />
         </div>
       )}
     </>
