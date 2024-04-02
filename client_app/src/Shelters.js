@@ -148,10 +148,6 @@ const Shelters = (props) => {
     }
   }
 
-  useEffect(() => {
-    console.log("Success List:", shiftStatusList);
-  }, [shiftStatusList]);
-
   function submitShifts() {
     let shifts = [...selectedShifts];
     let shiftsPayload = shifts.map(shift => ({ ...shift })); // Create new objects

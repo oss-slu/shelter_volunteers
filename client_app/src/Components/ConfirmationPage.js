@@ -10,7 +10,6 @@ const handleReload = () => {
     window.location.reload();
 };
 
-
 const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
   return (
     <>
@@ -57,7 +56,7 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                     ) : (
                       <>
                        Failure &nbsp;
-                       <Tooltip title="Shift conflict exists" followCursor>
+                       <Tooltip title="You're already registered for another shift at this time" followCursor enterTouchDelay={0} leaveTouchDelay={5000}>
                        <IconButton>
                           <InfoIcon className="info-icon" />
                         </IconButton>
