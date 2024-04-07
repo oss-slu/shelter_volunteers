@@ -124,6 +124,6 @@ def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
     user_id = domain_work_shifts[2].worker
     responses = repo.get_shifts_for_user(user_id)
     assert len(responses) == 2
-    assert responses[0]["end_time"] == responses[1]["start_time"]
+    assert responses[0].end_time == responses[1].start_time
 
 # pylint: enable=redefined-outer-name
