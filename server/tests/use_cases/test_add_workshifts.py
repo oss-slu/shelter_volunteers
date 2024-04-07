@@ -114,7 +114,7 @@ def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
     new_shifts = [
         domain_work_shifts[2].to_dict(),
         WorkShift(
-            worker="volunteer3@slu.edu",
+            worker="volunteer@slu.edu",
             shelter="shelter-id-for-st-patric-center",
             start_time=1701453600000,
             end_time=1801453600000,
