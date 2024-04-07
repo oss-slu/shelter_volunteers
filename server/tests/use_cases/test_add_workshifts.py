@@ -110,6 +110,7 @@ def test_workshift_add_multiple_use_case_no_overlap():
 
 def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
     repo = mock.Mock()
+    repo.get_shifts_for_user = []
     new_shifts = [
         domain_work_shifts[2].to_dict(),
         WorkShift(
