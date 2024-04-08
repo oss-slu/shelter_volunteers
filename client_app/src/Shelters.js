@@ -25,6 +25,7 @@ const Shelters = (props) => {
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
+  const [shiftStatusList, setShiftStatusList] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
@@ -156,12 +157,15 @@ const Shelters = (props) => {
     }); // Delete code property 
     const shiftsEndpoint = SERVER + "/shifts";
     const header = getAuthHeader();
-
     fetch(shiftsEndpoint, {
       method: "POST",
       body: JSON.stringify(shiftsPayload),
       headers: header,
     })
+      .then(response => response.json())
+      .then (data => {
+        setShiftStatusList(data.map(item => item.success));
+      })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
   }
@@ -328,9 +332,9 @@ const Shelters = (props) => {
           )}
         </div>
       )}
-      {showConfirmation && (
+      {showConfirmation && shiftStatusList && (
         <div>
-          <ConfirmationPage selectedShifts={selectedShifts} />
+          <ConfirmationPage selectedShifts={selectedShifts} shiftStatusList={shiftStatusList} />
         </div>
       )}
     </>
