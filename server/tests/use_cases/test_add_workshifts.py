@@ -107,4 +107,23 @@ def test_workshift_add_multiple_use_case_no_overlap():
     assert responses[1]["success"] is True
     repo.add.assert_any_call(shift_1.to_dict())
     repo.add.assert_any_call(shift_2.to_dict())
+
+def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
+    repo = mock.Mock()
+    repo.get_shifts_for_user.return_value = []
+    new_shifts = [
+        domain_work_shifts[2].to_dict(),
+        WorkShift(
+            worker="volunteer@slu.edu",
+            shelter="shelter-id-for-st-patric-center",
+            start_time=1701453600000,
+            end_time=1801453600000,
+        ).to_dict(),
+    ]
+    workshift_add_multiple_use_case(repo, new_shifts)
+    user_id = domain_work_shifts[2].worker
+    responses = repo.get_shifts_for_user(user_id)
+    assert len(responses) == 2
+    assert responses[0].end_time == responses[1].start_time
+
 # pylint: enable=redefined-outer-name
