@@ -3,7 +3,6 @@ Module containing test cases for adding work shifts.
 """
 
 import pytest
-import uuid
 from unittest import mock
 
 from domains.work_shift import WorkShift
@@ -15,7 +14,6 @@ def domain_work_shifts():
     Fixture that returns mock work shifts data.
     """
     work_shift_1 = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=1696168800000,
@@ -23,7 +21,6 @@ def domain_work_shifts():
     )
 
     work_shift_2 = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer2@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=1696255200000,
@@ -31,7 +28,6 @@ def domain_work_shifts():
     )
 
     work_shift_3 = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=1701442800000,
@@ -61,7 +57,6 @@ def test_workshift_add_use_case_with_overlap(domain_work_shifts):
     repo = mock.Mock()
     existing_shifts = [domain_work_shifts[0]]
     overlapping_shift = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=domain_work_shifts[0].start_time,
@@ -79,7 +74,6 @@ def test_workshift_add_multiple_use_case_with_overlap(domain_work_shifts):
     new_shifts = [
         domain_work_shifts[1].to_dict(),
         WorkShift(
-            code=uuid.uuid4(),
             worker="volunteer3@slu.edu",
             shelter="shelter-id-for-st-patric-center",
             start_time=domain_work_shifts[0].start_time,
@@ -95,14 +89,12 @@ def test_workshift_add_multiple_use_case_no_overlap():
     repo = mock.Mock()
     repo.get_shifts_for_user.return_value = []
     shift_1 = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=1000,
         end_time=2000,
     )
     shift_2 = WorkShift(
-        code=uuid.uuid4(),
         worker="volunteer@slu.edu",
         shelter="shelter-id-for-st-patric-center",
         start_time=2000,
@@ -115,4 +107,23 @@ def test_workshift_add_multiple_use_case_no_overlap():
     assert responses[1]["success"] is True
     repo.add.assert_any_call(shift_1.to_dict())
     repo.add.assert_any_call(shift_2.to_dict())
+
+def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
+    repo = mock.Mock()
+    repo.get_shifts_for_user.return_value = []
+    new_shifts = [
+        domain_work_shifts[2].to_dict(),
+        WorkShift(
+            worker="volunteer@slu.edu",
+            shelter="shelter-id-for-st-patric-center",
+            start_time=1701453600000,
+            end_time=1801453600000,
+        ).to_dict(),
+    ]
+    workshift_add_multiple_use_case(repo, new_shifts)
+    user_id = domain_work_shifts[2].worker
+    responses = repo.get_shifts_for_user(user_id)
+    assert len(responses) == 2
+    assert responses[0].end_time == responses[1].start_time
+
 # pylint: enable=redefined-outer-name

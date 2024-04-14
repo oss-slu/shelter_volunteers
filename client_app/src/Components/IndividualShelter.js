@@ -14,10 +14,10 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
   const [startTime, setStartDate] = useState(
-    setHours(setMinutes(new Date(), 0), new Date().getHours() + 1)
+    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 1)
   );
   const [endTime, setEndDate] = useState(
-    setHours(setMinutes(new Date(), 0), new Date().getHours() + 2)
+    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 2)
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,6 +44,7 @@ const IndividualShelter = (props) => {
       {value}
     </button>
   ));
+  const { v4: uuidv4 } = require('uuid');
 
   function addShift() {
     if (props.addShiftFunction) {
@@ -51,7 +52,7 @@ const IndividualShelter = (props) => {
       let start = startTime.getTime();
       let end = endTime.getTime();
       let shift = {
-        code: `${id}-${start}-${end}`,
+        code: `${uuidv4()}-${id}`,
         shelter: id,
         start_time: start,
         end_time: end,

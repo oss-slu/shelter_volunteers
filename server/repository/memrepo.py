@@ -32,13 +32,13 @@ class MemRepo:
 
     def get_by_id(self, shift_id):
         for item in self.data:
-            if item["code"] == shift_id:
+            if item["_id"] == shift_id:
                 return WorkShift.from_dict(item)
         return None
 
     def delete(self, shift_id):
         for item in self.data:
-            if item["code"] == shift_id:
+            if item["_id"] == shift_id:
                 self.data.remove(item)
                 return
 

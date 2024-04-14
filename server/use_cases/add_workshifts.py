@@ -13,7 +13,11 @@ def workshift_add_use_case(repo, new_shift, existing_shifts):
                 "message": "You are signed up for another shift at this time"}
     new_shift_dict = new_shift.to_dict()
     repo.add(new_shift_dict)
-    return {"success": True, "message": "Shift added successfully"}
+    shift_id = new_shift_dict["_id"]
+    new_shift.set_id(shift_id)
+    new_shift_dict= new_shift.to_dict()
+    return {"id":shift_id, "success": True,
+            "message": "Shift added successfully"}
 
 
 def workshift_add_multiple_use_case(repo, work_shifts):
@@ -30,8 +34,8 @@ def workshift_add_multiple_use_case(repo, work_shifts):
     for work_shift_dict in work_shifts:
         new_shift = WorkShift.from_dict(work_shift_dict)
         add_response = workshift_add_use_case(repo, new_shift, existing_shifts)
-        shift_id = work_shift_dict["code"]
-        response_item = {"id": shift_id, "success": add_response["success"]}
+        shift_id=str(new_shift.get_id())
+        response_item = {"code": shift_id, "success": add_response["success"]}
         if not add_response["success"]:
             response_item["error"] = add_response["message"]
         responses.append(response_item)

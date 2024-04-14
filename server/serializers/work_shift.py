@@ -10,7 +10,7 @@ class WorkShiftJsonEncoder(json.JSONEncoder):
         """Encode a WorkShift object to JSON."""
         try:
             to_serialize = {
-                "code": str(workshift.code),
+                "_id": str(workshift.get_id()),
                 "worker": workshift.worker,
                 "shelter": workshift.shelter,
                 "start_time": workshift.start_time,

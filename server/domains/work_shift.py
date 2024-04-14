@@ -10,11 +10,18 @@ class WorkShift:
     """
     Data class for workshift releated data
     """
-    code: uuid.UUID
     worker: str
     shelter: int
     start_time: int  # number of milliseconds since the Epoch in UTC
     end_time: int
+    _id: uuid.UUID = None
+
+    def get_id(self):
+        """Returns the ID of the work shift."""
+        return self._id
+    def set_id(self, new_id):
+        """Sets the ID of the work shift."""
+        self._id = new_id
 
     @classmethod
     def from_dict(self, d):
