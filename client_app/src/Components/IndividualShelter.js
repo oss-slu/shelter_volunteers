@@ -60,7 +60,7 @@ const IndividualShelter = (props) => {
       props.addShiftFunction(shift);
     }
   }
-
+  
   function modifyStart(date) {
     if (endTime.getTime() <= date) {
       setEndDate(setHours(date, date.getHours() + 1));
