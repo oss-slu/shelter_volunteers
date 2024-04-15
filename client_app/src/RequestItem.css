@@ -1,0 +1,21 @@
+.request-item-container {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .request-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .request-item > * {
+    margin-right: 10px;
+  }
+  
+  .request-details {
+    margin-left: 10px;
+  }
+  

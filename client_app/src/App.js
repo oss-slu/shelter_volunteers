@@ -8,6 +8,7 @@ import Logout from "./Components/authentication/Logout";
 import SignUp from "./Components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import React,{useState} from "react";
+import ShelterDashboard from "./ShelterDashboard"; 
 
 import "./App.css";
 
@@ -26,6 +27,7 @@ function App() {
               <Route path="/shelters" element={<Shelters />} />
               <Route path="/past-shifts" element={<PastShifts />} />
               <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
+              <Route path="/shelterdashboard" element={<ShelterDashboard />} />
               <Route path="/logout" element={<Logout />} />
           </Route>
         </Routes>
