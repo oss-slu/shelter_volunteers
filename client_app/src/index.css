@@ -363,13 +363,38 @@ button {
   border-radius: 15px;
   box-shadow: 2px 2px 5px #888888;
   padding: 1.43vw;
-  width: 45%;
+  width: 32%;
 }
 
 .shelter-dashboard .container h1 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 2.894vh;
+}
+
+.shelter-dashboard .container-small {
+  width: 20%;
+}
+
+.shelter-dashboard .container-medium {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f6f6;
+  padding: 3px;
+}
+
+.shelter-dashboard .container-large {
+  width: 45%;
+  border-radius: 15px;
+  background-color: #f9f6f6;
+  padding: 5px;
+}
+
+.shift-container{
+  width: 95%;
+  margin-right: 15px;
 }
 
 .shelter-dashboard .shift-card,

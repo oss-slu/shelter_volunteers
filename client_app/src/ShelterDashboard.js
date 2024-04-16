@@ -1,34 +1,33 @@
 import React from 'react';
 import OpenRequest from './OpenRequests';
+// import Roaster from './Roaster';
+import ShiftContainer from './ShiftContainer';
 
 function ShelterDashboard() {
-  const openRequestsData = [
-    { id: 1, date: "Dec 1, 2022", timeSlot: "Morning (8am-12pm)", numVolunteersNeeded: 2 },
-    { id: 2, date: "Dec 2, 2022", timeSlot: "Afternoon (1pm-5pm)", numVolunteersNeeded: 1 },
-  ];
   
   return (
     <div>
       <h1 className="text-center">Shelter Dashboard</h1>
       <div className="shelter-dashboard">
-        <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h1>Open requests</h1>
+        <div className="container-large">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'98%' }}>
+              <h1>Open requests</h1>
+              <a href="/shelter/request">View all</a>
+          </div>
+          {/* <div className="request-item-container"> */}
+            <OpenRequest />
+          {/* </div> */}
+        </div>
+        <div className="container-medium">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'98%' }}>
+            <h1>Today's Roaster</h1>
             <a href="/shelter/request">View all</a>
-        </div>
-          <div className="request-item-container">
-            <OpenRequest data={openRequestsData} />
           </div>
+          <ShiftContainer />
+          {/* <Roaster /> */}
+
         </div>
-        <div className="container">
-          <h1>Occupancy List</h1>
-          <div className="shift-card">
-            <p>Current occupancy : 25</p>
-            <p>Total beds: 25</p>
-            <p>Current Volunteers: 3</p>
-          </div>
-        </div>
-        <div className="container">
+        <div className="container-small">
           <h1>Contact Past Volunteers</h1>
           <button>click here</button>
         </div>

@@ -1,0 +1,34 @@
+.roaster-item-container {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow-wrap: break-word; /* Wrap long words */
+  }
+  
+  .roaster-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    overflow-wrap: break-word;
+  }
+  
+  .volunteers-list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .volunteer-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+  }
+  
+  .volunteer-item span {
+    margin-left: 3px;
+    margin-right: 1px;
+  }
+  
