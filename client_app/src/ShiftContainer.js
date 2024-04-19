@@ -9,19 +9,11 @@ class ShiftContainer extends Component {
         id: 1,
         date: "Monday, Dec 1, 2024",
         shifts: [
-          { label: "Morning Shift", time: "9 AM - 11 AM", volunteers: ["John Doe", "Jane Smith"] },
-          { label: "Afternoon Shift", time: "1 PM - 3 PM", volunteers: ["David Johnson", "Emily Brown", "Michael Wilson"] },
-          { label: "Evening Shift", time: "5 PM - 7 PM", volunteers: ["Sarah Miller", "Robert Jones", "Lisa Davis"] }
+          { label: "Morning Shift", time: "9 AM - 11 AM", volunteers: ["John Doe", "Jane Smith"], pro:"0.6" },
+          { label: "Afternoon Shift", time: "1 PM - 3 PM", volunteers: ["David Johnson", "Emily Brown", "Michael Wilson"], pro:"0.3"  },
+          { label: "Evening Shift", time: "5 PM - 7 PM", volunteers: ["Sarah Miller", "Robert Jones", "Lisa Davis"], pro:"0.9"  }
         ]
-      },
-    //   {
-    //     id: 2,
-    //     date: "Tuesday, Dec 2, 2024",
-    //     shifts: [
-    //       { label: "Evening Shift", time: "5 PM - 7 PM", volunteers: ["Sarah Miller", "Robert Jones", "Lisa Davis"] }
-    //     ]
-    //   },
-      // Add more shifts as needed
+      }
     ];
 
     return (
@@ -31,7 +23,7 @@ class ShiftContainer extends Component {
             {/* <h2>{shift.date}</h2> */}
             <div className="roaster-list">
               {shift.shifts.map((shiftData, index) => (
-                <Roaster key={index} shiftDetails={shiftData} volunteers={shiftData.volunteers} />
+                <Roaster key={index} shiftDetails={shiftData} volunteers={shiftData.volunteers} pro={shiftData.pro}/>
               ))}
             </div>
           </div>

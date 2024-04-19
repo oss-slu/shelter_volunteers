@@ -1,36 +1,79 @@
 .request-item-container {
+    color: #193B45;
+    display: flex;
     background-color: white;
     padding: 3px;
     margin: 4px;
+    margin-bottom: 15px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
   
-  .request-item {
+  .calendar,
+  .edit,
+  .delete {
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2px;
-    margin-top: 2px;
+    justify-content: center;
   }
   
-  /* .request-item > * {
-    margin-right: 10px;
-  } */
-  
-  .request-details {
-    margin-left: 10px;
+  .date-time {
+    flex: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .request-volunteers {
+  .request-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .request-details span {
+    margin-bottom: 5px;
+  }
+  
+  
+  .volunteers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 15%;
+  }
+  
+  .volunteers-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  .volunteers-info span {
+    margin-right: 5px;
+  }
+  
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 70%;
+  }
+
+  progress {
     width: 100%;
   }
-  
-  .request-volunteers span {
-    margin-left: 3px;
-    margin-right: 1px;
+
+  .progress-bar progress {
+    height: 10px;
+    appearance: none;
+  }
+
+  .progress-bar progress::-webkit-progress-bar {
+    background-color: #ccc; /* Grey color for unfilled portion */
   }
   
+  .progress-bar progress::-webkit-progress-value {
+    background-color: #BDA36B;
+  }

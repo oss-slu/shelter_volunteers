@@ -8,19 +8,29 @@ class RequestItem extends Component {
     const { request } = this.props;
     return (
       <div className="request-item-container">
-        <div className="request-item">
+        <div className="calendar">
           <CalendarToday />
+        </div>
+        <div className="date-time">
           <div className="request-details">
             <span>{request.date}</span>
             <span>{request.timeSlot}</span>
           </div>
-          <Edit />
-          <Delete />
         </div>
-        <div className="request-volunteers">
-          <span>{request.numVolunteersNeeded} Volunteers SignedUp</span>
-          <PeopleAltIcon />
-          <progress value={0.5} />
+        <div className="volunteers">
+            <div className="volunteers-info">
+                <PeopleAltIcon />
+                <span>{request.numVolunteersNeeded}</span>
+            </div>
+            <div className="progress-bar">
+                <progress value={request.numVolunteersSignedUp/request.numVolunteersNeeded} />
+            </div>
+        </div>
+        <div className='edit'>
+            <Edit />
+        </div>
+        <div className='delete'>
+            <Delete />
         </div>
       </div>
     );

@@ -436,6 +436,28 @@ button {
   margin-top: .717vw; /* Added space between button and content */
 }
 
+.shelter-dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.container-large, .container-medium, .container-small {
+  flex: 1 1 auto;
+  padding: 20px;
+}
+
+@media (max-width: 850px) {
+  .container-large, .container-medium {
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  .container-large, .container-medium, .container-small {
+    flex: 1 1 100%;
+  }
+}
+
 #submit-shifts {
   margin-top: auto;
   margin-bottom: 2.894vh;

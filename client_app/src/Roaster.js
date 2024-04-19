@@ -4,11 +4,11 @@ import './Roaster.css';
 
 class Roaster extends Component {
   render() {
-    const { shiftDetails, volunteers } = this.props;
+    const { shiftDetails, volunteers, pro } = this.props;
 
     return (
       <div className="roaster-item-container">
-        <progress value={0.5} style={{ width: '100%' }}/>
+        <progress value={pro} style={{ width: '100%' }}/>
         
         <div className="roaster-item">
           <PeopleAltIcon />
