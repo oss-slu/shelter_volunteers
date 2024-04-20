@@ -22,8 +22,7 @@ export const Pagination = (props) => {
           <button
             className="pagination-button"
             onClick={() => handlePageChange(props.currentPage - 1)}
-            disabled={props.currentPage === 1}
-          >
+            disabled={props.currentPage === 1}>
             Previous
           </button>
           <span className="pagination-current-page">{props.currentPage}</span>
@@ -31,8 +30,7 @@ export const Pagination = (props) => {
           <button
             className="pagination-button"
             onClick={() => handlePageChange(props.currentPage + 1)}
-            disabled={props.currentPage === props.totalPages}
-          >
+            disabled={props.currentPage === props.totalPages}>
             Next
           </button>
         </div>

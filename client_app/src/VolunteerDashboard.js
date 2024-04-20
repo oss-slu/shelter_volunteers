@@ -1,4 +1,4 @@
-import { Link,useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Shelters from "./Shelters";
 import { UpcomingShifts } from "./Shifts";
 
@@ -15,24 +15,20 @@ function VolunteerDashboard() {
           <UpcomingShifts />
         </div>
       </div>
-
       <div className="column column-2">
         <h3>Shelters looking for Volunteers</h3>
         <Shelters condensed={true} />
       </div>
-
       <div className="column column-3">
         <h3>Impact Created</h3>
         <div className="card">
           <h4>Total hours served</h4>
           <p>106</p>
         </div>
-
         <div className="card">
           <h4>Lives Touched</h4>
           <p>17</p>
         </div>
-
         <div className="card">
           <h4>Shelters served</h4>
           <p>4</p>

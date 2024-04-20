@@ -14,10 +14,16 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
   const [startTime, setStartDate] = useState(
-    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 1)
+    setHours(
+      setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
+      new Date().getHours() + 1,
+    ),
   );
   const [endTime, setEndDate] = useState(
-    setHours(setMinutes(setSeconds(setMilliseconds(new Date (), 0), 0), 0), new Date().getHours() + 2)
+    setHours(
+      setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
+      new Date().getHours() + 2,
+    ),
   );
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,16 +41,18 @@ const IndividualShelter = (props) => {
     currentDate.setHours(currentDate.getHours() + 1);
     return currentDate.getTime() < selectedDate.getTime();
   };
-  
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button className="example-custom-input" onClick={(event) => {
-      onClick(event); 
-      setVolunteerCountsHidden(false);
-    }} ref={ref}>
+    <button
+      className="example-custom-input"
+      onClick={(event) => {
+        onClick(event);
+        setVolunteerCountsHidden(false);
+      }}
+      ref={ref}>
       {value}
     </button>
   ));
-  const { v4: uuidv4 } = require('uuid');
+  const { v4: uuidv4 } = require("uuid");
 
   function addShift() {
     if (props.addShiftFunction) {
@@ -78,14 +86,8 @@ const IndividualShelter = (props) => {
   }
 
   useEffect(() => {
-    let start = setMilliseconds(
-      setSeconds(setMinutes(setHours(startTime, 0), 0), 0),
-      0
-    );
-    let end = setMilliseconds(
-      setSeconds(setMinutes(setHours(startTime, 23), 59), 59),
-      999
-    );
+    let start = setMilliseconds(setSeconds(setMinutes(setHours(startTime, 0), 0), 0), 0);
+    let end = setMilliseconds(setSeconds(setMinutes(setHours(startTime, 23), 59), 59), 999);
     if (!volunteerCountsHidden && shelter) {
       setLoading(true);
       let request_endpoint =
@@ -152,15 +154,17 @@ const IndividualShelter = (props) => {
               <p>
                 {shelter.city}, {shelter.state} {shelter.zipCode}
               </p>
-              <p>
-                {shelter.phone}
-              </p>
+              <p>{shelter.phone}</p>
               {shelter.website ? <a href={shelter.website}>View website</a> : null}
               <p>{+shelter.distance.toFixed(2)} miles away</p>
-
-              <button className="current-volunteer-count" onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
+              <button
+                className="current-volunteer-count"
+                onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
                 {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Volunteer Counts  "}
-                <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg"/>
+                <FontAwesomeIcon
+                  icon={volunteerCountsHidden ? faChevronDown : faChevronUp}
+                  size="lg"
+                />
               </button>
             </div>
             <div className="column2">
@@ -209,7 +213,6 @@ const IndividualShelter = (props) => {
               </div>
             </div>
           </div>
-
           {!volunteerCountsHidden && (
             <div className="signupcard shift-graph text-center">
               <h3>Current Volunteer Counts</h3>
@@ -218,10 +221,7 @@ const IndividualShelter = (props) => {
                   <div>{<GraphComponent shifts={shiftCounts} />}</div>
                 )}
                 {!loading && shiftCounts && shiftCounts.length === 0 && (
-                  <p>
-                    No volunteers are currently signed up during your selected
-                    time range.
-                  </p>
+                  <p>No volunteers are currently signed up during your selected time range.</p>
                 )}
                 {loading && <p>Loading...</p>}
               </div>

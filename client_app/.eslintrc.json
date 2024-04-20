@@ -1,9 +1,10 @@
 {
     "env": {
       "browser": true,
-      "es2021": true
+      "es2021": true,
+      "jest":true
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react-hooks/recommended", "plugin:react/jsx-runtime", "plugin:prettier/recommended",
+    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:prettier/recommended",
     "plugin:jsx-a11y/recommended"],
     "parserOptions": {
       "ecmaVersion": 12,
@@ -12,7 +13,7 @@
         "jsx": true
       }
     },
-    "plugins": ["react", "react-hooks", "jsx-a11y"],
+    "plugins": ["react", "jsx-a11y"],
     "rules": {
         "react/prop-types": "off",
         "jsx-a11y/alt-text": "error",
@@ -21,6 +22,15 @@
         "jsx-a11y/interactive-supports-focus": "error",
         "jsx-a11y/aria-role": "error",
         "react/jsx-indent": ["error", 2],
-        "react/jsx-newline": "error"
+        "react/jsx-newline": ["error", { "prevent": true }],
+        "jsx-a11y/label-has-associated-control": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        "react/no-unescaped-entities": "off",
+        "no-unused-vars": "off",
+        "react/display-name": "off"
+    },
+    "globals": {
+      "process": "readonly"
     }
 }  

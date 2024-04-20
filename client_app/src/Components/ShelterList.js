@@ -2,20 +2,17 @@ import IndividualShelter from "./IndividualShelter";
 import { useEffect } from "react";
 
 const ShelterList = (props) => {
-
-  
-    useEffect(() => {
-      if (props.loadingFunction) {
-        props.loadingFunction(false);
-      }
-    });
-
-    function addShift(shift) {
-      if (props.manageShiftsFunction) {
-        props.manageShiftsFunction(shift);
-      }
+  useEffect(() => {
+    if (props.loadingFunction) {
+      props.loadingFunction(false);
     }
-  
+  });
+
+  function addShift(shift) {
+    if (props.manageShiftsFunction) {
+      props.manageShiftsFunction(shift);
+    }
+  }
 
   return (
     <div>
