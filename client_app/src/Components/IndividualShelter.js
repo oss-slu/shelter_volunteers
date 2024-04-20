@@ -169,7 +169,7 @@ const IndividualShelter = (props) => {
                   <div className="date-label">
                     <p>Start Time: </p>
                   </div>
-                  <div className="picker">
+                  <div className="picker" data-testid="startTime">
                     <DatePicker
                       className="date-picker"
                       selected={startTime}
@@ -187,7 +187,7 @@ const IndividualShelter = (props) => {
                   <div className="date-label">
                     <p>End Time: </p>
                   </div>
-                  <div className="picker">
+                  <div className="picker" data-testid="endTime">
                     <DatePicker
                       selected={endTime}
                       filterTime={filterPastEndTime}
@@ -202,7 +202,7 @@ const IndividualShelter = (props) => {
                 </div>
               </div>
               <div className="add-btn">
-                <button onClick={() => addShift()}>
+                <button data-testid = "add-button" onClick={() => addShift()}>
                   <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
                   <p className="label">Add shift </p>
                 </button>
