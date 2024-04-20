@@ -56,7 +56,7 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                       <>
                         Failure &nbsp;
                         <Tooltip
-                          title="You're already registered for another shift at this time"
+                          title="You've already registered for another shift at this time"
                           arrow
                           followCursor
                           enterTouchDelay={0}
