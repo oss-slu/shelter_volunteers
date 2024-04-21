@@ -1,6 +1,9 @@
-name: UI testing
-
-on: push
+name: UI Testing
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
