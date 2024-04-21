@@ -20,9 +20,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
-      cd client_app
-      npm install
-    - run: |
-      cd client_app
-      npm test
+    - name: Install dependencies
+      run: |
+        cd client_app
+        npm install
+    - name: Run Tests
+      run: |
+        cd client_app
+        npm test
