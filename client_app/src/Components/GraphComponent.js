@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);

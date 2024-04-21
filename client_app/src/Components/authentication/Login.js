@@ -39,7 +39,6 @@ export default function Login({ setAuth }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await LoginUser(username, password);
-    const mytoken = localStorage.getItem("token");
     setAuth(true);
     navigate("/dashboard");
   };

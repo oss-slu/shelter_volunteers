@@ -1,6 +1,6 @@
 /* Navbar background color */
 .navbar {
-  background-color: #1f5156 !important; 
+  background-color: #1f5156 !important;
 }
 
 .navbar-nav .nav-link {
@@ -10,12 +10,12 @@
 .navbar-brand {
   color: #f5b921 !important;
   padding-left: 1em;
-  @media (max-width:  300px) {
-      font-size: 1rem !important;
+  @media (max-width: 300px) {
+    font-size: 1rem !important;
   }
 }
 
-/* Active link */ 
+/* Active link */
 .nav-link.active {
   border-bottom: 1px solid #f5b921;
 }
@@ -25,7 +25,9 @@
   display: block;
   height: 1px;
   width: 0;
-  transition: width 0.3s ease, background-color 0.5s ease;
+  transition:
+    width 0.3s ease,
+    background-color 0.5s ease;
 }
 
 .nav-link:hover:after {

@@ -21,7 +21,7 @@ const ShelterList = (props) => {
         {props.shelters &&
           props.shelters
             .sort((a, b) => a.distance - b.distance)
-            .map((shelter, index) => {
+            .map((shelter) => {
               return (
                 <div key={shelter.id}>
                   <IndividualShelter

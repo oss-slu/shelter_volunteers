@@ -1,36 +1,41 @@
 {
-    "env": {
-      "browser": true,
-      "es2021": true,
-      "jest":true
-    },
-    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:prettier/recommended",
-    "plugin:jsx-a11y/recommended"],
-    "parserOptions": {
-      "ecmaVersion": 12,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "plugins": ["react", "jsx-a11y"],
-    "rules": {
-        "react/prop-types": "off",
-        "jsx-a11y/alt-text": "error",
-        "jsx-a11y/anchor-is-valid": "error",
-        "jsx-a11y/anchor-has-content": "error",
-        "jsx-a11y/interactive-supports-focus": "error",
-        "jsx-a11y/aria-role": "error",
-        "react/jsx-indent": ["error", 2],
-        "react/jsx-newline": ["error", { "prevent": true }],
-        "jsx-a11y/label-has-associated-control": "off",
-        "jsx-a11y/click-events-have-key-events": "off",
-        "jsx-a11y/no-static-element-interactions": "off",
-        "react/no-unescaped-entities": "off",
-        "no-unused-vars": "warn",
-        "react/display-name": "off"
-    },
-    "globals": {
-      "process": "readonly"
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jsx-a11y/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     }
-}  
+  },
+  "plugins": ["react", "jsx-a11y"],
+  "rules": {
+    "react/prop-types": "off",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/anchor-is-valid": "error",
+    "jsx-a11y/anchor-has-content": "error",
+    "jsx-a11y/interactive-supports-focus": "error",
+    "jsx-a11y/aria-role": "error",
+    "react/jsx-indent": ["error", 2],
+    "react/jsx-newline": ["error", { "prevent": true }],
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/no-unescaped-entities": "off",
+    "no-unused-vars": "warn",
+    "react/display-name": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "globals": {
+    "process": "readonly"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
