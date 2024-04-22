@@ -9,6 +9,26 @@
     width: 103%;
   }
   
+  .full-width-progress {
+    width: 106%;
+    display: block;
+    margin-left: -3%;
+  }
+  
+  @media only screen and (min-width: 449px) and (max-width: 580px) {
+    .full-width-progress {
+      width: 104.5%;
+      margin-left: -2.1%;
+    }
+  }
+
+  @media only screen and (min-width: 581px) and (max-width: 900px) {
+    .full-width-progress {
+      width: 103%;
+      margin-left: -1.5%;
+    }
+  }
+
   .roaster-item {
     display: flex;
     align-items: center;

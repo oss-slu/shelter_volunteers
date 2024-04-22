@@ -62,6 +62,7 @@
 .edit{
     display: flex;
     margin: 2px;
+    margin-right: 1.1em;
     align-items: center;
     justify-content: center;
   }
@@ -97,7 +98,6 @@
     flex-direction: column;
     align-items: center;
     flex: 5%;
-    /* margin-left: -150px; */
   }
   
   .volunteers-info {
@@ -129,7 +129,7 @@
   }
 
   .progress-bar progress::-webkit-progress-bar {
-    background-color: #ccc; /* Grey color for unfilled portion */
+    background-color: #ccc;
   }
   
   .progress-bar progress::-webkit-progress-value {
