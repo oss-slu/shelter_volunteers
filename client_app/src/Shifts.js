@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-
 import { SERVER } from "./config";
-
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 
@@ -17,7 +15,7 @@ function Shifts(request_endpoint) {
       .then((response) => response.json())
       .then((response) => setData(response))
       .catch((error) => console.log(error));
-  },[]);
+  }, []);
 
   const handleCancelShift = (shiftCode) => {
     fetch(`${SERVER}/shifts/${shiftCode}`, {
@@ -39,7 +37,6 @@ function Shifts(request_endpoint) {
       <ShiftList shifts={data} onCancelShift={handleCancelShift} />
     </div>
   );
-
 }
 export function UpcomingShifts() {
   const time_now = new Date().getTime();

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 function RegistrationForm() {
   const [formData, setFormData] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    phone: '',
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    phone: "",
   });
 
   const handleChange = (e) => {
@@ -19,24 +19,24 @@ function RegistrationForm() {
 
     // Perform the registration API request here
     try {
-      const response = await fetch('https://oauth-qa.gethelp.com/api/accounts/sign-up', {
-        method: 'POST',
+      const response = await fetch("https://oauth-qa.gethelp.com/api/accounts/sign-up", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         // Registration was successful
-        alert('Registration successful!');
+        alert("Registration successful!");
       } else {
         // Handle registration errors
-        alert('Registration failed. Please try again.');
+        alert("Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while registering. Please try again later.');
+      console.error("Error:", error);
+      alert("An error occurred while registering. Please try again later.");
     }
   };
 
@@ -46,19 +46,43 @@ function RegistrationForm() {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
           <label>First Name:</label>
-          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
           <label>Last Name:</label>
-          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
           <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
           <label>Phone:</label>
@@ -73,4 +97,3 @@ function RegistrationForm() {
 }
 
 export default RegistrationForm;
-

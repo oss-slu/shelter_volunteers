@@ -1,10 +1,9 @@
-import React, {useState} from "react";
-import "./SearchBar.css"
+import { useState } from "react";
+import "./SearchBar.css";
 
 export const SearchBar = ({ onSearch }) => {
-
-    const [input, setInput]= useState("");
-    const [searchButtonDisabled, setIsSearchButtonDisabled] = useState(true);
+  const [input, setInput] = useState("");
+  const [searchButtonDisabled, setIsSearchButtonDisabled] = useState(true);
 
   const handleSearch = () => {
     const trimmedInput = input.trim().replace(/\s{2,}/g, " ");
@@ -13,7 +12,7 @@ export const SearchBar = ({ onSearch }) => {
 
   const validateSearch = (e) => {
     if (e === "Enter") {
-      if (input.length >= 5 && input.trim() !== ""){
+      if (input.length >= 5 && input.trim() !== "") {
         handleSearch();
       }
     }
@@ -25,20 +24,18 @@ export const SearchBar = ({ onSearch }) => {
     setIsSearchButtonDisabled(true);
   };
 
-    const handleChange = (value) => {
-      const validInputs = /^[a-zA-Z0-9\s-'&/():,]+$/;
-      if ((validInputs.test(value) || value === "") && value.length <= 55)
-        setInput(value);
-        if (value==="") {
-          onSearch("");
-        }
-        if (value.length >= 5 && value.trim()!== "")
-        {
-          setIsSearchButtonDisabled(false);
-        } else {
-          setIsSearchButtonDisabled(true);
-        }
+  const handleChange = (value) => {
+    const validInputs = /^[a-zA-Z0-9\s-'&/():,]+$/;
+    if ((validInputs.test(value) || value === "") && value.length <= 55) setInput(value);
+    if (value === "") {
+      onSearch("");
     }
+    if (value.length >= 5 && value.trim() !== "") {
+      setIsSearchButtonDisabled(false);
+    } else {
+      setIsSearchButtonDisabled(true);
+    }
+  };
 
   return (
     <div className="input-wrapper">
@@ -46,7 +43,8 @@ export const SearchBar = ({ onSearch }) => {
         placeholder="search for a shelter"
         value={input}
         onChange={(e) => handleChange(e.target.value)}
-        onKeyDown={(e) => validateSearch(e.code)}/>
+        onKeyDown={(e) => validateSearch(e.code)}
+      />
       <button type="button" className="clear-button" onClick={handleClear}>
         Clear
       </button>
@@ -54,10 +52,9 @@ export const SearchBar = ({ onSearch }) => {
         type="button"
         className="search-button"
         disabled={searchButtonDisabled}
-        onClick={handleSearch}
-      >
+        onClick={handleSearch}>
         Search
       </button>
     </div>
   );
-}
+};
