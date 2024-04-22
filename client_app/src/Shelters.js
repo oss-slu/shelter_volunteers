@@ -273,7 +273,7 @@ const Shelters = (props) => {
                         />
                       </div>
                     )}
-                    <div id="submit-shifts">
+                    <div id="submit-shifts" data-testid="submit-shifts-button">
                       <button onClick={submitShifts} disabled={isButtonDisabled}>
                         Submit Shifts
                       </button>
