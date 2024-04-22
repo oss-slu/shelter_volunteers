@@ -3,31 +3,88 @@
     display: flex;
     background-color: white;
     padding: 3px;
-    margin: 4px;
+    margin: 2px;
     margin-bottom: 15px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
-  
-  .calendar,
-  .edit,
-  .delete {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  .request-item-container .delete button {
+    padding: 0;
+    background-color: transparent;
+    border: black;
+    cursor: pointer; 
+    margin-bottom: 10px;
   }
   
-  .date-time {
-    flex: 35%;
+  .request-item-container .delete button svg {
+    width: 24px;
+    height: 24px;
+    fill: #ff0000;
+  }
+
+  .request-item-container .edit button {
+    padding: 0;
+    background-color: transparent;
+    border: black;
+    cursor: pointer; 
+    margin-bottom: 10px;
+  }
+  
+  .request-item-container .edit button svg {
+    width: 24px;
+    height: 24px;
+    fill: #193b45;
+  }
+  
+  .request-item-container .calendar button {
+    padding: 0;
+    background-color: transparent;
+    border: black;
+    cursor: pointer; 
+    margin-bottom: 10px;
+  }
+  
+  .request-item-container .calendar button svg {
+    width: 24px;
+    height: 24px;
+    fill: #193b45;
+  }
+  
+.delete {
+    /* flex: 3 1 1; */
     display: flex;
+    margin: 2px;
     align-items: center;
     justify-content: center;
   }
 
+.edit{
+    display: flex;
+    margin: 2px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .calendar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  
+  .date-time {
+    margin-left: 5px;
+  }
+  
+  .date-time .request-details {
+    text-align: left;
+  }
+  
+
   .request-details {
     display: flex;
     flex-direction: column;
+    text-align: left;
   }
   
   .request-details span {
@@ -39,13 +96,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 15%;
+    flex: 5%;
+    /* margin-left: -150px; */
   }
   
   .volunteers-info {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     flex-grow: 1;
   }
   
@@ -58,7 +116,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 15px;
-    width: 70%;
+    width: 50%;
   }
 
   progress {

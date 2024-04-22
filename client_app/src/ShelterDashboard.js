@@ -1,6 +1,6 @@
 import React from 'react';
 import OpenRequest from './OpenRequests';
-// import Roaster from './Roaster';
+import PastVolunteersContainer from './PastVolunteersContainer';
 import ShiftContainer from './ShiftContainer';
 import './index.css';
 
@@ -8,7 +8,6 @@ function ShelterDashboard() {
   
   return (
     <div>
-      <h1 className="text-center">Shelter Dashboard</h1>
       <div className="shelter-dashboard">
         <div className="container-large">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'98%' }}>
@@ -29,8 +28,9 @@ function ShelterDashboard() {
 
         </div>
         <div className="container-small">
-          <h1>Contact Past Volunteers</h1>
-          <button>click here</button>
+          <h4>Contact Past Volunteers</h4>
+          <PastVolunteersContainer />
+          {/* <button>click here</button> */}
         </div>
       </div>
     </div>
