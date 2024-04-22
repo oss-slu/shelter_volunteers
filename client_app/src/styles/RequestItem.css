@@ -1,137 +1,135 @@
 .request-item-container {
-    color: #193B45;
-    display: flex;
-    background-color: white;
-    padding: 3px;
-    margin: 2px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
+  color: #193b45;
+  display: flex;
+  background-color: white;
+  padding: 3px;
+  margin: 2px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
 
-  .request-item-container .delete button {
-    padding: 0;
-    background-color: transparent;
-    border: black;
-    cursor: pointer; 
-    margin-bottom: 10px;
-  }
-  
-  .request-item-container .delete button svg {
-    width: 24px;
-    height: 24px;
-    fill: #ff0000;
-  }
+.request-item-container .delete button {
+  padding: 0;
+  background-color: transparent;
+  border: black;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
 
-  .request-item-container .edit button {
-    padding: 0;
-    background-color: transparent;
-    border: black;
-    cursor: pointer; 
-    margin-bottom: 10px;
-  }
-  
-  .request-item-container .edit button svg {
-    width: 24px;
-    height: 24px;
-    fill: #193b45;
-  }
-  
-  .request-item-container .calendar button {
-    padding: 0;
-    background-color: transparent;
-    border: black;
-    cursor: pointer; 
-    margin-bottom: 10px;
-  }
-  
-  .request-item-container .calendar button svg {
-    width: 24px;
-    height: 24px;
-    fill: #193b45;
-  }
-  
+.request-item-container .delete button svg {
+  width: 24px;
+  height: 24px;
+  fill: #ff0000;
+}
+
+.request-item-container .edit button {
+  padding: 0;
+  background-color: transparent;
+  border: black;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.request-item-container .edit button svg {
+  width: 24px;
+  height: 24px;
+  fill: #193b45;
+}
+
+.request-item-container .calendar button {
+  padding: 0;
+  background-color: transparent;
+  border: black;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.request-item-container .calendar button svg {
+  width: 24px;
+  height: 24px;
+  fill: #193b45;
+}
+
 .delete {
-    /* flex: 3 1 1; */
-    display: flex;
-    margin: 2px;
-    align-items: center;
-    justify-content: center;
-  }
+  /* flex: 3 1 1; */
+  display: flex;
+  margin: 2px;
+  align-items: center;
+  justify-content: center;
+}
 
-.edit{
-    display: flex;
-    margin: 2px;
-    margin-right: 1.1em;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .calendar {
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
-  
-  .date-time {
-    margin-left: 5px;
-  }
-  
-  .date-time .request-details {
-    text-align: left;
-  }
-  
+.edit {
+  display: flex;
+  margin: 2px;
+  margin-right: 1.1em;
+  align-items: center;
+  justify-content: center;
+}
 
-  .request-details {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-  
-  .request-details span {
-    margin-bottom: 5px;
-  }
-  
-  
-  .volunteers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 5%;
-  }
-  
-  .volunteers-info {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    flex-grow: 1;
-  }
-  
-  .volunteers-info span {
-    margin-right: 5px;
-  }
-  
-  .progress-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-    width: 50%;
-  }
+.calendar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
 
-  progress {
-    width: 100%;
-  }
+.date-time {
+  margin-left: 5px;
+}
 
-  .progress-bar progress {
-    height: 10px;
-    appearance: none;
-  }
+.date-time .request-details {
+  text-align: left;
+}
 
-  .progress-bar progress::-webkit-progress-bar {
-    background-color: #ccc;
-  }
-  
-  .progress-bar progress::-webkit-progress-value {
-    background-color: #BDA36B;
-  }
+.request-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.request-details span {
+  margin-bottom: 5px;
+}
+
+.volunteers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 5%;
+}
+
+.volunteers-info {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex-grow: 1;
+}
+
+.volunteers-info span {
+  margin-right: 5px;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  width: 50%;
+}
+
+progress {
+  width: 100%;
+}
+
+.progress-bar progress {
+  height: 10px;
+  appearance: none;
+}
+
+.progress-bar progress::-webkit-progress-bar {
+  background-color: #ccc;
+}
+
+.progress-bar progress::-webkit-progress-value {
+  background-color: #bda36b;
+}

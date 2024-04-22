@@ -390,10 +390,10 @@ button {
   border-radius: 15px;
   background-color: #f9f6f6;
   padding: 5px;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
-.shift-container{
+.shift-container {
   width: 95%;
   margin-right: 15px;
 }
@@ -443,18 +443,23 @@ button {
   gap: 5px;
 }
 
-.container-large, .container-medium, .container-small {
+.container-large,
+.container-medium,
+.container-small {
   flex: 1 1 auto;
   padding: 20px;
 }
 
 @media (max-width: 850px) {
-  .container-large, .container-medium {
+  .container-large,
+  .container-medium {
     width: 90%;
     margin: 0 auto;
   }
-  
-  .container-large, .container-medium, .container-small {
+
+  .container-large,
+  .container-medium,
+  .container-small {
     flex: 1 1 100%;
   }
 }

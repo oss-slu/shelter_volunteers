@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PastVolunteers from './PastVolunteers';
+import React, { Component } from "react";
+import PastVolunteers from "./PastVolunteers";
 
 class PastVolunteersContainer extends Component {
   render() {
@@ -8,21 +8,22 @@ class PastVolunteersContainer extends Component {
       {
         id: 1,
         date: "Monday, Dec 1, 2024",
-        shifts: [
-          { label: "John Doe"},
-          { label: "David Johnson"},
-          { label: "Sarah Miller"}
-        ]
-      }
+        shifts: [{ label: "John Doe" }, { label: "David Johnson" }, { label: "Sarah Miller" }],
+      },
     ];
 
     return (
       <div className="past-volunteers-container">
-        {mockPastShifts.map(shift => (
+        {mockPastShifts.map((shift) => (
           <div key={shift.id} className="shift-row">
             <div className="roaster-list">
               {shift.shifts.map((shiftData, index) => (
-                <PastVolunteers key={index} shiftDetails={shiftData} volunteers={shiftData.volunteers} pro={shiftData.pro}/>
+                <PastVolunteers
+                  key={index}
+                  shiftDetails={shiftData}
+                  volunteers={shiftData.volunteers}
+                  pro={shiftData.pro}
+                />
               ))}
             </div>
           </div>
