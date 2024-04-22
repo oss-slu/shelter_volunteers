@@ -1,15 +1,13 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 table {
   border-collapse: collapse;
@@ -48,11 +46,11 @@ tr:hover {
 }
 
 .success {
-  color: #4CBB17;
+  color: #4cbb17;
 }
 
 .failure {
-  color: #FF0000;
+  color: #ff0000;
 }
 
 .info-icon {
@@ -60,7 +58,7 @@ tr:hover {
 }
 
 .check-icon {
-  color: #4CBB17;
+  color: #4cbb17;
 }
 
 h1 {
@@ -120,7 +118,7 @@ p {
   background-color: #fcfff1;
 }
 
-.signupcard h2{
+.signupcard h2 {
   margin-top: 0;
 }
 
@@ -135,35 +133,33 @@ p {
   text-align: right;
   white-space: nowrap;
 }
-.signupcard .column2 .dates{
+.signupcard .column2 .dates {
   flex: 4;
 }
-.signupcard .column2 .add-btn{
+.signupcard .column2 .add-btn {
   flex: 2;
-  margin: .7vh 1vw;
+  margin: 0.7vh 1vw;
 }
 
 .signupcard .column2 button {
-  white-space: nowrap ;
-
+  white-space: nowrap;
 }
 
-@media (max-width:  960px) {
+@media (max-width: 960px) {
   .signupcard {
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
   }
   .signupcard .column2 {
     flex-direction: column;
     text-align: right;
-    flex:2;
-    white-space:initial;
-    
+    flex: 2;
+    white-space: initial;
   }
-  .signupcard .column2 .add-btn{
+  .signupcard .column2 .add-btn {
     display: flex;
     justify-content: flex-end;
   }
-  .signupcard .column2 .add-btn button{
+  .signupcard .column2 .add-btn button {
     margin: 0;
     margin-top: 0.2em;
     display: flex;
@@ -172,36 +168,36 @@ p {
     padding: 0.5rem;
     width: 7em;
   }
-  .signupcard .column2 .add-btn button .label{
+  .signupcard .column2 .add-btn button .label {
     margin-left: 0.5em;
     font-size: 1rem;
   }
-  .signupcard .column2 .add-btn button .plus-icon{
+  .signupcard .column2 .add-btn button .plus-icon {
     margin-right: 2vw;
   }
 }
-@media (max-width:  700px) {
-  .signupcard .column2 .add-btn{
+@media (max-width: 700px) {
+  .signupcard .column2 .add-btn {
     display: flex;
-    justify-content:flex-start;
+    justify-content: flex-start;
   }
-  .signupcard .column2{
+  .signupcard .column2 {
     flex: 1;
   }
 }
-@media (max-width:  350px) {
+@media (max-width: 350px) {
   .signupcard {
-    flex-direction:column;
+    flex-direction: column;
     text-align: center;
   }
-  .signupcard .column2 .add-btn{
+  .signupcard .column2 .add-btn {
     display: flex;
-    justify-content:center;
+    justify-content: center;
   }
 }
 
 p {
-  margin: 0  !important;
+  margin: 0 !important;
   padding: 0 !important;
 }
 
@@ -211,14 +207,14 @@ p {
 
 .shift.upcoming {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   background-color: #bde3c8;
   text-align: center;
 }
 
 .cancelbtn {
-  background-color: #D22730;
+  background-color: #d22730;
   color: #fdfaf6;
   border: none;
   padding: 0.75em;
@@ -229,7 +225,7 @@ p {
 }
 
 .shift.upcoming .details {
-  width: 100%; 
+  width: 100%;
   text-align: center;
 }
 
@@ -322,12 +318,12 @@ p {
 }
 
 button {
-  background-color: #193b45 ;
-  border-radius: 5px ;
-  color: #fdfaf6 ;
-  border: none ;
-  padding: 0.7em ;
-  cursor: pointer ;
+  background-color: #193b45;
+  border-radius: 5px;
+  color: #fdfaf6;
+  border: none;
+  padding: 0.7em;
+  cursor: pointer;
 }
 
 .current-volunteer-count {
@@ -406,7 +402,7 @@ button {
 .shelter-dashboard .volunteer-card {
   background-color: #3498db; /* Adjusted card color */
   border-radius: 10px;
-  margin: .717vw 0;
+  margin: 0.717vw 0;
   padding: 1.076vw; /* Increased padding for better appearance */
   display: flex;
   flex-direction: column; /* Adjusted layout to stack content */
@@ -436,9 +432,9 @@ button {
   border-radius: 5px;
   color: #fff;
   border: none;
-  padding: .717vw 1.434vw;
+  padding: 0.717vw 1.434vw;
   cursor: pointer;
-  margin-top: .717vw; /* Added space between button and content */
+  margin-top: 0.717vw; /* Added space between button and content */
 }
 
 .shelter-dashboard {
@@ -466,7 +462,7 @@ button {
 #submit-shifts {
   margin-top: auto;
   margin-bottom: 2.894vh;
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     position: fixed;
     bottom: 1em;
     left: 50%;
@@ -474,8 +470,8 @@ button {
   }
 }
 
-.button-row button{
-  @media (max-width:  960px) {
+.button-row button {
+  @media (max-width: 960px) {
     margin: 1em;
   }
 }
@@ -499,9 +495,11 @@ button {
 #submit-shifts button:enabled:after {
   content: "";
   display: block;
-  height: .434vh;
+  height: 0.434vh;
   width: 0;
-  transition: width 0.7s ease, background-color 0.5s ease;
+  transition:
+    width 0.7s ease,
+    background-color 0.5s ease;
 }
 
 #submit-shifts button:enabled:hover:after {
@@ -529,28 +527,28 @@ button {
   flex: 2;
 }
 
-@media (max-width:  960px) {
+@media (max-width: 960px) {
   .signup-page {
     flex-direction: column;
   }
-  
+
   .signup-page .column {
-    padding: .717vw;
+    padding: 0.717vw;
   }
   .signup-page .column-2 {
     order: 1;
     display: none;
   }
-  .signup-page .column-2.active{
+  .signup-page .column-2.active {
     order: 1;
     display: block;
-    position: fixed; 
+    position: fixed;
     padding: 0;
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
   }
-  
+
   .signup-page .column-1 {
     order: 2;
   }
@@ -570,12 +568,12 @@ button {
   background-color: #bde3c8;
   box-shadow: 2px 2px 5px #888888;
   overflow-y: auto;
-  @media (max-width:  68.866vw) {
+  @media (max-width: 68.866vw) {
     display: none;
   }
 }
 .current-selection.active {
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     display: block;
     position: absolute;
     top: 1em;
@@ -592,7 +590,7 @@ button {
   background-color: rgb(255, 255, 255);
   border: 1px solid rgb(0, 0, 0);
   height: 1em;
-  white-space: nowrap; 
+  white-space: nowrap;
   color: #000000;
   padding: 1em;
   text-align: center;
@@ -600,14 +598,14 @@ button {
   margin-left: 0;
   margin-top: 0.1em;
   width: 10em;
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     margin-right: 0;
   }
 }
 
-.current-selection.active .close-btn{
+.current-selection.active .close-btn {
   display: none;
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     display: block;
     position: absolute;
     top: 0.2em;
@@ -615,10 +613,9 @@ button {
   }
 }
 
-
 .cta-button {
   display: none;
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     position: fixed;
     display: block;
     z-index: 30;
@@ -628,7 +625,7 @@ button {
 }
 
 .cta-button button {
-  padding: .708vw 1.417vw;
+  padding: 0.708vw 1.417vw;
   background-color: #132b32;
   color: #fff;
   border: none;
@@ -651,7 +648,7 @@ button {
 }
 
 .shift-count canvas {
-  width: 100%
+  width: 100%;
 }
 
 .signupcard.shift-graph h3,
@@ -663,7 +660,7 @@ button {
 
 .continue-bottom-row {
   display: none;
-  @media (max-width:  960px) {
+  @media (max-width: 960px) {
     position: fixed;
     display: block;
     z-index: 30;
@@ -684,7 +681,6 @@ button {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-
 }
 .continue-bottom-row .cont-btn {
   padding: 0;
@@ -697,17 +693,17 @@ button {
   width: 80%;
 }
 .continue-bottom-row .cont-btn.disabled {
-    background-color: #2051568f;
-    color: #f5b92275;
+  background-color: #2051568f;
+  color: #f5b92275;
 }
 .continue-bottom-row .cart {
   position: relative;
 }
 
 .continue-bottom-row .cart .count-bubble {
-  width: 1.8rem;  
+  width: 1.8rem;
   height: 1.8rem;
-  border:  1px solid #205156;
+  border: 1px solid #205156;
   border-radius: 50%;
   background: #f5b921;
   color: #205156;
@@ -721,14 +717,13 @@ button {
   right: -0.5em;
 }
 
-
 .date-row {
   display: flex;
   flex-direction: row;
-  @media (max-width:  700px) {
+  @media (max-width: 700px) {
     flex-direction: column;
   }
-  @media (max-width:  350px) {
+  @media (max-width: 350px) {
     text-align: center;
     align-items: center;
   }
@@ -738,8 +733,7 @@ button {
   flex: 1;
   line-height: 1.5em;
 }
-.date-row .picker{
+.date-row .picker {
   text-align: left;
   flex: 1;
 }
-
