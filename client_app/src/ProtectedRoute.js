@@ -1,18 +1,18 @@
-import {Navigate, Outlet} from 'react-router-dom'
+import { Navigate, Outlet } from "react-router-dom";
 
 const isLoggedIn = () => {
-  const token = localStorage.getItem('token')
-  if(token){
-    return true
+  const token = localStorage.getItem("token");
+  if (token) {
+    return true;
   } else {
-    return false
+    return false;
   }
-}
+};
 
 const ProtectedRoute = () => {
-    const auth = isLoggedIn()
+  const auth = isLoggedIn();
 
-    return auth ? <Outlet/> : <Navigate to="/" />
-}
+  return auth ? <Outlet /> : <Navigate to="/" />;
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;
