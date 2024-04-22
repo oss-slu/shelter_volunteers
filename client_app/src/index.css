@@ -359,13 +359,43 @@ button {
   border-radius: 15px;
   box-shadow: 2px 2px 5px #888888;
   padding: 1.43vw;
-  width: 45%;
+  width: 32%;
 }
 
 .shelter-dashboard .container h1 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 2.894vh;
+}
+
+.shelter-dashboard .container-small {
+  width: 20%;
+  border-radius: 15px;
+  align-items: center;
+  background-color: #f9f6f6;
+  padding: 5px;
+}
+
+.shelter-dashboard .container-medium {
+  width: 30%;
+  border-radius: 15px;
+  align-items: center;
+  background-color: #f9f6f6;
+  padding: 5px;
+  justify-content: center;
+}
+
+.shelter-dashboard .container-large {
+  width: 40%;
+  border-radius: 15px;
+  background-color: #f9f6f6;
+  padding: 5px;
+  justify-content: space-between;
+}
+
+.shift-container {
+  width: 95%;
+  margin-right: 15px;
 }
 
 .shelter-dashboard .shift-card,
@@ -405,6 +435,33 @@ button {
   padding: 0.717vw 1.434vw;
   cursor: pointer;
   margin-top: 0.717vw; /* Added space between button and content */
+}
+
+.shelter-dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.container-large,
+.container-medium,
+.container-small {
+  flex: 1 1 auto;
+  padding: 20px;
+}
+
+@media (max-width: 850px) {
+  .container-large,
+  .container-medium {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .container-large,
+  .container-medium,
+  .container-small {
+    flex: 1 1 100%;
+  }
 }
 
 #submit-shifts {
