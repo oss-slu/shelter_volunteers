@@ -50,7 +50,7 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                       <>
                         Success
                         <IconButton>
-                          <CheckCircleIcon className="check-icon" />
+                          <CheckCircleIcon className="check-icon"/>
                         </IconButton>
                       </>
                     ) : (
@@ -63,7 +63,7 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                           leaveTouchDelay={5000}
                         >
                        <IconButton>
-                          <InfoIcon className="info-icon" />
+                          <InfoIcon className="info-icon"/>
                         </IconButton>
                         </Tooltip>
                       </>

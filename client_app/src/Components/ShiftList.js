@@ -80,7 +80,7 @@ const ShiftList = (props) => {
               {/* using the newly created boolean variable to ensure the cancel button only appears for
               upcoming shifts */}
               {!isPastShift && (
-                <button className="cancelbtn" onClick={() => onCancelShiftClick(shift._id)}>
+                <button className="cancelbtn" data-testid="cancelbtn" onClick={() => onCancelShiftClick(shift._id)}>
                   Cancel Shift
                 </button>
               )}
