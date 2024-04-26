@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import "./styles/Roaster.css";
+import "./styles/Roster.css";
 
 class Roaster extends Component {
   render() {
@@ -8,9 +8,9 @@ class Roaster extends Component {
     const volunteerCount = volunteers.length;
 
     return (
-      <div className="roaster-item-container">
+      <div className="roster-item-container">
         <progress value={pro} className="full-width-progress" />
-        <div className="roaster-item">
+        <div className="roster-item">
           <PeopleAltIcon />
           <span>
             {volunteerCount} {shiftDetails.label}

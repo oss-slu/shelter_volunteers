@@ -29,7 +29,7 @@ function ShelterDashboard() {
               alignItems: "center",
               width: "98%",
             }}>
-            <h4>Today's Roaster</h4>
+            <h4>Today's Roster</h4>
             <a href="/shelter/request">View all</a>
           </div>
           <ShiftContainer />
