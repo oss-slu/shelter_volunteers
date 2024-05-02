@@ -33,7 +33,7 @@ describe("add and cancel shifts", () => {
   });
   test("shelter allows user to add and delete one shift", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
-    await waitFor(() => expect(screen.getByText("Crystal Geyser Recovery")).toBeInTheDocument(), {
+    await waitFor(async () => expect(screen.getByText("Crystal Geyser Recovery")).toBeInTheDocument(), {
       timeout: 3000,
     });
     const buttons = screen.getAllByTestId("add-button");

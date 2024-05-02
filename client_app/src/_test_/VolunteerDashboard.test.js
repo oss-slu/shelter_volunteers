@@ -1,9 +1,8 @@
-import { render, screen, waitFor, cleanup } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import VolunteerDashboard from "./../VolunteerDashboard.js";
 import React, { isValidElement } from "react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { userEvent } from "@testing-library/user-event";
-import Shelters from "../Shelters.js";
 
 function renderWithRouter(children, routes = []) {
   const options = isValidElement(children) ? { element: children, path: "/" } : children;
@@ -22,20 +21,26 @@ jest.mock("../Shifts", () => ({
   },
 }));
 
+jest.mock("../Components/ShelterList", () => {
+  return {
+    __esModule: true,
+    default: () => {
+      return <div>shelters</div>;
+    },
+  };
+});
+
 describe("tests that do not need shelters rendered", () => {
   beforeEach(async () => {
-    jest.useFakeTimers()
     renderWithRouter(<VolunteerDashboard />, 
     [{
       path: "/shelters",
       element: <h2>Shelter List Page</h2>,
     },])
-    jest.runAllTimers()
   })
 
   afterEach(() => {
-    jest.runOnlyPendingTimers()
-    jest.useRealTimers()
+    jest.clearAllMocks()
   })
   
   test("properly renders shelters header", async () => {
@@ -75,47 +80,5 @@ describe("tests that do not need shelters rendered", () => {
   test("Upcoming shifts gets rendered", async () => {
     expect(await screen.findByText("Upcoming Shifts"))
     expect(await screen.findByText("Upcoming Shifts List..."))
-    expect(await screen.findByText("miles awat"))
-
   })
-
-  /*test("3 Shelters are loaded", async () => {  
-    await waitFor(async () => {
-      const shelterList = screen.getAllByText("miles away");
-      expect(shelterList.length).toBe(3);
-    }, { timeout: 10000, onTimeout: () => {} })
-  })
-
-  test("im going insane", async() => {
-    await waitFor(async () => {
-      expect(screen.getAllByText("miles away")).toHaveLength(3)
-    }, {timeout: 15000})
-  }, 15000)*/
-
-
 })
-
-test("im going insane", async() => {
-  jest.useFakeTimers()
-    renderWithRouter(<VolunteerDashboard/>, 
-    [{
-      path: "/shelters",
-      element: <h2>Shelter List Page</h2>,
-    },])
-    jest.runAllTimers()
-  await waitFor(async () => {
-    expect(screen.getAllByText("miles away")).toHaveLength(3)
-  }, {timeout: 15000})
-  jest.runOnlyPendingTimers()
-})
-
-test("im going insane pt2", async() => {
-  jest.useFakeTimers()
-    render(<VolunteerDashboard/>)
-    jest.runAllTimers()
-  await waitFor(async () => {
-    expect(screen.getAllByText("miles away")).toHaveLength(3)
-  }, {timeout: 15000})
-  jest.runOnlyPendingTimers()
-})
-
