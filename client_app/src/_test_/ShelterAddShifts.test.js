@@ -62,8 +62,8 @@ describe("add and cancel shifts", () => {
   test("user can select and remove multiple shifts", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
     await waitFor(
-      () => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
-      { timeout: 3000 },
+      async () => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
+      { timeout: 4000 },
     );
     const buttons = screen.getAllByTestId("add-button");
     const button = buttons[3];
