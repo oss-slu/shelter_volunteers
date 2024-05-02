@@ -12,13 +12,13 @@ services:
     command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
     depends_on:
       - mongodb
-  
+      
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "5001:5000"
+      - "5000:5000"
     depends_on:
       - mongodb
 
@@ -30,6 +30,11 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+
+
+  
+
+  
 
   
 
