@@ -8,7 +8,7 @@ services:
   data-importer:
     image: mongo
     volumes:
-      - ./docker_files/volunteers.json:/volunteers.json
+      - ./docker_files/database/volunteers.json:/volunteers.json
     command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
     depends_on:
       - mongodb
@@ -16,7 +16,7 @@ services:
   backend:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: ../docker_files/server/Dockerfile
     ports:
       - "5000:5000"
     depends_on:
@@ -25,7 +25,7 @@ services:
   frontend:
     build: 
       context: ./client_app
-      dockerfile: Dockerfile
+      dockerfile: ../docker_files/client_app/Dockerfile
     ports:
       - "3000:3000"
     depends_on:
