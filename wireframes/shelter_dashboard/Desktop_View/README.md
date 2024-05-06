@@ -1,6 +1,6 @@
 # Shelter dashboard flow.
 
-![alt text](Shelter_Dashboard.jpg)
+![alt text](Shelter_Dashboard.png)
 Shelter dashboard has a navigation bar with Shelter dashboard, Shift details, Request for help, Upcoming requests and Sign out options.
 The dashboard shares an brief overview of different shifts scheduled for the day, upcoming requests for help and past volunteers who volunteered at this particular shelter.
 
