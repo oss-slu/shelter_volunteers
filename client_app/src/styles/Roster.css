@@ -1,4 +1,4 @@
-.roaster-item-container {
+.roster-item-container {
   color: #193b45;
   background-color: white;
   padding: 10px;
@@ -29,7 +29,7 @@
   }
 }
 
-.roaster-item {
+.roster-item {
   display: flex;
   align-items: center;
   justify-content: space-between;

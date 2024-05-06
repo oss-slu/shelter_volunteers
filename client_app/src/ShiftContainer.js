@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Roaster from "./Roaster";
+import Roster from "./Roster";
 
 class ShiftContainer extends Component {
   render() {
@@ -42,10 +42,9 @@ class ShiftContainer extends Component {
       <div className="shift-container">
         {mockShifts.map((shift) => (
           <div key={shift.id} className="shift-row">
-            {/* <h2>{shift.date}</h2> */}
-            <div className="roaster-list">
+            <div className="roster-list">
               {shift.shifts.map((shiftData, index) => (
-                <Roaster
+                <Roster
                   key={index}
                   shiftDetails={shiftData}
                   volunteers={shiftData.volunteers}

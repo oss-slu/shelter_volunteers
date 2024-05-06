@@ -17,7 +17,7 @@ function ShelterDashboard() {
               width: "98%",
             }}>
             <h4>Open requests</h4>
-            <a href="/shelter/request">View all</a>
+            <a href="/shift-details">View all</a>
           </div>
           <OpenRequest />
         </div>
@@ -29,8 +29,8 @@ function ShelterDashboard() {
               alignItems: "center",
               width: "98%",
             }}>
-            <h4>Today's Roaster</h4>
-            <a href="/shelter/request">View all</a>
+            <h4>Today's Roster</h4>
+            <a href="/shift-details">View all</a>
           </div>
           <ShiftContainer />
         </div>
