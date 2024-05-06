@@ -16,7 +16,7 @@ class PastVolunteersContainer extends Component {
       <div className="past-volunteers-container">
         {mockPastShifts.map((shift) => (
           <div key={shift.id} className="shift-row">
-            <div className="roaster-list">
+            <div className="roster-list">
               {shift.shifts.map((shiftData, index) => (
                 <PastVolunteers
                   key={index}

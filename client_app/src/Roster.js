@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "./styles/Roster.css";
 
-class Roaster extends Component {
+class Roster extends Component {
   render() {
     const { shiftDetails, volunteers, pro } = this.props;
     const volunteerCount = volunteers.length;
@@ -27,4 +27,4 @@ class Roaster extends Component {
   }
 }
 
-export default Roaster;
+export default Roster;
