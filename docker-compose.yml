@@ -1,0 +1,40 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: volunteer-db-container
+    ports:
+      - "27017:27017"
+  data-importer:
+    image: mongo
+    volumes:
+      - ./docker_files/database/volunteers.json:/volunteers.json
+    command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
+    depends_on:
+      - mongodb
+      
+  backend:
+    build:
+      context: ./server
+      dockerfile: ../docker_files/server/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: 
+      context: ./client_app
+      dockerfile: ../docker_files/client_app/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+
+  
+
+  
+
+  
+
