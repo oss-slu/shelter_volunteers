@@ -1,13 +1,6 @@
 import { format } from "date-fns";
-import React, { useState, useEffect } from "react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-} from "chart.js";
+import { useState, useEffect } from "react";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -78,9 +71,7 @@ const GraphComponent = (props) => {
       {props.shifts && props.shifts.length > 0 && (
         <h4>{format(new Date(props.shifts[0].start_time), "M/dd/yy")}</h4>
       )}
-      {chartData.labels.length > 0 && (
-        <Bar data={chartData} options={options} />
-      )}
+      {chartData.labels.length > 0 && <Bar data={chartData} options={options} />}
     </div>
   );
 };

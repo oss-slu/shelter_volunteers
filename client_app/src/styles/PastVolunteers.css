@@ -1,0 +1,19 @@
+.volunteers-item-container {
+  color: #193b45;
+  background-color: white;
+  padding: 3px;
+  margin: 4px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 96%;
+  overflow-wrap: break-word;
+  margin-bottom: 15px;
+}
+
+.volunteers-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  overflow-wrap: break-word;
+}

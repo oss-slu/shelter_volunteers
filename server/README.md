@@ -1,5 +1,5 @@
 # Flask server
-This server has API endpoints supporting the volunteer scheduling application. Here's how you run this code.
+This server has API endpoints supporting the volunteer scheduling application. Here's how you run this component individually.
 
 The first time you want to run this code, you will need to:
 1. Create a virtual environment: <code>python3 -m venv venv</code>

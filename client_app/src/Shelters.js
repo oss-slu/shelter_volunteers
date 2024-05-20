@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ShelterList from "./Components/ShelterList";
 import ConfirmationPage from "./Components/ConfirmationPage";
 import { Pagination } from "./Components/Pagination";
@@ -7,12 +7,8 @@ import { Link } from "react-router-dom";
 import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SearchBar } from "./Components/SearchBar"
-import {
-  faCalendarDays,
-  faArrowRight,
-  faCircleXmark,
-  faLocationDot
+import { SearchBar } from "./Components/SearchBar";
+import { faCalendarDays, faArrowRight, faCircleXmark, faLocationDot
 } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
 import MapView from "./Components/MapView";
@@ -45,11 +41,9 @@ const Shelters = (props) => {
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
 
-
   useEffect(() => {
     fetchData();
   }, [latitude, longitude, radius]);
-
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
@@ -68,16 +62,16 @@ const Shelters = (props) => {
     return paginatedData;
   }
 
-  function totalPagesCount(data){
+  function totalPagesCount(data) {
     const newTotalPages = Math.ceil(data.length / itemsPerPage);
-    return newTotalPages
+    return newTotalPages;
   }
 
   useEffect(() => {
     if (searchQuery.trim() !== "") {
       if (originalData) {
         const filteredData = originalData.filter((shelter) =>
-          shelter.name.toLowerCase().includes(searchQuery.toLowerCase())
+          shelter.name.toLowerCase().includes(searchQuery.toLowerCase()),
         );
         if (filteredData.length === 0) {
           setNoSearchDataAvailable(true);
@@ -98,8 +92,14 @@ const Shelters = (props) => {
 
   const fetchData = () => {
     setLoading(true);
-    let newEndpoint = GETHELP_API + "v2/facilities?page=0&pageSize=1000&latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius;
-    
+    let newEndpoint =
+      GETHELP_API +
+      "v2/facilities?page=0&pageSize=1000&latitude=" +
+      latitude +
+      "&longitude=" +
+      longitude +
+      "&radius=" +
+      radius;
     fetch(newEndpoint, {
       method: "GET",
       headers: {
@@ -155,11 +155,11 @@ const Shelters = (props) => {
 
   function submitShifts() {
     let shifts = [...selectedShifts];
-    let shiftsPayload = shifts.map(shift => ({ ...shift })); // Create new objects
-    shiftsPayload = shiftsPayload.map(shift => {
+    let shiftsPayload = shifts.map((shift) => ({ ...shift })); // Create new objects
+    shiftsPayload = shiftsPayload.map((shift) => {
       delete shift.code;
       return shift;
-    }); // Delete code property 
+    }); // Delete code property
     const shiftsEndpoint = SERVER + "/shifts";
     const header = getAuthHeader();
     fetch(shiftsEndpoint, {
@@ -167,9 +167,9 @@ const Shelters = (props) => {
       body: JSON.stringify(shiftsPayload),
       headers: header,
     })
-      .then(response => response.json())
-      .then (data => {
-        setShiftStatusList(data.map(item => item.success));
+      .then((response) => response.json())
+      .then((data) => {
+        setShiftStatusList(data.map((item) => item.success));
       })
       .then(() => setShowConfirmation(true))
       .catch((error) => console.log(error));
@@ -200,9 +200,7 @@ const Shelters = (props) => {
         <div>
           {props.condensed && (
             <div className="text-center">
-              <button onClick={getLocation}>
-                Get Shelters from Current Location
-              </button>
+              <button onClick={getLocation}>Get Shelters from Current Location</button>
               <ShelterList
                 shelters={originalData.slice(0, 3)}
                 loadingFunction={setLoading}
@@ -222,16 +220,15 @@ const Shelters = (props) => {
                 <div className="column column-1">
                   <div className="text-center">
                     <h1>Volunteering Opportunities</h1>
-                    <button onClick={getLocation}>
-                      Show opportunities near me
-                    </button>
-
+                    <button onClick={getLocation}>Show opportunities near me</button>
                     <br />
-                    
-                    <SearchBar onSearch={handleSearch}/>
+                    <SearchBar onSearch={handleSearch} />
                     {noSearchDataAvailable && (
                       <div className="no-data-message">
-                        <h1>No shelters found with that name. Explore the list below for available shelters.</h1>
+                        <h1>
+                          No shelters found with that name. Explore the list below for available
+                          shelters.
+                        </h1>
                       </div>
                     )}
                     <label htmlFor="radius-select">Radius (miles): </label>
@@ -268,24 +265,15 @@ const Shelters = (props) => {
                 </div>
                 <div
                   className={
-                    onMobileContinueclicked
-                      ? "column column-2 active"
-                      : "column column-2"
-                  }
-                >
+                    onMobileContinueclicked ? "column column-2 active" : "column column-2"
+                  }>
                   <div
                     className={
-                      onMobileContinueclicked
-                        ? "current-selection active"
-                        : "current-selection"
-                    }
-                  >
+                      onMobileContinueclicked ? "current-selection active" : "current-selection"
+                    }>
                     <h2>Current Selection</h2>
                     {onMobileContinueclicked && (
-                      <div
-                        className="close-btn"
-                        onClick={handleCurrentSelectionClose}
-                      >
+                      <div className="close-btn" onClick={handleCurrentSelectionClose}>
                         <FontAwesomeIcon icon={faCircleXmark} size="2x" />
                       </div>
                     )}
@@ -298,11 +286,8 @@ const Shelters = (props) => {
                         />
                       </div>
                     )}
-                    <div id="submit-shifts">
-                      <button
-                        onClick={submitShifts}
-                        disabled={isButtonDisabled}
-                      >
+                    <div id="submit-shifts" data-testid="submit-shifts-button">
+                      <button onClick={submitShifts} disabled={isButtonDisabled}>
                         Submit Shifts
                       </button>
                     </div>
@@ -313,29 +298,18 @@ const Shelters = (props) => {
                     <animated.div
                       className="cart"
                       onClick={onMobileContinueClick}
-                      style={shakeAnimation}
-                    >
+                      style={shakeAnimation}>
                       <div className="circle">
                         <FontAwesomeIcon icon={faCalendarDays} size="2x" />
                       </div>
-                      <div className="count-bubble">
-                        {selectedShifts.length}
-                      </div>
+                      <div className="count-bubble">{selectedShifts.length}</div>
                     </animated.div>
                     <button
-                      className={
-                        selectedShifts.length > 0
-                          ? "cont-btn"
-                          : "cont-btn disabled"
-                      }
-                      onClick={onMobileContinueClick}
-                    >
+                      className={selectedShifts.length > 0 ? "cont-btn" : "cont-btn disabled"}
+                      onClick={onMobileContinueClick}>
                       Continue
                       {selectedShifts.length > 0 && (
-                        <FontAwesomeIcon
-                          icon={faArrowRight}
-                          style={{ marginLeft: "1em" }}
-                        />
+                        <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: "1em" }} />
                       )}
                     </button>
                   </div>

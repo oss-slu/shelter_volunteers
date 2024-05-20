@@ -1,13 +1,12 @@
-import React from 'react';
-import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import InfoIcon from "@mui/icons-material/Info";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const handleReload = () => {
-    window.location.reload();
+  window.location.reload();
 };
 
 const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
@@ -39,13 +38,13 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                   <p>{shift.shelter}</p>
                 </td>
                 <td>
-                  <p>{format(shift.start_time, 'MMM, dd, yyyy HH:mm aa')}</p>
+                  <p>{format(shift.start_time, "MMM, dd, yyyy HH:mm aa")}</p>
                 </td>
                 <td>
-                  <p>{format(shift.end_time, 'MMM, dd, yyyy HH:mm aa')}</p>
+                  <p>{format(shift.end_time, "MMM, dd, yyyy HH:mm aa")}</p>
                 </td>
                 <td>
-                  <p className={shiftStatusList[index] ? 'success' : 'failure'}>
+                  <p className={shiftStatusList[index] ? "success" : "failure"}>
                     {shiftStatusList[index] ? (
                       <>
                         Success
@@ -55,33 +54,31 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                       </>
                     ) : (
                       <>
-                       Failure &nbsp;
-                       <Tooltip 
-                          title="You're already registered for another shift at this time" 
-                          arrow 
-                          followCursor enterTouchDelay={0} 
-                          leaveTouchDelay={5000}
-                        >
-                       <IconButton>
-                          <InfoIcon className="info-icon" />
-                        </IconButton>
+                        Failure &nbsp;
+                        <Tooltip
+                          title="You're already registered for another shift at this time"
+                          arrow
+                          followCursor
+                          enterTouchDelay={0}
+                          leaveTouchDelay={5000}>
+                          <IconButton>
+                            <InfoIcon className="info-icon" />
+                          </IconButton>
                         </Tooltip>
                       </>
                     )}
                   </p>
-                </td>  
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <br/>
+        <br />
         <div className="button-row">
           <Link to="/">
             <button>Your Dashboard</button>
           </Link>
-          <Link 
-          to="/shelters"
-          onClick={handleReload}>
+          <Link to="/shelters" onClick={handleReload}>
             <button>Register for more shifts</button>
           </Link>
           <Link to="/upcoming-shifts">
