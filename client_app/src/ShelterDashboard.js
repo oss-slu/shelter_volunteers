@@ -1,38 +1,42 @@
+import React from "react";
+import OpenRequest from "./OpenRequests";
+import PastVolunteersContainer from "./PastVolunteersContainer";
+import ShiftContainer from "./ShiftContainer";
+import "./index.css";
+
 function ShelterDashboard() {
   return (
     <div>
-      <h1 className="text-center">Shelter Dashboard</h1>
       <div className="shelter-dashboard">
-        <div className="container">
-          <h1>Manage Volunteer Shifts</h1>
-          <div className="shift-card">
-            <h4>Dec 1, 2022</h4>
-            <p>5 Shifts need help</p>
-            <button>View/Edit Schedule</button>
+        <div className="container-large">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "98%",
+            }}>
+            <h4>Open requests</h4>
+            <a href="/shift-details">View all</a>
           </div>
-          <div className="shift-card">
-            <h4>Dec 2, 2022</h4>
-            <p>3 Shifts need help</p>
-            <button>View/Edit Schedule</button>
-          </div>
-          <div className="shift-card">
-            <h4>Dec 3, 2022</h4>
-            <p>2 Shifts need help</p>
-            <button>View/Edit Schedule</button>
-          </div>
-          <button>More Dates</button>
+          <OpenRequest />
         </div>
-        <div className="container">
-          <h1>Occupancy List</h1>
-          <div className="shift-card">
-            <p>Current occupancy : 25</p>
-            <p>Total beds: 25</p>
-            <p>Current Volunteers: 3</p>
+        <div className="container-medium">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "98%",
+            }}>
+            <h4>Today's Roster</h4>
+            <a href="/shift-details">View all</a>
           </div>
+          <ShiftContainer />
         </div>
-        <div className="container">
-          <h1>Contact Past Volunteers</h1>
-          <button>click here</button>
+        <div className="container-small">
+          <h4>Contact Past Volunteers</h4>
+          <PastVolunteersContainer />
         </div>
       </div>
     </div>

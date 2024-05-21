@@ -14,6 +14,8 @@ To add a page to the current navigation, do the following in the **App.js** file
 
 - Modify each of the tags to work for your new page.
 
+## To run the component individually:
+
 ## Available Scripts
 
 In the project directory, you can run:
