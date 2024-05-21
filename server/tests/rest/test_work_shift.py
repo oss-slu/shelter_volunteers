@@ -7,7 +7,7 @@ from responses import ResponseSuccess
 from domains.staffing import Staffing
 shifts_data = [
     {
-        'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35a',
+        '_id': 'f853578c-fc0f-4e65-81b8-566c5dffa35a',
         'worker': 'volunteer@slu.edu',
         'shelter': 'existing-shelter-id',
         'start_time': 1701441800000,
@@ -15,7 +15,7 @@ shifts_data = [
         'facility_info': {'info': 'Some facility info for existing-shelter-id'}
     },
     {
-        'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35b',
+        '_id': 'f853578c-fc0f-4e65-81b8-566c5dffa35b',
         'worker': 'volunteer@slu.edu',
         'shelter': 'existing-shelter-id',
         'start_time': 1701442800000,
@@ -64,7 +64,6 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
     app = create_app('testing')
     client = app.test_client()
     new_shift = {
-        'code': 'f853578c-fc0f-4e65-81b8-566c5dffa35d',
         'shelter': 'new-shelter-id',
         'start_time': 1703134800000,
         'end_time': 1703138400000
