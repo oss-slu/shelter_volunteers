@@ -1,16 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleMap, Marker, InfoBox, useJsApiLoader } from '@react-google-maps/api';
-import IndividualShelter from './IndividualShelter';
+import React, { useState, useEffect } from "react";
+import { GoogleMap, Marker, InfoBox, useJsApiLoader } from "@react-google-maps/api";
+import IndividualShelter from "./IndividualShelter";
+import { GOOGLE_MAPS_API_KEY } from "../config";
+import "../styles/MapView.css";
 
 const MapView = (props) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
-  const [map, setMap] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
   useEffect(() => {
     setIsApiLoaded(true);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
+
   function addShift(shift) {
     if (props.manageShiftsFunction) {
       props.manageShiftsFunction(shift);
@@ -18,8 +30,8 @@ const MapView = (props) => {
   }
 
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    id: "google-map-script",
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     loadGoogleMapsApi: !isApiLoaded,
   });
   const center = {
@@ -38,19 +50,13 @@ const MapView = (props) => {
   const zoomLevel = zoomMap[props.radius];
 
   const mapContainerStyle = {
-    height: '400px',
-    width: '100%',
+    height: "400px",
+    width: "100%",
   };
 
   const handleMarkerClick = (location) => {
     setSelectedLocation(location);
     setModalOpen(true);
-  };
-
-  const roundedInfoBoxStyle = {
-    backgroundColor: 'white',
-    padding: '3px',
-    borderRadius: '8px',
   };
 
   const onLoad = (map) => {
@@ -59,13 +65,11 @@ const MapView = (props) => {
       center: center,
       radius: radiusInMeters,
     }).getBounds();
-  
+
     map.fitBounds(bounds);
-    setMap(map);
   };
 
   const onUnmount = () => {
-    setMap(null);
   };
 
   return isLoaded ? (
@@ -75,8 +79,7 @@ const MapView = (props) => {
         center={center}
         zoom={zoomLevel}
         onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
+        onUnmount={onUnmount}>
         {props.data &&
           props.data
             .sort((a, b) => a.distance - b.distance)
@@ -84,32 +87,41 @@ const MapView = (props) => {
               <Marker
                 key={shelter.id}
                 position={{ lat: shelter.latitude, lng: shelter.longitude }}
-                onMouseOver={modalOpen ? null : (e) => {
-                  e.domEvent.stopPropagation(); 
-                  setSelectedLocation(shelter);
-                }} 
+                onMouseOver={
+                  modalOpen ? null : (e) => {
+                        e.domEvent.stopPropagation();
+                        setSelectedLocation(shelter);
+                  }
+                }
                 onMouseOut={modalOpen ? null : () => setSelectedLocation(null)}
                 onClick={() => handleMarkerClick(shelter)}
               />
+              
             ))}
         {selectedLocation && (
           <InfoBox
             position={{ lat: selectedLocation.latitude, lng: selectedLocation.longitude }}
-            options={{ closeBoxURL: '', enableEventPropagation: true, boxStyle: roundedInfoBoxStyle }}
-            onCloseClick={() => setSelectedLocation(null)}
-          >
-            <div style={roundedInfoBoxStyle}>
-              <h3>{selectedLocation.name}</h3>
+            options={{
+              closeBoxURL: "",
+              enableEventPropagation: true,
+            }}
+            onCloseClick={() => setSelectedLocation(null)}>
+            <div className={isMobile ? "hide-on-mobile" : ""}>
+              <h3 className="infobox-style">{selectedLocation.name}</h3>
             </div>
           </InfoBox>
         )}
         {modalOpen && (
           <React.Fragment>
-            <div className="modal-backdrop" onClick={() => setModalOpen(false)} />
-            <div className="modal">
+            <div className="modal-backdrop-view" onClick={() => setModalOpen(false)} />
+            <div className="modal-mapview">
               <h3>{selectedLocation.name}</h3>
               {selectedLocation && (
-                <IndividualShelter shelter={selectedLocation} isSignupPage={true} addShiftFunction={addShift} />
+                <IndividualShelter
+                  shelter={selectedLocation}
+                  isSignupPage={true}
+                  addShiftFunction={addShift}
+                />
               )}
               <button onClick={() => setModalOpen(false)}>Close</button>
             </div>

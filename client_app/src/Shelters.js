@@ -8,10 +8,15 @@ import ShiftList from "./Components/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./Components/SearchBar";
-import { faCalendarDays, faArrowRight, faCircleXmark, faLocationDot
+import {
+  faCalendarDays,
+  faArrowRight,
+  faCircleXmark,
+  faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
 import MapView from "./Components/MapView";
+import { GOOGLE_MAPS_API_KEY } from "./config";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
@@ -40,6 +45,7 @@ const Shelters = (props) => {
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
+  const [isGoogleMapsAPIKey, setGoogleMapsAPIKey] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -190,6 +196,11 @@ const Shelters = (props) => {
     setButtonDisabled(selectedShifts.length === 0);
   }, [selectedShifts]);
 
+  useEffect(() => {
+    setGoogleMapsAPIKey(!!GOOGLE_MAPS_API_KEY);
+    console.log("google api key", GOOGLE_MAPS_API_KEY);
+  }, []);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -239,13 +250,25 @@ const Shelters = (props) => {
                       <option value="50">50</option>
                       <option value="100">100</option>
                     </select>
-                    <br>
-                    </br>
-                    <br>
-                    </br>
-                    <button onClick={toggleMap}> <FontAwesomeIcon icon={faLocationDot} /> Open Map</button>
-                    <div className={`${showMap ? 'showmap' : 'dontshow'}`}>
-                      <MapView data={data} radius={radius} latitude= {latitude} longitude = {longitude} onClose={toggleMap} manageShiftsFunction={manageShifts}/>
+                    <br></br>
+                    <br></br>
+                    {isGoogleMapsAPIKey && (
+                      <button onClick={toggleMap}>
+                        <FontAwesomeIcon icon={faLocationDot} /> Open Map
+                      </button>
+                    )}
+                    {/* <button onClick={toggleMap}> <FontAwesomeIcon icon={faLocationDot} /> Open Map</button> */}
+                    <div className={`${showMap ? "showmap" : "dontshow"}`}>
+                      {isGoogleMapsAPIKey && (
+                        <MapView
+                          data={data}
+                          radius={radius}
+                          latitude={latitude}
+                          longitude={longitude}
+                          onClose={toggleMap}
+                          manageShiftsFunction={manageShifts}
+                        />
+                      )}
                     </div>
                   </div>
                   {loading && <div className="loader"></div>}
