@@ -3,6 +3,8 @@ import { GoogleMap, Marker, InfoBox, useJsApiLoader } from "@react-google-maps/a
 import IndividualShelter from "./IndividualShelter";
 import { GOOGLE_MAPS_API_KEY } from "../config";
 import "../styles/MapView.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const MapView = (props) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -115,22 +117,21 @@ const MapView = (props) => {
           <React.Fragment>
             <div className="modal-backdrop-view" onClick={() => setModalOpen(false)} />
             <div className="modal-mapview">
-              <h3>{selectedLocation.name}</h3>
               {selectedLocation && (
                 <IndividualShelter
                   shelter={selectedLocation}
                   isSignupPage={true}
+                  isMapPopup = {true}
                   addShiftFunction={addShift}
                 />
               )}
-              <button onClick={() => setModalOpen(false)}>Close</button>
+              <button className="info-close-button" onClick={() => setModalOpen(false)}><FontAwesomeIcon icon={faXmark} /></button>
             </div>
           </React.Fragment>
         )}
       </GoogleMap>
-      <button onClick={props.onClose}>Close Map</button>
     </div>
   ) : null;
 };
 
-export default React.memo(MapView);
+export default MapView;

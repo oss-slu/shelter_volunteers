@@ -198,7 +198,6 @@ const Shelters = (props) => {
 
   useEffect(() => {
     setGoogleMapsAPIKey(!!GOOGLE_MAPS_API_KEY);
-    console.log("google api key", GOOGLE_MAPS_API_KEY);
   }, []);
 
   const handlePageChange = (pageNumber) => {
@@ -252,13 +251,18 @@ const Shelters = (props) => {
                     </select>
                     <br></br>
                     <br></br>
-                    {isGoogleMapsAPIKey && (
+                    {isGoogleMapsAPIKey && !showMap && (
                       <button onClick={toggleMap}>
-                        <FontAwesomeIcon icon={faLocationDot} /> Open Map
+                        <FontAwesomeIcon icon={faLocationDot} /> Show Map
+                      </button>
+                    )}
+                    {isGoogleMapsAPIKey && showMap && (
+                      <button onClick={toggleMap}>
+                        <FontAwesomeIcon icon={faLocationDot} /> Hide Map
                       </button>
                     )}
                     {/* <button onClick={toggleMap}> <FontAwesomeIcon icon={faLocationDot} /> Open Map</button> */}
-                    <div className={`${showMap ? "showmap" : "dontshow"}`}>
+                    <div className={`${showMap ? "showmap" : "hidemap"}`}>
                       {isGoogleMapsAPIKey && (
                         <MapView
                           data={data}

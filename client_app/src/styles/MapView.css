@@ -2,7 +2,7 @@
   display: block;
 }
 
-.dontshow {
+.hidemap {
   display: none;
 }
 
@@ -21,7 +21,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
+    background-color: #ecececfc;
     padding: 20px;
     border-radius: 5px;
     z-index: 890;
@@ -32,7 +32,6 @@
   padding: 3px;
   border-radius: 8px;
   max-width: 200px;
-  word-break: break-word;
   outline: none !important;
   word-wrap: break-word;
 }
