@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import ShelterList from "./components/volunteer/ShelterList";
-import ConfirmationPage from "./components/volunteer/ConfirmationPage";
-import { Pagination } from "./components/volunteer/Pagination";
-import { GETHELP_API, SERVER } from "./config";
+import ShelterList from "./ShelterList";
+import ConfirmationPage from "./ConfirmationPage";
+import { Pagination } from "./Pagination";
+import { GETHELP_API, SERVER } from "../../config";
 import { Link } from "react-router-dom";
-import ShiftList from "./components/volunteer/ShiftList";
-import getAuthHeader from "./authentication/getAuthHeader";
+import ShiftList from "./ShiftList";
+import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SearchBar } from "./components/volunteer/SearchBar";
+import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
 

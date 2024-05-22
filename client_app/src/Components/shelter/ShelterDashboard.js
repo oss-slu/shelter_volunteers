@@ -1,8 +1,8 @@
 import React from "react";
-import OpenRequest from "./components/shelter/OpenRequests";
-import PastVolunteersContainer from "./components/shelter/PastVolunteersContainer";
-import ShiftContainer from "./components/shelter/ShiftContainer";
-import "./index.css";
+import OpenRequest from "./OpenRequests";
+import PastVolunteersContainer from "./PastVolunteersContainer";
+import ShiftContainer from "./ShiftContainer";
+import "../../styles/index.css";
 
 function ShelterDashboard() {
   return (

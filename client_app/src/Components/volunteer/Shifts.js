@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { SERVER } from "./config";
-import ShiftList from "./components/volunteer/ShiftList";
-import getAuthHeader from "./authentication/getAuthHeader";
+import { SERVER } from "../../config";
+import ShiftList from "./ShiftList";
+import getAuthHeader from "../../authentication/getAuthHeader";
 
 function Shifts(request_endpoint) {
   const [data, setData] = useState([]);
