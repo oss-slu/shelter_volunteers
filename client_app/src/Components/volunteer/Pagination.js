@@ -1,4 +1,4 @@
-import "./Pagination.css";
+import "../../styles/volunteer/Pagination.css";
 
 export const Pagination = (props) => {
   const handlePageChange = (pageNumber) => {

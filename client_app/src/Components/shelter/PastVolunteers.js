@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import "./styles/PastVolunteers.css";
+import "../../styles/shelter/PastVolunteers.css";
 
 class PastVolunteers extends Component {
   render() {

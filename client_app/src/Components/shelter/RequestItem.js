@@ -3,7 +3,7 @@ import { CalendarToday } from "@mui/icons-material";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import "./styles/RequestItem.css";
+import "../../styles/shelter/RequestItem.css";
 
 class RequestItem extends Component {
   render() {

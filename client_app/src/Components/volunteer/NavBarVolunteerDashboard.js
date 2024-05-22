@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import "./NavBar.css";
+import "../../styles/NavBar.css";
 import { useLocation } from "react-router-dom";
 
 function CustomNavBar({ auth }) {
@@ -8,6 +8,7 @@ function CustomNavBar({ auth }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (token) {
       setIsAuthenticated(true);
     } else {
@@ -17,7 +18,7 @@ function CustomNavBar({ auth }) {
   return (
     <>
       <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
-        <Navbar.Brand href="/">Shelter Volunteers</Navbar.Brand>
+        <Navbar.Brand href="/">Volunteer Dashboard</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="justify-content-end" style={{ width: "100%" }}>

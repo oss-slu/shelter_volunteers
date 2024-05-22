@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { SERVER } from "./config";
-import ShiftList from "./Components/ShiftList";
+import ShiftList from "./components/volunteer/ShiftList";
 import getAuthHeader from "./authentication/getAuthHeader";
 
 function Shifts(request_endpoint) {
