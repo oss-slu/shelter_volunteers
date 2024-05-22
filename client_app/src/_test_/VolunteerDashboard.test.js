@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import VolunteerDashboard from "./../components/volunteer/VolunteerDashboard";
+import VolunteerDashboard from "../components/volunteer/VolunteerDashboard";
 import React, { isValidElement } from "react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { userEvent } from "@testing-library/user-event";

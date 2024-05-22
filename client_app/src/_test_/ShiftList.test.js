@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { format } from "date-fns";
-import ShiftList from "./../components/volunteer/ShiftList";
+import ShiftList from "../components/volunteer/ShiftList";
 
 let mockShift = {
   code: 92341,
