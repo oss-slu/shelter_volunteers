@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import Shelters from "./../Shelters";
+import Shelters from "./../components/volunteer/Shelters";
 import userEvent from "@testing-library/user-event";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
