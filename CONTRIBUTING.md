@@ -125,8 +125,14 @@ We encourage contributors to write unit tests for their code changes to ensure t
 
 ## Contacting the Team
 
-If you have any questions, concerns, or need further assistance, you can reach out to the project team through the following channel:
+If you have any questions, concerns, or need further assistance, you can join the following Open Source with SLU slack workspace and then join #project_shelter_volunteers channel:
 
-[Slack channel](https://join.slack.com/t/oswslu/shared_invite/zt-24f0qhjbo-NkSfQ4LOg5wXxBdxP4vzfA)
+[Slack workspace](https://join.slack.com/t/oswslu/shared_invite/zt-24f0qhjbo-NkSfQ4LOg5wXxBdxP4vzfA)
+
+[Link to channel](https://oss-slu.slack.com/archives/C05RXK99FEY)
+
+## Community Partners
+
+You can refer to the [Community Partners](https://oss-slu.github.io/docs/about/community) for more details guidance on contributing to the project.
 
 We appreciate your contributions and look forward to collaborating with you!
