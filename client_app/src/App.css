@@ -16,3 +16,73 @@
 .App-link {
   color: #61dafb;
 }
+
+
+/* General styles */
+.info-popup {
+  background-color: #ecececfc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+  min-width: 40vw;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Heading styles */
+.info-popup h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Paragraph styles */
+.info-popup p {
+  margin: 4px 0;
+}
+
+/* Link styles */
+.info-popup a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.info-popup a:hover {
+  text-decoration: underline;
+}
+
+/* Volunteer counts section */
+.info-popup .shift-count {
+  margin-top: 16px;
+}
+
+.info-popup .shift-count h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* Date picker styles */
+.info-popup .picker {
+  margin-bottom: 8px;
+}
+
+.info-popup .date-picker {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.info-close-button {
+  position: absolute;
+  top: 5px; /* Adjust the top and right values to position the button */
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #777; /* Adjust the color as needed */
+  cursor: pointer;
+}
+.info-close-button:hover {
+  color: #333; /* Adjust the hover color as needed */
+}

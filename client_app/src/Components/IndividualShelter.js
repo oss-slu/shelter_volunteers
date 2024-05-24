@@ -146,11 +146,11 @@ const IndividualShelter = (props) => {
 
   return (
     <div>
-      {props.isSignupPage && (
+      {props.isSignupPage && !props.isMapPopup && (
         <div key={shelter.id}>
           <div className="signupcard">
             <div className="column1">
-              <h2>{shelter.name}</h2>
+              <h4>{shelter.name}</h4>
               <p>
                 {shelter.city}, {shelter.state} {shelter.zipCode}
               </p>
@@ -229,9 +229,98 @@ const IndividualShelter = (props) => {
           )}
         </div>
       )}
+      {props.isSignupPage && props.isMapPopup && (
+        <div key={shelter.id} className="info-popup">
+          <div className="info-popup__header">
+            <div className="info-popup__details">
+              <h3 className="info-popup__name">{shelter.name}</h3>
+              <p className="info-popup__address">
+                {shelter.city}, {shelter.state} {shelter.zipCode}
+              </p>
+              <p className="info-popup__phone">{shelter.phone}</p>
+              {shelter.website ? (
+                <a href={shelter.website} className="info-popup__website">
+                  View website
+                </a>
+              ) : null}
+              <p className="info-popup__distance">{+shelter.distance.toFixed(2)} miles away</p>
+              <button
+                className="current-volunteer-count"
+                onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}
+              >
+                {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Volunteer Counts  "}
+                <FontAwesomeIcon
+                  icon={volunteerCountsHidden ? faChevronDown : faChevronUp}
+                  size="lg"
+                />
+              </button>
+              {!volunteerCountsHidden && (
+                <div className="info-popup__volunteer-counts">
+                  <h3 className="info-popup__volunteer-counts-heading">Current Volunteer Counts</h3>
+                  <div className="info-popup__shift-count">
+                    {!loading && shiftCounts && shiftCounts.length > 0 && (
+                      <div>{<GraphComponent shifts={shiftCounts} />}</div>
+                    )}
+                    {!loading && shiftCounts && shiftCounts.length === 0 && (
+                      <p>No volunteers are currently signed up during your selected time range.</p>
+                    )}
+                    {loading && <p>Loading...</p>}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="info-popup__time-pickers">
+              <div className="info-popup__time-picker">
+                <div className="info-popup__time-picker-label">
+                  <p>Start Time: </p>
+                </div>
+                <div className="info-popup__picker" data-testid="startTime">
+                  <DatePicker
+                    className="info-popup__date-picker"
+                    selected={startTime}
+                    filterTime={filterPastStartTime}
+                    onChange={(date) => modifyStart(date)}
+                    showTimeSelect
+                    dateFormat="M/dd/yy hh:mm aa"
+                    minDate={new Date()}
+                    showDisabledMonthNavigation
+                    customInput={<ExampleCustomInput />}
+                  />
+                </div>
+              </div>
+              <div className="info-popup__time-picker">
+                <div className="info-popup__time-picker-label">
+                  <p>End Time: </p>
+                </div>
+                <div className="info-popup__picker" data-testid="endTime">
+                  <DatePicker
+                    selected={endTime}
+                    filterTime={filterPastEndTime}
+                    onChange={(date) => modifyEnd(date)}
+                    showTimeSelect
+                    dateFormat="M/dd/yy hh:mm aa"
+                    minDate={new Date()}
+                    showDisabledMonthNavigation
+                    customInput={<ExampleCustomInput />}
+                  />
+                </div>
+              </div>
+            </div>
+            <br>
+            </br>
+            <div className="add-btn">
+              <button data-testid="add-button" onClick={() => addShift()}>
+                <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
+                <p className="label">Add shift </p>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+      )}
       {!props.isSignupPage && (
         <div className="shelter text-center" key={shelter.id}>
-          <h2>{shelter.name}</h2>
+          <h4>{shelter.name}</h4>
           <p>
             {shelter.city}, {shelter.state} {shelter.zipCode}
           </p>
