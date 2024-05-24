@@ -4,7 +4,7 @@
 - Make sure to add unit test cases when adding new functionality and ensure added code is written in a testable manner.
 - All functions should have a description of their purpose and details of the parameters.
 - Soft limit of 100 characters per line.
-- Each issue should have one pull request unless the changes are only 1-3 lines and are relavant to an existing pull request.
+- Each issue should link to one pull request unless the changes are only 1-3 lines and are relavant to an existing pull request.
 
 ### Python Best Practices
 - Use snake-case for multi-word classes, variables, and functions.
