@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import VolunteerDashboard from "./../VolunteerDashboard.js";
+import VolunteerDashboard from "../components/volunteer/VolunteerDashboard";
 import React, { isValidElement } from "react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { userEvent } from "@testing-library/user-event";
@@ -15,13 +15,13 @@ function renderWithRouter(children, routes = []) {
   return render(<RouterProvider router={router} />);
 }
 
-jest.mock("../Shifts", () => ({
+jest.mock("../components/volunteer/Shifts", () => ({
   UpcomingShifts: () => {
     return <div>Upcoming Shifts List...</div>;
   },
 }));
 
-jest.mock("../Components/ShelterList", () => {
+jest.mock("../components/volunteer/ShelterList", () => {
   return {
     __esModule: true,
     default: () => {

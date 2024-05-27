@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import "./styles/Roster.css";
+import "../../styles/shelter/Roster.css";
 
 class Roster extends Component {
   render() {

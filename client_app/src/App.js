@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { PastShifts, UpcomingShifts } from "./Shifts";
-import Shelters from "./Shelters";
-import VolunteerDashboard from "./VolunteerDashboard";
-import NavBarVolunteerDashboard from "./Components/NavBarVolunteerDashboard";
-import NavBarShelterDashboard from "./Components/NavBarShelterDashboard";
-import Login from "./Components/authentication/Login";
-import Logout from "./Components/authentication/Logout";
-import SignUp from "./Components/authentication/SignUp";
+import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
+import Shelters from "./components/volunteer/Shelters";
+import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
+import NavBarVolunteerDashboard from "./components/volunteer/NavBarVolunteerDashboard";
+import NavBarShelterDashboard from "./components/shelter/NavBarShelterDashboard";
+import Login from "./components/authentication/Login";
+import Logout from "./components/authentication/Logout";
+import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import { useState } from "react";
-import ShelterDashboard from "./ShelterDashboard";
+import ShelterDashboard from "./components/shelter/ShelterDashboard";
 
-import "./App.css";
+import "./styles/App.css";
 
 function App() {
   const [auth, setAuth] = useState(false);

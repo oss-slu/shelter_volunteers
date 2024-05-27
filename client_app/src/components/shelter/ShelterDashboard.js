@@ -2,7 +2,7 @@ import React from "react";
 import OpenRequest from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
 import ShiftContainer from "./ShiftContainer";
-import "./index.css";
+import "../../styles/index.css";
 
 function ShelterDashboard() {
   return (
