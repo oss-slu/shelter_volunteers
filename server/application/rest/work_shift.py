@@ -202,8 +202,8 @@ def login():
     if (current_app.config["DEBUG"] and
         "DEV_TOKEN" in current_app.config and
         "DEV_USER" in current_app.config):
-        os.environ['DEV_USER'] = data["user"]
-        current_app.config['DEV_USER'] = data["user"]
+        os.environ["DEV_USER"] = data["user"]
+        current_app.config["DEV_USER"] = data["user"]
         return Response(
             json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
             mimetype="application/json",
