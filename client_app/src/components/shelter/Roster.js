@@ -1,30 +1,37 @@
 import React, { Component } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "../../styles/shelter/Roster.css";
+import { useState, forwardRef, useEffect } from "react";
 
-class Roster extends Component {
-  render() {
-    const { shiftDetails, volunteers, pro } = this.props;
-    const volunteerCount = volunteers.length;
+
+const Roster = (props) => {
+
+    useEffect(() => {
+      console.log(props.shiftDetails);
+      props.shiftDetails.forEach(item => {
+        const { start_time, end_time, count } = item;
+        console.log(`Start Time: ${start_time}, End Time: ${end_time}, Count: ${count}`);
+      });
+    }, []);
 
     return (
       <div className="roster-item-container">
-        <progress value={pro} className="full-width-progress" />
-        <div className="roster-item">
-          <PeopleAltIcon />
-          <span>
-            {volunteerCount} {shiftDetails.label}
-          </span>
-          <span>{shiftDetails.time}</span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {volunteers.map((volunteer, index) => (
-            <span key={index}>{volunteer}</span>
-          ))}
-        </div>
-      </div>
+        {props.shiftDetails.map((item, index) => (
+          <div key={index}>
+            <progress 
+              value={item.count / 10} 
+              className="full-width-progress" 
+            />
+            <div className="roster-item">
+              <PeopleAltIcon />
+              <span>{item.count} Volunteer(s)</span>
+              <span>{new Date(item.start_time).toLocaleString([], { hour: 'numeric', hour12: true })} - {new Date(item.end_time).toLocaleString(
+                [], { hour: 'numeric', hour12: true })}</span>
+            </div>
+          </div>
+      ))}
+      </div> 
     );
-  }
-}
+};
 
 export default Roster;

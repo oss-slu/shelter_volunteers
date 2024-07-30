@@ -18,7 +18,8 @@ class DevelopmentConfig(Config):
     """Development configuration"""
     os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
     #BYPASS_LOGIN = True
-    DEV_USER = "developer@slu.edu"
+    #DEV_USER = "developer@slu.edu"
+    DEV_USER = os.getenv('DEV_USER', 'developer@slu.edu')
     DEV_TOKEN = "1234567890-developer-token"
 
 class TestingConfig(Config):
