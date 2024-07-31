@@ -1,22 +1,12 @@
-import React, { Component } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "../../styles/shelter/Roster.css";
-import { useState, forwardRef, useEffect } from "react";
-
 
 const Roster = (props) => {
-
-    useEffect(() => {
-      console.log(props.shiftDetails);
-      props.shiftDetails.forEach(item => {
-        const { start_time, end_time, count } = item;
-        console.log(`Start Time: ${start_time}, End Time: ${end_time}, Count: ${count}`);
-      });
-    }, []);
-
+    const currentTime = Date.now();
+    const filteredShifts = props.shiftDetails.filter(item => item.start_time >= currentTime);
     return (
       <div className="roster-item-container">
-        {props.shiftDetails.map((item, index) => (
+        {filteredShifts.slice(0, 3).map((item, index) => (
           <div key={index}>
             <progress 
               value={item.count / 10} 
