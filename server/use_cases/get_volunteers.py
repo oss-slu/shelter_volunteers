@@ -36,12 +36,12 @@ def get_volunteers_use_case(repo, request, shelter):
     workforce = []
 
     # Algorithm Overview: only non-overlapping time intervals with worker counts
-    # will be inserted into the workforce list. We will process Volunteer objects
-    # from the workers list one at a time. If a Volunteer object we are
+    # will be inserted into the workforce list. We will process Volunteer
+    # objects from the workers list one at a time. If a Volunteer object we are
     # processing does not overlap with the current workforce, we simply
-    # insert workforce. If a Volunteer object results in an overlap, we will 
+    # insert workforce. If a Volunteer object results in an overlap, we will
     # split that it into the Volunteer object into multiple ones, adjust
-    # volunteer counts in the existing workforce and insert new resulting 
+    # volunteer counts in the existing workforce and insert new resulting
     # Volunteer objects back into our workers list to be
     # processed later.
     # Algorithm:
