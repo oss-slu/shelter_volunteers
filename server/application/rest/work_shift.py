@@ -10,11 +10,13 @@ from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
+from use_cases.get_volunteers import get_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
 from use_cases.authenticate import login_user
 from use_cases.authenticate import get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
+from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 import os
@@ -61,6 +63,24 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.SUCCESS: 200,
     ResponseTypes.CONFLICT: 409
 }
+
+@blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
+@cross_origin()
+def get_volunteers(shelter_id):
+    """
+    On GET: The function returns volunteer counts and usernames for times that are
+    specified by parameters.
+    """
+    repo = mongorepo.MongoRepo(app_configuration())
+    request_object = list_shift_request(request.args)
+
+    # find workshifts matching the request object
+    response = get_volunteers_use_case(repo, request_object, shelter_id)
+    return Response(
+        json.dumps(response.value, cls=VolunteerJsonEncoder),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
+    )
 
 
 @blueprint.route("/counts/<int:shelter_id>", methods=["GET"])

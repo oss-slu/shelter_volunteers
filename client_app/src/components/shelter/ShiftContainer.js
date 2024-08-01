@@ -7,7 +7,7 @@ import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
 
 const ShiftContainer = (props) => {
-  const [data, setData] = useState([]);
+  const [shiftDetails, setShiftDetails] = useState([]);
   const [shelterId, setShelterId] = useState(30207);
   const [startTime, setStartDate] = useState(
       setHours(
@@ -28,7 +28,7 @@ const ShiftContainer = (props) => {
       for (let i = 0; i < 24; i++) {
         const intervalStartEpoch = start.getTime() + (i * oneHourInMs);
         const intervalEndEpoch = intervalStartEpoch + oneHourInMs;
-        let request_endpoint = `${SERVER}/counts/${shelterId}?filter_start_after=${intervalStartEpoch}&filter_end_before=${intervalEndEpoch}`;
+        let request_endpoint = `${SERVER}/getvolunteers/${shelterId}?filter_start_after=${intervalStartEpoch}&filter_end_before=${intervalEndEpoch}`;
         fetchPromises.push(
           fetch(request_endpoint, {
             method: "GET",
@@ -48,7 +48,8 @@ const ShiftContainer = (props) => {
     }
     Promise.all(fetchPromises)
       .then(() => {
-        setData(validResponses);
+        validResponses.sort((a, b) => a.start_time - b.start_time);
+        setShiftDetails(validResponses);
       })
       .catch((error) => {
         console.error("Error in fetching data:", error);
@@ -58,9 +59,9 @@ const ShiftContainer = (props) => {
   
   return (
     <>
-      {data &&  (
+      {shiftDetails &&  (
         <div className="shift-container">
-          <Roster shiftDetails={data} />
+          <Roster shiftDetails={shiftDetails} />
         </div>
       )}
     </>
