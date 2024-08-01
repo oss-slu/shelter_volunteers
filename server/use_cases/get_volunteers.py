@@ -1,5 +1,7 @@
 """
-This module contains the use case for counting volunteers and getting the volunteer list.
+This module contains the use case for counting volunteers
+and getting the volunteer list.
+
 """
 from responses import ResponseSuccess, ResponseFailure, ResponseTypes
 from use_cases.filter_by_time import get_shifts_between
@@ -36,12 +38,12 @@ def get_volunteers_use_case(repo, request, shelter):
     # Algorithm Overview: only non-overlapping time intervals with worker counts
     # will be inserted into the workforce list. We will process Volunteer objects
     # from the workers list one at a time. If a Volunteer object we are
-    # processing does not overlap with the current workforce, we simply insert
-    # workforce. If a Volunteer object results in an overlap, we will split that
-    # it into the Volunteer object into multiple ones, adjust volunteer counts in
-    # the existing workforce and insert new resulting Volunteer objects back into
-    # our workers list to be processed later.
-    #
+    # processing does not overlap with the current workforce, we simply
+    # insert workforce. If a Volunteer object results in an overlap, we will 
+    # split that it into the Volunteer object into multiple ones, adjust
+    # volunteer counts in the existing workforce and insert new resulting 
+    # Volunteer objects back into our workers list to be
+    # processed later.
     # Algorithm:
     # Always keep the workers list sorted: first by start time, then by end time
     # Repeat until workers list is empty:

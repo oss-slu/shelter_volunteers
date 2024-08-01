@@ -68,8 +68,8 @@ HTTP_STATUS_CODES_MAPPING = {
 @cross_origin()
 def get_volunteers(shelter_id):
     """
-    On GET: The function returns volunteer counts and usernames for times that are
-    specified by parameters.
+    On GET: The function returns volunteer counts and usernames for times 
+    that are specified by parameters.
     """
     repo = mongorepo.MongoRepo(app_configuration())
     request_object = list_shift_request(request.args)
