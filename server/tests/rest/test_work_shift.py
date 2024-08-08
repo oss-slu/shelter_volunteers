@@ -9,6 +9,8 @@ shifts_data = [
     {
         '_id': 'f853578c-fc0f-4e65-81b8-566c5dffa35a',
         'worker': 'volunteer@slu.edu',
+        'first_name': "SLU",
+        'last_name': "Developer",
         'shelter': 'existing-shelter-id',
         'start_time': 1701441800000,
         'end_time': 1701452600000,
@@ -17,6 +19,8 @@ shifts_data = [
     {
         '_id': 'f853578c-fc0f-4e65-81b8-566c5dffa35b',
         'worker': 'volunteer@slu.edu',
+        'first_name': "SLU",
+        'last_name': "Developer",
         'shelter': 'existing-shelter-id',
         'start_time': 1701442800000,
         'end_time': 1701453600000,
