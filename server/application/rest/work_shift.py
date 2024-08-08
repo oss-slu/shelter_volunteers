@@ -195,10 +195,11 @@ def get_user_from_token(headers):
             current_app.config["LAST_NAME"])
 
     user = get_user(token)
-    if user[0] is None:
+    print(user)
+    if user is None:
         raise ValueError
 
-    return user[0]
+    return user
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
@@ -221,7 +222,7 @@ def delete_work_shift(shift_id):
 @cross_origin()
 def login():
     data = request.get_json()
-    if not ("user" in data and "password" in data):
+    if not ("username" in data and "password" in data):
         return Response([],
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
@@ -233,10 +234,10 @@ def login():
     if (current_app.config["DEBUG"] and
         "DEV_TOKEN" in current_app.config and
         "DEV_USER" in current_app.config):
-        os.environ["DEV_USER"] = data["user"]
-        current_app.config["DEV_USER"] = data["user"]
-        if data["user"] in user_list:
-            first_name, last_name = user_list[data["user"]]
+        os.environ["DEV_USER"] = data["username"]
+        current_app.config["DEV_USER"] = data["username"]
+        if data["username"] in user_list:
+            first_name, last_name = user_list[data["username"]]
             os.environ["FIRST_NAME"] = first_name
             os.environ["LAST_NAME"] = last_name
             current_app.config["FIRST_NAME"] = first_name
@@ -247,7 +248,7 @@ def login():
             status = HTTP_STATUS_CODES_MAPPING[status])
 
     # go through the login process
-    response = login_user(data["user"], data["password"])
+    response = login_user(data["username"], data["password"])
     if not response.ok:
         status = ResponseTypes.AUTHORIZATION_ERROR
 
