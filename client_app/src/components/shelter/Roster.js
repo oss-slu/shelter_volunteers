@@ -19,11 +19,10 @@ const Roster = (props) => {
                 [], { hour: 'numeric', hour12: true })}</span>
             </div>
             <div className="volunteers-list">
-              {item.worker.split(", ").map((email, index) => {
-                const nameParts = email.split("@")[0].split(".");
+              {item.worker.split(", ").map((name, index) => {
                 return (
                   <span key={index}>
-                    {nameParts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(" ")}
+                    {name}
                   </span>
                 );
               })}

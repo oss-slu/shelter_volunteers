@@ -25,6 +25,8 @@ class MongoRepo:
             WorkShift(
                 _id=q["_id"],
                 worker=q["worker"],
+                first_name=q["first_name"],
+                last_name=q["last_name"],
                 shelter=q["shelter"],
                 start_time=q["start_time"],
                 end_time=q["end_time"],

@@ -64,6 +64,12 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.CONFLICT: 409
 }
 
+user_list = {
+    "nhi.tran@slu.edu": ("Nhi", "Tran"),
+    "chloe.biddle@slu.edu": ("Chloe", "Biddle"),
+    "siri.chandana@slu.edu": ("Siri", "Chandana"),
+}
+
 @blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
 @cross_origin()
 def get_volunteers(shelter_id):
@@ -111,8 +117,8 @@ def work_shifts():
     """
     repo = mongorepo.MongoRepo(app_configuration())
     user = get_user_from_token(request.headers)
-
-    if not user:
+    
+    if not user[0]:
         return jsonify({"message": "Invalid or missing token"}), \
             ResponseTypes.AUTHORIZATION_ERROR
 
@@ -121,7 +127,8 @@ def work_shifts():
         request_object = list_shift_request(request.args)
 
         # find workshifts matching the request object
-        response = workshift_list_use_case(repo, request_object, user)
+        response = workshift_list_use_case(repo, request_object, user[0])
+        print(response.value)
         if response.response_type == ResponseTypes.SUCCESS:
             enriched_shifts = []
             for work_shift in response.value:
@@ -151,13 +158,15 @@ def work_shifts():
 
     elif request.method == "POST":
         repo = mongorepo.MongoRepo(app_configuration())
-        user = get_user_from_token(request.headers)
+        user, first_name, last_name = get_user_from_token(request.headers)
         if not user:
             return jsonify({"message": "Invalid or missing token"}), \
                            ResponseTypes.AUTHORIZATION_ERROR
         data = request.get_json()
         for shift in data:
             shift["worker"] = user
+            shift["first_name"] = first_name
+            shift["last_name"] = last_name
         add_responses = workshift_add_multiple_use_case(repo, data)
         success = all(item["success"] for item in add_responses)
         status_code = (
@@ -181,7 +190,8 @@ def get_user_from_token(headers):
         "DEV_USER" in current_app.config and
         "DEV_TOKEN" in current_app.config and
         token == current_app.config["DEV_TOKEN"]):
-        return current_app.config["DEV_USER"]
+        return (current_app.config["DEV_USER"], current_app.config["FIRST_NAME"],
+                current_app.config["LAST_NAME"])
 
     user = get_user(token)
     if user[0] is None:
@@ -197,7 +207,7 @@ def delete_work_shift(shift_id):
 
     repo = mongorepo.MongoRepo(app_configuration())
 
-    response = delete_shift_use_case(repo, shift_id, user_email)
+    response = delete_shift_use_case(repo, shift_id, user_email[0])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
 
     return Response(
@@ -224,6 +234,12 @@ def login():
         "DEV_USER" in current_app.config):
         os.environ["DEV_USER"] = data["user"]
         current_app.config["DEV_USER"] = data["user"]
+        if data["user"] in user_list:
+            first_name, last_name = user_list[data["user"]]
+            os.environ["FIRST_NAME"] = first_name
+            os.environ["LAST_NAME"] = last_name
+            current_app.config["FIRST_NAME"] = first_name
+            current_app.config["LAST_NAME"] = last_name
         return Response(
             json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
             mimetype="application/json",

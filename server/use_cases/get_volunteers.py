@@ -172,6 +172,7 @@ def make_staffing_from_shifts(shifts):
         workers.append(Volunteer.from_dict({"start_time":shift.start_time,
                                              "end_time":shift.end_time,
                                              "count":1,
-                                             "worker":shift.worker}))
+                                             "worker":shift.first_name + " "
+                                             + shift.last_name}))
     return workers
 
