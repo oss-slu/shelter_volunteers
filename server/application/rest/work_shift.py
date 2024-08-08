@@ -117,7 +117,7 @@ def work_shifts():
     """
     repo = mongorepo.MongoRepo(app_configuration())
     user = get_user_from_token(request.headers)
-    
+
     if not user[0]:
         return jsonify({"message": "Invalid or missing token"}), \
             ResponseTypes.AUTHORIZATION_ERROR
@@ -190,7 +190,8 @@ def get_user_from_token(headers):
         "DEV_USER" in current_app.config and
         "DEV_TOKEN" in current_app.config and
         token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"], current_app.config["FIRST_NAME"],
+        return (current_app.config["DEV_USER"], 
+                current_app.config["FIRST_NAME"],
                 current_app.config["LAST_NAME"])
 
     user = get_user(token)
