@@ -190,9 +190,9 @@ def get_user_from_token(headers):
         "DEV_USER" in current_app.config and
         "DEV_TOKEN" in current_app.config and
         token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"], 
-                current_app.config["FIRST_NAME"],
-                current_app.config["LAST_NAME"])
+        return (current_app.config["DEV_USER"],
+            current_app.config["FIRST_NAME"],
+            current_app.config["LAST_NAME"])
 
     user = get_user(token)
     if user[0] is None:
