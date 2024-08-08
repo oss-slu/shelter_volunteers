@@ -61,8 +61,8 @@ def test_list_work_shifts(mock_get_user_from_token,
 @mock.patch('application.rest.work_shift.get_user_from_token')
 def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
     # pylint: disable=unused-argument
-    mock_get_user_from_token.return_value = ('test_user', 'first_name', 
-                                             'last_name')                           
+    mock_get_user_from_token.return_value = ('test_user', 'first_name',
+                                            'last_name')                           
     mock_use_case.return_value = [
         {'success': True, 'message': 'Shift added successfully'}
     ]
