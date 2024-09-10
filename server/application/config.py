@@ -17,7 +17,6 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     """Development configuration"""
     os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
-    #BYPASS_LOGIN = True
     DEV_USER = os.getenv("DEV_USER", "developer@slu.edu")
     FIRST_NAME = os.getenv("FIRST_NAME", "SLU")
     LAST_NAME = os.getenv("LAST_NAME", "Developer")

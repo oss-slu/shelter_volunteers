@@ -195,7 +195,6 @@ def get_user_from_token(headers):
             current_app.config["LAST_NAME"])
 
     user = get_user(token)
-    print(user)
     if user is None:
         raise ValueError
 

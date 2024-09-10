@@ -48,7 +48,6 @@ def get_user(token):
         )
         response.raise_for_status()
         user_info = response.json()
-        print(user_info)
         return (user_info['email'], user_info['firstName'],
             user_info['lastName'])
     except HTTPError as e:
