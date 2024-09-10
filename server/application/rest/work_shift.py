@@ -128,7 +128,6 @@ def work_shifts():
 
         # find workshifts matching the request object
         response = workshift_list_use_case(repo, request_object, user[0])
-        print(response.value)
         if response.response_type == ResponseTypes.SUCCESS:
             enriched_shifts = []
             for work_shift in response.value:
