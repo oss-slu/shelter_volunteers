@@ -10,7 +10,7 @@ import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import { useState } from "react";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
-
+import ShiftDetails from "./components/shelter/ShiftDetails";
 import "./styles/App.css";
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
+            <Route path="/shift-details" element={<ShiftDetails />} />
           </Route>
         </Routes>
       </Router>

@@ -343,7 +343,26 @@ button {
     display: block;
   }
 }
-
+.shift-details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1.2vw;
+}
+.datetime-picker {
+  display: flex;
+  align-items: last baseline;
+  justify-content: flex-start;
+  padding: 1.2vw;
+  padding-left: 2vw;
+  gap: 25px;
+}
+.starttime-label {
+  padding-left: 5.9vw;
+}
+.endtime-label {
+  padding-left: 5.9vw;
+}
 .shelter-dashboard {
   display: flex;
   justify-content: space-between;
@@ -461,6 +480,22 @@ button {
   .container-medium,
   .container-small {
     flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 1300px) {
+  .datetime-picker {
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    padding: 2vw;
+    padding-left: 25vw;
+    gap: 5px;
+  }
+
+  .starttime-label, .endtime-label {
+    padding-left: 10px;
+    margin-bottom: 10px;
   }
 }
 
