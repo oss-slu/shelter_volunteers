@@ -7,6 +7,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import dayjsUTC from 'dayjs/plugin/utc';
 import dayjsTimezone from 'dayjs/plugin/timezone';
+import ShiftDetailsTable from "./ShiftDetailsTable";
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
@@ -32,6 +33,9 @@ function ShiftDetails() {
               <TimePicker defaultValue={endHour} slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
             </LocalizationProvider>
           </div> 
+        </div>
+        <div className="shiftdetails-table">
+          <ShiftDetailsTable />
         </div>
       </div>
     );
