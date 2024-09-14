@@ -15,8 +15,8 @@ const Roster = (props) => {
             <div className="roster-item">
               <PeopleAltIcon />
               <span>{item.count} Volunteer(s)</span>
-              <span>{new Date(item.start_time).toLocaleString([], { hour: 'numeric', hour12: true })} - {new Date(item.end_time).toLocaleString(
-                [], { hour: 'numeric', hour12: true })}</span>
+              <span>{new Date(item.start_time).toLocaleString([], { hour: 'numeric', minute: 'numeric', hour12: true })} - {new Date(item.end_time).toLocaleString(
+                [], { hour: 'numeric', minute: 'numeric', hour12: true })}</span>
             </div>
             <div className="volunteers-list">
               {item.worker.split(", ").map((name, index) => {
