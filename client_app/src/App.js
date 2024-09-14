@@ -10,6 +10,7 @@ import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import { useState } from "react";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
+import { VolunteerDetailsModal } from "./components/shelter/VolunteerDetailsModal";
 
 import "./styles/App.css";
 
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login setAuth={setAuth} />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/shift-details" element={<VolunteerDetailsModal />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<VolunteerDashboard />} />
@@ -36,6 +38,7 @@ function App() {
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
+            
           </Route>
         </Routes>
       </Router>
