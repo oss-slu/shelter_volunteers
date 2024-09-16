@@ -6,11 +6,11 @@ const MoreDetailsBox = () => {
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>Shift Details</h2>
-        <p>Start Time: </p>
+        <p>Start Time: 7:30 am </p>
         <p>End Time: </p>
-        <p>Requested Volunteers: </p>
+        <p>Requested Volunteers: 4 </p>
         <p>Signed Up Volunteers: </p>
-        <p>Required Volunteers: </p>
+        <p>Required Volunteers: 2 </p>
         <button >Request More Volunteers</button>
         <button>Close Sign-up of Volunteers</button>
         <button>Close Request</button>
