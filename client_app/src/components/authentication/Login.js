@@ -25,7 +25,7 @@ async function LoginUser(user, pass) {
     localStorage.setItem("token", JSON.stringify(data.access_token));
   } catch (error) {
     // Handle login error
-    console.error("Login error", error);
+    //console.error("Login error", error);
   }
 }
 
