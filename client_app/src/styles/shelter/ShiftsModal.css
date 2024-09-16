@@ -47,6 +47,7 @@
 
 td, th, tr{
   border: 2px solid lightgray !important;
+  text-align: center;
 }
 
 .modalHeading {
