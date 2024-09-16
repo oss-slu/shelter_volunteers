@@ -5,9 +5,12 @@ import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
+import ShiftDetailsModal from "./ShiftDetailsModal";
 
 const ShiftContainer = (props) => {
   const [shiftDetails, setShiftDetails] = useState([]);
+  const [selectedShift, setSelectedShift] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [shelterId, setShelterId] = useState(30207);
   const [startTime, setStartDate] = useState(
       setHours(
@@ -55,14 +58,54 @@ const ShiftContainer = (props) => {
         console.error("Error in fetching data:", error);
       });
     }
-  }, [shelterId]);
+  }, [shelterId, startTime]);
+  
+  // Open modal and set selected shift
+  const handleMoreDetailsClick = (shift) => {
+    setSelectedShift(shift);
+    setIsModalOpen(true);
+  };
+
+  // Close modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedShift(null);
+  };
+
+  const handleRequestMoreVolunteers = () => {
+    // Logic for requesting more volunteers
+    console.log("Requesting more volunteers for shift:", selectedShift);
+  };
+
+  const handleCloseSignups = () => {
+    // Logic for closing volunteer sign-ups
+    console.log("Closing sign-ups for shift:", selectedShift);
+  };
+
+  const handleCloseRequest = () => {
+    // Logic for closing or deleting the shift request
+    console.log("Closing request for shift:", selectedShift);
+  };
   
   return (
     <>
       {shiftDetails &&  (
         <div className="shift-container">
-          <Roster shiftDetails={shiftDetails} />
+          <Roster 
+            shiftDetails={shiftDetails} 
+            onMoreDetailsClick={handleMoreDetailsClick} // Pass the click handler to Roster
+          />
         </div>
+      )}
+      {/* Show the modal if a shift is selected */}
+      {isModalOpen && (
+        <ShiftDetailsModal 
+          shift={selectedShift} 
+          onClose={handleCloseModal} 
+          onRequestMoreVolunteers={handleRequestMoreVolunteers}
+          onCloseSignups={handleCloseSignups}
+          onCloseRequest={handleCloseRequest}
+        />
       )}
     </>
   );
