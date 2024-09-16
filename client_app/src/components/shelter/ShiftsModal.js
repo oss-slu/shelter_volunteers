@@ -2,16 +2,20 @@ import React from 'react';
 import Modal from 'react-modal';
 import { shiftListed } from './shiftsListed.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import "../../styles/shelter/VolunteerDetailsModal.css"
+import { faEnvelope, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import "../../styles/shelter/ShiftsModal.css"
 
-export const VolunteerDetailsModal = props => {
+export const ShiftsModal = props => {
   const [volunteerShifts, setVolunteerShifts] = React.useState([shiftListed]);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  const sendEmail = email => {
+    console.log(email);
+  }
+
   const emailButton = shift => {
     return (
-      <button className="emailButton">
+      <button className="emailButton" onClick={() => sendEmail(shift.email)}>
         <FontAwesomeIcon icon={faEnvelope} size="1x" className="emailIcon" />
       </button>
     )
@@ -38,10 +42,19 @@ export const VolunteerDetailsModal = props => {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Signed-Up Volunteers"
+        className="shiftsModal"
+        ariaHideApp={false}
       > 
-        <h3>Signed-Up Volunteers</h3>
-        <table>
-          <thead>
+        <span className="modalHeading">
+          <h3>
+            Signed-Up Volunteers
+            <button className="close-btn" onClick={()=>{setIsModalOpen(false)}}>
+              <FontAwesomeIcon icon={faCircleXmark} className="closeIcon"/>
+            </button>
+          </h3>
+        </span>
+        <table className="shiftsTable">
+          <thead className="shiftsTableHeader">
             <tr>
               <td>Volunteers Signed Up</td>
               <td>Date</td>
@@ -50,7 +63,7 @@ export const VolunteerDetailsModal = props => {
               <td>Send E-mail</td>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="shiftsTableBody">
             {renderShifts()}
           </tbody>
         </table>
