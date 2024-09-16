@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { shiftListed } from './shiftsListed.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import "../../styles/shelter/VolunteerDetailsModal.css"
 
 export const VolunteerDetailsModal = props => {
   const [volunteerShifts, setVolunteerShifts] = React.useState([shiftListed]);
@@ -10,8 +11,8 @@ export const VolunteerDetailsModal = props => {
 
   const emailButton = shift => {
     return (
-      <button>
-        <FontAwesomeIcon icon={faEnvelope} size="1x" class="fa-solid fa-envelope" />
+      <button className="emailButton">
+        <FontAwesomeIcon icon={faEnvelope} size="1x" className="emailIcon" />
       </button>
     )
   }
