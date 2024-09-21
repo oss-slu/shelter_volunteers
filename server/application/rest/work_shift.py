@@ -222,7 +222,7 @@ def login():
 
     status = ResponseTypes.SUCCESS
 
-    with open("application/rest/user_list.json", "r") as file:
+    with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
         user_list = json.load(file)
 
     # check if authentication should be bypassed for development purposes
