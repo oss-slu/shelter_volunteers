@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/index.css";
+import "../../styles/shelter/ShiftDetails.css";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -23,13 +23,9 @@ function ShiftDetails() {
             <h4>Date</h4>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker defaultValue={dayjs()} slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
-            </LocalizationProvider>
-            <h4 className="starttime-label">Shift Start Time</h4>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <h4 className="starttime-label">Shift Start Time</h4>
               <TimePicker defaultValue={startHour}  slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
-            </LocalizationProvider>
-            <h4 className="endtime-label">Shift End Time</h4>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <h4 className="endtime-label">Shift End Time</h4>
               <TimePicker defaultValue={endHour} slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
             </LocalizationProvider>
           </div> 
