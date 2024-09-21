@@ -64,12 +64,6 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.CONFLICT: 409
 }
 
-user_list = {
-    "nhi.tran@slu.edu": ("Nhi", "Tran"),
-    "chloe.biddle@slu.edu": ("Chloe", "Biddle"),
-    "siri.chandana@slu.edu": ("Siri", "Chandana"),
-}
-
 @blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
 @cross_origin()
 def get_volunteers(shelter_id):
@@ -227,6 +221,9 @@ def login():
         )
 
     status = ResponseTypes.SUCCESS
+
+    with open("application/rest/user_list.json", "r") as file:
+        user_list = json.load(file)
 
     # check if authentication should be bypassed for development purposes
     if (current_app.config["DEBUG"] and

@@ -6,15 +6,15 @@ import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
 
-const ShiftContainer = (props) => {
+const ShiftContainer = () => {
   const [shiftDetails, setShiftDetails] = useState([]);
-  const [shelterId, setShelterId] = useState(30207);
-  const [startTime, setStartDate] = useState(
+  let shelterId = 30207;
+  let startTime = 
       setHours(
         setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
         new Date().getHours() + 1,
-      ),
-  );
+      );
+
   const initialized = useRef(false);
   
   useEffect(() => {
