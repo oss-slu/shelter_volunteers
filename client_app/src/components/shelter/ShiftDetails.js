@@ -20,7 +20,7 @@ function ShiftDetails() {
       <div>
         <div className="shift-details">
           <div className="datetime-picker">
-            <h4>Date</h4>
+            <h4 className="date-label">Date</h4>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker defaultValue={dayjs()} slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
               <h4 className="starttime-label">Shift Start Time</h4>
