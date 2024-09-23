@@ -28,7 +28,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Login setAuth={setAuth} />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/shift-details" element={<ShiftsModal />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<VolunteerDashboard />} />
