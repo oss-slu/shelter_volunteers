@@ -1,0 +1,92 @@
+.shift-details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1.2vw;
+}
+
+.datetime-picker {
+    display: flex;
+    align-items: last baseline;
+    justify-content: flex-start;
+    padding: 1.2vw;
+    padding-left: 2vw;
+    gap: 25px;
+}
+
+.starttime-label {
+    padding-left: 5.9vw;
+}
+
+.endtime-label {
+    padding-left: 5.9vw;
+}
+
+.shiftdetails-table {
+    padding: 20px;
+    margin-left: 10px;
+}
+
+@media (max-width: 1300px) {
+    .datetime-picker {
+      width: 80%;
+      flex-direction: column;
+      align-items: center;
+      padding: 2vw;
+      padding-left: 25vw;
+      gap: 5px;
+    }
+  
+    .starttime-label, .endtime-label {
+      padding-left: 10px;
+      margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 768px) {
+.datetime-picker {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: 2vw;
+    gap: 5px;
+}
+.date-label {
+    font-size: 15px;
+}
+
+.starttime-label, .endtime-label {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+}
+@media (min-width: 1024px) {
+    .datetime-picker {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 2vw;
+        gap: 5px;
+    }
+}
+@media (max-width: 1800px) {
+    .shiftdetails-table {
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .shiftdetails-table {
+        max-width: 90%;
+        padding-left: 30px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .shiftdetails-table {
+        max-width: 90%;
+        padding-left: 30px;
+    }
+}
