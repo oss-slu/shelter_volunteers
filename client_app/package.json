@@ -22,6 +22,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.21.0",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
