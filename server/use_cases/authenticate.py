@@ -17,15 +17,18 @@ def login_user(user, password):
     """
 
     url = 'https://oauth-qa.gethelp.com/api/oauth/token'
-    get_help_token = os.environ['REACT_APP_GETHELP_AUTH_API_TOKEN']
+
+    usernm = 'gethelp-app'
+    passwd = '48404D6351655468576D5A7134743777217A25432A462D4A614E645267556A58'
+    credentials = f'{usernm}:{passwd}'
 
     # Encode the authorization token
-    auth_token = base64.b64encode(get_help_token.encode()).decode('utf-8')
+    auth_token = base64.b64encode(credentials.encode()).decode('utf-8')
 
     # Set up the headers and data
     headers = {
+        'Authorization': f'Basic {auth_token}',
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': f'Basic {auth_token}'
     }
     data = {
         'grant_type': 'password',
@@ -45,8 +48,8 @@ def get_user(token):
         )
         response.raise_for_status()
         user_info = response.json()
-        print(user_info)
-        return user_info['id'], None
+        return (user_info['email'], user_info['firstName'],
+            user_info['lastName'])
     except HTTPError as e:
         return None, f'HTTP error: {e}'
     except Timeout:

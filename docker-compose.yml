@@ -11,7 +11,7 @@ services:
     command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
     depends_on:
       - mongodb
-      
+     
   backend:
     build:
       context: ./server
@@ -28,8 +28,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
-
+      - backend 
 
   
 

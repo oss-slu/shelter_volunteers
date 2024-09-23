@@ -12,6 +12,8 @@ class WorkShiftJsonEncoder(json.JSONEncoder):
             to_serialize = {
                 "_id": str(workshift.get_id()),
                 "worker": workshift.worker,
+                "first_name": workshift.first_name,
+                "last_name": workshift.last_name,
                 "shelter": workshift.shelter,
                 "start_time": workshift.start_time,
                 "end_time": workshift.end_time,

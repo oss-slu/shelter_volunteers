@@ -15,6 +15,8 @@ def domain_work_shifts():
     """
     work_shift_1 = WorkShift(
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1696168800000,
         end_time=1696179600000,
@@ -22,6 +24,8 @@ def domain_work_shifts():
 
     work_shift_2 = WorkShift(
         worker="volunteer2@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1696255200000,
         end_time=1696269600000,
@@ -29,6 +33,8 @@ def domain_work_shifts():
 
     work_shift_3 = WorkShift(
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1701442800000,
         end_time=1701453600000,
@@ -58,6 +64,8 @@ def test_workshift_add_use_case_with_overlap(domain_work_shifts):
     existing_shifts = [domain_work_shifts[0]]
     overlapping_shift = WorkShift(
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=domain_work_shifts[0].start_time,
         end_time=domain_work_shifts[0].end_time + 10000,
@@ -75,6 +83,8 @@ def test_workshift_add_multiple_use_case_with_overlap(domain_work_shifts):
         domain_work_shifts[1].to_dict(),
         WorkShift(
             worker="volunteer3@slu.edu",
+            first_name="SLU",
+            last_name="Developer",
             shelter="shelter-id-for-st-patric-center",
             start_time=domain_work_shifts[0].start_time,
             end_time=domain_work_shifts[0].end_time + 10000,
@@ -90,12 +100,16 @@ def test_workshift_add_multiple_use_case_no_overlap():
     repo.get_shifts_for_user.return_value = []
     shift_1 = WorkShift(
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1000,
         end_time=2000,
     )
     shift_2 = WorkShift(
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=2000,
         end_time=3000,
@@ -115,6 +129,8 @@ def test_workshift_add_multiple_use_case_timestamps(domain_work_shifts):
         domain_work_shifts[2].to_dict(),
         WorkShift(
             worker="volunteer@slu.edu",
+            first_name="SLU",
+            last_name="Developer",
             shelter="shelter-id-for-st-patric-center",
             start_time=1701453600000,
             end_time=1801453600000,
