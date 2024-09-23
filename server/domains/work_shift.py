@@ -11,6 +11,8 @@ class WorkShift:
     Data class for workshift releated data
     """
     worker: str
+    first_name: str
+    last_name: str
     shelter: int
     start_time: int  # number of milliseconds since the Epoch in UTC
     end_time: int

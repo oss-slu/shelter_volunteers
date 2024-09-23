@@ -12,7 +12,7 @@ async function LoginUser(user, pass) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: user,
+        username: user,
         password: pass,
       }),
     });

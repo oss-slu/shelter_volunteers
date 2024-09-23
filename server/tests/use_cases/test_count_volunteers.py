@@ -41,6 +41,8 @@ def test_nonoverlapping_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -50,6 +52,8 @@ def test_nonoverlapping_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 3
@@ -78,6 +82,8 @@ def test_identical_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -87,6 +93,8 @@ def test_identical_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -113,6 +121,8 @@ def test_overlapping_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -122,6 +132,8 @@ def test_overlapping_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 3
@@ -149,6 +161,8 @@ def test_overlapping2_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 3
@@ -158,6 +172,8 @@ def test_overlapping2_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
@@ -186,6 +202,8 @@ def test_overlapping3_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
@@ -195,6 +213,8 @@ def test_overlapping3_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 3
@@ -223,6 +243,8 @@ def test_overlapping4_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
@@ -232,6 +254,8 @@ def test_overlapping4_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
@@ -260,6 +284,8 @@ def test_many_overlapping_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
@@ -269,6 +295,8 @@ def test_many_overlapping_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
@@ -278,6 +306,8 @@ def test_many_overlapping_shifts():
                 "$oid": "3"
             },
             "worker": "volunteer3@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 6
@@ -312,6 +342,8 @@ def test_many_overlapping2_shifts():
                 "$oid": "3"
             },
             "worker": "volunteer3@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4
@@ -321,6 +353,8 @@ def test_many_overlapping2_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
@@ -330,6 +364,8 @@ def test_many_overlapping2_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
@@ -363,6 +399,8 @@ def test_many_overlapping3_shifts():
                 "$oid": "3"
             },
             "worker": "volunteer3@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 4
@@ -372,6 +410,8 @@ def test_many_overlapping3_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
@@ -381,6 +421,8 @@ def test_many_overlapping3_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 5
@@ -414,6 +456,8 @@ def test_many_overlapping4_shifts():
                 "$oid": "3"
             },
             "worker": "volunteer3@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 5
@@ -423,6 +467,8 @@ def test_many_overlapping4_shifts():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 4
@@ -432,6 +478,8 @@ def test_many_overlapping4_shifts():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 6
@@ -462,6 +510,8 @@ def test_workers_in_range():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
@@ -491,6 +541,8 @@ def test_workers_in_range_overlap():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 6
@@ -500,6 +552,8 @@ def test_workers_in_range_overlap():
                 "$oid": "2"
             },
             "worker": "volunteer2@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 2,
             "end_time": 5
@@ -509,6 +563,8 @@ def test_workers_in_range_overlap():
                 "$oid": "3"
             },
             "worker": "volunteer3@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4
@@ -536,6 +592,8 @@ def test_no_workers_in_range():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 1,
             "end_time": 2
@@ -561,6 +619,8 @@ def test_no_workers_in_range2():
                 "$oid": "1"
             },
             "worker": "volunteer1@slu.edu",
+            "first_name": "SLU",
+            "last_name": "Developer",
             "shelter": 1,
             "start_time": 3,
             "end_time": 4

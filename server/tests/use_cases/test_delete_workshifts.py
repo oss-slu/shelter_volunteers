@@ -12,6 +12,8 @@ domain_shifts = [
     WorkShift(
         _id=uuid.uuid4(),
         worker="volunteer@slu.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1706168800000,
         end_time=1706179600000
@@ -19,6 +21,8 @@ domain_shifts = [
     WorkShift(
         _id=uuid.uuid4(),
         worker="volunteer@slu1.edu",
+        first_name="SLU",
+        last_name="Developer",
         shelter="shelter-id-for-st-patric-center",
         start_time=1706168800000,
         end_time=1706179600000
