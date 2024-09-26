@@ -10,7 +10,7 @@ import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import { useState } from "react";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
-import ShiftDetails from "./components/shelter/ShiftDetails";
+import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import "./styles/App.css";
 
 function App() {
