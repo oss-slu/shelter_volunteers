@@ -6,8 +6,8 @@ import { faEnvelope, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
 
 export const ShiftsModal = props => {
-  const [volunteerShifts, setVolunteerShifts] = React.useState([shiftListed]);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const {isModalOpen, setIsModalOpen} = props;
+  const volunteerShifts = [shiftListed];
 
   const sendEmail = email => {
     console.log(email);
@@ -37,7 +37,6 @@ export const ShiftsModal = props => {
 
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)}>Open modal</button>
       <Modal 
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
