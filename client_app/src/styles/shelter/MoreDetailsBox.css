@@ -1,0 +1,75 @@
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+  }
+  /*ask about colors*/
+  .shift-details-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .shift-info p {
+    margin: 10px 0;
+  }
+  
+  .volunteer-section {
+    margin-bottom: 20px;
+  }
+  
+  .signed-up-volunteers {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .arrow {
+    margin-left: 10px;
+    font-size: 18px;
+  }
+  
+  .expanded-volunteers {
+    padding-left: 10px;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .action-btn {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .action-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .open-modal-btn {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .open-modal-btn:hover {
+    background-color: #218838;
+  }
