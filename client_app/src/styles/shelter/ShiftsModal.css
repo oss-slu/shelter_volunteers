@@ -1,0 +1,56 @@
+.emailIcon {
+    color: #1f5156;
+  }
+  
+  .emailButton {
+    background-color: transparent;
+  }
+  
+  .shiftsTableHeader {
+    font-weight: bold;
+  }
+  
+  .shiftsModal {
+    max-height: 75%;
+    max-width: 100%;
+    min-width: 80%;
+    min-height: 50%;
+    background-color: lightgray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-left: 1%;
+    padding-top: 1%;
+    padding-right: 1%
+  }
+  
+  .close-btn {
+    background-color: transparent;
+  }
+  
+  .closeIcon {
+    color: black;
+    position: absolute;
+    right: 3%;
+    top: 6%;
+  }
+  
+  .shiftsTableHeader {
+    background-color: #EEEEEE;
+  }
+  
+  .shiftsTable {
+    background-color: white;
+    border-collapse: collapse;
+  }
+  
+  td, th, tr{
+    border: 2px solid lightgray !important;
+    text-align: center;
+  }
+  
+  .modalHeading {
+    display: inline-block;
+    padding-bottom: 3%;
+  }
