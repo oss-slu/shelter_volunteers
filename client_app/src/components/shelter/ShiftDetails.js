@@ -9,22 +9,23 @@ import dayjsUTC from 'dayjs/plugin/utc';
 import dayjsTimezone from 'dayjs/plugin/timezone';
 import { ShiftDetailsTable } from "./ShiftDetailsTable.js";
 import { MoreDetailsBox } from "./MoreDetailsBox.js";
-import { ShiftsModal } from "./ShiftsModal.js"
+import { ShiftsModal } from "./ShiftsModal.js";
+import { useState } from 'react';
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
 
 export const ShiftDetails = () => {
-    const [isMModalOpen, setIsMModalOpen] = React.useState(false);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isMoreDetailsModelOpen, setIsMoreDetailsModelOpen] = useState(false);
+    const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
 
     const onClickMoreDetails = () => {
-      setIsMModalOpen(true);
+      setIsMoreDetailsModelOpen(true);
     }
 
     const onSignUpVolunteersClick = () => {
-      setIsMModalOpen(false);
-      setIsModalOpen(true);
+      setIsMoreDetailsModelOpen(false);
+      setIsVolunteerModalOpen(true);
     }
 
     const currentTime = dayjs();
@@ -32,8 +33,8 @@ export const ShiftDetails = () => {
     const endHour = startHour.add(1, 'hour');
     return (
       <div>
-        {isMModalOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMModalOpen={isMModalOpen} setIsMModalOpen={setIsMModalOpen}/>
-        {isModalOpen} < ShiftsModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+        {isMoreDetailsModelOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMoreDetailsModelOpen={isMoreDetailsModelOpen} setIsMoreDetailsModelOpen={setIsMoreDetailsModelOpen}/>
+        {isVolunteerModalOpen} < ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />
         <div className="shift-details">
           <div className="datetime-picker">
             <h4 className="date-label">Date</h4>

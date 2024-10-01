@@ -2,12 +2,12 @@ import React from "react";
 import Modal from 'react-modal';
 
 export const MoreDetailsBox = props => {
-  const {isMModalOpen, setIsMModalOpen, onSignUpVolunteersClick} = props;
+  const {isMoreDetailsModelOpen, setIsMoreDetailsModelOpen, onSignUpVolunteersClick} = props;
 
   return (
     <div className="modal-overlay">
-      <Modal isOpen = {isMModalOpen} 
-        onRequestClose = {() => setIsMModalOpen(false)}
+      <Modal isOpen = {isMoreDetailsModelOpen} 
+        onRequestClose = {() => setIsMoreDetailsModelOpen(false)}
         ariaHideApp = {false} >
         <h2>Shift Details</h2>
         <p>Start Time: 7:30 am </p>
@@ -18,7 +18,7 @@ export const MoreDetailsBox = props => {
         <button >Request More Volunteers</button>
         <button> Sign-up of Volunteers</button>
         <button>Close Request</button>
-        <button onClick = {() => setIsMModalOpen(false)}>Close Modal</button>
+        <button onClick = {() => setIsMoreDetailsModelOpen(false)}>Close Modal</button>
       </Modal>
     </div>
   );
