@@ -7,17 +7,34 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import dayjsUTC from 'dayjs/plugin/utc';
 import dayjsTimezone from 'dayjs/plugin/timezone';
-import ShiftDetailsTable from "./ShiftDetailsTable";
+import { ShiftDetailsTable } from "./ShiftDetailsTable.js";
+import { MoreDetailsBox } from "./MoreDetailsBox.js";
+import { ShiftsModal } from "./ShiftsModal.js";
+import { useState } from 'react';
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
 
-function ShiftDetails() {
+export const ShiftDetails = () => {
+    const [isMoreDetailsModelOpen, setIsMoreDetailsModelOpen] = useState(false);
+    const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
+
+    const onClickMoreDetails = () => {
+      setIsMoreDetailsModelOpen(true);
+    }
+
+    const onSignUpVolunteersClick = () => {
+      setIsMoreDetailsModelOpen(false);
+      setIsVolunteerModalOpen(true);
+    }
+
     const currentTime = dayjs();
     const startHour = currentTime.add(1, 'hour').startOf('hour');
     const endHour = startHour.add(1, 'hour');
     return (
       <div>
+        {isMoreDetailsModelOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMoreDetailsModelOpen={isMoreDetailsModelOpen} setIsMoreDetailsModelOpen={setIsMoreDetailsModelOpen}/>
+        {isVolunteerModalOpen} < ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />
         <div className="shift-details">
           <div className="datetime-picker">
             <h4 className="date-label">Date</h4>
@@ -31,9 +48,8 @@ function ShiftDetails() {
           </div> 
         </div>
         <div className="shiftdetails-table">
-          <ShiftDetailsTable />
+          <ShiftDetailsTable onClickMoreDetails={onClickMoreDetails} />
         </div>
       </div>
     );
 }
-export default ShiftDetails;
