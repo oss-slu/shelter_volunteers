@@ -30,7 +30,7 @@ const Roster = (props) => {
           </div>
           ))
           ) : (
-            <span>No volunteers available.</span>
+            <span>No shifts available.</span>
         )}
       </div> 
     );
