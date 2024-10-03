@@ -189,10 +189,6 @@ const Shelters = (props) => {
     setCurrentPage(pageNumber);
   };
 
-  useEffect(() => {
-    console.log(shiftStatusList);
-  }, [shiftStatusList]);
-
   return (
     <>
       {!showConfirmation && (
