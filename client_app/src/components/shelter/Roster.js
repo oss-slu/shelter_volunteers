@@ -28,9 +28,9 @@ const Roster = (props) => {
               })}
             </div>
           </div>
-        ))
-        ) : (
-          <span>No shifts available.</span>
+          ))
+          ) : (
+            <span>No volunteers available.</span>
         )}
       </div> 
     );
