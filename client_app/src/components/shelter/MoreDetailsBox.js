@@ -56,7 +56,6 @@ export const MoreDetailsBox = (props) => {
             <button className="action-btn">Request More Volunteers</button>
             <button className="action-btn">Close Sign-up of Volunteers</button>
             <button className="action-btn">Close Request</button>
-            <button className="action-btn" onClick={() => setIsMModalOpen(false)}>Close Modal</button>
           </div>
         </div>
       </Modal>

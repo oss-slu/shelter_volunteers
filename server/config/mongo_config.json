@@ -1,5 +1,6 @@
 [
     {
+      "name": "MONGODB_HOSTNAME",
       "value": "localhost"
     },
     {
