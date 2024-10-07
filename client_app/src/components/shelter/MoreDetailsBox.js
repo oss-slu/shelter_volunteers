@@ -18,27 +18,22 @@ export const MoreDetailsBox = (props) => {
       <Modal 
         isOpen={isMModalOpen} 
         onRequestClose={() => setIsMModalOpen(false)} 
-        ariaHideApp={false}
-      >
+        ariaHideApp={false}>
         <div className="modal-content">
           <h2>Shift Details</h2>
-
           <div className="shift-details-box">
             <div className="shift-detail-row">
               <p className="shift-detail-label">Shift Start Time:</p>
               <p className="shift-detail-value">12:00 AM</p>
             </div>
-
             <div className="shift-detail-row">
               <p className="shift-detail-label">Shift End Time:</p>
               <p className="shift-detail-value">4:00 PM</p>
             </div>
-
             <div className="shift-detail-row">
               <p className="shift-detail-label">Requested Volunteers:</p>
               <p className="shift-detail-value">30</p>
             </div>
-
             <div className="shift-detail-row">
               <p className="shift-detail-label">Signed Up Volunteers:</p>
               <div className="signed-up-volunteers">
@@ -49,8 +44,6 @@ export const MoreDetailsBox = (props) => {
                 <p className="shift-detail-value">2</p>
               </div>
             </div>
-
-            {/* Conditionally render volunteer details when the state is true */}
             {isVolunteersOpen && (
               <div className="shift-volunteer-info">
                 <p>Volunteer 1: John Doe</p>
@@ -58,25 +51,17 @@ export const MoreDetailsBox = (props) => {
                 {/* Add any other volunteer details here */}
               </div>
             )}
-
             <div className="shift-detail-row">
               <p className="shift-detail-label">Required Volunteers:</p>
               <p className="shift-detail-value">10</p>
             </div>
-
           </div>
-
-          {/* Footer with buttons */}
           <div className="modal-footer">
             <button className="action-btn">Request More Volunteers</button>
-
             <button className="action-btn">Close Sign-up of Volunteers</button>
-
             <button className="action-btn">Close Request</button>
-
             <button className="action-btn" onClick={() => setIsMModalOpen(false)}>Close Modal</button>
           </div>
-
         </div>
       </Modal>
     </div>
