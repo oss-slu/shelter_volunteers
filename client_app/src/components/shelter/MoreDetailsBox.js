@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from 'react-modal';
 import "../../styles/shelter/MoreDetailsBox.css";
 
 export const MoreDetailsBox = (props) => {
-  const { isMModalOpen, setIsMModalOpen } = props;
-
-  const [isVolunteersOpen, setIsVolunteersOpen] = useState(false);
-
-  const onSignUpVolunteersClick = () => {
-    setIsVolunteersOpen(!isVolunteersOpen); 
-  };
+  const { isMModalOpen, setIsMModalOpen, onSignUpVolunteersClick, isModalOpen } = props;
 
   return (
     <div className="modal-overlay">
@@ -36,17 +30,11 @@ export const MoreDetailsBox = (props) => {
               <div className="signed-up-volunteers-label">
                 <p className="shift-detail-label">Signed Up Volunteers:</p>
                 <button className="arrow" onClick={onSignUpVolunteersClick}>
-                  {isVolunteersOpen ? "▲" : "▼"} 
+                  {isModalOpen ? "▲" : "▼"} 
                 </button>
               </div>
               <p className="shift-detail-value">2</p>
             </div>
-            {isVolunteersOpen && (
-              <div className="shift-volunteer-info">
-                <p>Volunteer 1: John Doe</p>
-                <p>Volunteer 2: Jane Smith</p>
-              </div>
-            )}
             <div className="shift-detail-row">
               <p className="shift-detail-label">Required Volunteers:</p>
               <p className="shift-detail-value">10</p>

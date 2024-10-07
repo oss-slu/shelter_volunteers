@@ -32,7 +32,7 @@ export const ShiftDetails = () => {
     const endHour = startHour.add(1, 'hour');
     return (
       <div>
-        {isMModalOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMModalOpen={isMModalOpen} setIsMModalOpen={setIsMModalOpen}/>
+        {isMModalOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMModalOpen={isMModalOpen} setIsMModalOpen={setIsMModalOpen} isModalOpen={isModalOpen} />
         {isModalOpen} < ShiftsModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         <div className="shift-details">
           <div className="datetime-picker">
