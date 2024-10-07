@@ -6,7 +6,7 @@ import { faEnvelope, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
 
 export const ShiftsModal = props => {
-  const {isModalOpen, setIsModalOpen} = props;
+  const {isVolunteerModalOpen, setIsVolunteerModalOpen} = props;
   const volunteerShifts = [shiftListed];
 
   const sendEmail = email => {
@@ -38,8 +38,8 @@ export const ShiftsModal = props => {
   return (
     <div>
       <Modal 
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isVolunteerModalOpen}
+        onRequestClose={() => setIsVolunteerModalOpen(false)}
         contentLabel="Signed-Up Volunteers"
         className="shiftsModal"
         ariaHideApp={false}
@@ -47,7 +47,7 @@ export const ShiftsModal = props => {
         <span className="modalHeading">
           <h3>
             Signed-Up Volunteers
-            <button className="close-btn" onClick={()=>{setIsModalOpen(false)}}>
+            <button className="close-btn" onClick={()=>{setIsVolunteerModalOpen(false)}}>
               <FontAwesomeIcon icon={faCircleXmark} className="closeIcon"/>
             </button>
           </h3>

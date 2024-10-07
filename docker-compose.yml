@@ -27,6 +27,13 @@ services:
       dockerfile: ../docker_files/client_app/Dockerfile
     ports:
       - "3000:3000"
+    develop:
+      watch:
+        - path: client_app/package.json
+          action: rebuild
+        - path: client_app/
+          target: /usr/src/app
+          action: sync
     depends_on:
       - backend 
   

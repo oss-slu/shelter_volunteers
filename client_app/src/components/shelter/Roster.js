@@ -6,7 +6,7 @@ const Roster = (props) => {
     const filteredShifts = props.shiftDetails.filter(item => item.start_time >= currentTime);
     return (
       <div className="roster-list">
-        {filteredShifts.slice(0, 3).map((item, index) => (
+        {filteredShifts.length > 0 ? (filteredShifts.slice(0, 3).map((item, index) => (
           <div key={index} className="roster-item-container">
             <progress 
               value={item.count / 10} 
@@ -28,7 +28,10 @@ const Roster = (props) => {
               })}
             </div>
           </div>
-      ))}
+          ))
+          ) : (
+            <span>No shifts available.</span>
+        )}
       </div> 
     );
 };

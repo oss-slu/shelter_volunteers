@@ -8,8 +8,8 @@ export const MoreDetailsBox = (props) => {
   return (
     <div className="modal-overlay">
       <Modal 
-        isOpen={isMModalOpen} 
-        onRequestClose={() => setIsMModalOpen(false)} 
+        isOpen={setIsMoreDetailsModelOpen} 
+        onRequestClose={() => setIsMoreDetailsModelOpen(false)} 
         ariaHideApp={false}>
         <div className="modal-content">
           <h2>Shift Details</h2>
