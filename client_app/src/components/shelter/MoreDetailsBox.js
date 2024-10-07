@@ -5,12 +5,10 @@ import "../../styles/shelter/MoreDetailsBox.css";
 export const MoreDetailsBox = (props) => {
   const { isMModalOpen, setIsMModalOpen } = props;
 
-  // State to toggle the signed-up volunteer details
   const [isVolunteersOpen, setIsVolunteersOpen] = useState(false);
 
-  // Function to toggle volunteer information
   const onSignUpVolunteersClick = () => {
-    setIsVolunteersOpen(!isVolunteersOpen); // Toggle the state
+    setIsVolunteersOpen(!isVolunteersOpen); 
   };
 
   return (
@@ -35,20 +33,18 @@ export const MoreDetailsBox = (props) => {
               <p className="shift-detail-value">30</p>
             </div>
             <div className="shift-detail-row">
-              <p className="shift-detail-label">Signed Up Volunteers:</p>
-              <div className="signed-up-volunteers">
-                {/* Toggle button to show/hide volunteer details */}
+              <div className="signed-up-volunteers-label">
+                <p className="shift-detail-label">Signed Up Volunteers:</p>
                 <button className="arrow" onClick={onSignUpVolunteersClick}>
-                  {isVolunteersOpen ? "▼" : "►"} {/* Arrow direction changes */}
+                  {isVolunteersOpen ? "▲" : "▼"} 
                 </button>
-                <p className="shift-detail-value">2</p>
               </div>
+              <p className="shift-detail-value">2</p>
             </div>
             {isVolunteersOpen && (
               <div className="shift-volunteer-info">
                 <p>Volunteer 1: John Doe</p>
                 <p>Volunteer 2: Jane Smith</p>
-                {/* Add any other volunteer details here */}
               </div>
             )}
             <div className="shift-detail-row">
