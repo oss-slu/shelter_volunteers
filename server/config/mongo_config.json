@@ -1,7 +1,6 @@
 [
     {
-      "name": "MONGODB_HOSTNAME",
-      "value": "mongodb"
+      "value": "localhost"
     },
     {
       "name": "MONGODB_PORT",

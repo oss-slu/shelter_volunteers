@@ -1,75 +1,88 @@
-.modal-overlay {
-    background-color: rgba(0, 0, 0, 0.75);
+/* Box styling for each detail row */
+.shift-details-box {
+    border: 1px solid #e0e0e0; /* Thin gray border around the whole box */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #f9f9f9; /* Optional: light background inside the box */
+    padding: 5px
+}
+
+.shift-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px; /* Add padding to make rows look more spaced */
+    background-color: white;
+    border: 1px solid #e0e0e0; /* Add a thin border around each row */
+    border-radius: 4px; /* Round the corners slightly */
+    margin-bottom: 5px; /* Add space between rows */
+}
+
+.shift-detail-label {
+    font-weight: bold;
+    flex: 1;
+    padding-right: 10px;
+    white-space: nowrap; /* Prevent label text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if label text is too long */
+}
+
+.shift-detail-value {
+    flex: 0;
+    padding: 8px;
+    border-left: 1px solid #e0e0e0; /* Add a vertical border */
+    min-width: 60px; /* Ensure the value box has enough space */
+    text-align: right; /* Align the time to the right */
+    background-color: transparent; /* Remove background color */
+    white-space: nowrap; /* Prevent the value from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if value is too long */
+}
+
+
+/* Styling for the arrow next to Signed Up Volunteers */
+.signed-up-volunteers {
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    max-width: 100%;
-  }
-  /*ask about colors*/
-  .shift-details-card {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+}
 
-  .shift-info p {
-    margin: 10px 0;
-  }
-  
-  .volunteer-section {
-    margin-bottom: 20px;
-  }
-  
-  .signed-up-volunteers {
-    display: flex;
-    justify-content: space-between;
+.arrow {
+    margin-left: 5px;
+    font-size: 12px;
     cursor: pointer;
-  }
-  
-  .arrow {
-    margin-left: 10px;
-    font-size: 18px;
-  }
-  
-  .expanded-volunteers {
-    padding-left: 10px;
-  }
-  
-  .actions {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .action-btn {
+}
+
+/* Styling for the expanded signed-up volunteer information */
+.shift-volunteer-info {
+    margin-left: 20px;
+    margin-top: 10px;
+    background-color: #f1f1f1;
     padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    border-radius: 5px;
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center align buttons horizontally */
+    gap: 15px; /* Adds space between the buttons */
+}
+
+.action-btn {
+    padding: 10px;
+    background-color: transparent;
+    border: 2px solid #D8B77A;
+    color: #D8B77A;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .action-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .open-modal-btn {
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .open-modal-btn:hover {
-    background-color: #218838;
-  }
+    width: 100%;  /* Ensure buttons are full width */
+    text-align: center;
+}
+
+.action-btn:hover {
+    background-color: #FAF3E0;  /* Light background on hover */
+    color: #D8B77A;  /* Maintain yellow text on hover */
+}
+
+.action-btn:focus {
+    outline: none;  /* Remove default outline on focus */
+}
