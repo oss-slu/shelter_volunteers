@@ -33,9 +33,9 @@ export const ShiftDetails = () => {
     const endHour = startHour.add(1, 'hour');
     return (
       <div>
-        {isMoreDetailsModelOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMoreDetailsModelOpen={isMoreDetailsModelOpen} setIsMoreDetailsModelOpen={setIsMoreDetailsModelOpen} isModalOpen={isModalOpen}/>
+        {isMoreDetailsModelOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMoreDetailsModelOpen={isMoreDetailsModelOpen} setIsMoreDetailsModelOpen={setIsMoreDetailsModelOpen} isVolunteerModalOpen={isVolunteerModalOpen}/>
         {isVolunteerModalOpen} < ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />
-          <div className="shift-details">
+        <div className="shift-details">
           <div className="datetime-picker">
             <h4 className="date-label">Date</h4>
             <LocalizationProvider dateAdapter={AdapterDayjs}>

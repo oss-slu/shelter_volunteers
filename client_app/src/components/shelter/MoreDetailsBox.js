@@ -3,12 +3,12 @@ import Modal from 'react-modal';
 import "../../styles/shelter/MoreDetailsBox.css";
 
 export const MoreDetailsBox = (props) => {
-  const { isMModalOpen, setIsMModalOpen, onSignUpVolunteersClick, isModalOpen } = props;
+  const { isMoreDetailsModelOpen, setIsMoreDetailsModelOpen, onSignUpVolunteersClick, isModalOpen } = props;
 
   return (
     <div className="modal-overlay">
       <Modal 
-        isOpen={setIsMoreDetailsModelOpen} 
+        isOpen={isMoreDetailsModelOpen} 
         onRequestClose={() => setIsMoreDetailsModelOpen(false)} 
         ariaHideApp={false}>
         <div className="modal-content">
