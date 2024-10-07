@@ -37,7 +37,7 @@ export const MoreDetailsBox = (props) => {
             </div>
             <div className="shift-detail-row">
               <p className="shift-detail-label">Required Volunteers:</p>
-              <p className="shift-detail-value">10</p>
+              <p className="shift-detail-value">11</p>
             </div>
           </div>
           <div className="modal-footer">
