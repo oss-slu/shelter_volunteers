@@ -1,24 +1,51 @@
 import React from "react";
 import Modal from 'react-modal';
+import "../../styles/shelter/MoreDetailsBox.css";
 
-export const MoreDetailsBox = props => {
-  const {isMoreDetailsModelOpen, setIsMoreDetailsModelOpen, onSignUpVolunteersClick} = props;
+export const MoreDetailsBox = (props) => {
+  const { isMoreDetailsModelOpen, setIsMoreDetailsModelOpen, onSignUpVolunteersClick, isModalOpen } = props;
 
   return (
     <div className="modal-overlay">
-      <Modal isOpen = {isMoreDetailsModelOpen} 
-        onRequestClose = {() => setIsMoreDetailsModelOpen(false)}
-        ariaHideApp = {false} >
-        <h2>Shift Details</h2>
-        <p>Start Time: 7:30 am </p>
-        <p>End Time: 9:30 am </p>
-        <p>Requested Volunteers: 4 </p>
-        <p><button onClick={onSignUpVolunteersClick}>^</button>Signed Up Volunteers: 1 </p>
-        <p>Required Volunteers: 2 </p>
-        <button >Request More Volunteers</button>
-        <button> Sign-up of Volunteers</button>
-        <button>Close Request</button>
-        <button onClick = {() => setIsMoreDetailsModelOpen(false)}>Close Modal</button>
+      <Modal 
+        isOpen={isMoreDetailsModelOpen} 
+        onRequestClose={() => setIsMoreDetailsModelOpen(false)} 
+        ariaHideApp={false}>
+        <div className="modal-content">
+          <h2>Shift Details</h2>
+          <div className="shift-details-box">
+            <div className="shift-detail-row">
+              <p className="shift-detail-label">Shift Start Time:</p>
+              <p className="shift-detail-value">12:00 AM</p>
+            </div>
+            <div className="shift-detail-row">
+              <p className="shift-detail-label">Shift End Time:</p>
+              <p className="shift-detail-value">4:00 PM</p>
+            </div>
+            <div className="shift-detail-row">
+              <p className="shift-detail-label">Requested Volunteers:</p>
+              <p className="shift-detail-value">30</p>
+            </div>
+            <div className="shift-detail-row">
+              <div className="signed-up-volunteers-label">
+                <p className="shift-detail-label">Signed Up Volunteers:</p>
+                <button className="arrow" onClick={onSignUpVolunteersClick}>
+                  {isModalOpen ? "▲" : "▼"} 
+                </button>
+              </div>
+              <p className="shift-detail-value">2</p>
+            </div>
+            <div className="shift-detail-row">
+              <p className="shift-detail-label">Required Volunteers:</p>
+              <p className="shift-detail-value">11</p>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button className="action-btn">Request More Volunteers</button>
+            <button className="action-btn">Close Sign-up of Volunteers</button>
+            <button className="action-btn">Close Request</button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
