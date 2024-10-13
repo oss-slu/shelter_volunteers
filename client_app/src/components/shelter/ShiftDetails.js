@@ -8,24 +8,31 @@ import dayjs from 'dayjs';
 import dayjsUTC from 'dayjs/plugin/utc';
 import dayjsTimezone from 'dayjs/plugin/timezone';
 import { ShiftDetailsTable } from "./ShiftDetailsTable.js";
-import { MoreDetailsBox } from "./MoreDetailsBox.js";
 import { ShiftsModal } from "./ShiftsModal.js";
 import { useState } from 'react';
+import { EmergencyAlertModal } from "./EmergencyAlertModal";
+import { EditStatusConfirmationModal } from "./EditStatusConfirmationModal";
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
 
 export const ShiftDetails = () => {
-    const [isMoreDetailsModelOpen, setIsMoreDetailsModelOpen] = useState(false);
+    const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
     const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
-
-    const onClickMoreDetails = () => {
-      setIsMoreDetailsModelOpen(true);
-    }
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [shift, setShift] = useState();
 
     const onSignUpVolunteersClick = () => {
-      setIsMoreDetailsModelOpen(false);
       setIsVolunteerModalOpen(true);
+    }
+
+    const onSendEmergencyAlertClick = () => {
+      setIsEmergencyModalOpen(true);
+    }
+
+    const onStatusModalClick = shift => {
+      setShift(shift);
+      setIsStatusModalOpen(true);
     }
 
     const currentTime = dayjs();
@@ -33,8 +40,9 @@ export const ShiftDetails = () => {
     const endHour = startHour.add(1, 'hour');
     return (
       <div>
-        {isMoreDetailsModelOpen} < MoreDetailsBox onSignUpVolunteersClick={onSignUpVolunteersClick} isMoreDetailsModelOpen={isMoreDetailsModelOpen} setIsMoreDetailsModelOpen={setIsMoreDetailsModelOpen} isVolunteerModalOpen={isVolunteerModalOpen}/>
-        {isVolunteerModalOpen} < ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />
+        {isVolunteerModalOpen && <ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />}
+        {isEmergencyModalOpen && <EmergencyAlertModal isEmergencyModalOpen={isEmergencyModalOpen} setIsEmergencyModalOpen={setIsEmergencyModalOpen} />}
+        {isStatusModalOpen && <EditStatusConfirmationModal isStatusModalOpen={isStatusModalOpen} setIsStatusModalOpen={setIsStatusModalOpen} shift={shift}/>}
         <div className="shift-details">
           <div className="datetime-picker">
             <h4 className="date-label">Date</h4>
@@ -48,7 +56,7 @@ export const ShiftDetails = () => {
           </div> 
         </div>
         <div className="shiftdetails-table">
-          <ShiftDetailsTable onClickMoreDetails={onClickMoreDetails} />
+          <ShiftDetailsTable onSignUpVolunteersClick={onSignUpVolunteersClick} onSendEmergencyAlertClick={onSendEmergencyAlertClick} onStatusModalClick={onStatusModalClick}/>
         </div>
       </div>
     );

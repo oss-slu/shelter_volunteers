@@ -1,9 +1,9 @@
 import React from 'react'; 
-import Modal from 'react-modal';
 import { shiftListed } from './shiftsListed.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
+import { ModalComponent } from './ModalComponent';
 
 export const ShiftsModal = props => {
   const {isVolunteerModalOpen, setIsVolunteerModalOpen} = props;
@@ -35,21 +35,12 @@ export const ShiftsModal = props => {
     })))
   }
 
-  return (
-    <div>
-      <Modal 
-        isOpen={isVolunteerModalOpen}
-        onRequestClose={() => setIsVolunteerModalOpen(false)}
-        contentLabel="Signed-Up Volunteers"
-        className="shiftsModal"
-        ariaHideApp={false}
-      > 
+  const renderData = () => {
+    return (
+      <div>
         <span className="modalHeading">
           <h3>
             Signed-Up Volunteers
-            <button className="close-btn" onClick={()=>{setIsVolunteerModalOpen(false)}}>
-              <FontAwesomeIcon icon={faCircleXmark} className="closeIcon"/>
-            </button>
           </h3>
         </span>
         <table className="shiftsTable">
@@ -66,8 +57,15 @@ export const ShiftsModal = props => {
             {renderShifts()}
           </tbody>
         </table>
+      </div>
+    ) 
+  }
 
-      </Modal>
-    </div>
+  return (
+    <ModalComponent
+      isOpen={isVolunteerModalOpen}
+      onRequestClose={() => setIsVolunteerModalOpen(false)}
+      renderData={renderData}
+    /> 
   )
 }
