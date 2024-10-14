@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
+import dayjs from 'dayjs';
 
 const Shelters = (props) => {
   let defaultRadius = "5";
@@ -128,8 +129,27 @@ const Shelters = (props) => {
   function manageShifts(shift) {
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
-    setSelectedShifts([...selectedShifts, shift]);
-    setButtonDisabled(selectedShifts.length === 0);
+    //setSelectedShifts([...selectedShifts, shift]);
+    //setButtonDisabled(selectedShifts.length === 0);
+    const shiftStart = dayjs(shift.start);
+    const shiftEnd = dayjs(shift.end);
+
+  // Ensure selectedShifts are properly formatted as dayjs objects
+    const overlap = selectedShifts.some(selectedShift => {
+      const selectedShiftStart = dayjs(selectedShift.start);
+      const selectedShiftEnd = dayjs(selectedShift.end);
+
+      // Check for overlap
+      return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
+    });
+
+    if (overlap) {
+      alert("The selected shift overlaps with another shift.");
+      setButtonDisabled(true); // Disable submit button
+    } else {
+      setSelectedShifts([...selectedShifts, shift]);
+      setButtonDisabled(false); // Enable submit button
+    }
   }
 
   function onShiftClose(event) {

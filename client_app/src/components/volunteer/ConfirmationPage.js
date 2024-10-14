@@ -3,10 +3,26 @@ import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
+import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const handleReload = () => {
   window.location.reload();
+};
+
+
+const checkForOverlap = (shift, otherShifts) => {
+  return otherShifts.some(otherShift => {
+    const shiftStartTime = new Date(shift.start_time);
+    const shiftEndTime = new Date(shift.end_time);
+    const otherShiftStartTime = new Date(otherShift.start_time);
+    const otherShiftEndTime = new Date(otherShift.end_time);
+    
+    // Check if there's an overlap between the current shift and any other shift
+    return (
+      shiftStartTime < otherShiftEndTime && shiftEndTime > otherShiftStartTime
+    );
+  });
 };
 
 const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
@@ -29,10 +45,14 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
               <th>
                 <h2>Status</h2>
               </th>
+              <th>
+                <h2>Overlap</h2> 
+              </th>
             </tr>
           </thead>
           <tbody>
             {selectedShifts.map((shift, index) => (
+            
               <tr key={shift.code}>
                 <td>
                   <p>{shift.shelter}</p>
@@ -68,6 +88,18 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                       </>
                     )}
                   </p>
+                </td>
+                <td>
+                  {/* Check and display if the shift has an overlap */}
+                  {checkForOverlap(shift, selectedShifts.filter((_, i) => i !== index)) ? (
+                    <IconButton>
+                      <CancelIcon className="overlap-icon" style={{ color: "red" }} />
+                    </IconButton>
+                  ) : (
+                    <IconButton>
+                      <CheckCircleIcon className="no-overlap-icon" style={{ color: "green" }} />
+                    </IconButton>
+                  )}
                 </td>
               </tr>
             ))}
