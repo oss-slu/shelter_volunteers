@@ -134,7 +134,6 @@ const Shelters = (props) => {
     const shiftStart = dayjs(shift.start);
     const shiftEnd = dayjs(shift.end);
 
-  // Ensure selectedShifts are properly formatted as dayjs objects
     const overlap = selectedShifts.some(selectedShift => {
       const selectedShiftStart = dayjs(selectedShift.start);
       const selectedShiftEnd = dayjs(selectedShift.end);
@@ -174,7 +173,7 @@ const Shelters = (props) => {
     shiftsPayload = shiftsPayload.map((shift) => {
       delete shift.code;
       return shift;
-    }); // Delete code property
+    }); 
     const shiftsEndpoint = SERVER + "/shifts";
     const header = getAuthHeader();
     fetch(shiftsEndpoint, {
