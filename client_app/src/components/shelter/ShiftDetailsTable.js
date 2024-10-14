@@ -1,8 +1,10 @@
 import React from "react";
 import "../../styles/shelter/ShiftDetailsTable.css";
 import shiftDetails from './ShiftDetailsData.tsx';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faCheck, faX, faPenToSquare} from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faCheck, faX, faPenToSquare, faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 
 export const ShiftDetailsTable = props => {
@@ -51,6 +53,39 @@ export const ShiftDetailsTable = props => {
     )
   }
 
+  const renderCoverage = shift => {
+    const text = shift.currentSignedUpVolunteers + "/" + shift.desiredVolunteers;
+    if (shift.currentSignedUpVolunteers < shift.requiredVolunteers) {
+      const volunteerDifference = shift.requiredVolunteers - shift.currentSignedUpVolunteers
+      let volunteerPlural = ""
+      if (volunteerDifference > 1) {
+        volunteerPlural = "volunteers"
+      } else {
+        volunteerPlural = "volunteer"
+      }
+      const warning = volunteerDifference + " more " + volunteerPlural + " needed."
+      return (
+        <span className="nowrap">
+          <p>{text}</p>
+          <Tooltip
+            title={warning}
+            arrow
+            followCursor
+            enterTouchDelay={0}
+            leaveTouchDelay={5000}>
+            <IconButton>
+              <FontAwesomeIcon icon={faTriangleExclamation} />
+            </IconButton>
+          </Tooltip>
+        </span>
+      )
+    } else {
+      return (
+        <p>{text}</p>
+      )
+    }
+  }
+
   return (
     <div className="shiftdetails-container">
       <table className="shiftsTable">
@@ -70,7 +105,7 @@ export const ShiftDetailsTable = props => {
             <tr key={shift.id}>
               <td>{shift.date}</td>
               <td>{shift.startTime + ' - ' + shift.endTime}</td>
-              <td>{shift.coverage}</td>
+              <td>{renderCoverage(shift)}</td>
               <td>{viewRosterButton()}</td>
               <td>{shift.status ? openStatusButton(shift) : closedStatusButton(shift)}</td>
               <td>{editButton(shift)}</td>
