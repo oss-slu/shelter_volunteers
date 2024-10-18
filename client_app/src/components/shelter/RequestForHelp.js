@@ -1,37 +1,43 @@
-import { Calendar, dayjsLocalizer } from "react-big-calendar";
+import React, { Fragment, useState, useCallback } from "react";
+import { Calendar, Views } from "react-big-calendar";
+import { dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
-import React, { Component } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
 
 const localizer = dayjsLocalizer(dayjs);
 
-class RequestForHelp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      events: [
-        {
-          start: dayjs().toDate(),
-          end: dayjs().add(1, "day").toDate(),
-          title: "Some title",
-        },
-      ],
-    };
-  }
+export default function RequestForHelp() {
+  const [myEvents, setEvents] = useState([]);
 
-  render() {
-    return (
-      <div>
+  const handleSelectSlot = useCallback(
+    ({ start, end }) => {
+      const title = window.prompt('New Event name')
+      if (title) {
+        setEvents((prev) => [...prev, { start, end, title }])
+      }
+    },
+    [setEvents]
+  )
+
+  const handleSelectEvent = useCallback(
+    (event) => window.alert(event.title),
+    []
+  )
+
+  return (
+    <Fragment>
+      <div className="height600">
         <Calendar
+          defaultView={Views.WEEK}
+          events={myEvents}
           localizer={localizer}
-          defaultDate={new Date()}
-          defaultView="month"
-          events={this.state.events}
-          style={{ height: "100vh" }}
+          onSelectEvent={handleSelectEvent}
+          onSelectSlot={handleSelectSlot}
+          selectable
         />
       </div>
-    );
-  }
+    </Fragment>
+  )
 }
 
-export default RequestForHelp;
