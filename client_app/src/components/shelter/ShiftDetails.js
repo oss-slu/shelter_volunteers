@@ -16,6 +16,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { availableShifts } from "./ShiftDetailsData.tsx";
+
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
 
@@ -24,6 +26,7 @@ export const ShiftDetails = () => {
     const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [shift, setShift] = useState();
+    const shiftsList = availableShifts;
     const [selectedShifts, setSelectedShift] = useState("");
 
     const handleChange = (event) => {
@@ -41,6 +44,15 @@ export const ShiftDetails = () => {
     const onStatusModalClick = shift => {
       setShift(shift);
       setIsStatusModalOpen(true);
+    }
+
+    const renderDropDown = () => {
+      return (shiftsList.shifts.map((shiftSlot => {
+        const nameAndTime = shiftSlot.name ? shiftSlot.name + ": " + shiftSlot.startTime + " - " + shiftSlot.endTime : shiftSlot.startTime + " - " + shiftSlot.endTime;
+        return (
+          <MenuItem key={shiftSlot.id} value={nameAndTime}>{nameAndTime}</MenuItem>
+        )
+    })))
     }
 
     return (
@@ -67,9 +79,7 @@ export const ShiftDetails = () => {
                   label="Shift(s)"
                   onChange={handleChange}
                 >
-                  <MenuItem value={"10:00 - 12:00"}>10:00 - 12:00</MenuItem>
-                  <MenuItem value={"12:00 - 5:00"}>12:00 - 5:00</MenuItem>
-                  <MenuItem value={"All"}>All</MenuItem>
+                  {renderDropDown()}
                 </Select>
               </FormControl>
             </Box>

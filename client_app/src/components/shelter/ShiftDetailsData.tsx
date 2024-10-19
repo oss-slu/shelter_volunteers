@@ -1,9 +1,9 @@
-const shiftDetailsData = {
+export const shiftDetailsData = {
     data: [
       {
         id: 1,
         date: "10/10/2024",
-        shiftName: "Morning",
+        name: "Morning",
         startTime: "10:00 AM",
         endTime: "2:00 PM",
         requiredVolunteers: 3,
@@ -91,5 +91,25 @@ const shiftDetailsData = {
       },
     ],
   };
-  
-export default shiftDetailsData;
+
+export const availableShifts = {
+  shifts: [
+    {
+      id: 1,
+      name: "Morning",
+      startTime: "10:00 AM",
+      endTime: "12:00 PM"
+    },
+    {
+      id: 2,
+      startTime: "12:00 PM",
+      endTime: "6:00 PM"
+    },
+    {
+      id: 3,
+      name: "Evening",
+      startTime: "6:00 PM",
+      endTime: "12:00 AM"
+    }
+  ]
+}

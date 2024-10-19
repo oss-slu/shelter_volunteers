@@ -1,6 +1,6 @@
 import React from "react";
 import "../../styles/shelter/ShiftDetailsTable.css";
-import shiftDetails from './ShiftDetailsData.tsx';
+import { shiftDetailsData } from './ShiftDetailsData.tsx';
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ export const ShiftDetailsTable = props => {
   const emailButton = () => {
     return (
       <button className="emailButton" onClick={onSendEmergencyAlertClick}>
-        <FontAwesomeIcon icon={faEnvelope} size="1x" className="emailIcon" />
+        <FontAwesomeIcon icon={faEnvelope} size="2x" className="emailIcon" />
       </button>
     )
   }
@@ -31,7 +31,7 @@ export const ShiftDetailsTable = props => {
   const closedStatusButton = shift => {
     return (
       <button className="closedStatusButton" onClick={() => onStatusModalClick(shift)}>
-        <FontAwesomeIcon icon={faX} size="1x" className="xIcon" />
+        <FontAwesomeIcon icon={faX} size="1x" className="closedIcon" />
         Closed
       </button>
     )
@@ -40,7 +40,7 @@ export const ShiftDetailsTable = props => {
   const editButton = () => {
     return (
       <button className="editButton" onClick={() => navigate("/request-for-help")}>
-        <FontAwesomeIcon icon={faPenToSquare} size="1x" className="xIcon" />
+        <FontAwesomeIcon icon={faPenToSquare} size="2x" className="editIcon" />
       </button>
     )
   }
@@ -66,7 +66,7 @@ export const ShiftDetailsTable = props => {
       const warning = volunteerDifference + " more " + volunteerPlural + " needed."
       return (
         <span className="nowrap">
-          <p>{text}</p>
+          <p className="inline-text">{text}</p>
           <Tooltip
             title={warning}
             arrow
@@ -74,7 +74,7 @@ export const ShiftDetailsTable = props => {
             enterTouchDelay={0}
             leaveTouchDelay={5000}>
             <IconButton>
-              <FontAwesomeIcon icon={faTriangleExclamation} />
+              <FontAwesomeIcon icon={faTriangleExclamation} className="warningIcon" />
             </IconButton>
           </Tooltip>
         </span>
@@ -91,20 +91,20 @@ export const ShiftDetailsTable = props => {
       <table className="shiftsTable">
         <thead className="shiftsTableHeader">
           <tr>
-            <td>Date</td>
-            <td>Shift</td>
-            <td>Coverage</td>
-            <td>View Volunteers</td>
-            <td>Open/Close Sign Up</td>
-            <td>Edit Shift</td>
-            <td>Send Emergency Alert</td>
+            <th>Date</th>
+            <th>Shift</th>
+            <th>Coverage</th>
+            <th>View Volunteers</th>
+            <th>Open/Close Sign Up</th>
+            <th>Edit Shift</th>
+            <th>Send Emergency Alert</th>
           </tr>
         </thead>
         <tbody className="shiftsTableBody">
-          {shiftDetails.data.map((shift) => (
+          {shiftDetailsData.data.map((shift) => (
             <tr key={shift.id}>
               <td>{shift.date}</td>
-              <td>{shift.startTime + ' - ' + shift.endTime}</td>
+              <td>{shift.name ? shift.name + ": " + shift.startTime + ' - ' + shift.endTime : shift.startTime + ' - ' + shift.endTime}</td>
               <td>{renderCoverage(shift)}</td>
               <td>{viewRosterButton()}</td>
               <td>{shift.status ? openStatusButton(shift) : closedStatusButton(shift)}</td>

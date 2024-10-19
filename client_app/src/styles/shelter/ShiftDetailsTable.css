@@ -10,17 +10,64 @@
     overflow-y: auto;
 }
 
+.editButton { 
+  background-color: transparent;
+}
 
+.editIcon {
+  color: #1f5156;
+}
 
+.openStatusButton {
+  background-color: rgb(40, 161, 40);
+  border-radius: 5px;
+}
 
+.checkIcon, .closedIcon {
+  margin-right: 5px !important;
+}
 
+.closedStatusButton {
+  background-color: red;
+  border-radius: 5px;
+}
 
+.rosterButton {
+  border-radius: 5px;
+}
 
+.nowrap {
+  display: inline-flex; 
+  align-items: center; 
+}
 
+.inline-text {
+  display: inline-block;
+  margin: 0; 
+  padding-right: 8px; 
+}
 
+.warningIcon {
+  color: red;
+  font-size: .625em;
+  padding-bottom: 1em;
+}
 
+.shiftdetails-container {
+  max-height: 70vh;
+}
 
-
-
-
-
+table {
+  width: 100%;
+}
+thead, tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+tbody {
+  display: block;
+  overflow-y: auto;
+  table-layout: fixed;
+  max-height: 60vh;
+}
