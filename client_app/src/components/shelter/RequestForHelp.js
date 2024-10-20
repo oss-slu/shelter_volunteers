@@ -12,16 +12,19 @@ export default function RequestForHelp() {
   const [showModal, setShowModal] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: null, end: null, volunteersRequired: ""});
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [volunteerError, setVolunteerError] = useState("");
 
   const handleSelectSlot = useCallback(({ start, end }) => {
     setNewEvent({ ...newEvent, title: "", start, end, volunteersRequired: "" })
     setSelectedEvent(null)
+    setVolunteerError("")
     setShowModal(true)
   }, [])
 
 
   const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event)
+    setVolunteerError("")
     setNewEvent(event)
     setShowModal(true)
   }, [])
@@ -37,21 +40,25 @@ export default function RequestForHelp() {
           : newEvent.title + volunteersText,
       };
 
-    if (selectedEvent) {
-      setEvents((prev) =>
-        prev.map((ev) =>
-          ev.start === selectedEvent.start && ev.end === selectedEvent.end
-            ? {
-                ...formattedEvent,
-                title: formattedEvent.title,
-              }
-            : ev
-        )
-      );
-    } else {
+      if (selectedEvent) {
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.start === selectedEvent.start && ev.end === selectedEvent.end
+              ? {
+                  ...formattedEvent,
+                  title: formattedEvent.title,
+                }
+              : ev
+          )
+        );
+     } else {
         setEvents((prev) => [...prev, formattedEvent])
-    }
+      }
+      setVolunteerError("");
       setShowModal(false)
+    } else {
+      setVolunteerError("'Number of Volunteers Required' field is required.");
+      return;
     }
   }
 
@@ -151,6 +158,7 @@ export default function RequestForHelp() {
                   style={{ width: "80px" }}
                 />
               </div>
+              {volunteerError && <p style={{ color: 'red' }}>{volunteerError}</p>}
             </Form.Group>
           </Form>
         </Modal.Body>
