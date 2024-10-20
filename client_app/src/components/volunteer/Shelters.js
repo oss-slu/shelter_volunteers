@@ -4,7 +4,6 @@ import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
 import { GETHELP_API, SERVER } from "../../config";
 import { Link } from "react-router-dom";
-import ShiftList from "./ShiftList";
 import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
