@@ -1,11 +1,44 @@
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
+import IconButton from "@mui/material/IconButton";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+
 
 const ShiftList = (props) => {
+
+  const [hasOverlap, setHasOverlap] = useState(false);
+
+  useEffect(() => {
+    // Check for overlaps every time the shifts change
+    const overlapExists = props.shifts.some((shift, index) =>
+      checkForOverlap(shift, props.shifts.filter((_, i) => i !== index))
+    );
+    setHasOverlap(overlapExists);
+  }, [props.shifts]);
+
   function onCheckboxClick(event) {
     if (props.onCheck) {
       props.onCheck(event);
     }
   }
+
+  function checkForOverlap(shift, otherShifts) {
+    const shiftStartTime = new Date(shift.start_time);
+    const shiftEndTime = new Date(shift.end_time);
+
+    return otherShifts.some((otherShift) => {
+      const otherShiftStartTime = new Date(otherShift.start_time);
+      const otherShiftEndTime = new Date(otherShift.end_time);
+
+      // Check if there is an overlap
+      return (
+        shiftStartTime < otherShiftEndTime && shiftEndTime > otherShiftStartTime
+      );
+    });
+  }
+
   function onCloseBtnClick(event) {
     if (props.onClose) {
       props.onClose(event);
@@ -29,6 +62,11 @@ const ShiftList = (props) => {
           // format the start and end time to human-readable strings
           const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
           const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
+
+          const isOverlapping = checkForOverlap(
+            shift,
+            props.shifts.filter((s) => s !== shift)
+          );
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
@@ -45,6 +83,14 @@ const ShiftList = (props) => {
                           <p>
                             {formattedStartTime} to {formattedEndTime}
                           </p>
+                        </td>
+                        <td>
+                          {/* Mark shift as overlapping if it overlaps with another shift */}
+                          {isOverlapping ? (
+                            <p style={{ color: "red" }}>Overlapping</p>
+                          ) : (
+                            <p style={{ color: "green" }}>No Overlap</p>
+                          )}
                         </td>
                         <td>
                           <button

@@ -11,6 +11,7 @@ import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
+import CurrentSelection from "./CurrentSelection";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
@@ -208,6 +209,8 @@ const Shelters = (props) => {
     setCurrentPage(pageNumber);
   };
 
+  
+
   return (
     <>
       {!showConfirmation && (
@@ -285,11 +288,11 @@ const Shelters = (props) => {
                     )}
                     {selectedShifts && (
                       <div>
-                        <ShiftList
-                          shifts={selectedShifts}
-                          currentSelectionSection={true}
-                          onClose={onShiftClose}
-                        />
+                        <CurrentSelection
+                          selectedShifts={selectedShifts}
+                          removeShift={onShiftClose}
+                          submitShifts={submitShifts}
+                          />
                       </div>
                     )}
                     <div id="submit-shifts" data-testid="submit-shifts-button">
