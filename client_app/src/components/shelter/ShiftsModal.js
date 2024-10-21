@@ -1,16 +1,19 @@
 import React from 'react'; 
-import Modal from 'react-modal';
 import { shiftListed } from './shiftsListed.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
+import { ModalComponent } from './ModalComponent';
+import { ENVIROMENT } from '../../config.js';
 
 export const ShiftsModal = props => {
   const {isVolunteerModalOpen, setIsVolunteerModalOpen} = props;
-  const volunteerShifts = [shiftListed];
+  const volunteerShifts = shiftListed;
 
   const sendEmail = email => {
-    console.log(email);
+    if (ENVIROMENT === "development") {
+      console.log(email); //Todo
+    }
   }
 
   const emailButton = shift => {
@@ -22,52 +25,54 @@ export const ShiftsModal = props => {
   }
 
   const renderShifts = () => {
-    return (volunteerShifts.map((shift => {
+    return (volunteerShifts.volunteers.map((shift => {
       return (
         <tr key={shift.id}>
           <td>{shift.name}</td>
-          <td>{shift.date}</td>
-          <td>{shift.startTime}</td>
-          <td>{shift.endTime}</td>
+          <td>{shift.phoneNumber.slice(0,3) + "-" + shift.phoneNumber.slice(3,6) + "-" + shift.phoneNumber.slice(6)}</td>
+          <td>{shift.email}</td>
           <td>{emailButton(shift)}</td>
         </tr>
       )
     })))
   }
 
-  return (
-    <div>
-      <Modal 
-        isOpen={isVolunteerModalOpen}
-        onRequestClose={() => setIsVolunteerModalOpen(false)}
-        contentLabel="Signed-Up Volunteers"
-        className="shiftsModal"
-        ariaHideApp={false}
-      > 
+  const renderData = () => {
+    return (
+      <div>
         <span className="modalHeading">
           <h3>
             Signed-Up Volunteers
-            <button className="close-btn" onClick={()=>{setIsVolunteerModalOpen(false)}}>
-              <FontAwesomeIcon icon={faCircleXmark} className="closeIcon"/>
-            </button>
           </h3>
         </span>
+        <p>{"Date: " + volunteerShifts.shift.date}</p>
+        <p>{"Shift: " + volunteerShifts.shift.name ?
+          volunteerShifts.shift.name + ": " + volunteerShifts.shift.startTime + " - " + volunteerShifts.shift.endTime 
+          : volunteerShifts.shift.startTime + " - " + volunteerShifts.shift.endTime}</p>
+        <p>{"Current Volunteer Count: " + volunteerShifts.shift.currentVolunteers}</p>
+        <p>{"Required Volunteer Count: " + volunteerShifts.shift.requiredVolunteers}</p>
         <table className="shiftsTable">
           <thead className="shiftsTableHeader">
             <tr>
-              <td>Volunteers Signed Up</td>
-              <td>Date</td>
-              <td>Shift Start Time</td>
-              <td>Shift End Time</td>
-              <td>Send E-mail</td>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th>Email</th>
+              <th>Send E-mail</th>
             </tr>
           </thead>
           <tbody className="shiftsTableBody">
             {renderShifts()}
           </tbody>
         </table>
+      </div>
+    ) 
+  }
 
-      </Modal>
-    </div>
+  return (
+    <ModalComponent
+      isOpen={isVolunteerModalOpen}
+      onRequestClose={() => setIsVolunteerModalOpen(false)}
+      renderData={renderData}
+    /> 
   )
 }

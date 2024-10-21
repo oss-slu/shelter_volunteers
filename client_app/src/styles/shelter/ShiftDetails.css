@@ -71,22 +71,3 @@
         gap: 5px;
     }
 }
-@media (max-width: 1800px) {
-    .shiftdetails-table {
-        max-width: 50%;
-    }
-}
-
-@media (max-width: 480px) {
-    .shiftdetails-table {
-        max-width: 90%;
-        padding-left: 30px;
-    }
-}
-
-@media (max-width: 1280px) {
-    .shiftdetails-table {
-        max-width: 90%;
-        padding-left: 30px;
-    }
-}
