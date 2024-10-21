@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ShiftList from "./ShiftList";
 
-const CurrentSelection = ({ selectedShifts, removeShift, submitShifts }) => {
+const CurrentSelection = props => {
+  const { selectedShifts, removeShift, submitShifts, isButtonDisabled } = props;
   const [overlaps, setOverlaps] = useState(false);
 
   //new checking overlap function
@@ -38,10 +39,11 @@ const CurrentSelection = ({ selectedShifts, removeShift, submitShifts }) => {
       <ShiftList
         shifts={selectedShifts}
         currentSelectionSection={true}
-        onClose={removeShift} // passing the removing function here thru shift list
+        onClose={removeShift}
+        setOverlaps={setOverlaps} // passing the removing function here thru shift list
       />
       <div id="submit-shifts" data-testid="submit-shifts-button">
-        <button onClick={submitShifts} disabled={overlaps}>
+        <button onClick={submitShifts} disabled={overlaps || isButtonDisabled}>
           Submit Shifts
         </button>
       </div>

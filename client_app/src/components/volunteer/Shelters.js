@@ -291,14 +291,10 @@ const Shelters = (props) => {
                           selectedShifts={selectedShifts}
                           removeShift={onShiftClose}
                           submitShifts={submitShifts}
+                          isButtonDisabled={isButtonDisabled}
                           />
                       </div>
                     )}
-                    <div id="submit-shifts" data-testid="submit-shifts-button">
-                      <button onClick={submitShifts} disabled={isButtonDisabled}>
-                        Submit Shifts
-                      </button>
-                    </div>
                   </div>
                 </div>
                 {!onMobileContinueclicked && (

@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { format } from "date-fns";
-import IconButton from "@mui/material/IconButton";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
-
 
 const ShiftList = (props) => {
 
-  const [hasOverlap, setHasOverlap] = useState(false);
+  const { setOverlaps } = props;
 
   useEffect(() => {
     // Check for overlaps every time the shifts change
     const overlapExists = props.shifts.some((shift, index) =>
       checkForOverlap(shift, props.shifts.filter((_, i) => i !== index))
     );
-    setHasOverlap(overlapExists);
+    setOverlaps(overlapExists);
   }, [props.shifts]);
 
   function onCheckboxClick(event) {

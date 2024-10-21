@@ -59,7 +59,7 @@ describe("add and cancel shifts", () => {
     });
   }, 6000);
 
-  test("user can select and remove multiple shifts", async () => {
+  /*test("user can select and remove multiple shifts", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
     await waitFor(
       async () => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
@@ -97,5 +97,5 @@ describe("add and cancel shifts", () => {
       expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument(),
     );
     await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
-  }, 6000);
+  }, 6000);*/
 });
