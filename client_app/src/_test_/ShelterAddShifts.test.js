@@ -83,7 +83,7 @@ describe("add and cancel shifts", () => {
     const button2 = buttons[1];
     userEvent.click(button2);
     await waitFor(() => expect(screen.getByText("30027")).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
     //cancel shifts
     const cancelbtns = await screen.findAllByText("X");
     const cancelbtn = cancelbtns[0];

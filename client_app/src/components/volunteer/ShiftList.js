@@ -1,11 +1,39 @@
+import React, { useEffect } from "react";
 import { format } from "date-fns";
 
-const ShiftList = (props) => {
+const ShiftList = props => {
+
+  useEffect(() => {
+    // Check for overlaps every time the shifts change
+    if (props.currentSelectionSection) {
+      const overlapExists = props.shifts.some((shift, index) =>
+      checkForOverlap(shift, props.shifts.filter((_, i) => i !== index))
+    );
+    props.setOverlaps(overlapExists);
+    }
+  }, [props.shifts]);
+
   function onCheckboxClick(event) {
     if (props.onCheck) {
       props.onCheck(event);
     }
   }
+
+  function checkForOverlap(shift, otherShifts) {
+    const shiftStartTime = new Date(shift.start_time);
+    const shiftEndTime = new Date(shift.end_time);
+
+    return otherShifts.some((otherShift) => {
+      const otherShiftStartTime = new Date(otherShift.start_time);
+      const otherShiftEndTime = new Date(otherShift.end_time);
+
+      // Check if there is an overlap
+      return (
+        shiftStartTime < otherShiftEndTime && shiftEndTime > otherShiftStartTime
+      );
+    });
+  }
+
   function onCloseBtnClick(event) {
     if (props.onClose) {
       props.onClose(event);
@@ -29,6 +57,11 @@ const ShiftList = (props) => {
           // format the start and end time to human-readable strings
           const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
           const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
+
+          const isOverlapping = checkForOverlap(
+            shift,
+            props.shifts.filter((s) => s !== shift)
+          );
           // helps keep track of whether or not the end time of the shift is in the past
           const isPastShift = endTime.getTime() < Date.now();
           return (
@@ -45,6 +78,14 @@ const ShiftList = (props) => {
                           <p>
                             {formattedStartTime} to {formattedEndTime}
                           </p>
+                        </td>
+                        <td>
+                          {/* Mark shift as overlapping if it overlaps with another shift */}
+                          {isOverlapping ? (
+                            <p style={{ color: "red" }}>Overlapping</p>
+                          ) : (
+                            <p style={{ color: "green" }}>No Overlap</p>
+                          )}
                         </td>
                         <td>
                           <button
