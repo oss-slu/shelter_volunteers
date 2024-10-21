@@ -1,16 +1,19 @@
 import React from 'react'; 
 import { ModalComponent } from './ModalComponent';
+import { ENVIROMENT } from '../../config.js';
 
 export const EditStatusConfirmationModal = props => {
   const {isStatusModalOpen, setIsStatusModalOpen, shift} = props;
 
   const onYesClick = () => {
-    console.log("changed shift status to: " + !shift.status)
-    setIsStatusModalOpen(false)
+    if (ENVIROMENT === "development") {
+      console.log("changed shift status to: " + !shift.status); //Todo
+    }
+    setIsStatusModalOpen(false);
   }
 
   const onNoClick = () => {
-    setIsStatusModalOpen(false)
+    setIsStatusModalOpen(false);
   }
 
   const renderData = () => {

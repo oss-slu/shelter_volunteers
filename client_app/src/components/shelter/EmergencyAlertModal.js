@@ -1,5 +1,6 @@
 import React, {useState} from 'react'; 
 import { ModalComponent } from './ModalComponent';
+import { ENVIROMENT } from '../../config.js';
 
 export const EmergencyAlertModal = props => {
   const {isEmergencyModalOpen, setIsEmergencyModalOpen} = props;
@@ -7,16 +8,18 @@ export const EmergencyAlertModal = props => {
   const [input, setInput] = useState("");
 
   const sendAlert = () => {
-    console.log(input)
-    setIsEmergencyModalOpen(false)
+    if (ENVIROMENT === "development") {
+      console.log(input); //Todo
+    }
+    setIsEmergencyModalOpen(false);
   }
 
   const handleChange = (value) => {
-    setInput(value)
+    setInput(value);
     if (value.length > 0) {
-      setContainsMessage(true)
+      setContainsMessage(true);
     } else {
-      setContainsMessage(false)
+      setContainsMessage(false);
     }
   }
 

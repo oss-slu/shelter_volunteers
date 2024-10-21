@@ -4,13 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
 import { ModalComponent } from './ModalComponent';
+import { ENVIROMENT } from '../../config.js';
 
 export const ShiftsModal = props => {
   const {isVolunteerModalOpen, setIsVolunteerModalOpen} = props;
   const volunteerShifts = shiftListed;
 
   const sendEmail = email => {
-    console.log(email);
+    if (ENVIROMENT === "development") {
+      console.log(email); //Todo
+    }
   }
 
   const emailButton = shift => {
