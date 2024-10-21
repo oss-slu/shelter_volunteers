@@ -59,7 +59,7 @@ describe("add and cancel shifts", () => {
     });
   }, 6000);
 
-  /*test("user can select and remove multiple shifts", async () => {
+  test("user can select and remove multiple shifts", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
     await waitFor(
       async () => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
@@ -83,7 +83,7 @@ describe("add and cancel shifts", () => {
     const button2 = buttons[1];
     userEvent.click(button2);
     await waitFor(() => expect(screen.getByText("30027")).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
     //cancel shifts
     const cancelbtns = await screen.findAllByText("X");
     const cancelbtn = cancelbtns[0];
@@ -97,5 +97,5 @@ describe("add and cancel shifts", () => {
       expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument(),
     );
     await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
-  }, 6000);*/
+  }, 6000);
 });
