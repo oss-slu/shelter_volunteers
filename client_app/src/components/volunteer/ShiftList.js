@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { format } from "date-fns";
 
-const ShiftList = (props) => {
-
-  const { setOverlaps } = props;
+const ShiftList = props => {
 
   useEffect(() => {
     // Check for overlaps every time the shifts change
-    const overlapExists = props.shifts.some((shift, index) =>
+    if (props.currentSelectionSection) {
+      const overlapExists = props.shifts.some((shift, index) =>
       checkForOverlap(shift, props.shifts.filter((_, i) => i !== index))
     );
-    setOverlaps(overlapExists);
+    props.setOverlaps(overlapExists);
+    }
   }, [props.shifts]);
 
   function onCheckboxClick(event) {
