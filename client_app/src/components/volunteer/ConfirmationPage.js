@@ -9,6 +9,7 @@ const handleReload = () => {
   window.location.reload();
 };
 
+
 const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
   return (
     <>
@@ -33,6 +34,7 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
           </thead>
           <tbody>
             {selectedShifts.map((shift, index) => (
+            
               <tr key={shift.code}>
                 <td>
                   <p>{shift.shelter}</p>

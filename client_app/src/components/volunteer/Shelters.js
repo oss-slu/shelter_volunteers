@@ -4,12 +4,13 @@ import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
 import { GETHELP_API, SERVER } from "../../config";
 import { Link } from "react-router-dom";
-import ShiftList from "./ShiftList";
 import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
+import dayjs from 'dayjs';
+import CurrentSelection from "./CurrentSelection";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
@@ -128,8 +129,26 @@ const Shelters = (props) => {
   function manageShifts(shift) {
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
-    setSelectedShifts([...selectedShifts, shift]);
-    setButtonDisabled(selectedShifts.length === 0);
+    //setSelectedShifts([...selectedShifts, shift]);
+    //setButtonDisabled(selectedShifts.length === 0);
+    const shiftStart = dayjs(shift.start);
+    const shiftEnd = dayjs(shift.end);
+
+    const overlap = selectedShifts.some(selectedShift => {
+      const selectedShiftStart = dayjs(selectedShift.start);
+      const selectedShiftEnd = dayjs(selectedShift.end);
+
+      // Check for overlap
+      return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
+    });
+
+    if (overlap) {
+      alert("The selected shift overlaps with another shift.");
+      setButtonDisabled(true); // Disable submit button
+    } else {
+      setSelectedShifts([...selectedShifts, shift]);
+      setButtonDisabled(false); // Enable submit button
+    }
   }
 
   function onShiftClose(event) {
@@ -154,7 +173,7 @@ const Shelters = (props) => {
     shiftsPayload = shiftsPayload.map((shift) => {
       delete shift.code;
       return shift;
-    }); // Delete code property
+    }); 
     const shiftsEndpoint = SERVER + "/shifts";
     const header = getAuthHeader();
     fetch(shiftsEndpoint, {
@@ -188,6 +207,8 @@ const Shelters = (props) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  
 
   return (
     <>
@@ -266,18 +287,14 @@ const Shelters = (props) => {
                     )}
                     {selectedShifts && (
                       <div>
-                        <ShiftList
-                          shifts={selectedShifts}
-                          currentSelectionSection={true}
-                          onClose={onShiftClose}
-                        />
+                        <CurrentSelection
+                          selectedShifts={selectedShifts}
+                          removeShift={onShiftClose}
+                          submitShifts={submitShifts}
+                          isButtonDisabled={isButtonDisabled}
+                          />
                       </div>
                     )}
-                    <div id="submit-shifts" data-testid="submit-shifts-button">
-                      <button onClick={submitShifts} disabled={isButtonDisabled}>
-                        Submit Shifts
-                      </button>
-                    </div>
                   </div>
                 </div>
                 {!onMobileContinueclicked && (

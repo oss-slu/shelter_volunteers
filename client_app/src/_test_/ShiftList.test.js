@@ -15,9 +15,10 @@ let mockShift2 = {
   end_time: 5696255200000,
 };
 const onShiftClose = jest.fn(); //mock close function
+const setOverlaps = jest.fn(); //mock set overlaps
 
 test("shift list properly displays messaged when no shifts are selected", () => {
-  render(<ShiftList shifts={[]} currentSelectionSection={true} onClose={onShiftClose} />);
+  render(<ShiftList shifts={[]} currentSelectionSection={true} onClose={onShiftClose} setOverlaps={setOverlaps}/>);
   expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument();
 });
 
@@ -27,6 +28,7 @@ test("shift list properly displays shifts when added", () => {
       shifts={[mockShift, mockShift2]}
       currentSelectionSection={true}
       onClose={onShiftClose}
+      setOverlaps={setOverlaps}
     />,
   );
   const startTime = new Date(mockShift.start_time);
