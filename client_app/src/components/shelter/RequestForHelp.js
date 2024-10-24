@@ -13,14 +13,21 @@ export default function RequestForHelp() {
   const [newEvent, setNewEvent] = useState({ title: "", start: null, end: null, volunteersRequired: ""});
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [volunteerError, setVolunteerError] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSelectSlot = useCallback(({ start, end }) => {
+    const now = new Date();
+    if (start < now) {
+      setErrorMessage("You cannot create an event in the past.");
+      setShowErrorModal(true);
+      return;
+    }
     setNewEvent({ ...newEvent, title: "", start, end, volunteersRequired: "" })
     setSelectedEvent(null)
     setVolunteerError("")
     setShowModal(true)
   }, [])
-
 
   const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event)
@@ -31,6 +38,22 @@ export default function RequestForHelp() {
 
   const handleSaveEvent = () => {
     if (newEvent.volunteersRequired) {
+      const newEventStart = new Date(newEvent.start);
+      const newEventEnd = new Date(newEvent.end);
+
+      const isOverlapping = myEvents.some((event) => {
+        const eventStart = new Date(event.start);
+        const eventEnd = new Date(event.end);
+        return (
+          (newEventStart < eventEnd && newEventEnd > eventStart) 
+        );
+      });
+
+      if (isOverlapping) {
+        setVolunteerError("This shift overlaps with an existing shift.");
+        return;
+      }
+
       const volunteersRegex = /\s\(Volunteers:\s\d+\)$/;
       const volunteersText = ` (Volunteers: ${newEvent.volunteersRequired})`;
       const formattedEvent = {
@@ -56,10 +79,11 @@ export default function RequestForHelp() {
       }
       setVolunteerError("");
       setShowModal(false)
-    } else {
+    } else if (!newEvent.volunteersRequired) {
       setVolunteerError("'Number of Volunteers Required' field is required.");
       return;
     }
+
   }
 
   const handleDeleteEvent = () => {
@@ -80,7 +104,6 @@ export default function RequestForHelp() {
         volunteersRequired: volunteersValue,
       }));
     }
-  
     if (name === "start" || name === "end") {
       setNewEvent((prev) => {
         const current = prev[name] ? dayjs(prev[name]) : dayjs(); 
@@ -97,6 +120,8 @@ export default function RequestForHelp() {
           [name]: updatedDate.toDate(),
         };
       });
+    } else {
+      setNewEvent((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -141,7 +166,7 @@ export default function RequestForHelp() {
               <Form.Control
                 type="time"
                 name="end"
-                value={newEvent.end ? dayjs(newEvent.end).format("HH:mm") : ""}
+                value={newEvent.end ? dayjs(newEvent.end).format("HH:mm"): ""}
                 onChange={(e) => handleVolunteerInputChange({
                   target: { name: "end", value: e.target.value }
                 })}
@@ -170,6 +195,17 @@ export default function RequestForHelp() {
           )}
           <Button variant="primary" onClick={handleSaveEvent}>
             {selectedEvent ? "Save Changes" : "Submit Shift"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowErrorModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
