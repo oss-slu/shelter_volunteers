@@ -11,12 +11,15 @@ import { ShiftsModal } from "./ShiftsModal.js";
 import { useState } from 'react';
 import { EmergencyAlertModal } from "./EmergencyAlertModal";
 import { EditStatusConfirmationModal } from "./EditStatusConfirmationModal";
-import Box from '@mui/material/Box';
+import { availableShifts } from "./ShiftDetailsData.tsx";
+import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
-import { availableShifts } from "./ShiftDetailsData.tsx";
+import Checkbox from '@mui/material/Checkbox';
+import { format } from "date-fns";
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
@@ -27,10 +30,17 @@ export const ShiftDetails = () => {
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [shift, setShift] = useState();
     const shiftsList = availableShifts;
-    const [selectedShifts, setSelectedShift] = useState("");
+    const [selectedShifts, setSelectedShift] = useState([]);
+    const stickyHeader = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? "static" : "sticky";
+    const headerZIndex = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? 0 : 1;
 
     const handleChange = (event) => {
-      setSelectedShift(event.target.value);
+      const {
+        target: { value },
+      } = event;
+      setSelectedShift(
+        typeof value === 'string' ? value.split(',') : value,
+      );
     };
 
     const onSignUpVolunteersClick = () => {
@@ -48,9 +58,12 @@ export const ShiftDetails = () => {
 
     const renderDropDown = () => {
       return (shiftsList.shifts.map((shiftSlot => {
-        const nameAndTime = shiftSlot.name ? shiftSlot.name + ": " + shiftSlot.startTime + " - " + shiftSlot.endTime : shiftSlot.startTime + " - " + shiftSlot.endTime;
+        const nameAndTime = shiftSlot.name ? shiftSlot.name + ": " + format(shiftSlot.startTime, "hh:mm aaaaa'm'") + " - " + format(shiftSlot.endTime, "hh:mm aaaaa'm'") : format(shiftSlot.startTime, "hh:mm aaaaa'm'") + " - " + format(shiftSlot.endTime, "hh:mm aaaaa'm'");
         return (
-          <MenuItem key={shiftSlot.id} value={nameAndTime}>{nameAndTime}</MenuItem>
+          <MenuItem key={shiftSlot.id} value={nameAndTime}>
+            <Checkbox checked={selectedShifts.includes(nameAndTime)} />
+            <ListItemText primary={nameAndTime} />
+          </MenuItem>
         )
     })))
     }
@@ -69,24 +82,29 @@ export const ShiftDetails = () => {
               <DatePicker defaultValue={dayjs()} slotProps={{textField: {size: "small"}}} sx={{width: 200}} />
             </LocalizationProvider>
             <h4 className="endtime-label">Select Shift(s): </h4>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Shift(s)</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedShifts}
-                  label="Shift(s)"
-                  onChange={handleChange}
-                >
-                  {renderDropDown()}
-                </Select>
-              </FormControl>
-            </Box>
+            <FormControl sx={{ m: .5, width: 250}}>
+              <InputLabel id="shiftsCheckedDropDown" hidden={isEmergencyModalOpen||isStatusModalOpen||isVolunteerModalOpen}>Shift(s)</InputLabel>
+              <Select
+                labelId="shiftCheckboxLabel"
+                id="multiShiftCheckboxLabel"
+                multiple
+                value={selectedShifts}
+                onChange={handleChange}
+                input={<OutlinedInput label="Shift(s)" />}
+                renderValue={(selected) => selected.join(', ')}
+              >
+                {renderDropDown()}
+              </Select>
+            </FormControl>
           </div> 
         </div>
         <div className="shiftdetails-table">
-          <ShiftDetailsTable onSignUpVolunteersClick={onSignUpVolunteersClick} onSendEmergencyAlertClick={onSendEmergencyAlertClick} onStatusModalClick={onStatusModalClick}/>
+          <ShiftDetailsTable 
+            onSignUpVolunteersClick={onSignUpVolunteersClick} 
+            onSendEmergencyAlertClick={onSendEmergencyAlertClick} 
+            onStatusModalClick={onStatusModalClick}
+            stickyHeader={stickyHeader}
+            headerZIndex={headerZIndex}/>
         </div>
       </div>
     );

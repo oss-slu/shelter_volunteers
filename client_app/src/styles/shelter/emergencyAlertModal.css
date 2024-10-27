@@ -1,0 +1,21 @@
+.emergencyMessage {
+  background-color: white;
+  height: 30vh;
+  width: 70vw;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.sendButton {
+  border-radius: 5px;
+  margin-top: 2%;
+  margin-bottom: 3%;
+  float: right;
+}
+
+.sendButtonContainer {
+  width: 100%;
+  margin-right: 10%;
+  margin-bottom: 3%;
+}

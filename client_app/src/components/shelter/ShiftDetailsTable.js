@@ -6,10 +6,17 @@ import IconButton from "@mui/material/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faCheck, faX, faPenToSquare, faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 export const ShiftDetailsTable = props => {
   const navigate = useNavigate();
-  const { onSignUpVolunteersClick , onSendEmergencyAlertClick, onStatusModalClick} = props;
+  const { 
+    onSignUpVolunteersClick , 
+    onSendEmergencyAlertClick, 
+    onStatusModalClick,
+    stickyHeader,
+    headerZIndex,
+    } = props;
 
   const emailButton = () => {
     return (
@@ -89,7 +96,7 @@ export const ShiftDetailsTable = props => {
   return (
     <div className="shiftdetails-container">
       <table className="shiftsTable">
-        <thead className="shiftsTableHeader">
+        <thead className="shiftsTableHeader" style={{position:stickyHeader,zIndex:headerZIndex,top:-1}}>
           <tr>
             <th>Date</th>
             <th>Shift</th>
@@ -103,8 +110,8 @@ export const ShiftDetailsTable = props => {
         <tbody className="shiftsTableBody">
           {shiftDetailsData.data.map((shift) => (
             <tr key={shift.id}>
-              <td>{shift.date}</td>
-              <td>{shift.name ? shift.name + ": " + shift.startTime + ' - ' + shift.endTime : shift.startTime + ' - ' + shift.endTime}</td>
+              <td>{format(shift.startTime, "MM/dd/yyyy")}</td>
+              <td>{shift.name ? shift.name + ": " + format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'") : format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'")}</td>
               <td>{renderCoverage(shift)}</td>
               <td>{viewRosterButton()}</td>
               <td>{shift.status ? openStatusButton(shift) : closedStatusButton(shift)}</td>

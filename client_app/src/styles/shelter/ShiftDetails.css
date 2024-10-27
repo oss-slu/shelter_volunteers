@@ -9,7 +9,6 @@
     display: flex;
     align-items: last baseline;
     justify-content: flex-start;
-    padding: 1.2vw;
     padding-left: 2vw;
     gap: 25px;
 }
@@ -23,7 +22,7 @@
 }
 
 .shiftdetails-table {
-    padding: 20px;
+    padding: 0px;
     margin-left: 10px;
 }
 
@@ -32,9 +31,8 @@
       width: 80%;
       flex-direction: column;
       align-items: center;
-      padding: 2vw;
       padding-left: 25vw;
-      gap: 5px;
+      gap: .5;
     }
   
     .starttime-label, .endtime-label {
@@ -48,14 +46,13 @@
     width: 100%;
     flex-direction: row;
     align-items: center;
-    padding: 2vw;
-    gap: 5px;
+    gap: .5;
 }
 .date-label {
     font-size: 15px;
 }
 
-.starttime-label, .endtime-label {
+.starttime-label, .endtime-label, .multiShiftCheckboxLabel {
     padding-left: 10px;
     margin-bottom: 10px;
     font-size: 15px;
@@ -67,7 +64,6 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding: 2vw;
-        gap: 5px;
+        gap: .5;
     }
 }

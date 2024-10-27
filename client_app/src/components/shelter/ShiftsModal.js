@@ -5,6 +5,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/ShiftsModal.css"
 import { ModalComponent } from './ModalComponent';
 import { ENVIROMENT } from '../../config.js';
+import { format } from "date-fns";
 
 export const ShiftsModal = props => {
   const {isVolunteerModalOpen, setIsVolunteerModalOpen} = props;
@@ -45,25 +46,33 @@ export const ShiftsModal = props => {
             Signed-Up Volunteers
           </h3>
         </span>
-        <p>{"Date: " + volunteerShifts.shift.date}</p>
-        <p>{"Shift: " + volunteerShifts.shift.name ?
-          volunteerShifts.shift.name + ": " + volunteerShifts.shift.startTime + " - " + volunteerShifts.shift.endTime 
-          : volunteerShifts.shift.startTime + " - " + volunteerShifts.shift.endTime}</p>
-        <p>{"Current Volunteer Count: " + volunteerShifts.shift.currentVolunteers}</p>
-        <p>{"Required Volunteer Count: " + volunteerShifts.shift.requiredVolunteers}</p>
-        <table className="shiftsTable">
-          <thead className="shiftsTableHeader">
-            <tr>
-              <th>Name</th>
-              <th>Phone Number</th>
-              <th>Email</th>
-              <th>Send E-mail</th>
-            </tr>
-          </thead>
-          <tbody className="shiftsTableBody">
-            {renderShifts()}
-          </tbody>
-        </table>
+        <div className="overallShiftDetails">
+          <div className="dateAndShiftInfo">
+            <p><b>Date: </b>{format(volunteerShifts.shift.startTime, "MM/dd/yyyy")}</p>
+            <p><b>Shift: </b>{volunteerShifts.shift.name ?
+            volunteerShifts.shift.name + ": " + format(volunteerShifts.shift.startTime, "hh:mm aaaaa'm'") + " - " + format(volunteerShifts.shift.endTime, "hh:mm aaaaa'm'") 
+            : format(volunteerShifts.shift.startTime, "hh:mm aaaaa'm'") + " - " + format(volunteerShifts.shift.endTime, "hh:mm aaaaa'm'")}</p>
+          </div>
+          <div className="volunteerCountInfo">
+            <p><b>Current Volunteer Count: </b>{volunteerShifts.shift.currentVolunteers}</p>
+            <p><b>Required Volunteer Count: </b>{volunteerShifts.shift.requiredVolunteers}</p>
+          </div>
+        </div>
+        <div className="shiftsTableContainer">
+          <table className="shiftsTable">
+            <thead className="shiftsTableHeader">
+              <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Send E-mail</th>
+              </tr>
+            </thead>
+            <tbody className="shiftsTableBody">
+              {renderShifts()}
+            </tbody>
+          </table>
+        </div>
       </div>
     ) 
   }

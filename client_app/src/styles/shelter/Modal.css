@@ -1,7 +1,7 @@
 .modalComponent {
   max-height: 75%;
   max-width: 100%;
-  min-width: 80%;
+  min-width: 50%;
   min-height: 50%;
   background-color: lightgray;
   position: absolute;
@@ -10,7 +10,7 @@
   transform: translate(-50%, -50%);
   padding-left: 1%;
   padding-top: 1%;
-  padding-right: 1%
+  padding-right: 1%;
 }
 
 .close-btn {
