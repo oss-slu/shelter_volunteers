@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/UpcomingRequests.css"; // Create CSS for styling
+import "../../styles/UpcomingRequests.css";
 
 const UpcomingRequests = ({ shifts }) => {
   return (
@@ -16,7 +16,7 @@ const UpcomingRequests = ({ shifts }) => {
                   <p>To Time: {shift.toTime}</p>
                 </div>
                 <div className="volunteers-requested">
-                  <p>Number of Volunteers Requested: {shift.volunteersRequested}</p>
+                  <p>Number of Volunteers Requested: {shift.volunteersRequested}</p> 
                 </div>
                 <div className="actions">
                   <button>Edit Request</button>
