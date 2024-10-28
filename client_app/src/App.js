@@ -19,7 +19,7 @@ function App() {
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts"].includes(
+        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts", "/upcoming-shifts"].includes(
           window.location.pathname,
         ) ? (
           <NavBarShelterDashboard auth={auth} />

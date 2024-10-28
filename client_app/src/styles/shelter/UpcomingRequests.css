@@ -1,0 +1,32 @@
+.upcoming-requests {
+    padding: 20px;
+  }
+  
+  .date-section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .shift-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .shift-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .shift-time, .volunteers-requested, .actions {
+    flex: 1;
+  }
+  
+  .actions button {
+    margin-right: 5px;
+    padding: 5px 10px;
+  }
+  
