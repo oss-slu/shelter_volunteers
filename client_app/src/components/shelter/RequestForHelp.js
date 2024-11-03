@@ -13,14 +13,22 @@ export default function RequestForHelp() {
   const [newEvent, setNewEvent] = useState({ title: "", start: null, end: null, volunteersRequired: ""});
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [volunteerError, setVolunteerError] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSelectSlot = useCallback(({ start, end }) => {
+    const now = new Date();
+    if (start < now) {
+      setErrorMessage("You cannot create an event in the past.");
+      setShowErrorModal(true);
+      return;
+    }
+
     setNewEvent({ ...newEvent, title: "", start, end, volunteersRequired: "" })
     setSelectedEvent(null)
     setVolunteerError("")
     setShowModal(true)
   }, [])
-
 
   const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event)
@@ -30,7 +38,31 @@ export default function RequestForHelp() {
   }, [])
 
   const handleSaveEvent = () => {
-    if (newEvent.volunteersRequired) {
+    if (newEvent.volunteersRequired && newEvent.start && newEvent.end) {
+      if (parseInt(newEvent.volunteersRequired) <= 0) {
+        setVolunteerError("'Number of Volunteers Required' needs to be greater than 0");
+        return;
+      }
+
+      const isOverlapping = myEvents.some((event) => {
+        if (
+          selectedEvent &&
+          event.start === selectedEvent.start &&
+          event.end === selectedEvent.end
+        ) {
+          return false;
+        }
+    
+        const eventStart = new Date(event.start);
+        const eventEnd = new Date(event.end);
+        return newEvent.start < eventEnd && newEvent.end > eventStart;
+      });
+    
+      if (isOverlapping) {
+        setVolunteerError("This shift overlaps with an existing shift.");
+        return;
+      }
+
       const volunteersRegex = /\s\(Volunteers:\s\d+\)$/;
       const volunteersText = ` (Volunteers: ${newEvent.volunteersRequired})`;
       const formattedEvent = {
@@ -51,15 +83,19 @@ export default function RequestForHelp() {
               : ev
           )
         );
-     } else {
+      } else {
         setEvents((prev) => [...prev, formattedEvent])
       }
       setVolunteerError("");
       setShowModal(false)
+    } else if (!newEvent.volunteersRequired) {
+      setVolunteerError("'Number of Volunteers Required' field is numeric.");
+      return;
     } else {
-      setVolunteerError("'Number of Volunteers Required' field is required.");
+      setVolunteerError("Required fields cannot be empty.");
       return;
     }
+
   }
 
   const handleDeleteEvent = () => {
@@ -74,29 +110,31 @@ export default function RequestForHelp() {
   const handleVolunteerInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "volunteersRequired") {
-      const volunteersValue = Math.max(0, parseInt(value) || "");
+      const volunteersValue = parseInt(value);
       setNewEvent((prev) => ({
         ...prev,
         volunteersRequired: volunteersValue,
       }));
     }
-  
     if (name === "start" || name === "end") {
-      setNewEvent((prev) => {
-        const current = prev[name] ? dayjs(prev[name]) : dayjs(); 
-        const [hour, minute] = value.split(":");
-  
-        const updatedDate = current
-          .hour(parseInt(hour, 10))
-          .minute(parseInt(minute, 10))
-          .second(0)
-          .millisecond(0);
-  
-        return {
+      if (value === "") {
+        setNewEvent((prev) => ({
           ...prev,
-          [name]: updatedDate.toDate(),
-        };
-      });
+          [name]: null,
+        }));
+      } else {
+        setNewEvent((prev) => {
+          const [hour, minute] = value.split(":");
+          const updatedDate = prev[name]
+            ? dayjs(prev[name]).hour(parseInt(hour, 10)).minute(parseInt(minute, 10)).second(0).millisecond(0)
+            : dayjs().hour(parseInt(hour, 10)).minute(parseInt(minute, 10)).second(0).millisecond(0);
+    
+          return {
+            ...prev,
+            [name]: updatedDate.toDate(),
+          };
+        });
+      }
     }
   };
 
@@ -109,6 +147,7 @@ export default function RequestForHelp() {
           localizer={localizer}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
+          views={[Views.WEEK, Views.DAY]}
           selectable
         />
       </div>
@@ -128,7 +167,8 @@ export default function RequestForHelp() {
                   setNewEvent({ ...newEvent, title: e.target.value || ""})
                 }
               />
-              <Form.Label>Start Time:</Form.Label>
+              <Form.Label>Start Time <span style={{ color: "red" }}>*</span>
+              </Form.Label>
               <Form.Control
                 type="time"
                 name="start"
@@ -137,16 +177,18 @@ export default function RequestForHelp() {
                   target: { name: "start", value: e.target.value }
                 })}
               />
-              <Form.Label>End Time:</Form.Label>
+              <Form.Label>End Time <span style={{ color: "red" }}>*</span>
+              </Form.Label>
               <Form.Control
                 type="time"
                 name="end"
-                value={newEvent.end ? dayjs(newEvent.end).format("HH:mm") : ""}
+                value={newEvent.end ? dayjs(newEvent.end).format("HH:mm"): ""}
                 onChange={(e) => handleVolunteerInputChange({
                   target: { name: "end", value: e.target.value }
                 })}
               />
-              <Form.Label>Number of Volunteers Required</Form.Label>
+              <Form.Label>Number of Volunteers Required <span style={{ color: "red" }}>*</span>
+              </Form.Label>
               <div className="d-flex align-items-center">
                 <Form.Control
                   type="number"
@@ -170,6 +212,17 @@ export default function RequestForHelp() {
           )}
           <Button variant="primary" onClick={handleSaveEvent}>
             {selectedEvent ? "Save Changes" : "Submit Shift"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowErrorModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

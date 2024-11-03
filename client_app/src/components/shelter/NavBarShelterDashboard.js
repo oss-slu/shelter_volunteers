@@ -35,7 +35,7 @@ function CustomNavBarShelter({ auth }) {
                 <Nav.Link
                   href="/request-for-help"
                   active={location.pathname === "/request-for-help"}>
-                  Request For Help
+                  Set Shifts
                 </Nav.Link>
                 <Nav.Link href="/cancel-shifts" active={location.pathname === "/cancel-shifts"}>
                   Cancel Shifts
