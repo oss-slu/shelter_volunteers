@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/UpcomingRequests.css";
+import "../../styles/shelter/UpcomingRequests.css";
 
 const UpcomingRequests = ({ shifts }) => {
   return (
