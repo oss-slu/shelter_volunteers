@@ -147,6 +147,7 @@ export default function RequestForHelp() {
           localizer={localizer}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
+          views={[Views.WEEK, Views.DAY]}
           selectable
         />
       </div>
