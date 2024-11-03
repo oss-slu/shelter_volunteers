@@ -17,6 +17,7 @@
 .shiftsTable {
   background-color: white;
   border-collapse: collapse;
+  width: 100%;
 }
 
 td, th, tr{
@@ -26,5 +27,19 @@ td, th, tr{
 
 .modalHeading {
   display: inline-block;
-  padding-bottom: 3%;
+}
+
+.shiftsTableContainer {
+  overflow-x: auto;
+}
+
+.overallShiftDetails {
+  margin-bottom: 2%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.volunteerCountInfo {
+  justify-self: end;
 }

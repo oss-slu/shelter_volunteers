@@ -1,0 +1,22 @@
+.yesStatusButton, .noStatusButton {
+  border-radius: 5px;
+}
+
+.yesStatusButton {
+  background-color: red;
+  margin-right: 40%;
+}
+
+.buttonContainer {
+  text-align: center;
+  position: absolute;
+  top: 65%;
+  width: 100%
+}
+
+.confirmationMessage {
+  margin-top: 10%;
+  margin-left: 5%;
+  margin-right: 5%;
+  text-align: center;
+}

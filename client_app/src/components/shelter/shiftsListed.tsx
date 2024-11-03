@@ -1,9 +1,8 @@
 export const shiftListed = {
     shift: {
       "name": "Morning",
-      "date": "09/14/2024",
-      "startTime": "10:00 AM",
-      "endTime": "2:00 PM",
+      "startTime": 1728572400000,
+      "endTime": 1728586800000,
       "currentVolunteers": 3,
       "requiredVolunteers": 4,
     },

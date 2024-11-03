@@ -3,11 +3,12 @@
     flex-direction: column;
     border-radius: 10px;
     padding: 30px;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
     background-color: #f2f3f4; 
     box-shadow: #fff; 
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .editButton { 
@@ -59,15 +60,14 @@
 
 table {
   width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  min-width: fit-content;
+  padding-top: 0px;
 }
-thead, tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
+
 tbody {
-  display: block;
   overflow-y: auto;
-  table-layout: fixed;
   max-height: 60vh;
+  min-width: fit-content;
 }

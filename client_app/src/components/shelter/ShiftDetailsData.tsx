@@ -2,10 +2,9 @@ export const shiftDetailsData = {
     data: [
       {
         id: 1,
-        date: "10/10/2024",
         name: "Morning",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 2,
         desiredVolunteers: 8,
@@ -14,9 +13,8 @@ export const shiftDetailsData = {
       },
       {
         id: 2,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -25,9 +23,8 @@ export const shiftDetailsData = {
       },
       {
         id: 3,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 3,
         desiredVolunteers: 4,
@@ -36,9 +33,8 @@ export const shiftDetailsData = {
       },
       {
         id: 4,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -47,9 +43,8 @@ export const shiftDetailsData = {
       },
       {
         id: 5,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -58,9 +53,8 @@ export const shiftDetailsData = {
       },
       {
         id: 6,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -69,9 +63,8 @@ export const shiftDetailsData = {
       },
       {
         id: 7,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -80,9 +73,8 @@ export const shiftDetailsData = {
       },
       {
         id: 8,
-        date: "10/10/2024",
-        startTime: "10:00 AM",
-        endTime: "2:00 PM",
+        startTime: 1728572400000,
+        endTime: 1728586800000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,
@@ -97,19 +89,19 @@ export const availableShifts = {
     {
       id: 1,
       name: "Morning",
-      startTime: "10:00 AM",
-      endTime: "12:00 PM"
+      startTime: 1728572400000,
+      endTime: 1728586800000,
     },
     {
       id: 2,
-      startTime: "12:00 PM",
-      endTime: "6:00 PM"
+      startTime: 1728586800000,
+      endTime: 1728601200000
     },
     {
       id: 3,
       name: "Evening",
-      startTime: "6:00 PM",
-      endTime: "12:00 AM"
+      startTime: 1728601200000,
+      endTime: 1728622800000
     }
   ]
 }

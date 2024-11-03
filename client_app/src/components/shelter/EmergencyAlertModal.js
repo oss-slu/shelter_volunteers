@@ -1,6 +1,7 @@
 import React, {useState} from 'react'; 
 import { ModalComponent } from './ModalComponent';
 import { ENVIROMENT } from '../../config.js';
+import "../../styles/shelter/emergencyAlertModal.css"
 
 export const EmergencyAlertModal = props => {
   const {isEmergencyModalOpen, setIsEmergencyModalOpen} = props;
@@ -31,14 +32,19 @@ export const EmergencyAlertModal = props => {
             Emergency Alert
           </h3>
         </span>
-        <input
-            type="text"
-            value={input}
-            onChange={(e) => handleChange(e.target.value)}
-         />
-        <button disabled={!containsMessage} onClick={() => sendAlert()}>
-          Send
-        </button>
+        <div className="emergencyMessageContainer">
+          <textarea
+              type="text"
+              value={input}
+              onChange={(e) => handleChange(e.target.value)}
+              className="emergencyMessage"
+          />
+        </div>
+        <div className="sendButtonContainer">
+          <button className="sendButton" disabled={!containsMessage} onClick={() => sendAlert()}>
+            Send
+          </button>
+        </div>
       </div>
     ) 
   }
