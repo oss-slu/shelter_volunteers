@@ -38,8 +38,8 @@ function CustomNavBarShelter({ auth }) {
                   Set Shifts
                 </Nav.Link>
                 <Nav.Link
-                  href="/upcoming-shifts"
-                  active={location.pathname === "/upcoming-shifts"}>
+                  href="/upcoming-requests"
+                  active={location.pathname === "/upcoming-requests"}>
                   Upcoming Shifts
                 </Nav.Link>
                 <Nav.Link href="/cancel-shifts" active={location.pathname === "/cancel-shifts"}>
