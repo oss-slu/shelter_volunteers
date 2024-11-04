@@ -1,0 +1,63 @@
+/* EditRequestModal.css */
+
+.modalComponent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 20px;
+    max-width: 500px;
+    border-radius: 8px;
+  }
+  
+  .modalComponent h3 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+  }
+  
+  .modalComponent label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 1em;
+  }
+  
+  .modalComponent input {
+    padding: 8px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .modalComponent .actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .modalComponent button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 100px;
+  }
+  
+  .modalComponent .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+
+  
+  
