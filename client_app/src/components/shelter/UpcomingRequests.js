@@ -77,9 +77,11 @@ const UpcomingRequests = () => {
             </div>
             {request.shifts.map((shift, shiftIndex) => (
               <div key={shiftIndex} className="shift-row">
-                <div className="shift-time">{shift.fromTime}</div>
-                <div className="shift-time">{shift.toTime}</div>
-                <div className="volunteers-requested">{shift.volunteersRequested}</div>
+                <div className = "shift-info">
+                  <div className="shift-time">{shift.fromTime}</div>
+                  <div className="shift-time">{shift.toTime}</div>
+                  <div className="volunteers-requested">{shift.volunteersRequested}</div>
+                </div>
                 <div className="actions">
                   <button onClick={() => handleEditRequestClick(shift)}>Edit Request</button>
                   <button onClick={() => handleCancelRequestClick(shift)}>Cancel Request</button>

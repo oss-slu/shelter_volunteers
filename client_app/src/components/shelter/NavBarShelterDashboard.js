@@ -42,9 +42,6 @@ function CustomNavBarShelter({ auth }) {
                   active={location.pathname === "/upcoming-requests"}>
                   Upcoming Shifts
                 </Nav.Link>
-                <Nav.Link href="/cancel-shifts" active={location.pathname === "/cancel-shifts"}>
-                  Cancel Shifts
-                </Nav.Link>
                 <Nav.Link href="/logout">Sign Out</Nav.Link>
               </>
             ) : (

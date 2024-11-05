@@ -1,4 +1,3 @@
-// CancelRequestModal.js
 import React from 'react';
 import { ModalComponent } from './ModalComponent';
 import "../../styles/shelter/CancelRequestModal.css";
@@ -11,7 +10,7 @@ export const CancelRequestModal = ({ isOpen, onClose, shift, onConfirmCancel }) 
 
   const renderData = () => {
     if (!shift) {
-      return null; // Do not render anything if shift is null
+      return null; 
     }
     return (
       <div>

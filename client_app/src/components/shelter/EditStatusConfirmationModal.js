@@ -7,7 +7,7 @@ export const EditStatusConfirmationModal = props => {
 
   const onYesClick = () => {
     if (ENVIROMENT === "development") {
-      console.log("changed shift status to: " + !shift.status); //Todo
+      console.log("changed shift status to: " + !shift.status); 
     }
     setIsStatusModalOpen(false);
   }
