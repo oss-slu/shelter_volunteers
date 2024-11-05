@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
+//import { PastShifts } from "./components/volunteer/Shifts";
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
 import NavBarVolunteerDashboard from "./components/volunteer/NavBarVolunteerDashboard";
@@ -12,6 +13,7 @@ import { useState } from "react";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
 import RequestForHelp from "./components/shelter/RequestForHelp";
 import { ShiftDetails } from "./components/shelter/ShiftDetails";
+import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 
 function App() {
@@ -19,7 +21,7 @@ function App() {
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts"].includes(
+        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts", "/upcoming-requests"].includes(
           window.location.pathname,
         ) ? (
           <NavBarShelterDashboard auth={auth} />
@@ -35,6 +37,7 @@ function App() {
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
+            <Route path="/upcoming-requests" element={<UpcomingRequests />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
             <Route path="/shift-details" element={<ShiftDetails />} />
