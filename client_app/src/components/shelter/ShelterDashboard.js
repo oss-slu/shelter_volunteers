@@ -1,6 +1,7 @@
 import React from "react";
 import OpenRequest from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
+import PastVolunteers from "./PastVolunteers";
 import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
 import { useState, useRef, useEffect } from "react";
@@ -13,6 +14,7 @@ import { SERVER } from "../../config";
 
 function ShelterDashboard() {
   const [shiftDetails, setShiftDetails] = useState([]);
+  const [showPastVolunteers, setShowPastVolunteers] = useState(false);
   let shelterId = 30207;
   let startTime = 
       setHours(
@@ -82,19 +84,7 @@ function ShelterDashboard() {
         <div className="container-small">
           <div className="container-align">
             <h4>Contact Past Volunteers</h4>
-            <button
-              style={{
-                backgroundColor: "#f9f6f6",
-                border: "none",
-                outline: "none",
-                color: "#0066b2",
-                fontSize: "1.0rem",
-                textDecoration: "underline",
-                textAlign: "center",
-                padding: "0"
-              }}>
-              View all
-            </button>
+            <a href="/past-volunteers">View all</a>
           </div>
           <PastVolunteersContainer shiftDetails={shiftDetails} />
         </div>
