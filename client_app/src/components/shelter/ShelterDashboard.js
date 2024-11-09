@@ -1,7 +1,6 @@
 import React from "react";
 import OpenRequest from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
-import PastVolunteers from "./PastVolunteers";
 import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
 import { useState, useRef, useEffect } from "react";
@@ -10,11 +9,11 @@ import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
-
+import AllVolunteers from "./AllVolunteers";
 
 function ShelterDashboard() {
   const [shiftDetails, setShiftDetails] = useState([]);
-  const [showPastVolunteers, setShowPastVolunteers] = useState(false);
+  const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   let shelterId = 30207;
   let startTime = 
       setHours(
@@ -66,6 +65,7 @@ function ShelterDashboard() {
 
   return (
     <div>
+      {!showAllPastVolunteers && (
       <div className="shelter-dashboard">
         <div className="container-large">
           <div className="container-align">
@@ -84,11 +84,31 @@ function ShelterDashboard() {
         <div className="container-small">
           <div className="container-align">
             <h4>Contact Past Volunteers</h4>
-            <a href="/past-volunteers">View all</a>
+            <button
+              style={{
+                backgroundColor: "#f9f6f6",
+                border: "none",
+                outline: "none",
+                color: "#0066b2",
+                fontSize: "1.0rem",
+                textDecoration: "underline",
+                textAlign: "center",
+                padding: "0"
+              }}
+              onClick={() => setShowAllPastVolunteers(true)}
+              >
+              View all
+            </button>
           </div>
           <PastVolunteersContainer shiftDetails={shiftDetails} />
         </div>
       </div>
+      )}
+      {showAllPastVolunteers && (
+        <div>
+          <AllVolunteers shiftDetails={shiftDetails} />
+        </div>
+      )}
     </div>
   );
 }
