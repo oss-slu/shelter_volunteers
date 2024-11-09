@@ -13,6 +13,7 @@ import ShelterDashboard from "./components/shelter/ShelterDashboard";
 import RequestForHelp from "./components/shelter/RequestForHelp";
 import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
+import AllVolunteers from "./components/shelter/AllVolunteers";
 import "./styles/App.css";
 import TodaysShifts from "./components/shelter/TodaysShifts";
 
@@ -22,7 +23,7 @@ function App() {
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts", "/upcoming-requests"].includes(
+        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests", "/past-volunteers"].includes(
           window.location.pathname,
         ) ? (
           <NavBarShelterDashboard auth={auth} />
@@ -43,8 +44,7 @@ function App() {
             <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
             <Route path="/shift-details" element={<ShiftDetails />} />
             <Route path="/request-for-help" element={<RequestForHelp />} />
-            <Route path="/todays-shifts" element = {<TodaysShifts />} />
-            
+            <Route path="/past-volunteers" element={<AllVolunteers />} />
           </Route>
         </Routes>
       </Router>
