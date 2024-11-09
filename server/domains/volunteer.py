@@ -12,6 +12,7 @@ class Volunteer:
     end_time: int
     count: int
     worker: str
+    email: str
 
     @classmethod
     def from_dict(self, d):
