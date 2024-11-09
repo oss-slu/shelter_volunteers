@@ -66,50 +66,43 @@ function ShelterDashboard() {
   return (
     <div>
       {!showAllPastVolunteers && (
-      <div className="shelter-dashboard">
-        <div className="container-large">
-          <div className="container-align">
-            <h4>Open requests</h4>
-            <a href="/shift-details">View all</a>
+        <div className="shelter-dashboard">
+          <div className="container-large">
+            <div className="container-align">
+              <h4>Open requests</h4>
+              <a href="/shift-details">View all</a>
+            </div>
+            <OpenRequest />
           </div>
-          <OpenRequest />
-        </div>
-        <div className="container-medium">
-          <div className="container-align">
-            <h4>Today's Roster</h4>
-            <a href="/shift-details">View all</a>
+          <div className="container-medium">
+            <div className="container-align">
+              <h4>Today's Roster</h4>
+              <a href="/shift-details">View all</a>
+            </div>
+            <ShiftContainer shiftDetails={shiftDetails} />
           </div>
-          <ShiftContainer shiftDetails={shiftDetails} />
-        </div>
-        <div className="container-small">
-          <div className="container-align">
-            <h4>Contact Past Volunteers</h4>
-            <button
-              style={{
-                backgroundColor: "#f9f6f6",
-                border: "none",
-                outline: "none",
-                color: "#0066b2",
-                fontSize: "1.0rem",
-                textDecoration: "underline",
-                textAlign: "center",
-                padding: "0"
-              }}
-              onClick={() => setShowAllPastVolunteers(true)}
-              >
-              View all
-            </button>
+          <div className="container-small">
+            <div className="container-align">
+              <h4>Contact Past Volunteers</h4>
+              <button
+                style={{
+                  backgroundColor: "#f9f6f6",
+                  border: "none",
+                  outline: "none",
+                  color: "#0066b2",
+                  fontSize: "1.0rem",
+                  textDecoration: "underline",
+                  textAlign: "center",
+                  padding: "0"
+                }}
+                onClick={() => setShowAllPastVolunteers(true)}
+                >
+                View all
+              </button>
+            </div>
+            <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-          <TodaysShiftsContainer shiftDetails={shiftDetails} /> 
         </div>
-        <div className="container-small">
-          <div className="container-align">
-            <h4>Contact Past Volunteers</h4>
-            <a href="/past-volunteers">View all</a>
-          </div>
-          <PastVolunteersContainer shiftDetails={shiftDetails} />
-        </div>
-      </div>
       )}
       {showAllPastVolunteers && (
         <div>
