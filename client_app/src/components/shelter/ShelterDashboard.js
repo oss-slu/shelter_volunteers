@@ -89,11 +89,12 @@ function ShelterDashboard() {
                   backgroundColor: "#f9f6f6",
                   border: "none",
                   outline: "none",
-                  color: "#0066b2",
+                  color: "#1F75FE",
                   fontSize: "1.0rem",
                   textDecoration: "underline",
                   textAlign: "center",
-                  padding: "0"
+                  padding: "0",
+                  marginTop: "-5px"
                 }}
                 onClick={() => setShowAllPastVolunteers(true)}
                 >
