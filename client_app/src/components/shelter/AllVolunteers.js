@@ -1,5 +1,5 @@
-import "../../styles/index.css";
 import ProcessVolunteerList from "./ProcessVolunteerList";
+
 const AllVolunteers = ({shiftDetails}) => {
     return (
       <>

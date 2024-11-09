@@ -1,9 +1,12 @@
+import { Link } from "react-router-dom";
+
+const handleReload = () => {
+  window.location.reload();
+};
+
 const ProcessVolunteerList = ({shiftDetails}) => {
     const currentTime = Date.now();
     const filteredShifts = shiftDetails.filter(item => item.start_time < currentTime);
-    // const workerList = filteredShifts
-    // .flatMap(item => item.worker ? item.worker.split(",").map(name => name.trim()) : []);
-    // const uniqueWorker = [...new Set(workerList)];
     const workerList = filteredShifts.flatMap(item => {
         const workers = item.worker ? item.worker.split(",").map(name => name.trim()) : [];
         const emails = item.email ? item.email.split(",").map(email => email.trim()) : [];
@@ -26,18 +29,18 @@ const ProcessVolunteerList = ({shiftDetails}) => {
             <thead>
               <tr>
                 <th>
-                  <h2>#</h2>
+                  <h3>#</h3>
                 </th>
                 <th>
-                  <h2>Volunteer Name</h2>
+                  <h3>Volunteer Name</h3>
                 </th>
                 <th>
-                  <h2>Volunteer Email</h2>
+                  <h3>Volunteer Email</h3>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {uniqueWorkerList.map((list, index) => (
+              {uniqueWorkerList.length > 0 ? (uniqueWorkerList.map((list, index) => (
                 <tr key={index}>
                   <td>
                     <p>{index+1}</p>
@@ -46,12 +49,25 @@ const ProcessVolunteerList = ({shiftDetails}) => {
                     <p>{list.worker}</p>
                   </td>
                   <td>
-                    <p>{list.email}</p>
+                    <a href={`mailto:${list.email}`}>
+                      <p>{list.email}</p>
+                    </a>
                   </td>
                 </tr>
-              ))}
+              ))
+              ) : (
+                <tr>
+                  <td colSpan="100%" style={{textAlign: "center"}}>No volunteers available.</td>
+                </tr>
+             )}
             </tbody>
           </table>
+          <br />
+          <div className="button-row">
+            <Link to="/shelter-dashboard" onClick={handleReload}>
+              <button>Your Dashboard</button>
+            </Link>
+          </div>
         </div>
       </>
     );
