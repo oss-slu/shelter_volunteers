@@ -12,7 +12,7 @@ export const ShiftDetailsTable = props => {
   const navigate = useNavigate();
   const { 
     onSignUpVolunteersClick , 
-    onSendEmergencyAlertClick, 
+    onSendVolunteerMessageClick, 
     onStatusModalClick,
     stickyHeader,
     headerZIndex,
@@ -20,7 +20,7 @@ export const ShiftDetailsTable = props => {
 
   const emailButton = () => {
     return (
-      <button className="emailButton" onClick={onSendEmergencyAlertClick}>
+      <button className="emailButton" onClick={onSendVolunteerMessageClick}>
         <FontAwesomeIcon icon={faEnvelope} size="2x" className="emailIcon" />
       </button>
     )
@@ -104,7 +104,7 @@ export const ShiftDetailsTable = props => {
             <th>View Volunteers</th>
             <th>Open/Close Sign Up</th>
             <th>Edit Shift</th>
-            <th>Send Emergency Alert</th>
+            <th>Contact Volunteers</th>
           </tr>
         </thead>
         <tbody className="shiftsTableBody">

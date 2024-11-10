@@ -1,18 +1,18 @@
 import React, {useState} from 'react'; 
 import { ModalComponent } from './ModalComponent';
 import { ENVIROMENT } from '../../config.js';
-import "../../styles/shelter/emergencyAlertModal.css"
+import "../../styles/shelter/ContactVolunteersModal.css"
 
-export const EmergencyAlertModal = props => {
-  const {isEmergencyModalOpen, setIsEmergencyModalOpen} = props;
+export const ContactVolunteersModal = props => {
+  const {isContactVolunteersModalOpen, setIsContactVolunteersModalOpen} = props;
   const [containsMessage, setContainsMessage] = useState(false)
   const [input, setInput] = useState("");
 
-  const sendAlert = () => {
+  const sendMessage = () => {
     if (ENVIROMENT === "development") {
       console.log(input); //Todo
     }
-    setIsEmergencyModalOpen(false);
+    setIsContactVolunteersModalOpen(false);
   }
 
   const handleChange = (value) => {
@@ -29,19 +29,19 @@ export const EmergencyAlertModal = props => {
       <div>
         <span className="modalHeading">
           <h3>
-            Emergency Alert
+            Contact Volunteers
           </h3>
         </span>
-        <div className="emergencyMessageContainer">
+        <div className="volunteerMessageContainer">
           <textarea
               type="text"
               value={input}
               onChange={(e) => handleChange(e.target.value)}
-              className="emergencyMessage"
+              className="volunteerMessage"
           />
         </div>
         <div className="sendButtonContainer">
-          <button className="sendButton" disabled={!containsMessage} onClick={() => sendAlert()}>
+          <button className="sendButton" disabled={!containsMessage} onClick={() => sendMessage()}>
             Send
           </button>
         </div>
@@ -51,8 +51,8 @@ export const EmergencyAlertModal = props => {
 
   return (
     <ModalComponent
-      isOpen={isEmergencyModalOpen}
-      onRequestClose={() => setIsEmergencyModalOpen(false)}
+      isOpen={isContactVolunteersModalOpen}
+      onRequestClose={() => setIsContactVolunteersModalOpen(false)}
       renderData={renderData}
     /> 
   )

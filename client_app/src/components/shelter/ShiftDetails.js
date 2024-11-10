@@ -9,7 +9,7 @@ import dayjsTimezone from 'dayjs/plugin/timezone';
 import { ShiftDetailsTable } from "./ShiftDetailsTable.js";
 import { ShiftsModal } from "./ShiftsModal.js";
 import { useState } from 'react';
-import { EmergencyAlertModal } from "./EmergencyAlertModal";
+import { ContactVolunteersModal } from "./ContactVolunteersModal";
 import { EditStatusConfirmationModal } from "./EditStatusConfirmationModal";
 import { availableShifts } from "./ShiftDetailsData.tsx";
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -25,14 +25,14 @@ dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
 
 export const ShiftDetails = () => {
-    const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
+    const [isContactVolunteersModalOpen, setIsContactVolunteersModalOpen] = useState(false);
     const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [shift, setShift] = useState();
     const shiftsList = availableShifts;
     const [selectedShifts, setSelectedShift] = useState([]);
-    const stickyHeader = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? "static" : "sticky";
-    const headerZIndex = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? 0 : 1;
+    const stickyHeader = (isContactVolunteersModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? "static" : "sticky";
+    const headerZIndex = (isContactVolunteersModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? 0 : 1;
 
     const handleChange = (event) => {
       const {
@@ -47,8 +47,8 @@ export const ShiftDetails = () => {
       setIsVolunteerModalOpen(true);
     }
 
-    const onSendEmergencyAlertClick = () => {
-      setIsEmergencyModalOpen(true);
+    const onSendVolunteerMessageClick = () => {
+      setIsContactVolunteersModalOpen(true);
     }
 
     const onStatusModalClick = shift => {
@@ -71,7 +71,7 @@ export const ShiftDetails = () => {
     return (
       <div>
         {isVolunteerModalOpen && <ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />}
-        {isEmergencyModalOpen && <EmergencyAlertModal isEmergencyModalOpen={isEmergencyModalOpen} setIsEmergencyModalOpen={setIsEmergencyModalOpen} />}
+        {isContactVolunteersModalOpen && <ContactVolunteersModal isContactVolunteersModalOpen={isContactVolunteersModalOpen} setIsContactVolunteersModalOpen={setIsContactVolunteersModalOpen} />}
         {isStatusModalOpen && <EditStatusConfirmationModal isStatusModalOpen={isStatusModalOpen} setIsStatusModalOpen={setIsStatusModalOpen} shift={shift}/>}
         <div className="shift-details">
           <div className="datetime-picker">
@@ -83,7 +83,7 @@ export const ShiftDetails = () => {
             </LocalizationProvider>
             <h4 className="endtime-label">Select Shift(s): </h4>
             <FormControl sx={{ m: .5, width: 250}}>
-              <InputLabel id="shiftsCheckedDropDown" hidden={isEmergencyModalOpen||isStatusModalOpen||isVolunteerModalOpen}>Shift(s)</InputLabel>
+              <InputLabel id="shiftsCheckedDropDown" hidden={isContactVolunteersModalOpen||isStatusModalOpen||isVolunteerModalOpen}>Shift(s)</InputLabel>
               <Select
                 labelId="shiftCheckboxLabel"
                 id="multiShiftCheckboxLabel"
@@ -101,7 +101,7 @@ export const ShiftDetails = () => {
         <div className="shiftdetails-table">
           <ShiftDetailsTable 
             onSignUpVolunteersClick={onSignUpVolunteersClick} 
-            onSendEmergencyAlertClick={onSendEmergencyAlertClick} 
+            onSendVolunteerMessageClick={onSendVolunteerMessageClick} 
             onStatusModalClick={onStatusModalClick}
             stickyHeader={stickyHeader}
             headerZIndex={headerZIndex}/>

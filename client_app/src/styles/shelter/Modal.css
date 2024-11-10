@@ -15,11 +15,12 @@
 
 .close-btn {
   background-color: transparent;
+            top: 0px;
+            right: 0px;
 }
 
 .closeIcon {
   color: black;
   position: absolute;
-  right: 3%;
-  top: 6%;
+
 }
