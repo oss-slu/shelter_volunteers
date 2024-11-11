@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../styles/shelter/ShiftDetails.css";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -33,6 +33,25 @@ export const ShiftDetails = () => {
     const [selectedShifts, setSelectedShift] = useState([]);
     const stickyHeader = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? "static" : "sticky";
     const headerZIndex = (isEmergencyModalOpen || isVolunteerModalOpen || isStatusModalOpen) ? 0 : 1;
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchShiftData = async () => {
+        try {
+          const response = await fetch("/api/shifts"); 
+          if (!response.ok) {
+            throw new Error("failed to fetch shift data");
+          }
+          //const data = await response.json();
+        } catch (err) {
+          setError(err.message); 
+        }
+      }; 
+    
+    fetchShiftData();
+    }, {});
+  
+
 
     const handleChange = (event) => {
       const {
@@ -68,6 +87,9 @@ export const ShiftDetails = () => {
     })))
     }
 
+    if (error) {
+      return <div className="error-message">Error: {error}</div>;
+    }
     return (
       <div>
         {isVolunteerModalOpen && <ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />}

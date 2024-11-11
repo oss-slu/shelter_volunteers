@@ -89,7 +89,7 @@ function ShelterDashboard() {
             <h4>Today's Roster</h4>
             <a href="/shift-details">View all</a>
           </div>
-          <ShiftContainer shiftDetails={shiftDetails} />
+          <ShiftContainer shiftDetails={shiftDetails.slice(0, 3)} /> 
         </div>
         <div className="container-small">
           <h4>Contact Past Volunteers</h4>
