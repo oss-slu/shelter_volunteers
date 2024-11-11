@@ -58,6 +58,13 @@
   max-height: 70vh;
 }
 
+.shiftdetails-container button {
+  max-width: fit-content;
+  border-radius: 10px;
+  margin-bottom: 2%;
+  margin-left: 1%;
+}
+
 table {
   width: 100%;
   overflow-x: auto;
@@ -70,4 +77,8 @@ tbody {
   overflow-y: auto;
   max-height: 60vh;
   min-width: fit-content;
+}
+
+.shiftdetails-container tr {
+  height: 5em;
 }

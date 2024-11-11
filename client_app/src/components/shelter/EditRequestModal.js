@@ -23,18 +23,19 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   };
 
   const renderData = () => (
-    <div>
-      <h3>Edit Shift</h3>
-      <label>
+    <div className="modalEditRequest">
+      <h3 className="editShiftHeader">Edit Shift</h3>
+      <label className="fromLabel">
         From Time:
         <input
           type="text"
           name="fromTime"
           value={updatedShift.fromTime}
           onChange={handleChange}
+          className="shiftTime"
         />
       </label>
-      <label>
+      <label className="toLabel">
         To Time:
         <input
           type="text"
@@ -43,7 +44,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
           onChange={handleChange}
         />
       </label>
-      <label>
+      <label className="volunteersRequestedLabel">
         Volunteers Requested:
         <input
           type="number"
@@ -52,8 +53,8 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
           onChange={handleChange}
         />
       </label>
-      <button onClick={handleSave}>Save</button>
-      <button onClick={onClose}>Cancel</button>
+      <button className="saveButton" onClick={handleSave}>Save</button>
+      <button className="cancelButton" onClick={onClose}>Cancel</button>
     </div>
   );
 

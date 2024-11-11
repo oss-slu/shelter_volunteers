@@ -10,7 +10,8 @@
     margin-top: 15px; 
   }
   
-  .button-container button {
+  .confirmationButton, 
+  .cancellationButton {
     padding: 10px 20px;
     background-color: #1e4c5b;
     color: white;

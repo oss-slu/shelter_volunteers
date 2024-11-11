@@ -21,8 +21,8 @@ export const NotifyVolunteersModal = ({ isOpen, onClose, onNotify }) => {
         placeholder="Type your message here..."
       />
       <div className="button-container">
-        <button onClick={handleNotify}>Send Notification</button>
-        <button onClick={onClose}>Cancel</button>
+        <button className="notifyButton" onClick={handleNotify}>Send Notification</button>
+        <button className="cancelButton" onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

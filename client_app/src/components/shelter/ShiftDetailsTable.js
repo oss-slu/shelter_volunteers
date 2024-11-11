@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "../../styles/shelter/ShiftDetailsTable.css";
 import { shiftDetailsData } from './ShiftDetailsData.tsx';
 import Tooltip from "@mui/material/Tooltip";
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faCheck, faX, faPenToSquare, faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { shiftDetailsAlwaysShowCols,  shiftDetailsColumnsToRender} from "./ShelterConstants.tsx";
 
 export const ShiftDetailsTable = props => {
   const navigate = useNavigate();
@@ -17,6 +18,18 @@ export const ShiftDetailsTable = props => {
     stickyHeader,
     headerZIndex,
     } = props;
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 430);
+  const colsToRender = isMobileView ? shiftDetailsAlwaysShowCols : shiftDetailsColumnsToRender;
+  const [areColsExpanded, setAreColsExpanded] = useState(false);
+  let prevStartDate = "0/0/0000";
+
+  useEffect(() => {
+    const handleResize = () => setIsMobileView(window.innerWidth < 430);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   const emailButton = () => {
     return (
@@ -93,32 +106,52 @@ export const ShiftDetailsTable = props => {
     }
   }
 
+  const renderCondensedCols = () => {
+    return (shiftDetailsData.data.map((shift) => (
+      <tr key={shift.id} style={{background:getShiftColor(shift)}}>
+        <td>{format(shift.startTime, "MM/dd/yyyy")}</td>
+        <td>{shift.name ? shift.name + ": " + format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'") : format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'")}</td>
+        <td>{renderCoverage(shift)}</td>
+      </tr>)))
+  }
+
+  const renderAllCols = () => {
+    return (shiftDetailsData.data.map((shift) => (
+      <tr key={shift.id} style={{background:getShiftColor(shift)}}>
+        <td>{format(shift.startTime, "MM/dd/yyyy")}</td>
+        <td>{shift.name ? shift.name + ": " + format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'") : format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'")}</td>
+        <td>{renderCoverage(shift)}</td>
+        <td>{viewRosterButton()}</td>
+        <td>{shift.status ? openStatusButton(shift) : closedStatusButton(shift)}</td>
+        <td>{editButton(shift)}</td>
+        <td>{emailButton()}</td>
+      </tr>
+    )))
+  }
+
+  const getShiftColor = shift => {
+    if (format(shift.startTime, "MM/dd/yyyy") != prevStartDate) {
+      prevStartDate = format(shift.startTime, "MM/dd/yyyy");
+      return "#e6e6e6";
+    } else {
+      return "white";
+    }
+  }
+
   return (
     <div className="shiftdetails-container">
+      {(!areColsExpanded && isMobileView) && <button onClick={() => {setAreColsExpanded(true)}}>View All Columns</button>}
+      {(isMobileView && areColsExpanded) && <button onClick={() => {setAreColsExpanded(false)}}>Collapse Columns</button>}
       <table className="shiftsTable">
         <thead className="shiftsTableHeader" style={{position:stickyHeader,zIndex:headerZIndex,top:-1}}>
           <tr>
-            <th>Date</th>
-            <th>Shift</th>
-            <th>Coverage</th>
-            <th>View Volunteers</th>
-            <th>Open/Close Sign Up</th>
-            <th>Edit Shift</th>
-            <th>Contact Volunteers</th>
+            {colsToRender.map((label) => (
+              <th key={label}>{label}</th>
+            ))}
           </tr>
         </thead>
         <tbody className="shiftsTableBody">
-          {shiftDetailsData.data.map((shift) => (
-            <tr key={shift.id}>
-              <td>{format(shift.startTime, "MM/dd/yyyy")}</td>
-              <td>{shift.name ? shift.name + ": " + format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'") : format(shift.startTime, "hh:mm aaaaa'm'") + ' - ' + format(shift.endTime, "hh:mm aaaaa'm'")}</td>
-              <td>{renderCoverage(shift)}</td>
-              <td>{viewRosterButton()}</td>
-              <td>{shift.status ? openStatusButton(shift) : closedStatusButton(shift)}</td>
-              <td>{editButton(shift)}</td>
-              <td>{emailButton()}</td>
-            </tr>
-          ))}
+          {(isMobileView && !areColsExpanded) ? renderCondensedCols() : renderAllCols()}
         </tbody>
       </table>
     </div>
