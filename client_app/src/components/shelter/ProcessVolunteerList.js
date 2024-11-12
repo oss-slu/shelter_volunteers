@@ -21,47 +21,52 @@ const ProcessVolunteerList = ({shiftDetails}) => {
         index === self.findIndex(e => e.worker === entry.worker && e.email === entry.email)
     );
 
+    const renderVolunteerTable = () => (
+      <table>
+        <thead>
+          <tr>
+            <th>
+              <h3>#</h3>
+            </th>
+            <th>
+              <h3>Volunteer Name</h3>
+            </th>
+            <th>
+              <h3>Volunteer Email</h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {uniqueWorkerList.map((list, index) => (
+            <tr key={index}>
+              <td>
+                <p>{index + 1}</p>
+              </td>
+              <td>
+                <p>{list.worker}</p>
+              </td>
+              <td>
+                <a href={`mailto:${list.email}`}>
+                  <p>{list.email}</p>
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+
     return (
       <>
         <div className="conf-page">
           <h1>Past Volunteers</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  <h3>#</h3>
-                </th>
-                <th>
-                  <h3>Volunteer Name</h3>
-                </th>
-                <th>
-                  <h3>Volunteer Email</h3>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {uniqueWorkerList.length > 0 ? (uniqueWorkerList.map((list, index) => (
-                <tr key={index}>
-                  <td>
-                    <p>{index+1}</p>
-                  </td>
-                  <td>
-                    <p>{list.worker}</p>
-                  </td>
-                  <td>
-                    <a href={`mailto:${list.email}`}>
-                      <p>{list.email}</p>
-                    </a>
-                  </td>
-                </tr>
-              ))
-              ) : (
-                <tr>
-                  <td colSpan="100%" style={{textAlign: "center"}}>No volunteers available.</td>
-                </tr>
-             )}
-            </tbody>
-          </table>
+          {(!uniqueWorkerList || uniqueWorkerList.length === 0) ? (
+            <div>
+              <span>No past volunteers available.</span>
+            </div>
+          ) : (
+            renderVolunteerTable()
+          )}
           <br />
           <div className="button-row">
             <Link to="/shelter-dashboard" onClick={handleReload}>
