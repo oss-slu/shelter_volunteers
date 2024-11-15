@@ -77,6 +77,7 @@ def get_volunteers_use_case(repo, request, shelter):
                 found = True
                 staff.count+=worker.count
                 staff.worker+=", "+worker.worker
+                staff.email+=", "+worker.email
                 # if worker and staff have different end time, we know
                 # that worker end time must be after staff end time
                 # as shown in case 2 comment. This is because all workers
@@ -90,7 +91,8 @@ def get_volunteers_use_case(repo, request, shelter):
                                         "start_time":staff.end_time, 
                                         "end_time":worker.end_time,
                                         "count":worker.count,
-                                        "worker":worker.worker
+                                        "worker":worker.worker,
+                                        "email":worker.email
                                     }))
             # since all staff were sorted by start time, then end time,
             # we know that worker start time cannot be before staff start time
@@ -105,13 +107,15 @@ def get_volunteers_use_case(repo, request, shelter):
                     {"start_time":worker.start_time,
                      "end_time":worker.end_time,
                      "count":staff.count+worker.count,
-                     "worker":staff.worker+", "+worker.worker})
+                     "worker":staff.worker+", "+worker.worker,
+                     "email":staff.email+", "+worker.email})
 
                 insert_staff2 = Volunteer.from_dict(
                                     {"start_time":worker.end_time,
                                      "end_time":staff.end_time,
                                      "count":staff.count,
-                                     "worker":staff.worker}
+                                     "worker":staff.worker,
+                                     "email":staff.email}
                                 )
                 staff.end_time = worker.start_time
                 workers.append(insert_staff1)
@@ -137,7 +141,8 @@ def get_volunteers_use_case(repo, request, shelter):
                                     {"start_time":worker.start_time,
                                      "end_time":staff.end_time,
                                      "count":staff.count+worker.count,
-                                     "worker":staff.worker+", "+worker.worker})
+                                     "worker":staff.worker+", "+worker.worker,
+                                     "email":staff.email+", "+worker.email})
                               )
 
                 if not worker.end_time == staff.end_time:
@@ -145,7 +150,8 @@ def get_volunteers_use_case(repo, request, shelter):
                                     {"start_time":staff.end_time,
                                      "end_time":worker.end_time,
                                      "count":worker.count,
-                                     "worker":worker.worker}
+                                     "worker":worker.worker,
+                                     "email":worker.email}
                                    ))
                 staff.end_time = worker.start_time
             if found:
@@ -173,6 +179,7 @@ def make_staffing_from_shifts(shifts):
                                              "end_time":shift.end_time,
                                              "count":1,
                                              "worker":shift.first_name + " "
-                                             + shift.last_name}))
+                                             + shift.last_name,
+                                             "email":shift.worker}))
     return workers
 

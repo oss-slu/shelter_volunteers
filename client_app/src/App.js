@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
-//import { PastShifts } from "./components/volunteer/Shifts";
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
 import NavBarVolunteerDashboard from "./components/volunteer/NavBarVolunteerDashboard";
@@ -21,7 +20,7 @@ function App() {
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/cancel-shifts", "/upcoming-requests"].includes(
+        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
           window.location.pathname,
         ) ? (
           <NavBarShelterDashboard auth={auth} />

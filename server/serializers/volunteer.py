@@ -13,6 +13,7 @@ class VolunteerJsonEncoder(json.JSONEncoder):
                 "end_time": volunteer.end_time,
                 "count": volunteer.count,
                 "worker": volunteer.worker,
+                "email": volunteer.email
             }
             return to_serialize
         except AttributeError:

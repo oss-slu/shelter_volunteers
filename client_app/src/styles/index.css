@@ -398,6 +398,13 @@ button {
   margin-right: 15px;
 }
 
+.container-align {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 98%;
+}
+
 .shelter-dashboard .shift-card,
 .shelter-dashboard .volunteer-card {
   background-color: #3498db; /* Adjusted card color */

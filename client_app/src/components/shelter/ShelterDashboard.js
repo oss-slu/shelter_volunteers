@@ -9,10 +9,11 @@ import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
-
+import AllVolunteers from "./AllVolunteers";
 
 function ShelterDashboard() {
   const [shiftDetails, setShiftDetails] = useState([]);
+  const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   let shelterId = 30207;
   let startTime = 
       setHours(
@@ -64,38 +65,51 @@ function ShelterDashboard() {
 
   return (
     <div>
-      <div className="shelter-dashboard">
-        <div className="container-large">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "98%",
-            }}>
-            <h4>Open requests</h4>
-            <a href="/shift-details">View all</a>
+      {!showAllPastVolunteers && (
+        <div className="shelter-dashboard">
+          <div className="container-large">
+            <div className="container-align">
+              <h4>Open requests</h4>
+              <a href="/shift-details">View all</a>
+            </div>
+            <OpenRequest />
           </div>
-          <OpenRequest />
-        </div>
-        <div className="container-medium">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "98%",
-            }}>
-            <h4>Today's Roster</h4>
-            <a href="/shift-details">View all</a>
+          <div className="container-medium">
+            <div className="container-align">
+              <h4>Today's Roster</h4>
+              <a href="/shift-details">View all</a>
+            </div>
+            <ShiftContainer shiftDetails={shiftDetails} />
           </div>
-          <ShiftContainer shiftDetails={shiftDetails} />
+          <div className="container-small">
+            <div className="container-align">
+              <h4>Contact Past Volunteers</h4>
+              <button
+                style={{
+                  backgroundColor: "#f9f6f6",
+                  border: "none",
+                  outline: "none",
+                  color: "#1F75FE",
+                  fontSize: "1.0rem",
+                  textDecoration: "underline",
+                  textAlign: "center",
+                  padding: "0",
+                  marginTop: "-5px"
+                }}
+                onClick={() => setShowAllPastVolunteers(true)}
+                >
+                View all
+              </button>
+            </div>
+            <PastVolunteersContainer shiftDetails={shiftDetails} />
+          </div>
         </div>
-        <div className="container-small">
-          <h4>Contact Past Volunteers</h4>
-          <PastVolunteersContainer shiftDetails={shiftDetails} />
+      )}
+      {showAllPastVolunteers && (
+        <div>
+          <AllVolunteers shiftDetails={shiftDetails} />
         </div>
-      </div>
+      )}
     </div>
   );
 }
