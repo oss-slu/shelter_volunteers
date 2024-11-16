@@ -19,8 +19,8 @@ export const ShiftDetailsTable = props => {
     headerZIndex,
     } = props;
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 430);
-  const colsToRender = isMobileView ? shiftDetailsAlwaysShowCols : shiftDetailsColumnsToRender;
   const [areColsExpanded, setAreColsExpanded] = useState(false);
+  const colsToRender = (isMobileView && !areColsExpanded) ? shiftDetailsAlwaysShowCols : shiftDetailsColumnsToRender;
   let prevStartDate = "0/0/0000";
 
   useEffect(() => {
