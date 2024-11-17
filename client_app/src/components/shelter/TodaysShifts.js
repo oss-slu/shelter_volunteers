@@ -1,47 +1,45 @@
 import React from 'react';
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import "../../styles/shelter/TodayShifts.css"; 
-import { format, isSameDay } from "date-fns";
+//import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+//import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import "../../styles/shelter/TodaysShifts.css"; 
+//import { format, isSameDay } from "date-fns";
 
 const TodayShifts = ({ shiftDetails }) => {
-    const today = new Date();
+  const today = new Date();
 
-    //filtereing shifts here
-    const todayShifts = shiftDetails.filter(shift =>
-        isSameDay(new Date(shift.start_time), today)
-    );
+  const todayShifts = shiftDetails.filter(shift =>
+    new Date(shift.start_time).toDateString() === today.toDateString()
+  );
 
-    return (
-      <div className="today-shifts-container">
-        {todayShifts.length > 0 ? (
-          todayShifts.map((shift, index) => (
-            <div key={index} className="shift-item-container">
-              <div className="shift-item">
-                <AccountCircleIcon />
-                <span>
-                  {format(new Date(shift.start_time), "hh:mm aaaa")} - {format(new Date(shift.end_time), "hh:mm aaaa")}
-                </span>
-                <NotificationsNoneIcon />
-              </div>
-              <div className="volunteers-list">
-                {shift.worker ? (
-                  shift.worker.split(", ").map((name, i) => (
-                    <span key={i} className="volunteer-name">
-                      {name}
-                    </span>
-                  ))
-                ) : (
-                  <span>No volunteers assigned.</span>
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <span>No shifts available for today.</span>
-        )}
-      </div>
-    );
-}
+  return (
+    <div className="today-shifts-container">
+      {todayShifts.length > 0 ? (
+        <table className="shifts-table">
+          <thead>
+            <tr>
+              <th>Shift Name</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Volunteers</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todayShifts.map((shift, index) => (
+              <tr key={index}>
+                <td>{shift.name || "No Name"}</td>
+                <td>{new Date(shift.start_time).toLocaleTimeString()}</td>
+                <td>{new Date(shift.end_time).toLocaleTimeString()}</td>
+                <td>{shift.worker || "No Volunteers"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No shifts available for today.</p>
+      )}
+    </div>
+  );
+};
 
 export default TodayShifts;
+

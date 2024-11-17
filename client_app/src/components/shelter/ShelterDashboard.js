@@ -1,7 +1,7 @@
 import React from "react";
 import OpenRequest from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
-import ShiftContainer from "./ShiftContainer";
+//import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
 import { useState, useRef, useEffect } from "react";
 import setHours from "date-fns/setHours";
@@ -9,6 +9,7 @@ import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
+import TodaysShiftsContainer from "./TodaysShiftsContainer";
 
 
 function ShelterDashboard() {
@@ -75,9 +76,22 @@ function ShelterDashboard() {
         <div className="container-medium">
           <div className="container-align">
             <h4>Today's Roster</h4>
-            <a href="/shift-details">View all</a>
+            <button
+              style={{
+                backgroundColor: "#f9f6f6",
+                border: "none",
+                outline: "none",
+                color: "#0066b2",
+                fontSize: "1.0rem",
+                textDecoration: "underline",
+                textAlign: "center",
+                padding: "0",
+                cursor: "pointer",
+              }}>
+              View all
+            </button>
           </div>
-          <ShiftContainer shiftDetails={shiftDetails.slice(0, 3)} /> 
+          <TodaysShiftsContainer shiftDetails={shiftDetails} /> 
         </div>
         <div className="container-small">
           <div className="container-align">
