@@ -7,7 +7,6 @@ const handleReload = () => {
 const ProcessTodaysShiftsList = ({ shiftDetails }) => {
   const currentDate = new Date().toDateString();
 
-  // Filter shifts for today
   const todaysShifts = shiftDetails.filter(
     (item) => new Date(item.start_time).toDateString() === currentDate
   );
@@ -20,7 +19,7 @@ const ProcessTodaysShiftsList = ({ shiftDetails }) => {
             <h3>#</h3>
           </th>
           <th>
-            <h3>Shift Name</h3>
+            <h3>Volunteer Name</h3>
           </th>
           <th>
             <h3>Start Time</h3>
@@ -31,22 +30,20 @@ const ProcessTodaysShiftsList = ({ shiftDetails }) => {
         </tr>
       </thead>
       <tbody>
-        {todaysShifts.map((shift, index) => (
-          <tr key={index}>
-            <td>
-              <p>{index + 1}</p>
-            </td>
-            <td>
-              <p>{shift.name}</p>
-            </td>
-            <td>
-              <p>{new Date(shift.start_time).toLocaleTimeString()}</p>
-            </td>
-            <td>
-              <p>{new Date(shift.end_time).toLocaleTimeString()}</p>
-            </td>
-          </tr>
-        ))}
+        {todaysShifts.map((shift, shiftIndex) => {
+          const volunteers = shift.worker
+            ? shift.worker.split(",").map((name) => name.trim()) 
+            : ["No Volunteers"]; 
+
+          return volunteers.map((volunteer, volunteerIndex) => (
+            <tr key={`${shiftIndex}-${volunteerIndex}`}>
+              <td>{shiftIndex + 1}</td>
+              <td>{volunteer}</td>
+              <td>{new Date(shift.start_time).toLocaleTimeString()}</td>
+              <td>{new Date(shift.end_time).toLocaleTimeString()}</td>
+            </tr>
+          ));
+        })}
       </tbody>
     </table>
   );
@@ -74,3 +71,4 @@ const ProcessTodaysShiftsList = ({ shiftDetails }) => {
 };
 
 export default ProcessTodaysShiftsList;
+

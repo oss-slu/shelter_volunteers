@@ -10,7 +10,6 @@ import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
 import AllVolunteers from "./AllVolunteers";
-import TodaysShiftsContainer from "./TodaysShiftsContainer";
 import AllTodaysShifts from "./AllTodaysShifts";
 
 
@@ -94,12 +93,11 @@ function ShelterDashboard() {
                   padding: "0",
                   marginTop: "-5px",
                 }}
-                onClick={() => setShowAllTodaysShifts(true)} // Show detailed view
+                onClick={() => setShowAllTodaysShifts(true)} 
               >
                 View all
               </button>
             </div>
-            {/* Compact View of Today's Roster */}
             <ShiftContainer shiftDetails={shiftDetails} />
           </div>
           <div className="container-small">
@@ -126,7 +124,6 @@ function ShelterDashboard() {
           </div>
         </div>
       )}
-      {/* Detailed View for Today's Roster */}
       {showAllTodaysShifts && (
         <div>
           <AllTodaysShifts shiftDetails={shiftDetails} />
@@ -140,7 +137,7 @@ function ShelterDashboard() {
               marginTop: "10px",
               borderRadius: "5px",
             }}
-            onClick={() => setShowAllTodaysShifts(false)} // Go back to compact view
+            onClick={() => setShowAllTodaysShifts(false)} 
           >
           </button>
         </div>
