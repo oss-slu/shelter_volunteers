@@ -3,8 +3,8 @@ export const shiftDetailsData = {
       {
         id: 1,
         name: "Morning",
-        startTime: 1728572400000,
-        endTime: 1728586800000,
+        startTime: 1731284457000,
+        endTime: 1731306057000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 2,
         desiredVolunteers: 8,
@@ -13,8 +13,8 @@ export const shiftDetailsData = {
       },
       {
         id: 2,
-        startTime: 1728572400000,
-        endTime: 1728586800000,
+        startTime: 1731284457000,
+        endTime: 1731306057000,
         requiredVolunteers: 3,
         currentSignedUpVolunteers: 6,
         desiredVolunteers: 8,

@@ -1,4 +1,4 @@
-.modalComponent {
+.modalEditRequest {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,12 +9,12 @@
     border-radius: 8px;
   }
   
-  .modalComponent h3 {
+  .editShiftHeader {
     margin-bottom: 20px;
     font-size: 1.5em;
   }
   
-  .modalComponent label {
+  .fromLabel {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -24,7 +24,7 @@
     font-size: 1em;
   }
   
-  .modalComponent input {
+  .shiftTime {
     padding: 8px;
     width: 60%;
     border: 1px solid #ccc;
@@ -39,21 +39,12 @@
     margin-top: 20px;
   }
   
-  .modalComponent button {
+  .saveButton, .cancelButton {
     padding: 8px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin: 0 100px;
-  }
-  
-  .modalComponent .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
   }
 
 

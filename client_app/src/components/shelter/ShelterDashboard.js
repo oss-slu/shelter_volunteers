@@ -12,7 +12,6 @@ import { SERVER } from "../../config";
 import AllVolunteers from "./AllVolunteers";
 import AllTodaysShifts from "./AllTodaysShifts";
 
-
 function ShelterDashboard() {
   const [shiftDetails, setShiftDetails] = useState([]);
   const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
@@ -140,6 +139,7 @@ function ShelterDashboard() {
             onClick={() => setShowAllTodaysShifts(false)} 
           >
           </button>
+
         </div>
       )}
       {showAllPastVolunteers && (

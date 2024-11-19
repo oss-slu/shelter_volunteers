@@ -17,8 +17,8 @@ export const CancelRequestModal = ({ isOpen, onClose, shift, onConfirmCancel }) 
         <h3>Confirm Cancellation</h3>
         <p className="message-text">Are you sure you want to cancel the shift scheduled on {shift.date} from {shift.fromTime} to {shift.toTime}?</p>
         <div className="button-container">
-          <button onClick={handleConfirm}>Yes, Cancel</button>
-          <button onClick={onClose}>No, Keep</button>
+          <button className="confirmationButton" onClick={handleConfirm}>Yes, Cancel</button>
+          <button className="cancellationButton" onClick={onClose}>No, Keep</button>
         </div>
       </div>
     );
