@@ -14,8 +14,6 @@ import RequestForHelp from "./components/shelter/RequestForHelp";
 import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
-import TodaysShifts from "./components/shelter/TodaysShifts";
-
 
 function App() {
   const [auth, setAuth] = useState(false);

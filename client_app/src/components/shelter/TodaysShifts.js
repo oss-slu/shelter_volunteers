@@ -7,7 +7,7 @@ const TodaysShifts = ({ shiftDetails }) => {
     (shift) => new Date(shift.start_time).toDateString() === today.toDateString()
   );
 
-  console.log("Today's Shifts:", todayShifts);
+  todayShifts.length;
 
   return null; 
 };
