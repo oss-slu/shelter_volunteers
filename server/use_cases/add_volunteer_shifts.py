@@ -1,7 +1,7 @@
 """
 This module contains the use case for adding work shifts.
 """
-# from domains.shift import Shift
+from domains.work_shift import WorkShift
 
 
 def workshift_add_use_case(repo, new_shift, existing_shifts):
@@ -28,9 +28,9 @@ def workshift_add_multiple_use_case(repo, work_shifts, user_id):
     if not work_shifts:
         return []
     
-    # add the Volunteer object in the repo and 
-    # create get_shifts_for_volunteer function
-    # to get the value of the sign_up_shifts
+    #add the Volunteer object in the repo and
+    #create get_shifts_for_volunteer function
+    #to get the value of the sign_up_shifts
     existing_shifts = repo.get_shifts_for_volunteer(user_id) 
     responses = []
 
