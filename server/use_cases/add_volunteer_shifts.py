@@ -28,7 +28,8 @@ def workshift_add_multiple_use_case(repo, work_shifts, user_id):
     if not work_shifts:
         return []
     
-    # add the Volunteer object in the repo and create get_shifts_for_volunteer function
+    # add the Volunteer object in the repo and 
+    # create get_shifts_for_volunteer function
     # to get the value of the sign_up_shifts
     existing_shifts = repo.get_shifts_for_volunteer(user_id) 
     responses = []
