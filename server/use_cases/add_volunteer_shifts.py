@@ -35,7 +35,7 @@ def shift_add_multiple_use_case(repo, work_shifts, user_id):
 
     for work_shift_dict in work_shifts:
         new_shift = WorkShift.from_dict(work_shift_dict)
-        add_response = workshift_add_use_case(repo, new_shift, existing_shifts)
+        add_response = shift_add_use_case(repo, new_shift, existing_shifts)
         shift_id=str(new_shift.get_id())
         response_item = {"code": shift_id, "success": add_response["success"]}
         if not add_response["success"]:
