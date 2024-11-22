@@ -4,7 +4,7 @@ This module contains the use case for adding work shifts.
 from domains.work_shift import WorkShift
 
 
-def workshift_add_use_case(repo, new_shift, existing_shifts):
+def shift_add_use_case(repo, new_shift, existing_shifts):
     """
     The function adds a work shift into the chosen database
     after checking for overlaps with existing shifts.
@@ -21,17 +21,16 @@ def workshift_add_use_case(repo, new_shift, existing_shifts):
             "message": "Shift added successfully"}
 
 
-def workshift_add_multiple_use_case(repo, work_shifts, user_id):
+def shift_add_multiple_use_case(repo, work_shifts, user_id):
     """
     Adds multiple work shifts into the database after checking for overlap.
     """
     if not work_shifts:
         return []
-    
     #add the Volunteer object in the repo and
     #create get_shifts_for_volunteer function
     #to get the value of the sign_up_shifts
-    existing_shifts = repo.get_shifts_for_volunteer(user_id) 
+    existing_shifts = repo.get_shifts_for_volunteer(user_id)
     responses = []
 
     for work_shift_dict in work_shifts:
