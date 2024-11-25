@@ -9,7 +9,7 @@ class VolunteerJsonEncoder(json.JSONEncoder):
         """Encode a WorkShift object to JSON."""
         try:
             to_serialize = {
-               "email": volunteer.email,
+                "email": volunteer.email,
                 "first_name": volunteer.first_name,
                 "last_name": volunteer.last_name,
                 "phone_number": volunteer.phone_number,
