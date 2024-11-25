@@ -13,7 +13,7 @@ class VolunteerJsonEncoder(json.JSONEncoder):
                 "first_name": volunteer.first_name,
                 "last_name": volunteer.last_name,
                 "phone_number": volunteer.phone_number,
-                "signed_up_shifts": volunteer.signed_up_shifts, #need to check this one, just a placeholder for now
+                "signed_up_shifts": volunteer.signed_up_shifts,
             }
             return to_serialize
         except AttributeError:
