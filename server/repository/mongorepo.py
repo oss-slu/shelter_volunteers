@@ -80,11 +80,13 @@ class MongoRepo:
         self.collection.delete_one({"_id": ObjectId(shift_id)})
         return
     
-    def delete_volunteer_shift(self, shift_id, user_id): 
+    def delete_volunteer_shift(self, shift_id, user_id):
         """
-        Removes the shift instance in volunteer's shifts from the database
+        Removes the shift instance in 
+        volunteer's shifts from the database.
         """
-        self.collection.update_one({"id": user_id}, {"$pull": {"signed_up_shifts": shift_id}})
+        self.collection.update_one({"id": user_id},
+                                   {"$pull": {"signed_up_shifts": shift_id}})
         return
 
     def get_shifts_for_user(self, user_id):
