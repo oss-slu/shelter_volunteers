@@ -16,7 +16,7 @@ def delete_shift_use_case(repo, shift_id, user_email):
         volunteer = repo.get_by_id(user_email)
 
         if volunteer is None:
-            return ResponseFailure(ResponseTypes.NOT_FOUND, 
+            return ResponseFailure(ResponseTypes.NOT_FOUND,
                               "Volunteer not found")
 
         if shift_id not in volunteer.signed_up_shifts:
