@@ -41,7 +41,7 @@ class MemRepo:
             if item["_id"] == shift_id:
                 self.data.remove(item)
                 return
-    
+
     def delete_shift_use_case(self, shift_id, user_id):
         for item in self.data:
             if shift_id in item["signed_up_shifts"] and item["id"] == user_id:
