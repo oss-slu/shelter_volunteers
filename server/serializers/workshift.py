@@ -22,3 +22,4 @@ class WorkJsonEncoder(json.JSONEncoder):
             return to_serialize
         except AttributeError:
             return super().default(work)
+        

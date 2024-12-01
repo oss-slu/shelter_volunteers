@@ -40,3 +40,4 @@ class Work:
         representation of the object.
         """
         return dataclasses.asdict(self)
+    
