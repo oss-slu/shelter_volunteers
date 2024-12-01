@@ -8,11 +8,11 @@ class Volunteer:
     Data class for keeping track of the number of workers and which workers
     signed up for a given time interval
     """
-    start_time: int
-    end_time: int
-    count: int
-    worker: str
     email: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    signed_up_shifts: list[int] #shift ids in array 
 
     @classmethod
     def from_dict(self, d):
