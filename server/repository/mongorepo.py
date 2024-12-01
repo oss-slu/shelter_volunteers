@@ -80,6 +80,7 @@ class MongoRepo:
         self.collection.delete_one({"_id": ObjectId(shift_id)})
         return
 
+    # This is the logic connecting the the DB for deleting a shift
     def delete_volunteer_shift(self, shift_id, user_id):
         """
         Removes the shift instance in 
