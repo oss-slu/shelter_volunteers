@@ -3,16 +3,16 @@ This module handles data conversion from dictionary to class obj or vice versa
 """
 import dataclasses
 @dataclasses.dataclass
-class Volunteer:
+class ShelterVolunteer:
     """
     Data class for keeping track of the number of workers and which workers
     signed up for a given time interval
     """
-    start_time: int
-    end_time: int
-    count: int
-    worker: str
     email: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    signed_up_shifts: list[int]
 
     @classmethod
     def from_dict(self, d):
@@ -28,4 +28,3 @@ class Volunteer:
         representation of the object
         """
         return dataclasses.asdict(self)
-    

@@ -11,13 +11,12 @@ class WorkShiftJsonEncoder(json.JSONEncoder):
         try:
             to_serialize = {
                 "_id": str(workshift.get_id()),
-                "shelter_id": workshift.shelter_id,
-                "shift_name": workshift.shift_name,
+                "worker": workshift.worker,
+                "first_name": workshift.first_name,
+                "last_name": workshift.last_name,
+                "shelter": workshift.shelter,
                 "start_time": workshift.start_time,
                 "end_time": workshift.end_time,
-                "required_volunteer_count": workshift.required_volunteer_count,
-                "max_volunteer_count": workshift.max_volunteer_count,
-                "can_sign_up": workshift.can_sign_up,
             }
             return to_serialize
         except AttributeError:

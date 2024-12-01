@@ -6,16 +6,17 @@ import dataclasses
 
 
 @dataclasses.dataclass
-class WorkShift:
+class Work:
     """
     Data class for workshift releated data
     """
-    worker: str
-    first_name: str
-    last_name: str
-    shelter: int
-    start_time: int  # number of milliseconds since the Epoch in UTC
+    shelter_id: int
+    shift_name: str
+    start_time: int  # Number of milliseconds since the Epoch in UTC
     end_time: int
+    required_volunteer_count: int
+    max_volunteer_count: int
+    can_sign_up: bool
     _id: uuid.UUID = None
 
     def get_id(self):
