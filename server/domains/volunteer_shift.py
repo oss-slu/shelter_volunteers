@@ -1,6 +1,7 @@
 """
 This module handles data conversion from dictionary to class obj or vice versa
 """
+from typing import List
 import dataclasses
 @dataclasses.dataclass
 class ShelterVolunteer:
@@ -12,7 +13,7 @@ class ShelterVolunteer:
     first_name: str
     last_name: str
     phone_number: str
-    signed_up_shifts: list[int]
+    signed_up_shifts: List[int]
 
     @classmethod
     def from_dict(self, d):
