@@ -1,7 +1,7 @@
 """
 This module contains the use case for adding work shifts.
 """
-from domains.work_shift import WorkShift
+from domains.workshift import Work
 
 
 def shift_add_use_case(repo, new_shift, existing_shifts):
@@ -34,7 +34,7 @@ def shift_add_multiple_use_case(repo, work_shifts, user_id):
     responses = []
 
     for work_shift_dict in work_shifts:
-        new_shift = WorkShift.from_dict(work_shift_dict)
+        new_shift = Work.from_dict(work_shift_dict)
         add_response = shift_add_use_case(repo, new_shift, existing_shifts)
         shift_id=str(new_shift.get_id())
         response_item = {"code": shift_id, "success": add_response["success"]}
