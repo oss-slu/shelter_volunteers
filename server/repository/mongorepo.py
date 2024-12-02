@@ -80,6 +80,16 @@ class MongoRepo:
         self.collection.delete_one({"_id": ObjectId(shift_id)})
         return
 
+    # This is the logic connecting the the DB for deleting a shift
+    def delete_volunteer_shift(self, shift_id, user_id):
+        """
+        Removes the shift instance in 
+        volunteer's shifts from the database.
+        """
+        self.collection.update_one({"id": user_id},
+                                   {"$pull": {"signed_up_shifts": shift_id}})
+        return
+
     def get_shifts_for_user(self, user_id):
         """
         Retrieves all work shifts for a specific user from the database.
