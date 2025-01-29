@@ -71,7 +71,8 @@ def get_volunteers(shelter_id):
     On GET: The function returns volunteer counts and usernames for times 
     that are specified by parameters.
     """
-    repo = mongorepo.MongoRepo(app_configuration())
+    db_config = db_configuration()
+    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -90,7 +91,8 @@ def counts(shelter_id):
     On GET: The function returns volunteer counts for times that are
     specified by parameters.
     """
-    repo = mongorepo.MongoRepo(app_configuration())
+    db_config = db_configuration()
+    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -109,7 +111,8 @@ def work_shifts():
     On GET: The function returns a list of all work shifts in the system.
     On POST: The function adds shifts to the system.
     """
-    repo = mongorepo.MongoRepo(app_configuration())
+    db_config = db_configuration()
+    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
     user = get_user_from_token(request.headers)
 
     if not user[0]:
@@ -150,7 +153,8 @@ def work_shifts():
             )
 
     elif request.method == "POST":
-        repo = mongorepo.MongoRepo(app_configuration())
+        db_config = db_configuration()
+        repo = mongorepo.MongoRepo(db_config[0], db_config[1])
         user, first_name, last_name = get_user_from_token(request.headers)
         if not user:
             return jsonify({"message": "Invalid or missing token"}), \
@@ -199,7 +203,8 @@ def delete_work_shift(shift_id):
     shift_id = str(shift_id)
     user_email = get_user_from_token(request.headers)
 
-    repo = mongorepo.MongoRepo(app_configuration())
+    db_config = db_configuration()
+    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
 
     response = delete_shift_use_case(repo, shift_id, user_email[0])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
@@ -250,6 +255,6 @@ def login():
     return Response(json.dumps(response.json()),
         mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
 
-def app_configuration():
-    result = manage.read_json_configuration("mongo_config")
-    return result
+def db_configuration():
+    #result = manage.read_json_configuration("mongo_config")
+    return (current_app.config["MONGODB_URI"], current_app.config["MONGODB_DATABASE"])

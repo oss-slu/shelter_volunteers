@@ -2,6 +2,7 @@
 Module handles the mongo DB operations
 """
 import pymongo
+import certifi
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
 
@@ -9,15 +10,12 @@ class MongoRepo:
     """
     A mongo repository for storing work shifts.
     """
-    def __init__(self, configuration):
+    def __init__(self, uri, database):
         """
         Initialize the repo with passed data.
         """
-        client = pymongo.MongoClient(
-            host=configuration["MONGODB_HOSTNAME"],
-            port=int(configuration["MONGODB_PORT"]),
-        )
-        self.db = client[configuration["APPLICATION_DB"]]
+        client = pymongo.MongoClient(uri)
+        self.db = client[database]
         self.collection = self.db.shifts
 
     def _create_shift_objects(self, results):
