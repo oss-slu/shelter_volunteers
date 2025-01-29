@@ -1,12 +1,19 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Shelters from "./Shelters";
-import { UpcomingShifts } from "./Shifts";
+import { UpcomingShifts, PastShifts } from "./Shifts";
 
 function VolunteerDashboard() {
   const navigate = useNavigate();
+  const [impactData, setImpactData] = useState({
+    totalHours: 0,
+    sheltersServed: 0,
+  });
+
   function signupClick() {
     navigate("/shelters");
   }
+
   return (
     <div className="volunteer-dashboard">
       <div className="column column-1">
@@ -23,20 +30,21 @@ function VolunteerDashboard() {
         <h3>Impact Created</h3>
         <div className="card">
           <h4>Total hours served</h4>
-          <p>106</p>
+          <p>{impactData.totalHours}</p>
         </div>
         <div className="card">
           <h4>Lives Touched</h4>
-          <p>17</p>
+          <p>Too many to count</p>
         </div>
         <div className="card">
           <h4>Shelters served</h4>
-          <p>4</p>
+          <p>{impactData.sheltersServed}</p>
         </div>
       </div>
       <div className="cta-button">
         <button onClick={signupClick}>Sign up for shifts</button>
       </div>
+      <PastShifts onImpactDataUpdate={(data) => setImpactData(data)} />
     </div>
   );
 }
