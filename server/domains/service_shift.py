@@ -1,16 +1,16 @@
 """
-This module defines data classes for service shifts, commitments, and a deprecated
-WorkShift class to support shelter service management.
+This module defines data classes for 
+service shifts and commitments,
+with the deprecated WorkShift 
+class marked for removal.
 """
 
 import uuid
 import dataclasses
-import warnings
 from deprecated import deprecated
 
-@deprecated(
-    reason="WorkShift is deprecated and will be replaced by ServiceCommitment."
-)
+
+@deprecated(reason="WorkShift is deprecated and will be replaced by ServiceCommitment.")
 @dataclasses.dataclass
 class WorkShift:
     """
@@ -20,7 +20,7 @@ class WorkShift:
     first_name: str
     last_name: str
     shelter: int
-    start_time: int  # Number of milliseconds since the Epoch in UTC
+    start_time: int
     end_time: int
     _id: uuid.UUID = None
 
@@ -35,19 +35,12 @@ class WorkShift:
     @classmethod
     def from_dict(cls, d):
         """Creates a WorkShift instance from a dictionary."""
-        warnings.warn(
-            "WorkShift is deprecated. Use ServiceCommitment instead.",
-            DeprecationWarning
-        )
         return cls(**d)
 
     def to_dict(self):
         """Converts the WorkShift instance to a dictionary."""
-        warnings.warn(
-            "WorkShift is deprecated. Use ServiceCommitment instead.",
-            DeprecationWarning
-        )
         return dataclasses.asdict(self)
+
 
 @dataclasses.dataclass
 class ServiceShift:
@@ -55,7 +48,7 @@ class ServiceShift:
     Data class for shelter-defined service shifts.
     """
     shelter: int
-    start_time: int  # Number of milliseconds since the Epoch in UTC
+    start_time: int
     end_time: int
     volunteers_needed: int
     _id: uuid.UUID = None
@@ -77,12 +70,13 @@ class ServiceShift:
         """Converts the ServiceShift instance to a dictionary."""
         return dataclasses.asdict(self)
 
+
 @dataclasses.dataclass
 class ServiceCommitment:
     """
     Data class for tracking volunteer commitments to service shifts.
     """
-    volunteer_id: str  # Email or unique identifier
+    volunteer_id: str
     service_shift_id: uuid.UUID
 
     @classmethod

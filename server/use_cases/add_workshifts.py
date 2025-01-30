@@ -1,7 +1,8 @@
 """
 This module contains the use case for adding work shifts.
 """
-from domains.work_shift import WorkShift
+from domains.service_shift import WorkShift
+
 
 def workshift_add_use_case(repo, new_shift, existing_shifts):
     """
