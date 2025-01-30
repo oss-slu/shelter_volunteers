@@ -8,14 +8,13 @@ function HomeDashboard() {
             <p>Please select your role to continue:</p>
             <div className = "select-role">
                 <button onClick={() => navigate("/volunteer-login")} className = "volunteer-button">
-                    Volunteer Login 
+                    Volunteer Login
                 </button>
                 <button onClick={() => navigate("/shelter-login")} className = "shelter-button">
-                    Shelter Admin Login 
+                    Shelter Admin Login
                 </button>
             </div>
         </div>
-
     );
 }
 export default HomeDashboard; 
