@@ -6,7 +6,6 @@ function HomeDashboard() {
         <div className = "home-dashboard">
             <h1>Shelter Volunteer Main System</h1>
             <p>Please select your role to continue:</p>
-
             <div className = "select-role">
                 <button onClick={() => navigate("/volunteer-login")} className = "volunteer-button">
                     Volunteer Login 
@@ -14,7 +13,6 @@ function HomeDashboard() {
                 <button onClick={() => navigate("/shelter-login")} className = "shelter-button">
                     Shelter Admin Login 
                 </button>
-
             </div>
         </div>
 
