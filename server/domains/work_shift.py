@@ -1,19 +1,26 @@
+"""
+This module defines data classes for service shifts, commitments, and a deprecated
+WorkShift class to support shelter service management.
+"""
+
 import uuid
 import dataclasses
 import warnings
 from deprecated import deprecated
 
-@deprecated(reason="WorkShift is deprecated and will be replaced by ServiceCommitment.")
+@deprecated(
+    reason="WorkShift is deprecated and will be replaced by ServiceCommitment."
+)
 @dataclasses.dataclass
 class WorkShift:
     """
-    [DEPRECATED] Data class for work shift-related data.
+    Data class for a deprecated WorkShift entity.
     """
     worker: str
     first_name: str
     last_name: str
     shelter: int
-    start_time: int  # number of milliseconds since the Epoch in UTC
+    start_time: int  # Number of milliseconds since the Epoch in UTC
     end_time: int
     _id: uuid.UUID = None
 
@@ -27,21 +34,28 @@ class WorkShift:
 
     @classmethod
     def from_dict(cls, d):
-        warnings.warn("WorkShift is deprecated. Use ServiceCommitment instead.", DeprecationWarning)
+        """Creates a WorkShift instance from a dictionary."""
+        warnings.warn(
+            "WorkShift is deprecated. Use ServiceCommitment instead.",
+            DeprecationWarning
+        )
         return cls(**d)
 
     def to_dict(self):
-        warnings.warn("WorkShift is deprecated. Use ServiceCommitment instead.", DeprecationWarning)
+        """Converts the WorkShift instance to a dictionary."""
+        warnings.warn(
+            "WorkShift is deprecated. Use ServiceCommitment instead.",
+            DeprecationWarning
+        )
         return dataclasses.asdict(self)
 
-# New ServiceShift class replacing Work
 @dataclasses.dataclass
 class ServiceShift:
     """
     Data class for shelter-defined service shifts.
     """
     shelter: int
-    start_time: int  # number of milliseconds since the Epoch in UTC
+    start_time: int  # Number of milliseconds since the Epoch in UTC
     end_time: int
     volunteers_needed: int
     _id: uuid.UUID = None
@@ -56,12 +70,13 @@ class ServiceShift:
 
     @classmethod
     def from_dict(cls, d):
+        """Creates a ServiceShift instance from a dictionary."""
         return cls(**d)
 
     def to_dict(self):
+        """Converts the ServiceShift instance to a dictionary."""
         return dataclasses.asdict(self)
 
-# New ServiceCommitment class for volunteer sign-ups
 @dataclasses.dataclass
 class ServiceCommitment:
     """
@@ -72,7 +87,9 @@ class ServiceCommitment:
 
     @classmethod
     def from_dict(cls, d):
+        """Creates a ServiceCommitment instance from a dictionary."""
         return cls(**d)
 
     def to_dict(self):
+        """Converts the ServiceCommitment instance to a dictionary."""
         return dataclasses.asdict(self)
