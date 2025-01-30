@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Modal, Button, Form } from "react-bootstrap";
 
+const SERVER = "http://localhost:5000";
+
 const localizer = dayjsLocalizer(dayjs);
 
 export default function RequestForHelp() {
@@ -38,65 +40,35 @@ export default function RequestForHelp() {
   }, [])
 
   const handleSaveEvent = () => {
-    if (newEvent.volunteersRequired && newEvent.start && newEvent.end) {
-      if (parseInt(newEvent.volunteersRequired) <= 0) {
-        setVolunteerError("'Number of Volunteers Required' needs to be greater than 0");
-        return;
-      }
-
-      const isOverlapping = myEvents.some((event) => {
-        if (
-          selectedEvent &&
-          event.start === selectedEvent.start &&
-          event.end === selectedEvent.end
-        ) {
-          return false;
-        }
-    
-        const eventStart = new Date(event.start);
-        const eventEnd = new Date(event.end);
-        return newEvent.start < eventEnd && newEvent.end > eventStart;
+    const formattedEvent = {
+      shelter_id: "12345",  // temp hardcoded shelter ID
+      shift_name: newEvent.title,
+      shift_start: newEvent.start ? newEvent.start.getTime() : null,
+      shift_end: newEvent.end ? newEvent.end.getTime() : null,
+      volunteers_required: parseInt(newEvent.volunteersRequired) || 0,
+    };
+  
+    fetch(`${SERVER}/service_shift`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formattedEvent),
+    })
+      .then((response) => {
+        console.log("Server Response Status:", response.status);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Server Response Data:", data);
+        setShowModal(false);
+      })
+      .catch((error) => {
+        console.error("Error submitting shift:", error);
+        setVolunteerError("Failed to submit shift.");
       });
-    
-      if (isOverlapping) {
-        setVolunteerError("This shift overlaps with an existing shift.");
-        return;
-      }
-
-      const volunteersRegex = /\s\(Volunteers:\s\d+\)$/;
-      const volunteersText = ` (Volunteers: ${newEvent.volunteersRequired})`;
-      const formattedEvent = {
-        ...newEvent,
-        title: selectedEvent
-          ? newEvent.title.replace(volunteersRegex, "") + volunteersText 
-          : newEvent.title + volunteersText,
-      };
-
-      if (selectedEvent) {
-        setEvents((prev) =>
-          prev.map((ev) =>
-            ev.start === selectedEvent.start && ev.end === selectedEvent.end
-              ? {
-                  ...formattedEvent,
-                  title: formattedEvent.title,
-                }
-              : ev
-          )
-        );
-      } else {
-        setEvents((prev) => [...prev, formattedEvent])
-      }
-      setVolunteerError("");
-      setShowModal(false)
-    } else if (!newEvent.volunteersRequired) {
-      setVolunteerError("'Number of Volunteers Required' field is numeric.");
-      return;
-    } else {
-      setVolunteerError("Required fields cannot be empty.");
-      return;
-    }
-
-  }
+  };
+  
 
   const handleDeleteEvent = () => {
     setEvents((prev) =>
