@@ -9,8 +9,10 @@ import uuid
 import dataclasses
 from deprecated import deprecated
 
+@deprecated(
+    reason="WorkShift is deprecated and will be replaced by ServiceCommitment."
+)
 
-@deprecated(reason="WorkShift is deprecated and will be replaced by ServiceCommitment.")
 @dataclasses.dataclass
 class WorkShift:
     """
