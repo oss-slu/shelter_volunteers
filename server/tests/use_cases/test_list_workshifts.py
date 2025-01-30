@@ -5,7 +5,7 @@ This module contains tests for the list work shift use cases.
 from unittest import mock
 from use_cases.list_workshifts import workshift_list_use_case
 from responses import ResponseSuccess
-from domains.work_shift import WorkShift
+from domains.service_shift import WorkShift
 
 domain_shifts_data = [
     {

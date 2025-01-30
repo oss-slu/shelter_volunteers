@@ -2,7 +2,8 @@
 Module handles the mongo DB operations
 """
 import pymongo
-from domains.work_shift import WorkShift
+#from domains.work_shift import WorkShift
+from domains.service_shift import WorkShift
 from bson.objectid import ObjectId
 
 class MongoRepo:

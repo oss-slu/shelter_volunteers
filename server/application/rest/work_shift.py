@@ -20,6 +20,7 @@ from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 import os
+from domains.service_shift import WorkShift
 
 
 blueprint = Blueprint("work_shift", __name__)

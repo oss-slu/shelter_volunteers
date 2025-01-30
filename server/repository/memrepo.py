@@ -1,7 +1,8 @@
 """
 This module is for in-memory repository implementation.
 """
-from domains.work_shift import WorkShift
+#from domains.work_shift import WorkShift
+from domains.service_shift import WorkShift
 
 
 class MemRepo:
