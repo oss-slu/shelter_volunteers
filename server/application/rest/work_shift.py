@@ -4,7 +4,7 @@ for work shifts in the server application.
 """
 import json
 from flask import Blueprint, Response, request, jsonify, current_app
-from flask_cors import cross_origin, CORS
+from flask_cors import cross_origin
 from repository import mongorepo, manage
 from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
@@ -267,15 +267,21 @@ def service_shift():
         # if no data received, print warning
         if not data:
             print("==== WARNING: No JSON received! ====", flush=True)
-            return jsonify({"message": "Invalid or missing JSON"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+            return jsonify({
+                "message": "Invalid or missing JSON"
+            }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
 
         # print shift data
         print("==== PARSED JSON DATA ====", flush=True)
         print(json.dumps(data, indent=2), flush=True)
 
-        return jsonify({"message": "Shift received successfully!"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        return jsonify({
+            "message": "Shift received successfully!"
+        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
 
     except Exception as e:
         print("==== ERROR PROCESSING SHIFT DATA ====", flush=True)
         print(str(e), flush=True)
-        return jsonify({"message": f"Error processing shift: {str(e)}"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
+        return jsonify({
+            "message": f"Error processing shift: {str(e)}"
+        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
