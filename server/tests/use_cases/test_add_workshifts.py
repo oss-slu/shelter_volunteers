@@ -4,9 +4,13 @@ Module containing test cases for adding work shifts.
 
 import pytest
 from unittest import mock
+from domains.service_shift import WorkShift
 
-from domains.work_shift import WorkShift
-from use_cases.add_workshifts import workshift_add_use_case, workshift_add_multiple_use_case
+from use_cases.add_workshifts import (
+    workshift_add_use_case, 
+    workshift_add_multiple_use_case
+)
+from domains.service_shift import WorkShift
 
 @pytest.fixture
 def domain_work_shifts():

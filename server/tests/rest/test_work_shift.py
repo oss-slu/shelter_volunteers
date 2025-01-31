@@ -5,6 +5,8 @@ from unittest import mock
 from application.app import create_app
 from responses import ResponseSuccess
 from domains.staffing import Staffing
+from domains.service_shift import WorkShift
+
 shifts_data = [
     {
         '_id': 'f853578c-fc0f-4e65-81b8-566c5dffa35a',

@@ -4,8 +4,9 @@ This module contains tests for the count volunteers use case
 
 from unittest import mock
 from use_cases.count_volunteers import count_volunteers_use_case
-from domains.work_shift import WorkShift
 from domains.staffing import Staffing
+from domains.service_shift import WorkShift
+
 
 class Object:
     def __init__(self, filters=None):

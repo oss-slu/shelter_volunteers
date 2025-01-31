@@ -4,9 +4,11 @@ Tests for the delete work shifts use case.
 
 import uuid
 from unittest import mock
-
-from domains.work_shift import WorkShift
+from domains.service_shift import WorkShift
 from use_cases.delete_workshifts import delete_shift_use_case, ResponseTypes
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+from domains.service_shift import ServiceCommitment
 
 domain_shifts = [
     WorkShift(
