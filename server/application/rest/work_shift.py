@@ -257,31 +257,16 @@ def app_configuration():
 @blueprint.route("/service_shift", methods=["POST"])
 @cross_origin()
 def service_shift():
-    """
-    Handles the submission of shift data from the shelter dashboard.
-    """
-    try:
-        # parse the JSON body
-        data = request.get_json(force=True, silent=False)
+    data = request.get_json(force=True)
 
-        # if no data received, print warning
-        if not data:
-            print("==== WARNING: No JSON received! ====", flush=True)
-            return jsonify({
-                "message": "Invalid or missing JSON"
-            }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-
-        # print shift data
-        print("==== PARSED JSON DATA ====", flush=True)
-        print(json.dumps(data, indent=2), flush=True)
-
+    if not data:
         return jsonify({
-            "message": "Shift received successfully!"
-        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+            "message": "Invalid or missing JSON"
+        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
 
-    except Exception as e:
-        print("==== ERROR PROCESSING SHIFT DATA ====", flush=True)
-        print(str(e), flush=True)
-        return jsonify({
-            "message": f"Error processing shift: {str(e)}"
-        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
+    print("==== PARSED JSON DATA ====", flush=True)
+    print(json.dumps(data, indent=2), flush=True)
+
+    return jsonify({
+        "message": "Shift received successfully!"
+    }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
