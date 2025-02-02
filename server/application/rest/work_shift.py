@@ -5,7 +5,7 @@ for work shifts in the server application.
 import json
 from flask import Blueprint, Response, request, jsonify, current_app
 from flask_cors import cross_origin
-from repository import mongorepo, manage
+from repository import mongorepo
 from use_cases.list_workshifts import workshift_list_use_case
 from use_cases.add_workshifts import workshift_add_multiple_use_case
 from use_cases.delete_workshifts import delete_shift_use_case
