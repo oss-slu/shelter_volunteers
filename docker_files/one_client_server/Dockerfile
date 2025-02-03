@@ -13,6 +13,7 @@ WORKDIR /app
 COPY --from=build-step /app/client_app/build ./build
 
 COPY server /app/server
+ENV PYTHONPATH=/app/server:$PYTHONPATH
 RUN pip install -r ./server/requirements.txt
 RUN pip install gunicorn
 ENV FLASK_ENV=pre-production
