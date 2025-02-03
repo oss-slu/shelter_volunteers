@@ -14,9 +14,11 @@ import RequestForHelp from "./components/shelter/RequestForHelp";
 import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
+import HomeDashboard from "./components/HomeDashboard";
 
 function App() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(!!localStorage.getItem("token"));
+
   return (
     <>
       <Router>
@@ -28,7 +30,9 @@ function App() {
           <NavBarVolunteerDashboard auth={auth} />
         )}
         <Routes>
-          <Route path="/" element={<Login setAuth={setAuth} />} />
+          <Route path = "/" element={<HomeDashboard />} />
+          <Route path="/volunteer-login" element={<Login setAuth={setAuth} />} />
+          <Route path="/shelter-login" element={<ShelterDashboard />} />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>

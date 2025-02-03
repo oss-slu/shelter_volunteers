@@ -1,7 +1,18 @@
+import "./../styles/HomeDashboard.css";
 import {useNavigate} from "react-router-dom"; 
+import { useEffect } from "react";
+
 
 function HomeDashboard() {
     const navigate = useNavigate(); 
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (token) {
+          navigate("/dashboard"); // trying to fix redirecting issue 
+        }
+      }, [token, navigate]);
+
     return(
       <div className = "home-dashboard">
         <h1>Shelter Volunteer Main System</h1>

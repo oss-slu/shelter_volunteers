@@ -1,0 +1,32 @@
+.home-dashboard {
+    text-align: center; 
+    margin-top: 50px; 
+}
+
+.role-selection {
+    margin-top: 20px; 
+    display: flex; 
+    justify-content: center; 
+    gap: 10px; 
+}
+
+.volunteer-button, .shelter-button {
+    padding: 10px 20px; 
+    font-size: 20px; 
+    cursor: pointer; 
+    border: none; 
+    border-radius: 5px; 
+}
+
+.volunteer-button {
+    background-color: #1e4c5b; 
+    color: white; 
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.shelter-button {
+    background-color : #1e4c5b;
+    color: white; 
+    margin-left: 20px;
+}
