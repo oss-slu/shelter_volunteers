@@ -15,6 +15,9 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
+import ShelterLogin from "./components/authentication/ShelterLogin";
+
+//import { BrowserRouter as Navigate } from "react-router-dom";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
@@ -22,7 +25,8 @@ function App() {
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
+        {window.location.pathname === "/home" ? null : 
+        ["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
           window.location.pathname,
         ) ? (
           <NavBarShelterDashboard auth={auth} />
@@ -30,12 +34,14 @@ function App() {
           <NavBarVolunteerDashboard auth={auth} />
         )}
         <Routes>
-          <Route path = "/" element={<HomeDashboard />} />
+          <Route index element={<HomeDashboard />} />
+          <Route path="/home" element={<HomeDashboard />} />
           <Route path="/volunteer-login" element={<Login setAuth={setAuth} />} />
-          <Route path="/shelter-login" element={<ShelterDashboard />} />
+          <Route path="/shelter-login" element={<ShelterLogin setAuth={setAuth} />} />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
             <Route path="/dashboard" element={<VolunteerDashboard />} />
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
