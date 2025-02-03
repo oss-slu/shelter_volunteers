@@ -24,7 +24,7 @@ def create_app(config_name):
 
     # Only serve React app in production
     #if config_name == 'pre-production':
-    react_build_dir = os.path.abspath("../client_app/build/")
+    react_build_dir = os.path.abspath("../build/")
     print(f"React Build Directory: {react_build_dir}")  # Debugging output
 
     # Serve static files
