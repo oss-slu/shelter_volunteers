@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
     env = os.getenv('FLASK_ENV', 'development')
+
+    if all(os.getenv(var) for var in ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']):
+        return
+        
     env_file = f'.env.{env}'
     
     # First try environment-specific file, fall back to default .env
