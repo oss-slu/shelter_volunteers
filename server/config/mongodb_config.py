@@ -18,33 +18,26 @@ def load_env_file():
     else:
         load_dotenv('.env')
 
-class MongoConfig:
+class MongoConfig(object):
     """Base configuration class."""
-    def __init__(self):
-        # Load the appropriate .env file
-        load_env_file()
-        self.mongodb_host = os.getenv('MONGODB_HOST', 'mongodb')
-        self.mongodb_port = int(os.getenv('MONGODB_PORT', 27017))
-        self.mongodb_database = os.getenv('MONGODB_DATABASE', 'volunteers_db')
-        self.mongodb_username = os.getenv('MONGODB_USERNAME')
-        self.mongodb_password = os.getenv('MONGODB_PASSWORD')
+    load_env_file()
+    MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongodb')
+    MONGODB_PORT = int(os.getenv('MONGODB_PORT', 27017))
+    MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'volunteers_db')
+    MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
+    MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
 
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
-    def __init__(self):
-        super().__init__()
-        # Local Docker MongoDB connection
-        self.MONGODB_URI = f'mongodb://{self.mongodb_host}:{self.mongodb_port}'
+    # Local Docker MongoDB connection
+    MONGODB_URI = f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
 
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
-    def __init__(self):
-        super().__init__()
-        # Atlas connection string
-        self.mongodb_uri = (
-            f'mongodb+srv://{self.mongodb_username}:'
-            f'{self.mongodb_password}@{self.mongodb_host}'
-        )
+    MONGODB_URI = (
+        f'mongodb+srv://{MongoConfig.MONGODB_USERNAME}:'
+        f'{MongoConfig.MONGODB_PASSWORD}@{MongoConfig.MONGODB_HOST}'
+    )
 
 def get_config():
     """Return the appropriate configuration based on environment."""
