@@ -1,3 +1,5 @@
+"""Configuration module for MongoDB connection."""
+
 import os
 from dotenv import load_dotenv
 
@@ -5,11 +7,11 @@ def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
     env = os.getenv('FLASK_ENV', 'development')
 
-    if all(os.getenv(var) for var in ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']):
+    env_vars = ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']
+    if all(os.getenv(var) for var in env_vars):
         return
-        
-    env_file = f'.env.{env}'
     
+    env_file = f'.env.{env}'    
     # First try environment-specific file, fall back to default .env
     if os.path.exists(env_file):
         load_dotenv(env_file)
@@ -21,28 +23,26 @@ class MongoConfig:
     def __init__(self):
         # Load the appropriate .env file
         load_env_file()
-        
-        self.MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongodb')
-        self.MONGODB_PORT = int(os.getenv('MONGODB_PORT', 27017))
-        self.MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'volunteers_db')
-        self.MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
-        self.MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
+        self.mongodb_host = os.getenv('MONGODB_HOST', 'mongodb')
+        self.mongodb_port = int(os.getenv('MONGODB_PORT', 27017))
+        self.mongodb_database = os.getenv('MONGODB_DATABASE', 'volunteers_db')
+        self.mongodb_username = os.getenv('MONGODB_USERNAME')
+        self.mongodb_password = os.getenv('MONGODB_PASSWORD')
 
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
     def __init__(self):
         super().__init__()
-        self.DEBUG = True
         # Local Docker MongoDB connection
-        self.MONGODB_URI = f"mongodb://{self.MONGODB_HOST}:{self.MONGODB_PORT}"
+        self.MONGODB_URI = f'mongodb://{self.mongodb_host}:{self.mongodb_port}'
 
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
     def __init__(self):
         super().__init__()
-        self.DEBUG = False
         # Atlas connection string
-        self.MONGODB_URI = f"mongodb+srv://{self.MONGODB_USERNAME}:{self.MONGODB_PASSWORD}@{self.MONGODB_HOST}"
+        self.mongodb_uri = f'mongodb+srv://{self.mongodb_username}:
+            {self.mongodb_password}@{self.mongodb_host}'
 
 def get_config():
     """Return the appropriate configuration based on environment."""

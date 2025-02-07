@@ -18,24 +18,22 @@ def create_app(config_name):
 
     mongo_config = mongodb_config.get_config()
     app.config.from_object(mongo_config)
-    
+
     app.register_blueprint(work_shift.blueprint)
     load_dotenv()  # Load environment variables from the .env file
 
     # Only serve React app in production
     #if config_name == 'pre-production':
     react_build_dir = os.path.abspath("../build/")
-    print(f"React Build Directory: {react_build_dir}")  # Debugging output
 
     # Serve static files
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
     def serve(path):
-        print('SERVING', path)
         if path != "" and os.path.exists(os.path.join(react_build_dir, path)):
             return send_from_directory(react_build_dir, path)
-    
-        # If no static file is found, return index.html to let React handle routing
+        # If no static file is found, return index.html 
+        # to let React handle routing
         return send_from_directory(react_build_dir, "index.html")
 
     return app

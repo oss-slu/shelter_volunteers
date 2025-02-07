@@ -2,7 +2,6 @@
 Module handles the mongo DB operations
 """
 import pymongo
-import certifi
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
 
