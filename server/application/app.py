@@ -32,7 +32,7 @@ def create_app(config_name):
     def serve(path):
         if path != "" and os.path.exists(os.path.join(react_build_dir, path)):
             return send_from_directory(react_build_dir, path)
-        # If no static file is found, return index.html 
+        # If no static file is found, return index.html
         # to let React handle routing
         return send_from_directory(react_build_dir, "index.html")
 

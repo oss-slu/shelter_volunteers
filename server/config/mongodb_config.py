@@ -41,8 +41,10 @@ class MongoPreProductionConfig(MongoConfig):
     def __init__(self):
         super().__init__()
         # Atlas connection string
-        self.mongodb_uri = f'mongodb+srv://{self.mongodb_username}:
-            {self.mongodb_password}@{self.mongodb_host}'
+        self.mongodb_uri = (
+            f'mongodb+srv://{self.mongodb_username}:'
+            f'{self.mongodb_password}@{self.mongodb_host}'
+        )
 
 def get_config():
     """Return the appropriate configuration based on environment."""

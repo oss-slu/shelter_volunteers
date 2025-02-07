@@ -257,5 +257,5 @@ def login():
 
 def db_configuration():
     #result = manage.read_json_configuration("mongo_config")
-    return (current_app.config["MONGODB_URI"], 
+    return (current_app.config["MONGODB_URI"],
             current_app.config["MONGODB_DATABASE"])
