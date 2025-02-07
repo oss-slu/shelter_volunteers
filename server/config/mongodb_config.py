@@ -10,8 +10,8 @@ def load_env_file():
     env_vars = ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']
     if all(os.getenv(var) for var in env_vars):
         return
-    
-    env_file = f'.env.{env}'    
+
+    env_file = f'.env.{env}'
     # First try environment-specific file, fall back to default .env
     if os.path.exists(env_file):
         load_dotenv(env_file)
@@ -22,7 +22,7 @@ class MongoConfig(object):
     """Base configuration class."""
     load_env_file()
     MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongodb')
-    MONGODB_PORT = int(os.getenv('MONGODB_PORT', 27017))
+    MONGODB_PORT = int(os.getenv('MONGODB_PORT', '27017'))
     MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'volunteers_db')
     MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
     MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
@@ -30,7 +30,9 @@ class MongoConfig(object):
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
     # Local Docker MongoDB connection
-    MONGODB_URI = f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
+    MONGODB_URI = (
+        f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
+    )
 
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
