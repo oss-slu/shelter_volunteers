@@ -64,7 +64,7 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.CONFLICT: 409
 }
 
-@blueprint.route("/api/getvolunteers/<int:shelter_id>", methods=["GET"])
+@blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
 @cross_origin()
 def get_volunteers(shelter_id):
     """
@@ -84,7 +84,7 @@ def get_volunteers(shelter_id):
     )
 
 
-@blueprint.route("/api/counts/<int:shelter_id>", methods=["GET"])
+@blueprint.route("/counts/<int:shelter_id>", methods=["GET"])
 @cross_origin()
 def counts(shelter_id):
     """
@@ -104,7 +104,7 @@ def counts(shelter_id):
     )
 
 
-@blueprint.route("/api/shifts", methods=["GET", "POST"])
+@blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
 def work_shifts():
     """
@@ -197,7 +197,7 @@ def get_user_from_token(headers):
 
     return user
 
-@blueprint.route("/api/shifts/<shift_id>", methods=["DELETE"])
+@blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
     shift_id = str(shift_id)
@@ -215,7 +215,7 @@ def delete_work_shift(shift_id):
         status=status_code
     )
 
-@blueprint.route("/api/login", methods=["POST"])
+@blueprint.route("/login", methods=["POST"])
 @cross_origin()
 def login():
     data = request.get_json()

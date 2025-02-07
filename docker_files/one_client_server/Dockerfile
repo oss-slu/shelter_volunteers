@@ -1,7 +1,7 @@
 # Build step #1: build the React front end
 FROM node:16-alpine AS build-step
 WORKDIR /app
-ENV REACT_APP_SERVER_URL=/api
+ENV REACT_APP_SERVER_URL=
 ENV PATH=/app/node_modules/.bin:$PATH
 COPY client_app /app/client_app
 WORKDIR /app/client_app

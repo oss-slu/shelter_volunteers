@@ -47,7 +47,7 @@ def test_list_work_shifts(mock_get_user_from_token,
     app = create_app('testing')
     client = app.test_client()
     headers = {'Authorization': 'volunteer@slu.edu'}
-    response = client.get('/api/shifts', headers=headers)
+    response = client.get('/shifts', headers=headers)
     data = json.loads(response.data)
 
     # The data should now include facility_info
@@ -78,7 +78,7 @@ def test_add_work_shifts(mock_get_user_from_token, mock_use_case, mock_repo):
         'Content-Type': 'application/json'
     }
     response = client.post(
-        '/api/shifts', headers=headers, data=json.dumps([new_shift])
+        '/shifts', headers=headers, data=json.dumps([new_shift])
     )
     data = json.loads(response.data)
 
@@ -99,7 +99,7 @@ def test_delete_work_shift(mock_get_user_from_token, mock_use_case):
     client = app.test_client()
     headers = {'Authorization': 'volunteer@slu.edu'}
     response = client.delete(
-        '/api/shifts/f853578c-fc0f-4e65-81b8-566c5dffa35a', headers=headers
+        '/shifts/f853578c-fc0f-4e65-81b8-566c5dffa35a', headers=headers
     )
     assert response.status_code == 200
     data = json.loads(response.data)
@@ -121,7 +121,7 @@ def test_count_workers(mock_use_case):
         'Content-Type': 'application/json'
     }
     response = client.get(
-        '/api/counts/123?start_after=100&end_before=200',
+        '/counts/123?start_after=100&end_before=200',
         headers=headers)
 
     print(response.data)
