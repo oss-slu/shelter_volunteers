@@ -1,6 +1,7 @@
 # Build step #1: build the React front end
 FROM node:16-alpine AS build-step
 WORKDIR /app
+ENV REACT_APP_SERVER_URL=/api
 ENV PATH=/app/node_modules/.bin:$PATH
 COPY client_app /app/client_app
 WORKDIR /app/client_app
@@ -17,6 +18,7 @@ RUN pip install -r ./server/requirements.txt
 RUN pip install gunicorn
 ENV FLASK_ENV=pre-production
 ENV FLASK_CONFIG=development
+
 
 EXPOSE 5000
 WORKDIR /app/server
