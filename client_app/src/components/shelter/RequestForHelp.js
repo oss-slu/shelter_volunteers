@@ -4,7 +4,6 @@ import { dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Modal, Button, Form } from "react-bootstrap";
-
 import { SERVER } from "../../config";
 
 const localizer = dayjsLocalizer(dayjs);
