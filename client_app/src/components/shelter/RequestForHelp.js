@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Modal, Button, Form } from "react-bootstrap";
 
-const SERVER = "http://localhost:5000";
+import { SERVER } from "../../config";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -40,13 +40,42 @@ export default function RequestForHelp() {
   }, [])
 
   const handleSaveEvent = () => {
+    if (!newEvent.volunteersRequired || !newEvent.start || !newEvent.end){
+      setVolunteerError("Required fields cannot be empty.");
+      return;
+    }
+
+    if (parseInt(newEvent.volunteersRequired) <= 0){
+      setVolunteerError("Number of Volunteers required needs to be greater than 0.");
+      return;
+    }
+
+    const isOverlapping = myEvents.some((event) => {
+      if(selectedEvent && event.start == selectedEvent.start && event.end == selectedEvent.end){
+        return false;
+      }
+
+      const eventStart = new Date(event.start);
+      const eventEnd = new Date(event.end);
+      return newEvent.start < eventEnd && newEvent.end > eventStart;
+    }); 
+
+    if (isOverlapping) {
+      setVolunteerError("This shift overlaps with an existing shift.");
+      return;
+    }
+    const volunteersRegex = /\s\(Volunteers:\s\d+\)$/;
+    const volunteersText = ` (Volunteers: ${newEvent.volunteersRequired})`;
     const formattedEvent = {
-      shelter_id: "12345",  // temp hardcoded shelter ID
-      shift_name: newEvent.title,
+      shelter_id: "12345", // hardcoded shelter ID
+      shift_name: selectedEvent
+        ? newEvent.title.replace(volunteersRegex, "") + volunteersText
+        : newEvent.title + volunteersText,
       shift_start: newEvent.start ? newEvent.start.getTime() : null,
       shift_end: newEvent.end ? newEvent.end.getTime() : null,
       volunteers_required: parseInt(newEvent.volunteersRequired) || 0,
     };
+    
   
     fetch(`${SERVER}/service_shift`, {
       method: "POST",
@@ -67,6 +96,7 @@ export default function RequestForHelp() {
         console.error("Error submitting shift:", error);
         setVolunteerError("Failed to submit shift.");
       });
+
   };
   
 
