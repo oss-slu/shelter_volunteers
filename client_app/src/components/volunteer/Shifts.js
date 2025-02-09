@@ -60,7 +60,6 @@ export function UpcomingShifts() {
 export function PastShifts() {
   const time_now = new Date().getTime();
   const shelters_endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
-  console.log("Past Shifts Endpoint:", shelters_endpoint); // Debugging
 
   return (
     <div>
