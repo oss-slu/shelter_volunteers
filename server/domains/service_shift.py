@@ -1,5 +1,6 @@
 """
-This module handles data conversion from dictionary to class obj or vice versa.
+This module handles data conversion from 
+dictionary to class obj or vice versa.
 """
 import uuid
 import dataclasses
