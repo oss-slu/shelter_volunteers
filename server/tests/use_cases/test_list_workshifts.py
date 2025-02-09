@@ -1,11 +1,11 @@
 """
-This module contains tests for the list work shift use cases.
+This module contains tests for the list service shift use cases.
 """
 
 from unittest import mock
 from use_cases.list_workshifts import workshift_list_use_case
 from responses import ResponseSuccess
-from domains.work_shift import WorkShift
+from domains.service_shift import ServiceShift  # Updated import
 
 domain_shifts_data = [
     {
@@ -47,22 +47,22 @@ class Object:
     def __init__(self, filters=None):
         self.filters = filters or {}
 
-def test_fetch_all_workshifts_for_volunteer():
+def test_fetch_all_service_shifts_for_volunteer():
     repo = mock.Mock()
-    workshifts_for_volunteer = \
-        [WorkShift.from_dict(s) for s in domain_shifts_data
+    service_shifts_for_volunteer = \
+        [ServiceShift.from_dict(s) for s in domain_shifts_data
         if s["worker"] == "volunteer@slu.edu"]
 
-    repo.list.return_value = workshifts_for_volunteer
+    repo.list.return_value = service_shifts_for_volunteer
     request = Object()
     response = workshift_list_use_case(repo, request,
                                        "volunteer@slu.edu")
     assert isinstance(response, ResponseSuccess)
     assert len(response.value) == 2
 
-def test_fetch_workshifts_start_before_time():
+def test_fetch_service_shifts_start_before_time():
     repo = mock.Mock()
-    shifts_before_time = [WorkShift.from_dict(s) for s in domain_shifts_data
+    shifts_before_time = [ServiceShift.from_dict(s) for s in domain_shifts_data
                           if s["start_time"] < 1696255300000
                           and s["worker"] == "volunteer@slu.edu"]
     repo.list.return_value = shifts_before_time
@@ -74,9 +74,9 @@ def test_fetch_workshifts_start_before_time():
     assert len(response.value) == 1
     assert response.value[0].start_time < 1696255300000
 
-def test_fetch_workshifts_end_after_time():
+def test_fetch_service_shifts_end_after_time():
     repo = mock.Mock()
-    shifts_after_time = [WorkShift.from_dict(s) for s in domain_shifts_data
+    shifts_after_time = [ServiceShift.from_dict(s) for s in domain_shifts_data
                          if s["end_time"] > 1696269500000
                          and s["worker"] == "volunteer2@slu.edu"]
     repo.list.return_value = shifts_after_time
@@ -90,7 +90,7 @@ def test_fetch_workshifts_end_after_time():
 
 def test_combined_filters():
     repo = mock.Mock()
-    shifts_within_range = [WorkShift.from_dict(s) for s in domain_shifts_data
+    shifts_within_range = [ServiceShift.from_dict(s) for s in domain_shifts_data
                            if s["start_time"] < 1701453600001
                            and s["end_time"] > 1696168700000
                            and s["worker"] == "volunteer@slu.edu"]
@@ -102,6 +102,6 @@ def test_combined_filters():
 
     assert isinstance(response, ResponseSuccess)
     assert len(response.value) == 2
-    for workshift in response.value:
-        assert workshift.start_time < 1701453600001
-        assert workshift.end_time > 1696168700000
+    for service_shift in response.value:
+        assert service_shift.start_time < 1701453600001
+        assert service_shift.end_time > 1696168700000
