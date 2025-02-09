@@ -253,3 +253,20 @@ def login():
 def app_configuration():
     result = manage.read_json_configuration("mongo_config")
     return result
+
+@blueprint.route("/service_shift", methods=["POST"])
+@cross_origin()
+def service_shift():
+    data = request.get_json(force=True)
+
+    if not data:
+        return jsonify({
+            "message": "Invalid or missing JSON"
+        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+
+    print("==== PARSED JSON DATA ====", flush=True)
+    print(json.dumps(data, indent=2), flush=True)
+
+    return jsonify({
+        "message": "Shift received successfully!"
+    }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
