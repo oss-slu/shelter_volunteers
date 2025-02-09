@@ -74,8 +74,7 @@ export default function RequestForHelp() {
       shift_end: newEvent.end ? newEvent.end.getTime() : null,
       volunteers_required: parseInt(newEvent.volunteersRequired) || 0,
     };
-    
-  
+
     fetch(`${SERVER}/service_shift`, {
       method: "POST",
       headers: {
@@ -89,6 +88,27 @@ export default function RequestForHelp() {
       })
       .then((data) => {
         console.log("Server Response Data:", data);
+
+        const calendarEvent = {
+        title: formattedEvent.shift_name,
+        start: new Date(formattedEvent.shift_start),
+        end: new Date(formattedEvent.shift_end),
+        volunteersRequired: formattedEvent.volunteers_required,
+      };
+
+        if (selectedEvent) {
+          setEvents((prev) =>
+            prev.map((ev) =>
+              ev.start.getTime() === selectedEvent.start.getTime() &&
+              ev.end.getTime() === selectedEvent.end.getTime()
+                ? calendarEvent
+                : ev
+            )
+          );
+        } else {
+          setEvents((prev) => [...prev, calendarEvent]);
+        }
+        
         setShowModal(false);
       })
       .catch((error) => {
