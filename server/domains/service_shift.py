@@ -6,7 +6,7 @@ import dataclasses
 
 
 @dataclasses.dataclass
-class Work:
+class ServiceShift: #renamed ServiceShift from Work 
     """
     Data class for workshift releated data
     """

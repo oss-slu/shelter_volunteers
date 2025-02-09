@@ -3,3 +3,4 @@ flask-cors
 pymongo
 requests
 python-dotenv
+Deprecated>=1.2.10
