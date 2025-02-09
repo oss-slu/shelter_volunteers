@@ -18,7 +18,6 @@ function Shifts({ request_endpoint }) {
         return response.json();
       })
       .then((response) => {
-        console.log("Fetched Shifts Data:", response); // Debugging
         setData(response);
       })
       .catch((error) => console.log("Error fetching shifts:", error));
