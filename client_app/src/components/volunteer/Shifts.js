@@ -3,33 +3,26 @@ import { SERVER } from "../../config";
 import ShiftList from "./ShiftList";
 import getAuthHeader from "../../authentication/getAuthHeader";
 
-// Utility functions for calculations
-const calculateTotalHours = (shifts) => {
-  return shifts.reduce((total, shift) => {
-    const start = new Date(shift.start_time);
-    const end = new Date(shift.end_time);
-    return total + Math.round((end - start) / (1000 * 60 * 60)); // Convert milliseconds to hours
-  }, 0);
-};
-
-const calculateUniqueShelters = (shifts) => {
-  const uniqueShelters = new Set(shifts.map((shift) => shift.shelter_id));
-  return uniqueShelters.size;
-};
-
-function Shifts(request_endpoint) {
+function Shifts({ request_endpoint }) {
   const [data, setData] = useState([]);
   const header = getAuthHeader();
 
   useEffect(() => {
+    console.log("Fetching shifts from:", request_endpoint); // Debugging
     fetch(request_endpoint, {
-      method: "GET",
+      method: "GET", // Corrected typo
       headers: header,
     })
-      .then((response) => response.json())
-      .then((response) => setData(response))
-      .catch((error) => console.log(error));
-  }, []);
+      .then((response) => {
+        console.log("Response Status:", response.status); // Debugging
+        return response.json();
+      })
+      .then((response) => {
+        console.log("Fetched Shifts Data:", response); // Debugging
+        setData(response);
+      })
+      .catch((error) => console.log("Error fetching shifts:", error));
+  }, [request_endpoint]);
 
   const handleCancelShift = (shiftCode) => {
     fetch(`${SERVER}/shifts/${shiftCode}`, {
@@ -55,37 +48,28 @@ function Shifts(request_endpoint) {
 
 export function UpcomingShifts() {
   const time_now = new Date().getTime();
-  const shelters_endpoint = SERVER + "/shifts?filter_start_after=" + time_now;
+  const shelters_endpoint = `${SERVER}/shifts?filter_start_after=${time_now}`;
+  console.log("Upcoming Shifts Endpoint:", shelters_endpoint); // Debugging
+
   return (
     <div>
       <h1 className="text-center">Upcoming Shifts</h1>
-      {Shifts(shelters_endpoint)}
+      <Shifts request_endpoint={shelters_endpoint} />
     </div>
   );
 }
 
-export function PastShifts({ onImpactDataUpdate }) {
+export function PastShifts() {
   const time_now = new Date().getTime();
-  const shelters_endpoint = SERVER + "/shifts?filter_end_before=" + time_now;
-  const header = getAuthHeader();
-
-  useEffect(() => {
-    fetch(shelters_endpoint, {
-      method: "GET",
-      headers: header,
-    })
-      .then((response) => response.json())
-      .then((shifts) => {
-        const totalHours = calculateTotalHours(shifts);
-        const sheltersServed = calculateUniqueShelters(shifts);
-        onImpactDataUpdate({ totalHours, sheltersServed });
-      })
-      .catch((error) => console.log(error));
-  }, [shelters_endpoint, onImpactDataUpdate]);
+  const shelters_endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
+  console.log("Past Shifts Endpoint:", shelters_endpoint); // Debugging
 
   return (
     <div>
       <h1 className="text-center">Previous Shifts</h1>
+      <Shifts request_endpoint={shelters_endpoint} />
     </div>
   );
 }
+
+export default Shifts;
