@@ -14,7 +14,6 @@ function Shifts({ request_endpoint }) {
       headers: header,
     })
       .then((response) => {
-        console.log("Response Status:", response.status); // Debugging
         return response.json();
       })
       .then((response) => {
