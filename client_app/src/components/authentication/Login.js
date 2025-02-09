@@ -30,8 +30,8 @@ async function LoginUser(user, pass) {
 }
 
 export default function Login({ setAuth, userRole }) {
-  const tokenKey = userRole === "shelter" ? "shelterToken" : "token"; //the tokenkey for shelters is shelterToken, otherwise, volunteers use token
-  const token = localStorage.getItem(tokenKey);
+  const token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
   const [username, setUserName] = useState();
@@ -43,10 +43,9 @@ export default function Login({ setAuth, userRole }) {
     setAuth(true);
     navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
   };  
-  //if user is already loggedin redirect to dashboard page
   if (token) {
-    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/dashboard"} />;
-  }
+    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard"} />;
+  }  
 
   return (
     <Container>
