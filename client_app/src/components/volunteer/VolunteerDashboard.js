@@ -1,26 +1,22 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Shelters from "./Shelters";
 import { UpcomingShifts } from "./Shifts";
-import Impact from "./Impact"; // Ensure Impact.js exists and exports correctly
+import Impact from "./Impact";
 
 function VolunteerDashboard() {
   const navigate = useNavigate();
 
-
-  function signupClick() {
+  const signupClick = () => {
     navigate("/shelters");
-  }
+  };
 
   return (
     <div className="volunteer-dashboard">
       <div className="column column-1">
-        <h3>Upcoming Shifts</h3>
-        <div className="no-title"><UpcomingShifts /></div>
+        <h3>Upcoming Shifts</h3><UpcomingShifts />
       </div>
       <div className="column column-2">
-        <h3>Shelters looking for Volunteers</h3>
-        <Shelters condensed={true} />
+        <h3>Shelters looking for Volunteers</h3><Shelters condensed={true} />
       </div>
       <div className="column column-3">
         <Impact />
@@ -28,7 +24,6 @@ function VolunteerDashboard() {
       <div className="cta-button">
         <button onClick={signupClick}>Sign up for shifts</button>
       </div>
-
     </div>
   );
 }

@@ -2,6 +2,19 @@ import React, { useEffect, useState } from "react";
 import { SERVER } from "../../config";
 import getAuthHeader from "../../authentication/getAuthHeader";
 
+const calculateTotalHours = (shifts) => {
+  return shifts.reduce((acc, shift) => {
+    const start = new Date(shift.start_time);
+    const end = new Date(shift.end_time);
+    return acc + Math.round((end - start) / (1000 * 60 * 60)); // Convert milliseconds to hours
+  }, 0);
+};
+
+const calculateUniqueShelters = (shifts) => {
+  const uniqueShelters = new Set(shifts.map((shift) => shift.shelter));
+  return uniqueShelters.size;
+};
+
 const Impact = () => {
   const [impactData, setImpactData] = useState({
     totalHours: 0,
@@ -13,20 +26,18 @@ const Impact = () => {
     const endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
     const header = getAuthHeader();
 
+    console.log("Fetching impact data from:", endpoint); // Debugging
+
     fetch(endpoint, { method: "GET", headers: header })
       .then((response) => response.json())
       .then((shifts) => {
         if (shifts && shifts.length > 0) {
-          const totalHours = shifts.reduce((acc, shift) => {
-            const start = new Date(shift.start_time);
-            const end = new Date(shift.end_time);
-            return acc + Math.round((end - start) / (1000 * 60 * 60)); // Convert to hours
-          }, 0);
+          const totalHours = calculateTotalHours(shifts);
+          const uniqueShelters = calculateUniqueShelters(shifts);
 
-          const uniqueShelters = new Set(shifts.map((shift) => shift.shelter));
           setImpactData({
             totalHours,
-            sheltersServed: uniqueShelters.size,
+            sheltersServed: uniqueShelters,
           });
         }
       })
