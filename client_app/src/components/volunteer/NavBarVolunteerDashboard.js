@@ -24,7 +24,7 @@ function CustomNavBar({ auth }) {
           <Nav className="justify-content-end" style={{ width: "100%" }}>
             {isAuthenticated || auth ? (
               <>
-                <Nav.Link href="/" active={location.pathname === "/dashboard"}>
+                <Nav.Link href="/volunteer-dashboard" active={location.pathname === "/volunteer-dashboard"}>
                   Your Dashboard
                 </Nav.Link>
                 <Nav.Link href="/shelters" active={location.pathname === "/shelters"}>

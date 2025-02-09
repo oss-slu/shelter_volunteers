@@ -17,25 +17,23 @@ import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
 import { BrowserRouter as Navigate, useLocation } from "react-router-dom";
 
-//adding in new function for sol 2 
 function NavigationControl({ auth }) {
-  const location = useLocation(); // hook to get the current route path
+  const location = useLocation(); 
 
   if (["/home", "/"].includes(location.pathname)) {
-    return null; //if home is in pathname, dont show nav bar 
+    return null; 
   }
 
-  //shows nav bar if these paths are in the url 
   if ([
     "/shelter-dashboard",
     "/shift-details",
     "/request-for-help",
     "/upcoming-requests",
+    "/shelter-login",
   ].includes(location.pathname)) {
     return <NavBarShelterDashboard auth={auth} />;
   }
 
-  //defaulting? shoudl this default somewhere else
   return <NavBarVolunteerDashboard auth={auth} />;
 }
 
