@@ -44,6 +44,11 @@ export default function RequestForHelp() {
       return;
     }
 
+    if (!newEvent.start || !newEvent.end){
+      setVolunteerError("Start and end time must be selected.");
+      return;
+    }
+
     if (newEvent.end <= newEvent.start){
       setVolunteerError("End time must be after start time.");
       return;
