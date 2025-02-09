@@ -44,6 +44,11 @@ export default function RequestForHelp() {
       return;
     }
 
+    if (newEvent.end <= newEvent.start){
+      setVolunteerError("End time must be after start time.");
+      return;
+    }
+
     if (parseInt(newEvent.volunteersRequired) <= 0){
       setVolunteerError("Number of Volunteers required needs to be greater than 0.");
       return;
