@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 function HomeDashboard() {
     const navigate = useNavigate(); 
-    const token = localStorage.getItem("token");
 
     useEffect(() => {
       const token = localStorage.getItem("token");

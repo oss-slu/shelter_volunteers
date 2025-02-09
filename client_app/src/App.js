@@ -15,7 +15,7 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
-import { BrowserRouter as Navigate } from "react-router-dom"; //added this to try and navigate to either volunteer or shelter 
+import { BrowserRouter as Navigate } from "react-router-dom";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
