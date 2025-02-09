@@ -1,6 +1,6 @@
 .home-dashboard {
     text-align: center; 
-    margin-top: 50px; 
+    margin-top: 0px; 
 }
 
 .role-selection {
@@ -29,4 +29,17 @@
     background-color : #1e4c5b;
     color: white; 
     margin-left: 20px;
+}
+
+.home-header {
+    background-color: #1e4c5b; 
+    color: #f5b921;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.content-container {
+    margin-top: 50px; /* Add spacing below the header */
 }

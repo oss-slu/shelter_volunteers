@@ -15,17 +15,16 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
-import ShelterLogin from "./components/authentication/ShelterLogin";
-
-//import { BrowserRouter as Navigate } from "react-router-dom";
+import { BrowserRouter as Navigate } from "react-router-dom"; //added this to try and navigate to either volunteer or shelter 
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
+  const role = localStorage.getItem("role");
 
   return (
     <>
       <Router>
-        {window.location.pathname === "/home" ? null : 
+        {["/home", "/"].includes(window.location.pathname) ? null : 
         ["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
           window.location.pathname,
         ) ? (
@@ -36,13 +35,13 @@ function App() {
         <Routes>
           <Route index element={<HomeDashboard />} />
           <Route path="/home" element={<HomeDashboard />} />
-          <Route path="/volunteer-login" element={<Login setAuth={setAuth} />} />
-          <Route path="/shelter-login" element={<ShelterLogin setAuth={setAuth} />} />
+          <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
+          <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
-            <Route path="/dashboard" element={<VolunteerDashboard />} />
+            <Route path="/dashboard" element={role === "shelter" ? <Navigate to="/shelter-dashboard" /> : <VolunteerDashboard />} />
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
