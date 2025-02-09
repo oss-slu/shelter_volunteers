@@ -15,7 +15,29 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
-import { BrowserRouter as Navigate } from "react-router-dom";
+import { BrowserRouter as Navigate, useLocation } from "react-router-dom";
+
+//adding in new function for sol 2 
+function NavigationControl({ auth }) {
+  const location = useLocation(); // hook to get the current route path
+
+  if (["/home", "/"].includes(location.pathname)) {
+    return null; //if home is in pathname, dont show nav bar 
+  }
+
+  //shows nav bar if these paths are in the url 
+  if ([
+    "/shelter-dashboard",
+    "/shift-details",
+    "/request-for-help",
+    "/upcoming-requests",
+  ].includes(location.pathname)) {
+    return <NavBarShelterDashboard auth={auth} />;
+  }
+
+  //defaulting? shoudl this default somewhere else
+  return <NavBarVolunteerDashboard auth={auth} />;
+}
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
@@ -24,14 +46,8 @@ function App() {
   return (
     <>
       <Router>
-        {["/home", "/"].includes(window.location.pathname) ? null : 
-        ["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
-          window.location.pathname,
-        ) ? (
-          <NavBarShelterDashboard auth={auth} />
-        ) : (
-          <NavBarVolunteerDashboard auth={auth} />
-        )}
+        {/* Nav Bar control */}
+        <NavigationControl auth={auth} />
         <Routes>
           <Route index element={<HomeDashboard />} />
           <Route path="/home" element={<HomeDashboard />} />
