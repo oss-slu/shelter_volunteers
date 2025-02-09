@@ -26,7 +26,6 @@ const Impact = () => {
     const endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
     const header = getAuthHeader();
 
-    console.log("Fetching impact data from:", endpoint); // Debugging
 
     fetch(endpoint, { method: "GET", headers: header })
       .then((response) => response.json())
