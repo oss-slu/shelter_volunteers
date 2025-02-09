@@ -20,7 +20,7 @@ function Shifts({ request_endpoint }) {
       .then((response) => {
         setData(response);
       })
-      .catch((error) => console.log("Error fetching shifts:", error));
+      .catch((error) => console.error("Error fetching shifts:", error));
   }, [request_endpoint]);
 
   const handleCancelShift = (shiftCode) => {
