@@ -1,5 +1,6 @@
 """
-This module defines the ServiceCommitment class, which represents a volunteer's commitment to a ServiceShift.
+This module defines the ServiceCommitment 
+class, which represents a volunteer's commitment to a ServiceShift.
 """
 
 import uuid
