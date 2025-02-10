@@ -26,14 +26,16 @@ class WorkShift:
     def get_id(self):
         """Returns the ID of the work shift."""
         return self._id
-    
     @deprecated(reason="set_id() is deprecated along with WorkShift.")
     def set_id(self, new_id):
         """Sets the ID of the work shift."""
         self._id = new_id
 
     @classmethod
-    @deprecated(reason="from_dict() is deprecated along with WorkShift. Use ServiceShift.from_dict instead.")
+    @deprecated(
+        reason="from_dict() is deprecated along with WorkShift."
+          "Use ServiceShift.from_dict instead."
+        )
     def from_dict(self, d):
         """
         The function is a class method that takes in a dictionary
@@ -41,7 +43,10 @@ class WorkShift:
         """
         return self(**d)
 
-    @deprecated(reason="to_dict() is deprecated along with WorkShift. Use ServiceShift.to_dict instead.")
+    @deprecated(
+            reason="to_dict() is deprecated along with WorkShift."
+            "Use ServiceShift.to_dict instead."
+            )
     def to_dict(self):
         """
         The function takes an object and returns a dictionary

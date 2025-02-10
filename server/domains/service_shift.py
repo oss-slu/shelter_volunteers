@@ -6,7 +6,7 @@ import uuid
 import dataclasses
 
 @dataclasses.dataclass
-class ServiceShift:  # renamed ServiceShift from Work
+class ServiceShift:  
     """
     Data class for work shift-related data.
     """
@@ -20,11 +20,11 @@ class ServiceShift:  # renamed ServiceShift from Work
     _id: uuid.UUID = None
 
     def get_id(self):
-        """Returns the ID of the work shift."""
+        """Returns the ID of the service shift."""
         return self._id
 
     def set_id(self, new_id):
-        """Sets the ID of the work shift."""
+        """Sets the ID of the service shift."""
         self._id = new_id
 
     @classmethod
