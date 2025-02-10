@@ -39,7 +39,6 @@ function NavigationControl({ auth }) {
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
-  const role = localStorage.getItem("role");
 
   return (
     <>
@@ -55,7 +54,16 @@ function App() {
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
-            <Route path="/dashboard" element={role === "shelter" ? <Navigate to="/shelter-dashboard" /> : <VolunteerDashboard />} />
+            <Route
+              path="/home-dashboard"
+              element={
+                auth ? (
+                  <Navigate to="/volunteer-dashboard" />
+                ) : (
+                  <Navigate to="/shelter-dashboard" />
+                )
+              }
+            />
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />

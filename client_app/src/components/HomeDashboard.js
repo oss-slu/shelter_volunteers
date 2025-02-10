@@ -9,7 +9,7 @@ function HomeDashboard() {
       const token = localStorage.getItem("token");
         
       if (token) {
-        navigate("/volunteer-dashboard");
+        navigate("/home-dashboard");
       }
     }, [navigate]);
       
