@@ -5,14 +5,13 @@ import { useEffect } from "react";
 
 function HomeDashboard() {
     const navigate = useNavigate(); 
-
     useEffect(() => {
-        const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
         
-        if (token) {
-          navigate("/volunteer-dashboard"); 
-        }
-      }, [navigate]);
+      if (token) {
+        navigate("/volunteer-dashboard");
+      }
+    }, [navigate]);
       
     return (
       <div className="home-dashboard">
