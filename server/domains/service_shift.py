@@ -6,7 +6,8 @@ import uuid
 import dataclasses
 
 @dataclasses.dataclass
-class ServiceShift:  
+
+class ServiceShift:
     """
     Data class for work shift-related data.
     """
