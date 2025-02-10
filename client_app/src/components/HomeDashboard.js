@@ -14,7 +14,6 @@ function HomeDashboard() {
         }
       }, [navigate]);
       
-
     return (
       <div className="home-dashboard">
         <header className="home-header">
