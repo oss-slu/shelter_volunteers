@@ -4,11 +4,11 @@ This module handles data converstion from dictionary to class obj or vice versa
 import uuid
 import dataclasses
 
-
 @dataclasses.dataclass
+
 class WorkShift:
     """
-    Data class for workshift releated data
+    **DEPRECATED:** Use `ServiceShift` instead.
     """
     worker: str
     first_name: str
@@ -24,7 +24,6 @@ class WorkShift:
     def set_id(self, new_id):
         """Sets the ID of the work shift."""
         self._id = new_id
-
     @classmethod
     def from_dict(self, d):
         """
@@ -32,7 +31,6 @@ class WorkShift:
         and returns an instance of the class.
         """
         return self(**d)
-
     def to_dict(self):
         """
         The function takes an object and returns a dictionary

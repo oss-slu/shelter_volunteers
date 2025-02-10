@@ -1,14 +1,15 @@
 """
-This module handles data converstion from dictionary to class obj or vice versa
+This module handles data conversion from 
+dictionary to class obj or vice versa.
 """
 import uuid
 import dataclasses
 
-
 @dataclasses.dataclass
-class Work:
+
+class ServiceShift:
     """
-    Data class for workshift releated data
+    Data class for work shift-related data.
     """
     shelter_id: int
     shift_name: str
@@ -20,24 +21,22 @@ class Work:
     _id: uuid.UUID = None
 
     def get_id(self):
-        """Returns the ID of the work shift."""
+        """Returns the ID of the service shift."""
         return self._id
+
     def set_id(self, new_id):
-        """Sets the ID of the work shift."""
+        """Sets the ID of the service shift."""
         self._id = new_id
 
     @classmethod
-    def from_dict(self, d):
+    def from_dict(cls, d):
         """
-        The function is a class method that takes in a dictionary
-        and returns an instance of the class.
+        Creates an instance of ServiceShift from a dictionary.
         """
-        return self(**d)
+        return cls(**d)
 
     def to_dict(self):
         """
-        The function takes an object and returns a dictionary
-        representation of the object.
+        Converts the ServiceShift instance into a dictionary.
         """
         return dataclasses.asdict(self)
-    
