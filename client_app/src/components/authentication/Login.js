@@ -29,8 +29,9 @@ async function LoginUser(user, pass) {
   }
 }
 
-export default function Login({ setAuth }) {
+export default function Login({ setAuth, userRole }) {
   const token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
   const [username, setUserName] = useState();
@@ -38,14 +39,13 @@ export default function Login({ setAuth }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await LoginUser(username, password);
+    await LoginUser(userRole, username, password);
     setAuth(true);
-    navigate("/dashboard");
-  };
-  //if user is already loggedin redirect to dashboard page
+    navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
+  };  
   if (token) {
-    return <Navigate to="/dashboard" />;
-  }
+    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard"} />;
+  }  
 
   return (
     <Container>
@@ -53,7 +53,7 @@ export default function Login({ setAuth }) {
       <Row>
         <Col md={6} order={1} style={{ marginBottom: "2rem" }}>
           <Card>
-            <Card.Header>Sign in</Card.Header>
+            <Card.Header>{userRole === "shelter" ? "Shelter Admin Sign In" : "Volunteer Sign In"}</Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
                 <FloatingLabel controlId="formBasicEmail" label="Email address" className="mb-2">
@@ -77,6 +77,17 @@ export default function Login({ setAuth }) {
                   Don't have an account? <Link to="/signup">Sign Up</Link>
                 </div>
               </Form>
+              <div className="mt-3">
+                {userRole === "shelter" ? (
+                  <p>
+                    Not a Shelter Admin? <Link to="/volunteer-login">Sign in as a volunteer HERE</Link>
+                  </p>
+                ) : (
+                  <p>
+                    Not a Volunteer? <Link to="/shelter-login">Sign in as a Shelter Admin HERE</Link>
+                  </p>
+                )}
+              </div>
             </Card.Body>
           </Card>
         </Col>

@@ -14,25 +14,56 @@ import RequestForHelp from "./components/shelter/RequestForHelp";
 import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
+import HomeDashboard from "./components/HomeDashboard";
+import { BrowserRouter as Navigate, useLocation } from "react-router-dom";
+
+function NavigationControl({ auth }) {
+  const location = useLocation(); 
+
+  if (["/home", "/"].includes(location.pathname)) {
+    return null; 
+  }
+
+  if ([
+    "/shelter-dashboard",
+    "/shift-details",
+    "/request-for-help",
+    "/upcoming-requests",
+    "/shelter-login",
+  ].includes(location.pathname)) {
+    return <NavBarShelterDashboard auth={auth} />;
+  }
+
+  return <NavBarVolunteerDashboard auth={auth} />;
+}
 
 function App() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(!!localStorage.getItem("token"));
+
   return (
     <>
       <Router>
-        {["/shelter-dashboard", "/shift-details", "/request-for-help", "/upcoming-requests"].includes(
-          window.location.pathname,
-        ) ? (
-          <NavBarShelterDashboard auth={auth} />
-        ) : (
-          <NavBarVolunteerDashboard auth={auth} />
-        )}
+        {/* Nav Bar control */}
+        <NavigationControl auth={auth} />
         <Routes>
-          <Route path="/" element={<Login setAuth={setAuth} />} />
+          <Route index element={<HomeDashboard />} />
+          <Route path="/home" element={<HomeDashboard />} />
+          <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
+          <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<VolunteerDashboard />} />
+            <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
+            <Route
+              path="/home-dashboard"
+              element={
+                auth ? (
+                  <Navigate to="/volunteer-dashboard" />
+                ) : (
+                  <Navigate to="/shelter-dashboard" />
+                )
+              }
+            />
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
