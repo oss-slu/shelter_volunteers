@@ -22,11 +22,8 @@ def create_app(config_name):
     app.register_blueprint(work_shift.blueprint)
     load_dotenv()  # Load environment variables from the .env file
 
-    # Only serve React app in production
-    #if config_name == 'pre-production':
-    react_build_dir = os.path.abspath("../build/")
-
     # Serve static files
+    react_build_dir = os.path.abspath("../build/")
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
