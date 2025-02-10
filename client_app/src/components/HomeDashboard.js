@@ -7,17 +7,12 @@ function HomeDashboard() {
     const navigate = useNavigate(); 
 
     useEffect(() => {
-      const token = localStorage.getItem("token");
-      const role = localStorage.getItem("role");
-      
-      if (token) {
-        if (role === "volunteer") {
-          navigate("/volunteer-dashboard");
-        } else if (role === "shelter") {
-          navigate("/shelter-dashboard");
+        const token = localStorage.getItem("token");
+        
+        if (token) {
+          navigate("/volunteer-dashboard"); 
         }
-      }
-    }, [navigate]);
+      }, [navigate]);
       
 
     return (
