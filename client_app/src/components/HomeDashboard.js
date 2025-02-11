@@ -1,18 +1,9 @@
 import "./../styles/HomeDashboard.css";
 import {useNavigate} from "react-router-dom"; 
-import { useEffect } from "react";
 
 
 function HomeDashboard() {
-    const navigate = useNavigate(); 
-    useEffect(() => {
-      const token = localStorage.getItem("token");
-        
-      if (token) {
-        navigate("/home-dashboard");
-      }
-    }, [navigate]);
-      
+  const navigate = useNavigate();
     return (
       <div className="home-dashboard">
         <header className="home-header">

@@ -15,7 +15,7 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
-import { BrowserRouter as Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function NavigationControl({ auth }) {
   const location = useLocation(); 
@@ -54,16 +54,6 @@ function App() {
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
-            <Route
-              path="/home-dashboard"
-              element={
-                auth ? (
-                  <Navigate to="/volunteer-dashboard" />
-                ) : (
-                  <Navigate to="/shelter-dashboard" />
-                )
-              }
-            />
             <Route path="/shelters" element={<Shelters />} />
             <Route path="/past-shifts" element={<PastShifts />} />
             <Route path="/upcoming-shifts" element={<UpcomingShifts />} />

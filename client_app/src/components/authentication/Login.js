@@ -39,7 +39,7 @@ export default function Login({ setAuth, userRole }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await LoginUser(userRole, username, password);
+    await LoginUser(username, password);
     setAuth(true);
     navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
   };  
