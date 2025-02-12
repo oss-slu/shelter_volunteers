@@ -38,22 +38,19 @@ jest.mock('../components/volunteer/hooks/useShelterData', () => ({
   },
 }));
 
-describe('Shelters', () => {
+beforeEach(() => {
+  // Reset all mocks before each test
+  jest.clearAllMocks();
+});
 
-  beforeEach(() => {
-    // Reset all mocks before each test
-    jest.clearAllMocks();
-  });
+test("three shelter cards are loaded", async () => {
+  renderWithRouter(<VolunteerDashboard />, 
+    [{
+      path: "/shelters",
+      element: <h2>Shelter List Page</h2>,
+    }]
+  );
 
-  test("three shelter cards are loaded", async () => {
-    renderWithRouter(<VolunteerDashboard />, 
-      [{
-        path: "/shelters",
-        element: <h2>Shelter List Page</h2>,
-      }]
-    );
-
-    expect(screen.getAllByText("miles away", { exact: false })).toHaveLength(3); //only 3 shift cards are rendered (they should all say the amt of miles away the shelter is)
-    expect(screen.queryAllByTestId("add-button")).toHaveLength(0); //shelter cards shouldn't have add button and time
-  });
+  expect(screen.getAllByText("miles away", { exact: false })).toHaveLength(3); //only 3 shift cards are rendered (they should all say the amt of miles away the shelter is)
+  expect(screen.queryAllByTestId("add-button")).toHaveLength(0); //shelter cards shouldn't have add button and time
 });
