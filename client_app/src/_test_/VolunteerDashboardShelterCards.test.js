@@ -44,7 +44,7 @@ jest.mock("../components/volunteer/Shifts", () => ({
 }));
 
 test("three shelter cards are loaded", async() => {
-  renderWithRouter(<VolunteerDashboard />, 
+  renderWithRouter(<VolunteerDashboard/>, 
     [{
       path: "/shelters",
       element: <h2>Shelter List Page</h2>,
