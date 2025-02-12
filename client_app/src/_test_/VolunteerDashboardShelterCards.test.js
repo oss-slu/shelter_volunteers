@@ -15,12 +15,6 @@ function renderWithRouter(children, routes = []) {
   return render(<RouterProvider router={router} />);
 }
 
-jest.mock("../components/volunteer/Shifts", () => ({
-  UpcomingShifts: () => {
-    return <div>Upcoming Shifts List...</div>;
-  },
-}));
-
 const mockShelterData = shelterData;
 jest.mock('../components/volunteer/hooks/useShelterData', () => ({
   useShelterData() {
@@ -43,12 +37,18 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
+jest.mock("../components/volunteer/Shifts", () => ({
+  UpcomingShifts: () => {
+    return <div>Upcoming Shifts List...</div>;
+  },
+}));
+
 test("three shelter cards are loaded", async () => {
   renderWithRouter(<VolunteerDashboard />, 
     [{
       path: "/shelters",
       element: <h2>Shelter List Page</h2>,
-    }]);
+    },]);
 
   expect(screen.getAllByText("miles away", { exact: false })).toHaveLength(3); //only 3 shift cards are rendered (they should all say the amt of miles away the shelter is)
   expect(screen.queryAllByTestId("add-button")).toHaveLength(0); //shelter cards shouldn't have add button and time
