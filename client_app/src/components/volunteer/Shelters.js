@@ -16,8 +16,6 @@ import { useShelterData } from "./hooks/useShelterData";
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
-  //const [data, setData] = useState([]);
-  // Use the extracted hook
   const {
     data,
     setData,
@@ -30,11 +28,6 @@ const Shelters = (props) => {
     setRadiusfromLocation
   } = useShelterData(defaultRadius);
 
-
-  //const [latitude, setLatitude] = useState(33.997103);
-  //const [longitude, setLongitude] = useState(-118.4472731);
-  //const [radius, setRadius] = useState(defaultRadius);
-  //const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [shiftStatusList, setShiftStatusList] = useState([]);
@@ -42,8 +35,6 @@ const Shelters = (props) => {
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  //const [originalData, setOriginalData] = useState([]);
-  //const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
@@ -52,11 +43,6 @@ const Shelters = (props) => {
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
 
-  /*
-  useEffect(() => {
-    fetchData();
-  }, [latitude, longitude, radius]);
-  */
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
   };
@@ -102,48 +88,6 @@ const Shelters = (props) => {
     }
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
 
-  /*
-  const fetchData = () => {
-    setLoading(true);
-    let newEndpoint =
-      GETHELP_API +
-      "v2/facilities?page=0&pageSize=1000&latitude=" +
-      latitude +
-      "&longitude=" +
-      longitude +
-      "&radius=" +
-      radius;
-    fetch(newEndpoint, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOriginalData(data.content);
-        setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  function getLocation() {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setLocation);
-    }
-  }
-
-  function setLocation(location) {
-    setLatitude(location.coords.latitude);
-    setLongitude(location.coords.longitude);
-  }
-
-
-  function setRadiusfromLocation(event) {
-    setRadius(event.target.value);
-  }
-  */
   function manageShifts(shift) {
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
