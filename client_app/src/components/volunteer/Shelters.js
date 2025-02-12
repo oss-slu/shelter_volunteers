@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./ShelterList";
 import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
-import { GETHELP_API, SERVER } from "../../config";
+import { SERVER } from "../../config";
 import { Link } from "react-router-dom";
 import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,15 +11,23 @@ import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-s
 import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
+import { useShelterData } from "./hooks/useShelterData";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
-  const [data, setData] = useState([]);
-  const [latitude, setLatitude] = useState(33.997103);
-  const [longitude, setLongitude] = useState(-118.4472731);
-  const [radius, setRadius] = useState(defaultRadius);
-  const [loading, setLoading] = useState(true);
+  const {
+    data,
+    setData,
+    originalData,
+    loading,
+    setLoading,
+    noSearchDataAvailable,
+    setNoSearchDataAvailable,
+    getLocation,
+    setRadiusfromLocation
+  } = useShelterData(defaultRadius);
+
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
   const [shiftStatusList, setShiftStatusList] = useState([]);
@@ -27,8 +35,6 @@ const Shelters = (props) => {
   const [onMobileContinueclicked, setOnMobileContinueclicked] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [originalData, setOriginalData] = useState([]);
-  const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,10 +42,6 @@ const Shelters = (props) => {
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
-
-  useEffect(() => {
-    fetchData();
-  }, [latitude, longitude, radius]);
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
@@ -85,46 +87,6 @@ const Shelters = (props) => {
       setTotalPages(totalPagesCount(originalData));
     }
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
-
-  const fetchData = () => {
-    setLoading(true);
-    let newEndpoint =
-      GETHELP_API +
-      "v2/facilities?page=0&pageSize=1000&latitude=" +
-      latitude +
-      "&longitude=" +
-      longitude +
-      "&radius=" +
-      radius;
-    fetch(newEndpoint, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOriginalData(data.content);
-        setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  function getLocation() {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setLocation);
-    }
-  }
-
-  function setLocation(location) {
-    setLatitude(location.coords.latitude);
-    setLongitude(location.coords.longitude);
-  }
-
-  function setRadiusfromLocation(event) {
-    setRadius(event.target.value);
-  }
 
   function manageShifts(shift) {
     setShaking(true);
