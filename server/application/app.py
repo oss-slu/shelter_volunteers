@@ -34,3 +34,4 @@ def create_app(config_name):
         return send_from_directory(react_build_dir, "index.html")
 
     return app
+    
