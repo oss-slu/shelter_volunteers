@@ -1,6 +1,7 @@
 """
 Module handles the mongo DB operations
 """
+from pymongo import MongoClient
 import certifi
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
