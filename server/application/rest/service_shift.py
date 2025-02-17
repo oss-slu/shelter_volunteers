@@ -18,11 +18,10 @@ def create_service_shift():
     
     response = shift_add_use_case(repo, new_shift, existing_shifts)
     return jsonify(response)
-"""
-need to check here, does this route to the correct id?
-"""
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>', methods=['GET'])
 def retrieve_service_shifts(shelter_id):
-    """based on ID, fetch the shifts"""
+    """
+    based on ID, fetch the shifts, need to double check here 
+    """
     shifts = repo.get_shifts_for_shelter(shelter_id)
     return jsonify(shifts)
