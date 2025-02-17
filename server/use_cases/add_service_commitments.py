@@ -2,7 +2,6 @@
 Module for handling service commitments.
 Provides functions to create and retrieve service commitments for users.
 """
-
 from repository.mongodb.service_commitments import insert_service_commitments, fetch_service_commitments
 import uuid
 
