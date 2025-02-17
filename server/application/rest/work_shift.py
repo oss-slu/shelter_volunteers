@@ -1,8 +1,8 @@
 """
-This module contains the RESTful route handlers
-for work shifts in the server application.
+This module contains the RESTful route handlers for work shifts in the server application.
 """
 import json
+import logging
 from flask import Blueprint, Response, request, jsonify, current_app
 from flask_cors import cross_origin
 from repository import mongorepo
@@ -12,48 +12,19 @@ from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_volunteers import get_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
-from use_cases.authenticate import login_user
-from use_cases.authenticate import get_user
+from use_cases.authenticate import login_user, get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 import os
+import copy  # Ensure shifts are copied properly
 
+# Enable logging
+logging.basicConfig(level=logging.DEBUG)
 
 blueprint = Blueprint("work_shift", __name__)
-
-shifts = [
-    {
-        "_id": {
-            "$oid": "f853578c-fc0f-4e65-81b8-566c5dffa35a"
-        },
-        "worker": "volunteer@slu.edu",
-        "shelter": "shelter-id-for-st-patric-center",
-        "start_time": 1696168800000,
-        "end_time": 1696179600000,
-    },
-    {
-        "_id": {
-            "$oid":"f853578c-fc0f-4e65-81b8-566c5dffa35b"
-        },
-        "worker": "volunteer2@slu.edu",
-        "shelter": "shelter-id-for-st-patric-center",
-        "start_time": 1696255200000,
-        "end_time": 1696269600000,
-    },
-    {
-        "_id": {
-            "$oid":"f853578c-fc0f-4e65-81b8-566c5dffa35a"
-        },
-        "worker": "volunteer@slu.edu",
-        "shelter": "shelter-id-for-st-patric-center",
-        "start_time": 1701442800000,
-        "end_time": 1701453600000,
-    },
-
-]
 
 HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.NOT_FOUND: 404,
@@ -64,88 +35,44 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.CONFLICT: 409
 }
 
-@blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
-@cross_origin()
-def get_volunteers(shelter_id):
-    """
-    On GET: The function returns volunteer counts and usernames for times 
-    that are specified by parameters.
-    """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-    request_object = list_shift_request(request.args)
-
-    # find workshifts matching the request object
-    response = get_volunteers_use_case(repo, request_object, shelter_id)
-    return Response(
-        json.dumps(response.value, cls=VolunteerJsonEncoder),
-        mimetype="application/json",
-        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
-    )
-
-
-@blueprint.route("/counts/<int:shelter_id>", methods=["GET"])
-@cross_origin()
-def counts(shelter_id):
-    """
-    On GET: The function returns volunteer counts for times that are
-    specified by parameters.
-    """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-    request_object = list_shift_request(request.args)
-
-    # find workshifts matching the request object
-    response = count_volunteers_use_case(repo, request_object, shelter_id)
-    return Response(
-        json.dumps(response.value, cls=StaffingJsonEncoder),
-        mimetype="application/json",
-        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
-    )
-
-
 @blueprint.route("/shifts", methods=["GET", "POST"])
 @cross_origin()
 def work_shifts():
     """
-    On GET: The function returns a list of all work shifts in the system.
-    On POST: The function adds shifts to the system.
+    On GET: Returns a list of all work shifts in the system.
+    On POST: Adds shifts to the system, supporting repeatable shifts.
     """
     db_config = db_configuration()
     repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-    user = get_user_from_token(request.headers)
-
-    if not user[0]:
-        return jsonify({"message": "Invalid or missing token"}), \
-            ResponseTypes.AUTHORIZATION_ERROR
+    
+    try:
+        user, first_name, last_name = get_user_from_token(request.headers)
+    except ValueError:
+        return jsonify({"message": "Invalid or missing token"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
 
     if request.method == "GET":
-        # process the GET request parameters
         request_object = list_shift_request(request.args)
+        response = workshift_list_use_case(repo, request_object, user)
 
-        # find workshifts matching the request object
-        response = workshift_list_use_case(repo, request_object, user[0])
         if response.response_type == ResponseTypes.SUCCESS:
             enriched_shifts = []
             for work_shift in response.value:
-                # Convert the WorkShift object to JSON
-                work_shift_json = json.loads(json.dumps(work_shift,
-                                                    cls=WorkShiftJsonEncoder))
-                facility_response = get_facility_info_use_case(
-                    work_shift_json["shelter"])
-                if facility_response.response_type == ResponseTypes.SUCCESS:
-                    work_shift_json["facility_info"]=facility_response.value
-                else:
-                    work_shift_json["facility_info"]=\
-                    "Facility information could not be retrieved"
+                work_shift_json = json.loads(json.dumps(work_shift, cls=WorkShiftJsonEncoder))
+                
+                facility_response = get_facility_info_use_case(work_shift_json["shelter"])
+                work_shift_json["facility_info"] = (
+                    facility_response.value if facility_response.response_type == ResponseTypes.SUCCESS
+                    else "Facility information could not be retrieved"
+                )
+
                 enriched_shifts.append(work_shift_json)
+
             return Response(
                 json.dumps(enriched_shifts),
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[response.response_type]
             )
         else:
-            # Handle error response
             return Response(
                 json.dumps(response.value),
                 mimetype="application/json",
@@ -153,55 +80,91 @@ def work_shifts():
             )
 
     elif request.method == "POST":
-        db_config = db_configuration()
-        repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-        user, first_name, last_name = get_user_from_token(request.headers)
-        if not user:
-            return jsonify({"message": "Invalid or missing token"}), \
-                           ResponseTypes.AUTHORIZATION_ERROR
         data = request.get_json()
+        logging.debug(f"Received shift data: {data}")
+
+        all_shifts = []
         for shift in data:
             shift["worker"] = user
             shift["first_name"] = first_name
             shift["last_name"] = last_name
-        add_responses = workshift_add_multiple_use_case(repo, data)
+            repeat_days = shift.get("repeat_days", [])  
+
+            all_shifts.append(copy.deepcopy(shift))
+
+            for day_offset in repeat_days:
+                new_shift = copy.deepcopy(shift)
+                new_shift["start_time"] += day_offset * 86400000  
+                new_shift["end_time"] += day_offset * 86400000
+                all_shifts.append(new_shift)
+
+        add_responses = workshift_add_multiple_use_case(repo, all_shifts)
         success = all(item["success"] for item in add_responses)
-        status_code = (
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-            if success
-            else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
-        )
+        status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS] if success else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
+
         return Response(
             json.dumps(add_responses, cls=WorkShiftJsonEncoder),
             mimetype="application/json",
             status=status_code
         )
 
-def get_user_from_token(headers):
-    token = headers.get("Authorization")
-    if not token:
-        raise ValueError
+@blueprint.route("/service_shift", methods=["POST"])
+@cross_origin()
+def service_shift():
+    """
+    API endpoint to add service shifts, supporting repeatable shifts.
+    """
+    data = request.get_json(force=True)
+    logging.debug(f"Received service shift data: {data}")
 
-    # in debug mode, see if real authentication should be bypassed
-    if (current_app.config["DEBUG"] and
-        "DEV_USER" in current_app.config and
-        "DEV_TOKEN" in current_app.config and
-        token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"],
-            current_app.config["FIRST_NAME"],
-            current_app.config["LAST_NAME"])
+    if not data:
+        return jsonify({"message": "Invalid or missing JSON"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
 
-    user = get_user(token)
-    if user is None:
-        raise ValueError
+    db_config = db_configuration()
+    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
 
-    return user
+    try:
+        user, first_name, last_name = get_user_from_token(request.headers)
+    except ValueError:
+        return jsonify({"message": "Invalid or missing token"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
+
+    all_shifts = []
+    for shift in data:
+        shift["worker"] = user
+        shift["first_name"] = first_name
+        shift["last_name"] = last_name
+        repeat_days = shift.get("repeat_days", [])
+
+        all_shifts.append(copy.deepcopy(shift))
+
+        for day_offset in repeat_days:
+            new_shift = copy.deepcopy(shift)
+            new_shift["start_time"] += day_offset * 86400000  
+            new_shift["end_time"] += day_offset * 86400000
+            all_shifts.append(new_shift)
+
+    add_responses = workshift_add_multiple_use_case(repo, all_shifts)
+    success = all(item["success"] for item in add_responses)
+    status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS] if success else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
+
+    return Response(
+        json.dumps(add_responses, cls=WorkShiftJsonEncoder),
+        mimetype="application/json",
+        status=status_code
+    )
 
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
+    """
+    Deletes a specific work shift based on shift ID.
+    """
     shift_id = str(shift_id)
-    user_email = get_user_from_token(request.headers)
+
+    try:
+        user_email = get_user_from_token(request.headers)
+    except ValueError:
+        return jsonify({"message": "Invalid or missing token"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
 
     db_config = db_configuration()
     repo = mongorepo.MongoRepo(db_config[0], db_config[1])
@@ -215,64 +178,30 @@ def delete_work_shift(shift_id):
         status=status_code
     )
 
-@blueprint.route("/login", methods=["POST"])
-@cross_origin()
-def login():
-    data = request.get_json()
-    if not ("username" in data and "password" in data):
-        return Response([],
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        )
+def get_user_from_token(headers):
+    """
+    Extracts and verifies user identity from the Authorization token.
+    """
+    token = headers.get("Authorization")
+    if not token:
+        raise ValueError
 
-    status = ResponseTypes.SUCCESS
-
-    with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
-        user_list = json.load(file)
-
-    # check if authentication should be bypassed for development purposes
     if (current_app.config["DEBUG"] and
+        "DEV_USER" in current_app.config and
         "DEV_TOKEN" in current_app.config and
-        "DEV_USER" in current_app.config):
-        os.environ["DEV_USER"] = data["username"]
-        current_app.config["DEV_USER"] = data["username"]
-        if data["username"] in user_list:
-            first_name, last_name = user_list[data["username"]]
-            os.environ["FIRST_NAME"] = first_name
-            os.environ["LAST_NAME"] = last_name
-            current_app.config["FIRST_NAME"] = first_name
-            current_app.config["LAST_NAME"] = last_name
-        return Response(
-            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[status])
+        token == current_app.config["DEV_TOKEN"]):
+        return (current_app.config["DEV_USER"],
+                current_app.config["FIRST_NAME"],
+                current_app.config["LAST_NAME"])
 
-    # go through the login process
-    response = login_user(data["username"], data["password"])
-    if not response.ok:
-        status = ResponseTypes.AUTHORIZATION_ERROR
+    user = get_user(token)
+    if user is None:
+        raise ValueError
 
-    return Response(json.dumps(response.json()),
-        mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
+    return user
 
 def db_configuration():
-    #result = manage.read_json_configuration("mongo_config")
-    return (current_app.config["MONGODB_URI"],
-            current_app.config["MONGODB_DATABASE"])
-
-@blueprint.route("/service_shift", methods=["POST"])
-@cross_origin()
-def service_shift():
-    data = request.get_json(force=True)
-
-    if not data:
-        return jsonify({
-            "message": "Invalid or missing JSON"
-        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-
-    print("==== PARSED JSON DATA ====", flush=True)
-    print(json.dumps(data, indent=2), flush=True)
-
-    return jsonify({
-        "message": "Shift received successfully!"
-    }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    """
+    Retrieves database configuration settings.
+    """
+    return (current_app.config["MONGODB_URI"], current_app.config["MONGODB_DATABASE"])

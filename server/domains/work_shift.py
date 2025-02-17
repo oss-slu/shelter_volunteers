@@ -1,11 +1,10 @@
 """
-This module handles data converstion from dictionary to class obj or vice versa
+This module handles data conversion from dictionary to class obj or vice versa.
 """
 import uuid
 import dataclasses
 
 @dataclasses.dataclass
-
 class WorkShift:
     """
     **DEPRECATED:** Use `ServiceShift` instead.
@@ -14,16 +13,19 @@ class WorkShift:
     first_name: str
     last_name: str
     shelter: int
-    start_time: int  # number of milliseconds since the Epoch in UTC
+    start_time: int  # milliseconds since the Epoch in UTC
     end_time: int
+    repeat_days: list = dataclasses.field(default_factory=list)  # ✅ New field for repeatable shifts
     _id: uuid.UUID = None
 
     def get_id(self):
         """Returns the ID of the work shift."""
         return self._id
+
     def set_id(self, new_id):
         """Sets the ID of the work shift."""
         self._id = new_id
+
     @classmethod
     def from_dict(self, d):
         """
@@ -31,6 +33,7 @@ class WorkShift:
         and returns an instance of the class.
         """
         return self(**d)
+
     def to_dict(self):
         """
         The function takes an object and returns a dictionary

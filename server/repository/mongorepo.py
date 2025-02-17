@@ -1,5 +1,5 @@
 """
-Module handles the mongo DB operations
+Module handles the MongoDB operations
 """
 import pymongo
 from domains.work_shift import WorkShift
@@ -7,11 +7,11 @@ from bson.objectid import ObjectId
 
 class MongoRepo:
     """
-    A mongo repository for storing work shifts.
+    A MongoDB repository for storing work shifts.
     """
     def __init__(self, uri, database):
         """
-        Initialize the repo with passed data.
+        Initialize the repository with MongoDB connection.
         """
         client = pymongo.MongoClient(uri)
         self.db = client[database]
@@ -27,6 +27,7 @@ class MongoRepo:
                 shelter=q["shelter"],
                 start_time=q["start_time"],
                 end_time=q["end_time"],
+                repeat_days=q.get("repeat_days", [])  # Include repeat_days if available
             )
             for q in results
         ]
@@ -41,55 +42,33 @@ class MongoRepo:
         if shelter:
             db_filter["shelter"] = shelter
 
-        user_shifts = [WorkShift.from_dict(i) for i in self.collection.find \
-                       (filter=db_filter)]
+        user_shifts = [WorkShift.from_dict(i) for i in self.collection.find(filter=db_filter)]
         return user_shifts
 
     def add(self, work_shift):
         """
-        Add a WorkShift object to the data.
-        A unique id gets generated in mongoDB and is added to workShift object
+        Add a WorkShift object to the database.
         """
-        # Remove the _id field from the dictionary, so that when we call
-        # insert_one mongoDB will add an _id field to the work_shift
-        # dictionary object with a unique value before inserting it into
-        # the collection. This ensures that each work shift
-        # stored in our database has a unique _id
-        work_shift.pop("_id")
+        work_shift.pop("_id", None)  # Ensure MongoDB generates an _id
         self.collection.insert_one(work_shift)
 
     def get_by_id(self, shift_id):
         """
-        The get_by_id function takes in a shift_id and
-        returns the corresponding WorkShift object.
+        Retrieve a shift by ID.
         """
-        id_filter = {"_id":ObjectId(shift_id)}
+        id_filter = {"_id": ObjectId(shift_id)}
         item = self.collection.find_one(filter=id_filter)
-        if item:
-            return WorkShift.from_dict(item)
-        else:
-            return None
+        return WorkShift.from_dict(item) if item else None
 
     def delete(self, shift_id):
         """
-        The delete function deletes a shift from the database.
+        Delete a shift from the database.
         """
         self.collection.delete_one({"_id": ObjectId(shift_id)})
-        return
-
-    # This is the logic connecting the the DB for deleting a shift
-    def delete_volunteer_shift(self, shift_id, user_id):
-        """
-        Removes the shift instance in 
-        volunteer's shifts from the database.
-        """
-        self.collection.update_one({"id": user_id},
-                                   {"$pull": {"signed_up_shifts": shift_id}})
-        return
 
     def get_shifts_for_user(self, user_id):
         """
-        Retrieves all work shifts for a specific user from the database.
+        Retrieve all work shifts for a specific user from the database.
         """
         user_shifts = self.collection.find({"worker": user_id})
         return [WorkShift.from_dict(shift) for shift in user_shifts]
