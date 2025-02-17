@@ -3,11 +3,10 @@ This module handles the creation of Flask app
 """
 from flask import Flask, send_from_directory
 from application.rest import work_shift
-from dotenv import load_dotenv
 from application.rest import service_commitment
+from dotenv import load_dotenv
 from config import mongodb_config
 import os
-from application.rest.service_commitment import blueprint as service_commitment_blueprint
 
 def create_app(config_name):
     """
@@ -35,6 +34,4 @@ def create_app(config_name):
         # If no static file is found, return index.html
         # to let React handle routing
         return send_from_directory(react_build_dir, "index.html")
-
     return app
-
