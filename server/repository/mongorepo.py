@@ -2,6 +2,7 @@
 Module handles the mongo DB operations
 """
 import pymongo
+import certifi
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
 
@@ -13,7 +14,8 @@ class MongoRepo:
         """
         Initialize the repo with passed data.
         """
-        client = pymongo.MongoClient(uri)
+        #client = pymongo.MongoClient(uri, tlsCAFile=certifi.where())
+        client = MongoClient(uri, tlsCAFile=certifi.where())
         self.db = client[database]
         self.collection = self.db.shifts
 
