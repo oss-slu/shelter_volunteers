@@ -14,8 +14,9 @@ def shift_add_use_case(repo, new_shift, existing_shifts):
     repo.add(new_shift_dict)
     shift_id = new_shift_dict["_id"]
     new_shift.set_id(shift_id)
-    
-    return {"id": shift_id, "success": True, "message": "Shift added successfully"}
+    new_shift_dict = new_shift.to_dict()
+    return {"id": shift_id, "success": True,
+        "message": "Shift added successfully"}
 
 def shift_add_multiple_use_case(repo, service_shifts, user_id, repeat_days=None):
     """

@@ -20,6 +20,4 @@ class WorkJsonEncoder(json.JSONEncoder):
                 "can_sign_up": work.can_sign_up,
                 "repeat_days": getattr(work, "repeat_days", [])
             }
-            return to_serialize
-        except AttributeError:
-        return super().default(work)
+        return super().default(work)  # Proper indentation fix
