@@ -4,10 +4,7 @@ Provides endpoints for creating and retrieving service commitments.
 """
 from flask import Blueprint, request, jsonify
 from .work_shift import get_user_from_token
-from application.use_cases.add_service_commitments import (
-    add_service_commitments,
-    get_service_commitments
-)
+from use_cases.add_service_commitments import add_service_commitments, get_service_commitments
 
 blueprint = Blueprint("service_commitment", __name__)
 

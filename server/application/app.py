@@ -2,8 +2,9 @@
 This module handles the creation of Flask app
 """
 from flask import Flask, send_from_directory
-from application.rest import work_shift
-from application.rest import service_commitment
+from dotenv import load_dotenv
+from rest import work_shift
+from rest import service_commitment
 from dotenv import load_dotenv
 from config import mongodb_config
 import os
