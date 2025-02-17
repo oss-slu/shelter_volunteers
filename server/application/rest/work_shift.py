@@ -1,22 +1,12 @@
 """
-This module contains the RESTful route handlers
-for work shifts in the server application.
+This module contains the RESTful route handlers for work shifts.
 """
 import json
 from flask import Blueprint, Response, request, jsonify, current_app
 from flask_cors import cross_origin
 from repository import mongorepo
-from use_cases.list_workshifts import workshift_list_use_case
-from use_cases.add_workshifts import workshift_add_multiple_use_case
-from use_cases.delete_workshifts import delete_shift_use_case
-from use_cases.count_volunteers import count_volunteers_use_case
-from use_cases.get_volunteers import get_volunteers_use_case
-from use_cases.get_facility_info import get_facility_info_use_case
-from use_cases.authenticate import login_user
-from use_cases.authenticate import get_user
-from serializers.work_shift import WorkShiftJsonEncoder
-from serializers.staffing import StaffingJsonEncoder
-from serializers.volunteer import VolunteerJsonEncoder
+from use_cases.add_service_shifts import shift_add_multiple_use_case
+from serializers.service_shift import WorkJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 import os
@@ -64,24 +54,16 @@ HTTP_STATUS_CODES_MAPPING = {
     ResponseTypes.CONFLICT: 409
 }
 
-@blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
+@blueprint.route("/service_shift", methods=["POST"])
 @cross_origin()
-def get_volunteers(shelter_id):
+def service_shift():
     """
-    On GET: The function returns volunteer counts and usernames for times 
-    that are specified by parameters.
+    On POST: Adds service shifts to the system, supporting repeatable shifts.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-    request_object = list_shift_request(request.args)
+    data = request.get_json(force=True)
 
-    # find workshifts matching the request object
-    response = get_volunteers_use_case(repo, request_object, shelter_id)
-    return Response(
-        json.dumps(response.value, cls=VolunteerJsonEncoder),
-        mimetype="application/json",
-        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
-    )
+    if not data:
+        return jsonify({"message": "Invalid or missing JSON"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
 
 
 @blueprint.route("/counts/<int:shelter_id>", methods=["GET"])
@@ -155,124 +137,16 @@ def work_shifts():
     elif request.method == "POST":
         db_config = db_configuration()
         repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-        user, first_name, last_name = get_user_from_token(request.headers)
-        if not user:
-            return jsonify({"message": "Invalid or missing token"}), \
-                           ResponseTypes.AUTHORIZATION_ERROR
-        data = request.get_json()
-        for shift in data:
-            shift["worker"] = user
-            shift["first_name"] = first_name
-            shift["last_name"] = last_name
-        add_responses = workshift_add_multiple_use_case(repo, data)
-        success = all(item["success"] for item in add_responses)
-        status_code = (
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-            if success
-            else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
-        )
-        return Response(
-            json.dumps(add_responses, cls=WorkShiftJsonEncoder),
-            mimetype="application/json",
-            status=status_code
-        )
+    user, first_name, last_name = get_user_from_token(request.headers)
+    if not user:
+        return jsonify({"message": "Invalid or missing token"}), HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
 
-def get_user_from_token(headers):
-    token = headers.get("Authorization")
-    if not token:
-        raise ValueError
+    repo = mongorepo.MongoRepo(current_app.config["MONGODB_URI"], current_app.config["MONGODB_DATABASE"])
 
-    # in debug mode, see if real authentication should be bypassed
-    if (current_app.config["DEBUG"] and
-        "DEV_USER" in current_app.config and
-        "DEV_TOKEN" in current_app.config and
-        token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"],
-            current_app.config["FIRST_NAME"],
-            current_app.config["LAST_NAME"])
+    repeat_days = data.get("repeat_days", [])  # List of days to repeat the shift
 
-    user = get_user(token)
-    if user is None:
-        raise ValueError
+    add_responses = shift_add_multiple_use_case(repo, data["shifts"], user, repeat_days)
+    success = all(item["success"] for item in add_responses)
+    status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS] if success else HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT]
 
-    return user
-
-@blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
-@cross_origin()
-def delete_work_shift(shift_id):
-    shift_id = str(shift_id)
-    user_email = get_user_from_token(request.headers)
-
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
-
-    response = delete_shift_use_case(repo, shift_id, user_email[0])
-    status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
-
-    return Response(
-        json.dumps(response.value),
-        mimetype="application/json",
-        status=status_code
-    )
-
-@blueprint.route("/login", methods=["POST"])
-@cross_origin()
-def login():
-    data = request.get_json()
-    if not ("username" in data and "password" in data):
-        return Response([],
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        )
-
-    status = ResponseTypes.SUCCESS
-
-    with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
-        user_list = json.load(file)
-
-    # check if authentication should be bypassed for development purposes
-    if (current_app.config["DEBUG"] and
-        "DEV_TOKEN" in current_app.config and
-        "DEV_USER" in current_app.config):
-        os.environ["DEV_USER"] = data["username"]
-        current_app.config["DEV_USER"] = data["username"]
-        if data["username"] in user_list:
-            first_name, last_name = user_list[data["username"]]
-            os.environ["FIRST_NAME"] = first_name
-            os.environ["LAST_NAME"] = last_name
-            current_app.config["FIRST_NAME"] = first_name
-            current_app.config["LAST_NAME"] = last_name
-        return Response(
-            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[status])
-
-    # go through the login process
-    response = login_user(data["username"], data["password"])
-    if not response.ok:
-        status = ResponseTypes.AUTHORIZATION_ERROR
-
-    return Response(json.dumps(response.json()),
-        mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
-
-def db_configuration():
-    #result = manage.read_json_configuration("mongo_config")
-    return (current_app.config["MONGODB_URI"],
-            current_app.config["MONGODB_DATABASE"])
-
-@blueprint.route("/service_shift", methods=["POST"])
-@cross_origin()
-def service_shift():
-    data = request.get_json(force=True)
-
-    if not data:
-        return jsonify({
-            "message": "Invalid or missing JSON"
-        }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-
-    print("==== PARSED JSON DATA ====", flush=True)
-    print(json.dumps(data, indent=2), flush=True)
-
-    return jsonify({
-        "message": "Shift received successfully!"
-    }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    return Response(json.dumps(add_responses, cls=WorkJsonEncoder), mimetype="application/json", status=status_code)
