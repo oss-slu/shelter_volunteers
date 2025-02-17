@@ -17,7 +17,7 @@ def create_service_shift():
     """
     data = request.get_json()
     new_shift = ServiceShift.from_dict(data)
-    existing_shifts = repo.get_shifts_for_volunteer(data.get("user_id"))
+    existing_shifts = repo.get_shifts_for_volunteer(data.get('user_id'))
     response = shift_add_use_case(repo, new_shift, existing_shifts)
     return jsonify(response)
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>',
