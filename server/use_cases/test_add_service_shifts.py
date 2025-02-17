@@ -23,3 +23,4 @@ def test_add_repeated_shifts():
     
     assert len(responses) == 1
     assert "repeat_shifts" in responses[0]
+    assert len(responses[0]["repeat_shifts"]) == 3

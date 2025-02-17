@@ -14,10 +14,7 @@ def shift_add_use_case(repo, new_shift, existing_shifts):
     repo.add(new_shift_dict)
     shift_id = new_shift_dict["_id"]
     new_shift.set_id(shift_id)
-    new_shift_dict = new_shift.to_dict()
-    return {"id": shift_id, "success": True,
-            "message": "Shift added successfully"}
-
+    
     return {"id": shift_id, "success": True, "message": "Shift added successfully"}
 
 def shift_add_multiple_use_case(repo, service_shifts, user_id, repeat_days=None):
@@ -43,6 +40,7 @@ def shift_add_multiple_use_case(repo, service_shifts, user_id, repeat_days=None)
             
             # Handle shift repetition across specified days
             if repeat_days:
+                repeat_shifts = []
                 for day_offset in repeat_days:
                     repeated_shift = ServiceShift.from_dict(service_shift_dict)
                     repeated_shift.start_time += day_offset * 86400000  # Convert days to milliseconds
@@ -50,10 +48,12 @@ def shift_add_multiple_use_case(repo, service_shifts, user_id, repeat_days=None)
                     
                     repeat_response = shift_add_use_case(repo, repeated_shift, existing_shifts)
                     repeat_shift_id = str(repeated_shift.get_id())
-                    response_item["repeat_shifts"] = response_item.get("repeat_shifts", []) + [{"code": repeat_shift_id, "success": repeat_response["success"]}]
+                    repeat_shifts.append({"code": repeat_shift_id, "success": repeat_response["success"]})
                     
                     if repeat_response["success"]:
                         existing_shifts.append(repeated_shift)
+
+                response_item["repeat_shifts"] = repeat_shifts
 
         responses.append(response_item)
 

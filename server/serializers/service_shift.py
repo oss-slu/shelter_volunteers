@@ -2,13 +2,13 @@
 This module is for a custom JSON encoder for serializing ServiceShift objects.
 """
 import json
-
+from server.domains.service_shift import ServiceShift
 
 class WorkJsonEncoder(json.JSONEncoder):
     """Encode a ServiceShift object to JSON."""
     def default(self, work):
         """Encode a WorkShift object to JSON."""
-        try:
+        if isinstance(work, ServiceShift):
             return {
                 "_id": str(work.get_id()),
                 "shelter_id": work.shelter_id,
@@ -18,8 +18,8 @@ class WorkJsonEncoder(json.JSONEncoder):
                 "required_volunteer_count": work.required_volunteer_count,
                 "max_volunteer_count": work.max_volunteer_count,
                 "can_sign_up": work.can_sign_up,
-                "repeat_days": work.repeat_days if hasattr(work, 'repeat_days') else []
+                "repeat_days": getattr(work, "repeat_days", [])
             }
             return to_serialize
         except AttributeError:
-            return super().default(work)
+        return super().default(work)
