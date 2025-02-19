@@ -7,6 +7,7 @@ from flask import Blueprint, Response, request, jsonify, current_app
 from flask_cors import cross_origin
 from repository.mongorepo.shelter import ShelterRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
+from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
 from application.rest.work_shift import db_configuration
 from domains.shelter.shelter import Shelter
@@ -30,23 +31,13 @@ def shelter():
 
     if request.method == "GET":
         # process the GET request parameters
-        pass
-        # find workshifts matching the request object
-        # response = workshift_list_use_case(repo, request_object, user[0])
-        #if response.response_type == ResponseTypes.SUCCESS:
-        #    return Response(
-        #        json.dumps(enriched_shifts),
-        #        mimetype="application/json",
-        #        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
-        #    )
-        #else:
-        #    # Handle error response
-        #    return Response(
-        #        json.dumps(response.value),
-        #        mimetype="application/json",
-        #        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
-        #    )
-
+        shelters_as_dict = shelter_list_use_case(repo)
+        shelters_as_json = [json.dumps(shelter, cls=ShelterJsonEncoder) for shelter in shelters_as_dict]
+        return Response(
+            shelters_as_json,
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        )
     elif request.method == "POST":
         shelter_data_dict = request.get_json()
         print(shelter_data_dict)

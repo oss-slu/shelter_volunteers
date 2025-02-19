@@ -52,3 +52,10 @@ class ShelterRepo:
             return Shelter.from_dict(item)
         else:
             return None
+
+    def list(self):
+        """
+        Return a list of Shelter objects in the collection.
+        """
+        shelters = [Shelter.from_dict(i) for i in self.collection.find()]
+        return shelters
