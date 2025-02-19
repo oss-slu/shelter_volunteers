@@ -3,6 +3,7 @@ This module handles the creation of Flask app
 """
 from flask import Flask, send_from_directory
 from application.rest import work_shift
+from application.rest.shelter.shelter import shelter_blueprint
 from dotenv import load_dotenv
 from config import mongodb_config
 import os
@@ -20,6 +21,7 @@ def create_app(config_name):
     app.config.from_object(mongo_config)
 
     app.register_blueprint(work_shift.blueprint)
+    app.register_blueprint(shelter_blueprint)
     load_dotenv()  # Load environment variables from the .env file
 
     # Serve static files

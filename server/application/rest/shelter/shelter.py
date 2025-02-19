@@ -1,0 +1,63 @@
+"""
+This module contains the RESTful route handlers
+for shelters in the server application.
+"""
+import json
+from flask import Blueprint, Response, request, jsonify, current_app
+from flask_cors import cross_origin
+from repository.mongorepo.shelter import ShelterRepo
+from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
+from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
+from application.rest.work_shift import db_configuration
+from domains.shelter.shelter import Shelter
+from serializers.shelter import ShelterJsonEncoder
+from responses import ResponseTypes
+import os
+
+
+shelter_blueprint = Blueprint("shelter", __name__)
+@shelter_blueprint.route("/shelter", methods=["GET", "POST"])
+@cross_origin()
+def shelter():
+    """
+    On GET: The function returns a list of all shelters in the system.
+    On POST: The function adds a shelter to the system.
+    """
+    db_config = db_configuration()
+    repo = ShelterRepo(db_config[0], db_config[1])
+
+    # add user authentication and authorization logic here
+
+    if request.method == "GET":
+        # process the GET request parameters
+        pass
+        # find workshifts matching the request object
+        # response = workshift_list_use_case(repo, request_object, user[0])
+        #if response.response_type == ResponseTypes.SUCCESS:
+        #    return Response(
+        #        json.dumps(enriched_shifts),
+        #        mimetype="application/json",
+        #        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+        #    )
+        #else:
+        #    # Handle error response
+        #    return Response(
+        #        json.dumps(response.value),
+        #        mimetype="application/json",
+        #        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+        #    )
+
+    elif request.method == "POST":
+        shelter_data_dict = request.get_json()
+        print(shelter_data_dict)
+        # shelter_add_use_case expects a Shelter object
+        shelter = Shelter.from_dict(shelter_data_dict)
+        add_response = shelter_add_use_case(repo, shelter)
+        status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        if add_response["success"]:
+            status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        return Response(
+            json.dumps(add_response, default=str),
+            mimetype="application/json",
+            status=status_code
+        )
