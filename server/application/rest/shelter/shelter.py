@@ -3,7 +3,7 @@ This module contains the RESTful route handlers
 for shelters in the server application.
 """
 import json
-from flask import Blueprint, Response, request, jsonify, current_app
+from flask import Blueprint, Response, request
 from flask_cors import cross_origin
 from repository.mongorepo.shelter import ShelterRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
@@ -13,7 +13,6 @@ from application.rest.work_shift import db_configuration
 from domains.shelter.shelter import Shelter
 from serializers.shelter import ShelterJsonEncoder
 from responses import ResponseTypes
-import os
 
 
 shelter_blueprint = Blueprint("shelter", __name__)
@@ -32,7 +31,10 @@ def shelter():
     if request.method == "GET":
         # process the GET request parameters
         shelters_as_dict = shelter_list_use_case(repo)
-        shelters_as_json = [json.dumps(shelter, cls=ShelterJsonEncoder) for shelter in shelters_as_dict]
+        shelters_as_json = [
+            json.dumps(shelter, cls=ShelterJsonEncoder) 
+            for shelter in shelters_as_dict
+        ]
         return Response(
             shelters_as_json,
             mimetype="application/json",
@@ -42,8 +44,7 @@ def shelter():
         shelter_data_dict = request.get_json()
         print(shelter_data_dict)
         # shelter_add_use_case expects a Shelter object
-        shelter = Shelter.from_dict(shelter_data_dict)
-        add_response = shelter_add_use_case(repo, shelter)
+        add_response = shelter_add_use_case(repo, Shelter.from_dict(shelter_data_dict))
         status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         if add_response["success"]:
             status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]

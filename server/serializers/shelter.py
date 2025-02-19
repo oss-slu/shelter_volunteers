@@ -8,6 +8,7 @@ class ShelterJsonEncoder(json.JSONEncoder):
     def default(self, shelter):
         """Encode a Shelter object to JSON."""
         try:
+            print(shelter)
             to_serialize = {
                 "_id": str(shelter.get_id()),
                 "name": shelter.name,

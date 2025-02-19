@@ -9,7 +9,7 @@ def shelter_add_use_case(repo, shelter: Shelter):
     """
     if not isinstance(shelter, Shelter):
         raise TypeError("shelter must be an instance of Shelter")
-    
+
     shelter_dict = shelter.to_dict()
     repo.add(shelter_dict)
     shelter_id = shelter_dict["_id"]
