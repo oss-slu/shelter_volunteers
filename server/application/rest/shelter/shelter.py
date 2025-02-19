@@ -32,7 +32,7 @@ def shelter():
         # process the GET request parameters
         shelters_as_dict = shelter_list_use_case(repo)
         shelters_as_json = [
-            json.dumps(shelter, cls=ShelterJsonEncoder) 
+            json.dumps(shelter, cls=ShelterJsonEncoder)
             for shelter in shelters_as_dict
         ]
         return Response(
@@ -44,7 +44,8 @@ def shelter():
         shelter_data_dict = request.get_json()
         print(shelter_data_dict)
         # shelter_add_use_case expects a Shelter object
-        add_response = shelter_add_use_case(repo, Shelter.from_dict(shelter_data_dict))
+        shelter_obj = Shelter.from_dict(shelter_data_dict)
+        add_response = shelter_add_use_case(repo, shelter_obj)
         status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         if add_response["success"]:
             status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
