@@ -12,13 +12,13 @@ repo = MongoRepo()
 
 @service_shift_bp.route('/service_shift', methods=['POST'])
 def create_service_shift():
-    """
-    shift creation requests here
-    """
-    data = request.get_json()
-    new_shift = ServiceShift.from_dict(data)
-    response = shift_add_use_case(repo, new_shift)
-    return jsonify(response)
+  """
+  shift creation requests here
+  """
+  data = request.get_json()
+  new_shift = ServiceShift.from_dict(data)
+  response = shift_add_use_case(repo, new_shift)
+  return jsonify(response)
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>',
                          methods=['GET'])
 def retrieve_service_shifts(shelter_id):
