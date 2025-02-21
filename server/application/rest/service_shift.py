@@ -28,6 +28,6 @@ def retrieve_service_shifts(shelter_id):
     params = request.args
     get_shelter_id = params.get('shelter_id')
     if not get_shelter_id:
-        return jsonify({"error": "shelter_id parameter is required"}), 400
+        return jsonify({'error': 'shelter_id parameter is required'}), 400
     shifts = shift_add_use_case(repo, get_shelter_id)
     return jsonify(shifts)
