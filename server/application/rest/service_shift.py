@@ -12,22 +12,22 @@ repo = MongoRepo()
 
 @service_shift_bp.route('/service_shift', methods=['POST'])
 def create_service_shift():
-  """
-  shift creation requests here
-  """
-  data = request.get_json()
-  new_shift = ServiceShift.from_dict(data)
-  response = shift_add_use_case(repo, new_shift)
-  return jsonify(response)
+    """
+    shift creation requests here
+    """
+    data = request.get_json()
+    new_shift = ServiceShift.from_dict(data)
+    response = shift_add_use_case(repo, new_shift)
+    return jsonify(response)
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>',
                          methods=['GET'])
 def retrieve_service_shifts(shelter_id):
-  """
-  based on ID, fetch the shifts, need to double check here 
-  """
-  params = request.args
-  get_shelter_id = params.get('shelter_id')
-  if not get_shelter_id:
-    return jsonify({"error": "shelter_id parameter is required"}), 400
-  shifts = shift_add_use_case(repo, get_shelter_id)
-  return jsonify(shifts)
+    """
+    based on ID, fetch the shifts, need to double check here 
+    """
+    params = request.args
+    get_shelter_id = params.get('shelter_id')
+    if not get_shelter_id:
+        return jsonify({"error": "shelter_id parameter is required"}), 400
+    shifts = shift_add_use_case(repo, get_shelter_id)
+    return jsonify(shifts)
