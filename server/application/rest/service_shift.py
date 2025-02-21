@@ -22,14 +22,12 @@ def create_service_shift():
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>',
                          methods=['GET'])
 def retrieve_service_shifts(shelter_id):
-    """
-    based on ID, fetch the shifts, need to double check here 
-    """
-    # for arg, values in params.items():
-    #   pass
-    params = request.args
-    get_shelter_id = params.get('shelter_id')
-    if not get_shelter_id:
-      return jsonify({"error": "shelter_id parameter is required"}), 400
-    shifts = shift_add_use_case(repo, get_shelter_id)
-    return jsonify(shifts)
+  """
+  based on ID, fetch the shifts, need to double check here 
+  """
+  params = request.args
+  get_shelter_id = params.get('shelter_id')
+  if not get_shelter_id:
+    return jsonify({"error": "shelter_id parameter is required"}), 400
+  shifts = shift_add_use_case(repo, get_shelter_id)
+  return jsonify(shifts)
