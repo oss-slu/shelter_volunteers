@@ -26,8 +26,8 @@ def retrieve_service_shifts(shelter_id):
     based on ID, fetch the shifts, need to double check here 
     """
     params = request.args
-    get_shelter_id = params.get('shelter_id')
-    if not get_shelter_id:
+    shelter_id = params.get('shelter_id')
+    if not shelter_id:
         return jsonify({'error': 'shelter_id parameter is required'}), 400
-    shifts = shift_add_use_case(repo, get_shelter_id)
+    shifts = shift_add_use_case(repo, shelter_id)
     return jsonify(shifts)
