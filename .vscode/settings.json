@@ -1,3 +1,11 @@
 {
-    "circleci.persistedProjectSelection": []
+    "circleci.persistedProjectSelection": [],
+    "python.analysis.extraPaths": [
+        "./server/use_cases/add_",
+        "./server/use_cases/add_",
+        "./server/use_cases/add_",
+        "./server/use_cases/add_",
+        "./server/use_cases/add_",
+        "./server/use_cases/add_"
+    ]
 }

@@ -3,13 +3,13 @@ This module handles the creation of Flask app
 """
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
-from rest import work_shift
-from rest import service_commitment
+from application.rest import work_shift
+from application.rest import service_commitment
 from dotenv import load_dotenv
 from config import mongodb_config
 import os
 
-def create_app(config_name):
+def create_app(config_name = "development"):
     """
     The function  creates the Flask application.
     """

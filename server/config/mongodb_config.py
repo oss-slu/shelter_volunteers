@@ -2,6 +2,8 @@
 
 import os
 from dotenv import load_dotenv
+from pymongo import MongoClient
+
 
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
@@ -49,3 +51,14 @@ def get_config():
         'pre-production': MongoPreProductionConfig
     }
     return config_map.get(env, MongoDevelopmentConfig)()
+
+def get_db():
+    """
+    Get a database connection using the appropriate configuration.
+    
+    Returns:
+        pymongo.database.Database: MongoDB database connection
+    """
+    config = get_config()
+    client = MongoClient(config.MONGODB_URI)
+    return client[config.MONGODB_DATABASE]

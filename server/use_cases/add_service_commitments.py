@@ -2,13 +2,20 @@
 Module for handling service commitments.
 Provides functions to create and retrieve service commitments for users.
 """
-#from repository.mongodb.service_commitments import insert_service_commitments, fetch_service_commitments
-import uuid
-from service_commitments import insert_service_commitments, fetch_service_commitments
 
-def add_service_commitments(user_email, shifts):
+import uuid
+
+def add_service_commitments(repo, user_email, shifts):
     """
     Creates service commitments for the given user and shifts.
+
+    Args:
+        repo: A repository object that provides an insert_service_commitments method.
+        user_email (str): The user's email.
+        shifts (list): A list of shift dictionaries.
+
+    Returns:
+        list: A list of dictionaries indicating the success and service commitment IDs.
     """
     commitments = []
     for shift in shifts:
@@ -22,14 +29,22 @@ def add_service_commitments(user_email, shifts):
         }
         commitments.append(commitment)
 
-    insert_service_commitments(commitments)
-    return [{"service_commitment_id": c["service_commitment_id"],
-             "success": True} for c in commitments]
+    repo.insert_service_commitments(commitments)
+    return [{"service_commitment_id": c["service_commitment_id"], "success": True}
+            for c in commitments]
 
-def get_service_commitments(user_email):
+def get_service_commitments(repo, user_email):
     """
     Retrieves all service commitments for a given user.
+
+    Args:
+        repo: A repository object that provides a fetch_service_commitments method.
+        user_email (str): The user's email.
+
+    Returns:
+        list: A list of service commitment dictionaries with IDs and associated service shift IDs.
     """
-    commitments = fetch_service_commitments(user_email)
+    commitments = repo.fetch_service_commitments(user_email)
     return [{"service_commitment_id": c["service_commitment_id"],
-             "service_shift_id": c["service_shift_id"]} for c in commitments]
+             "service_shift_id": c["service_shift_id"]}
+            for c in commitments]
