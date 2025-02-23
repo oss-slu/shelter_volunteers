@@ -12,8 +12,8 @@ def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
         shifts = repo.get_shifts_for_shelter(shelter_id)
         return [shift.to_dict() for shift in shifts]
     if shift_already_exists(new_shift, existing_shifts):
-        return {"success": False,
-                "message": "You are signed up for another shift at this time"}
+        return {'success': False,
+                'message': 'You are signed up for another shift at this time'}
     new_shift_dict = new_shift.to_dict()
     repo.add(new_shift_dict)
     #shift_id = new_shift_dict["_id"]
@@ -24,13 +24,13 @@ def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
         if (max(existing_shift['shift_start'], new_shift.shift_start) <
                 min(existing_shift['shift_end'], new_shift.shift_end)):
             return {
-                "service_shift_id": None,
-                "success": False,
-                "message": "overlapping shift"
+                'service_shift_id': None,
+                'success': False,
+                'message': 'overlapping shift'
             }
     return {
-        "service_shift_id": str(shift_id),
-        "success": "true"
+        'service_shift_id': str(shift_id),
+        'success': 'true'
     }
 
 
