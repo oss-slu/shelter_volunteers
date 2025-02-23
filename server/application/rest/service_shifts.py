@@ -25,14 +25,14 @@ def create_service_shift():
     })
 @service_shift_bp.route('/service_shift/shelter_id/<int:shelter_id>',
                          methods=['GET'])
-def get_service_shifts(repo, new_shift =None, existing_shifts=None,
+def get_service_shifts(new_shift =None, existing_shifts=None,
                         shelter_id=shelter_id):
     """
     based on ID, fetch the shifts, need to double check here 
     """
     shelter_id = request.args.get('shelter_id')
     if not shelter_id:
-        return jsonify({'success': 'false', 'message': 
+        return jsonify({'success': 'false', 'message':
                         'shelter_id is required'}), 400
     shelter_id = int(shelter_id)
     shifts = shift_add_use_case(repo, new_shift=None, shelter_id=shelter_id)

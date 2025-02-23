@@ -50,11 +50,11 @@ def shift_add_multiple_use_case(repo, service_shifts, user_id):
         new_shift = ServiceShift.from_dict(service_shift_dict)
         add_response = shift_add_use_case(repo, new_shift, existing_shifts)
         shift_id = str(new_shift.get_id())
-        response_item = {"code": shift_id, "success": add_response["success"]}
-        if not add_response["success"]:
-            response_item["error"] = add_response["message"]
+        response_item = {'code': shift_id, 'success': add_response['success']}
+        if not add_response['success']:
+            response_item['error'] = add_response['message']
         responses.append(response_item)
-        if add_response["success"]:
+        if add_response['success']:
             existing_shifts.append(new_shift)
 
     return responses
