@@ -1,4 +1,4 @@
-// src/components/shelter/NavBarShelterDashboard.js
+// client_app/src/components/shelter/NavBarShelterDashboard.js
 import React, { useState, useEffect } from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import "../../styles/NavBar.css";
@@ -33,7 +33,7 @@ function CustomNavBarShelter({ auth }) {
               >
                 Shift Details
               </Nav.Link>
-              {/* Minimal change: updated link to route to /set-shifts */}
+              {/* Link to the new schedule interface */}
               <Nav.Link
                 href="/set-shifts"
                 active={location.pathname === "/set-shifts"}

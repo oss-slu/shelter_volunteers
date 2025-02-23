@@ -1,0 +1,52 @@
+/* client_app/src/styles/shelter/Schedule.css */
+
+/* Container for the entire Schedule view */
+.schedule-container {
+    padding: 1rem;
+  }
+  
+  /* Container holding the clickable shift cards */
+  .shift-cards-container {
+    margin-bottom: 1rem;
+  }
+  
+  /* Base styling for each shift card */
+  .shift-card {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Highlighted style when a shift card is active/selected */
+  .shift-card-active {
+    background-color: #d0eaff;
+  }
+  
+  /* Default style when a shift card is inactive/unselected */
+  .shift-card-inactive {
+    background-color: #f0f0f0;
+  }
+  
+  /* Bold text for the shift name */
+  .shift-name {
+    font-weight: bold;
+  }
+  
+  /* Slightly smaller text for the shift time range */
+  .shift-time {
+    font-size: 0.9rem;
+  }
+  
+  /* Container to constrain the calendar’s height */
+  .calendar-container {
+    height: 500px;
+  }
+  
+  /* Additional styling for the Calendar component */
+  .calendar-style {
+    height: 100%;
+  }
+  
