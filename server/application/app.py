@@ -5,7 +5,6 @@ from flask import Flask, send_from_directory
 from dotenv import load_dotenv
 from application.rest import work_shift
 from application.rest import service_commitment
-from dotenv import load_dotenv
 from config import mongodb_config
 import os
 

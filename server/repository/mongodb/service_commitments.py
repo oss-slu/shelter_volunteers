@@ -22,7 +22,8 @@ class MongoRepoCommitments:
         Inserts multiple service commitments into the database.
 
         Args:
-            commitments (list): A list of dictionaries representing the service commitments.
+            commitments (list): A list of dictionaries 
+            representing the service commitments.
 
         Returns:
             list: A list of inserted IDs for the commitments.
@@ -35,10 +36,13 @@ class MongoRepoCommitments:
         Fetches all service commitments for a specific user.
 
         Args:
-            user_email (str): The email of the user for whom to fetch commitments.
+            user_email (str): The email of the user 
+            for whom to fetch commitments.
 
         Returns:
-            list: A list of service commitment documents (excluding the _id field).
+            list: A list of service commitment 
+            documents (excluding the _id field).
         """
-        commitments = list(self.collection.find({"user_email": user_email}, {"_id": 0}))
+        commitments = list(self.collection.find(
+            {"user_email": user_email}, {"_id": 0}))
         return commitments

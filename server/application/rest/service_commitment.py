@@ -29,7 +29,8 @@ def create_service_commitment():
     try:
         request_data = request.get_json()
         if not isinstance(request_data, list):
-            return jsonify({"error": "Invalid request format, expected a list"}), 400
+            return jsonify(
+                {"error": "Invalid request format, expected a list"}), 400
 
         # Pass the repo object to the use case function
         commitments = add_service_commitments(repo, user_email, request_data)
@@ -50,7 +51,6 @@ def fetch_service_commitments():
         return jsonify({"error": "Missing Authorization token"}), 401
 
     user_email = get_user_from_token(auth_header)
-    
     if not user_email:
         return jsonify({"error": "Invalid Authorization token"}), 403
 
