@@ -2,7 +2,6 @@
 This module handles Mongo database interactions with new service_shift
 """
 from bson import ObjectId
-from datetime import datetime
 
 class ServiceShiftsMongoRepo:
     """
