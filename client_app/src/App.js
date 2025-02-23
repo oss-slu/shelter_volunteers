@@ -1,7 +1,8 @@
+// src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
 import Shelters from "./components/volunteer/Shelters";
-import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
+import VolunteerDashboard from "./components/volunteers/VolunteerDashboard";
 import NavBarVolunteerDashboard from "./components/volunteer/NavBarVolunteerDashboard";
 import NavBarShelterDashboard from "./components/shelter/NavBarShelterDashboard";
 import Login from "./components/authentication/Login";
@@ -16,21 +17,24 @@ import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
 import { useLocation } from "react-router-dom";
+import Schedule from "./components/shelter/Schedule"; // New import for the Schedule view
 
 function NavigationControl({ auth }) {
-  const location = useLocation(); 
+  const location = useLocation();
 
   if (["/home", "/"].includes(location.pathname)) {
-    return null; 
+    return null;
   }
 
-  if ([
-    "/shelter-dashboard",
-    "/shift-details",
-    "/request-for-help",
-    "/upcoming-requests",
-    "/shelter-login",
-  ].includes(location.pathname)) {
+  if (
+    [
+      "/shelter-dashboard",
+      "/shift-details",
+      "/request-for-help",
+      "/upcoming-requests",
+      "/shelter-login",
+    ].includes(location.pathname)
+  ) {
     return <NavBarShelterDashboard auth={auth} />;
   }
 
@@ -48,8 +52,14 @@ function App() {
         <Routes>
           <Route index element={<HomeDashboard />} />
           <Route path="/home" element={<HomeDashboard />} />
-          <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
-          <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
+          <Route
+            path="/volunteer-login"
+            element={<Login setAuth={setAuth} userRole="volunteer" />}
+          />
+          <Route
+            path="/shelter-login"
+            element={<Login setAuth={setAuth} userRole="shelter" />}
+          />
           <Route path="/signup" element={<SignUp />} />
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute />}>
@@ -62,6 +72,8 @@ function App() {
             <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
             <Route path="/shift-details" element={<ShiftDetails />} />
             <Route path="/request-for-help" element={<RequestForHelp />} />
+            {/* Minimal change: add the new route for setting shifts */}
+            <Route path="/set-shifts" element={<Schedule />} />
           </Route>
         </Routes>
       </Router>
