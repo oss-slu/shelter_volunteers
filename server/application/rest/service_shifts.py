@@ -11,7 +11,7 @@ import os
 
 
 service_shift_bp = Blueprint('service_shift', __name__)
-uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")  # Default if not set
+uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")  
 database_name = os.getenv("MONGO_DATABASE", "shelter_database")
 repo = MongoRepo(uri, database_name)
 
