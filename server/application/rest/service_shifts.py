@@ -4,7 +4,8 @@ This module handles service shift operations.
 from flask import Blueprint, request, Response, jsonify
 from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
-from repository.mongorepo import MongoRepo
+#from repository.mongorepo import MongoRepo
+from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from domains.service_shift import ServiceShift
 import json
 import os
@@ -13,7 +14,7 @@ import os
 service_shift_bp = Blueprint('service_shift', __name__)
 uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")  
 database_name = os.getenv("MONGO_DATABASE", "shelter_database")
-repo = MongoRepo(uri, database_name)
+repo = ServiceShiftsMongoRepo(uri, database_name)
 
 @service_shift_bp.route('/service_shift', methods=['GET', 'POST'])
 @cross_origin()
