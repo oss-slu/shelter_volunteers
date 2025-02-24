@@ -1,7 +1,7 @@
 """
 This module contains the use case for adding service shifts.
 """
-from server.domains.service_shift import ServiceShift
+from domains.service_shift import ServiceShift
 
 def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
     """
