@@ -1,3 +1,4 @@
+
 // client_app/src/components/shelter/NavBarShelterDashboard.js
 import React, { useState, useEffect } from "react";
 import { Navbar, Nav } from "react-bootstrap";
@@ -61,3 +62,4 @@ function CustomNavBarShelter({ auth }) {
 }
 
 export default CustomNavBarShelter;
+
