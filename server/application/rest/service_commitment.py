@@ -19,7 +19,6 @@ def create_service_commitment():
     """
     try:
         user_email = get_user_from_token(request.headers)
-        
         request_data = request.get_json()
         if not isinstance(request_data, list):
             return jsonify(

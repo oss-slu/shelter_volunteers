@@ -22,7 +22,8 @@ class MongoRepoCommitments:
         Removes any existing _id fields to let MongoDB generate unique IDs.
 
         Args:
-            commitments (list): A list of dictionaries representing the service commitments.
+            commitments (list): A list of dictionaries 
+            representing the service commitments.
 
         Returns:
             list: A list of inserted IDs for the commitments.
@@ -31,7 +32,7 @@ class MongoRepoCommitments:
         cleaned_commitments = []
         for commitment in commitments:
             commitment_copy = commitment.copy()
-            commitment_copy.pop('_id', None)  # Remove _id if it exists
+            commitment_copy.pop("_id", None)  # Remove _id if it exists
             cleaned_commitments.append(commitment_copy)
 
         result = self.collection.insert_many(cleaned_commitments)
@@ -42,10 +43,12 @@ class MongoRepoCommitments:
         Fetches all service commitments for a specific user.
 
         Args:
-            user_email (str): The email of the user for whom to fetch commitments.
+            user_email (str): The email of 
+            the user for whom to fetch commitments.
 
         Returns:
-            list: A list of service commitment documents (excluding the _id field).
+            list: A list of service commitment 
+            documents (excluding the _id field).
         """
         commitments = list(self.collection.find(
             {"user_email": user_email}, {"_id": 0}))
