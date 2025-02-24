@@ -19,7 +19,7 @@ class ServiceShiftsMongoRepo:
         adds new service shift to the database
         returns the new unique ID assigned to the shift
         """
-        result = self.collection.insert_one(shift_data)
+        result = self.db.service_shifts.insert_one(shift_data)
         return str(result.inserted_id)
 
     def get_shifts_for_shelter(self, shelter_id):

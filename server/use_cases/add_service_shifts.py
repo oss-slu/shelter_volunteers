@@ -8,31 +8,54 @@ def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
     The function adds a service shift into the chosen database
     after checking for overlaps with existing shifts.
     """
+    #GET portion
     if new_shift is None and shelter_id is not None:
-        shifts = repo.get_shifts_for_shelter(shelter_id)
-        return [shift.to_dict() for shift in shifts]
-    if shift_already_exists(new_shift, existing_shifts):
-        return {'success': False,
-                'message': 'You are signed up for another shift at this time'}
-    new_shift_dict = new_shift.to_dict()
-    repo.add(new_shift_dict)
-    #shift_id = new_shift_dict["_id"]
-    shift_id = repo.add_service_shift(new_shift.to_dict())
-    new_shift.set_id(shift_id)
-    existing_shifts = repo.get_shifts_for_shelter(new_shift.shelter_id)
-    for existing_shift in existing_shifts:
-        if (max(existing_shift['shift_start'], new_shift.shift_start) <
-                min(existing_shift['shift_end'], new_shift.shift_end)):
+        try:
+            shifts = repo.get_shifts_for_shelter(shelter_id)
+            return [shift for shift in shifts]
+        except Exception as e:
             return {
-                'service_shift_id': None,
-                'success': False,
-                'message': 'overlapping shift'
+                "service_shift_id": None,
+                "success": "false",
+                "message": str(e)
             }
-    return {
-        'service_shift_id': str(shift_id),
-        'success': 'true'
-    }
+    #POST portion 
+    try:
+        #overlaps for existing shifts
+        if existing_shifts and shift_already_exists(new_shift, existing_shifts):
+            return {
+                "service_shift_id": None,
+                "success": "false",
+                "message": "You are signed up for another shift at this time"
+            }
+        #shift to dict, add to database 
+        shift_dict = new_shift.to_dict()
+        
+        #checks overlapping shifts in database
+        if repo.check_shift_overlap(
+            shift_dict['shelter_id'],
+            shift_dict.get('shift_start', shift_dict.get('start_time')),
+            shift_dict.get('shift_end', shift_dict.get('end_time'))
+        ):
+            return {
+                "service_shift_id": None,
+                "success": "false",
+                "message": "overlapping shift"
+            }
+        #adds shift to database
+        shift_id = repo.add_service_shift(shift_dict)
+        #trying to adjust formatting 
+        return {
+            "service_shift_id": str(shift_id),
+            "success": "true"
+        }
 
+    except Exception as e:
+        return {
+            "service_shift_id": None,
+            "success": "false",
+            "message": str(e)
+        }
 
 def shift_add_multiple_use_case(repo, service_shifts, user_id):
     """
