@@ -1,4 +1,3 @@
-
 // client_app/src/components/shelter/Schedule.jsx
 import React, { useState } from "react";
 import { Calendar, Views } from "react-big-calendar";
@@ -10,14 +9,27 @@ import "../../styles/shelter/Schedule.css";       // Make sure Schedule.css is i
 
 const localizer = dayjsLocalizer(dayjs);
 
+// We define a helper array for Sunday–Saturday.
+const WEEK_DAYS = [
+  { label: "Sunday", offset: 0 },
+  { label: "Monday", offset: 1 },
+  { label: "Tuesday", offset: 2 },
+  { label: "Wednesday", offset: 3 },
+  { label: "Thursday", offset: 4 },
+  { label: "Friday", offset: 5 },
+  { label: "Saturday", offset: 6 },
+];
+
 const Schedule = () => {
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
 
+  // 1. Existing logic for single shift click
   const handleSelectStandardShift = (shiftName) => {
     setActiveShiftType(shiftName);
   };
 
+  // 2. Existing logic for clicking on a day in the calendar
   const handleSelectDay = (slotInfo) => {
     if (!activeShiftType) return;
     const standardShift = ScheduleData.Content.find(
@@ -41,9 +53,40 @@ const Schedule = () => {
     setActiveShiftType(null);
   };
 
+  // 3. NEW FUNCTION: "Open" a given day of the week (Sunday–Saturday)
+  //    This automatically loads all standard shifts for that day.
+  const handleOpenDay = (dayOffset) => {
+    // By default, we get the current week's Sunday
+    // If you prefer the user to navigate the calendar and pick a Sunday from there,
+    // you could do something more dynamic. For now, let's keep it simple:
+    const today = new Date();
+    const currentWeekSunday = dayjs(today).startOf("week").toDate();
+    // (If you want Monday-based weeks, use .startOf("isoWeek"))
+
+    // dayOffset is 0..6 for Sunday..Saturday
+    const dayDate = new Date(currentWeekSunday);
+    dayDate.setDate(dayDate.getDate() + dayOffset);
+    dayDate.setHours(0, 0, 0, 0);
+
+    // For each shift in ScheduleData, create a new shift object for this day.
+    const newShifts = ScheduleData.Content.map((shift) => {
+      return {
+        name: shift.name,
+        start_time: dayDate.getTime() + shift.start,
+        end_time: dayDate.getTime() + shift.end,
+        people: shift.people,
+      };
+    });
+
+    // Add these new shifts to the scheduledShifts
+    setScheduledShifts((prev) => [...prev, ...newShifts]);
+  };
+
   return (
     <div className="schedule-container">
       <h2>Set Repeatable Shifts</h2>
+
+      {/* SHIFT CARDS (existing logic for single-shift clicks) */}
       <div className="shift-cards-container">
         {ScheduleData.Content.map((shift) => {
           return (
@@ -73,6 +116,21 @@ const Schedule = () => {
           );
         })}
       </div>
+
+      {/* NEW ROW OF "OPEN" BUTTONS FOR EACH DAY */}
+      <div style={{ marginBottom: "1rem" }}>
+        {WEEK_DAYS.map((dayObj) => (
+          <button
+            key={dayObj.label}
+            onClick={() => handleOpenDay(dayObj.offset)}
+            style={{ marginRight: "0.5rem" }}
+          >
+            Open {dayObj.label}
+          </button>
+        ))}
+      </div>
+
+      {/* CALENDAR (unchanged) */}
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
