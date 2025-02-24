@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./ShelterList";
 import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
-import { SERVER } from "../../config";
+import { GETHELP_API, SERVER } from "../../config";
 import { Link } from "react-router-dom";
 import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,9 +17,9 @@ const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
-  const [setLatitude] = useState(33.997103);
-  const [setLongitude] = useState(-118.4472731);
-  const [setRadius] = useState(defaultRadius);
+  const [latitude, setLatitude] = useState(33.997103);
+  const [longitude, setLongitude] = useState(-118.4472731);
+  const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
@@ -37,6 +37,30 @@ const Shelters = (props) => {
   const shakeAnimation = useSpring({
     transform: shaking ? "translateY(-20px)" : "translateY(0px)",
   });
+
+  useEffect(() => {
+   fetchData();
+  }, [latitude, longitude, radius]);
+
+  const fetchData = () => {
+    setLoading(true);
+    let newEndpoint =
+      GETHELP_API +
+      "v2/facilities?page=0&pageSize=1000&latitude=" +
+      latitude +
+      "&longitude=" +
+      longitude +
+      "&radius=" +
+      radius;
+    fetch(newEndpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .catch((error) => console.log(error));
+  };
 
   useEffect(() => {
     // convert ShiftsData into an array format expected by ShelterList
