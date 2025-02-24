@@ -1,13 +1,13 @@
 const ShiftsData = {
   "shelter-1": {
-    name: "Shelter One",
+    name: "Crystal Geyser Recovery",
     distance: 1.0,
     shifts: [
       { id: 1, start: 1739782800000, end: 1739797200000, title: "Morning Shift" },
     ]
   },
   "shelter-2": {
-    name: "Shelter Two",
+    name: "National Institute for Change PC",
     distance: 3.25,
     shifts: [
       { id: 2, start: 1739811600000, end: 1739826000000, title: "Evening Shift" }
