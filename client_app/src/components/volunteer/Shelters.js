@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./ShelterList";
 import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
-import { GETHELP_API, SERVER } from "../../config";
+import { SERVER } from "../../config";
 import { Link } from "react-router-dom";
 import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,14 +11,15 @@ import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-s
 import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
+import ShiftsData from "./ShiftsData";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
   const [data, setData] = useState([]);
-  const [latitude, setLatitude] = useState(33.997103);
-  const [longitude, setLongitude] = useState(-118.4472731);
-  const [radius, setRadius] = useState(defaultRadius);
+  const [setLatitude] = useState(33.997103);
+  const [setLongitude] = useState(-118.4472731);
+  const [setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [selectedShifts, setSelectedShifts] = useState([]);
@@ -38,8 +39,19 @@ const Shelters = (props) => {
   });
 
   useEffect(() => {
-    fetchData();
-  }, [latitude, longitude, radius]);
+    // convert ShiftsData into an array format expected by ShelterList
+    const sheltersArray = Object.keys(ShiftsData).map((shelterKey) => ({
+      id: shelterKey,  // assign a unique identifier
+      name: ShiftsData[shelterKey].name,
+      distance: ShiftsData[shelterKey].distance,
+      shifts: ShiftsData[shelterKey].shifts
+    }));
+  
+    setOriginalData(sheltersArray);
+    setLoading(false);
+  }, []);
+  
+  
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
@@ -85,30 +97,6 @@ const Shelters = (props) => {
       setTotalPages(totalPagesCount(originalData));
     }
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
-
-  const fetchData = () => {
-    setLoading(true);
-    let newEndpoint =
-      GETHELP_API +
-      "v2/facilities?page=0&pageSize=1000&latitude=" +
-      latitude +
-      "&longitude=" +
-      longitude +
-      "&radius=" +
-      radius;
-    fetch(newEndpoint, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOriginalData(data.content);
-        setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  };
 
   function getLocation() {
     setLoading(true);
