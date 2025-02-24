@@ -59,4 +59,5 @@ class ServiceShiftsMongoRepo:
         Gets all service shifts in the database
         returns list of all shift documents
         """
-        return list(self.collection.find({}))
+        service_shifts = [ServiceShift.from_dict(i) for i in self.collection.find()]
+        return service_shifts
