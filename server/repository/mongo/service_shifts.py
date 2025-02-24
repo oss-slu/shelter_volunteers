@@ -10,13 +10,13 @@ class ServiceShiftsMongoRepo:
     """
     repo class for service shifts MongoDB operations
     """
-    def __init__(self, uri, database):
+    def __init__(self, uri, database_name):
         """
         database connection
         """
         client = pymongo.MongoClient(uri, tlsCAFile=certifi.where())
-        self.db = database
-        self.collection = database.service_shifts
+        self.db = client[database_name]
+        self.collection = self.db.service_shifts
 
     def add_service_shift(self, shift_data):
         """

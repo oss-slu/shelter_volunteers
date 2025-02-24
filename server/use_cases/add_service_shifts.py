@@ -9,6 +9,9 @@ def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
     after checking for overlaps with existing shifts.
     """
     #GET portion
+    if shelter_id:
+        shifts = repo.get_shifts_for_shelter(shelter_id)
+        return shifts
     if new_shift is None and shelter_id is not None:
         try:
             shifts = repo.get_shifts_for_shelter(shelter_id)
