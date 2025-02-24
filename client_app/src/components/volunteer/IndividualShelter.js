@@ -116,7 +116,7 @@ const IndividualShelter = (props) => {
                 <h3>Available Shifts:</h3>
                 {shelter.shifts && shelter.shifts.length > 0 ? (
                   shelter.shifts.map((shift) => (
-                    <button key={shift.id} className="shift-button" onClick={() => addShift(shift)}>
+                    <button key={shift.id} className="shift-button" data-testid="add-button" onClick={() => addShift(shift)}>
                       {new Date(shift.start).toLocaleTimeString("en-US", { timeZone: "America/Chicago", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })} - 
                       {new Date(shift.end).toLocaleTimeString("en-US", { timeZone: "America/Chicago", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })}
                     </button>
