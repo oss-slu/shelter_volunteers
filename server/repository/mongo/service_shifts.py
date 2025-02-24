@@ -27,7 +27,7 @@ class ServiceShiftsMongoRepo:
         gets all shifts for a specific shelter
         returns list of shift documents
         """
-        return list(self.collection.find({"shelter_id": shelter_id}))
+        return list(self.collection.find({'shelter_id': shelter_id}))
 
     def check_shift_overlap(self, shelter_id, shift_start, shift_end):
         """
@@ -35,9 +35,9 @@ class ServiceShiftsMongoRepo:
         true if there is overlap and false otherwise
         """
         overlapping = self.collection.find_one({
-            "shelter_id": shelter_id,
-            "shift_start": {"$lt": shift_end},
-            "shift_end": {"$gt": shift_start}
+            'shelter_id': shelter_id,
+            'shift_start': {'$lt': shift_end},
+            'shift_end': {'$gt': shift_start}
         })
         return overlapping is not None
 
