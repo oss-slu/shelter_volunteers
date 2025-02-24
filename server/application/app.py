@@ -35,5 +35,4 @@ def create_app(config_name):
         # If no static file is found, return index.html
         # to let React handle routing
         return send_from_directory(react_build_dir, "index.html")
-        
     return app
