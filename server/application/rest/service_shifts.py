@@ -10,7 +10,7 @@ from domains.service_shift import ServiceShift
 from application.rest.work_shift import db_configuration
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
-from serializers.service_shift import WorkJsonEncoder
+from serializers.service_shift import ServiceShiftJsonEncoder
 import json
 
 service_shift_bp = Blueprint('service_shift', __name__)
@@ -26,7 +26,7 @@ def service_shift():
     if request.method == 'GET':
         shifts_as_dict = service_shifts_list_use_case(repo)
         shifts_as_json = [
-            json.dumps(service_shift, cls = WorkJsonEncoder)
+            json.dumps(service_shift, cls = ServiceShiftJsonEncoder)
             for service_shift in shifts_as_dict
         ]
         return Response(
