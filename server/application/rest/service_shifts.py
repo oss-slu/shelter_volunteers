@@ -37,6 +37,9 @@ def service_shift():
     elif request.method == "POST": 
         shifts_as_dict = request.get_json()
         print(shifts_as_dict)
+        if isinstance(shifts_as_dict, list) and shifts_as_dict:
+        # Take the first item if it's a list
+            shifts_as_dict = shifts_as_dict[0]
         
         shifts_obj = ServiceShift.from_dict(shifts_as_dict)
         add_response = shift_add_use_case(repo, shifts_obj, existing_shifts=[], shelter_id=None)
