@@ -51,26 +51,3 @@ def service_shift():
             mimetype = "application/json", 
             status = status_code
         )
-        # shelter_id = request.args.get('shelter_id')
-        # if shelter_id:
-        #     shifts = shift_add_use_case(repo, new_shift=None, 
-        #                                 existing_shifts=None, shelter_id=shelter_id)
-        #     return Response(
-        #         json.dumps(shifts, default=str),
-        #         mimetype='application/json',
-        #         status=200 #means status is successful
-        #     )
-        # else:
-        #     return jsonify({'message': 'Missing shelter_id'}), 400
-
-    # elif request.method == 'POST':
-    #     data = request.get_json()
-    #     new_shift = ServiceShift.from_dict(data)
-    #     result = shift_add_use_case(repo, new_shift, existing_shifts=[], 
-    #                                 shelter_id=None)
-    #     status_code = 200 if result['success'] == 'true' else 400
-    #     return Response(
-    #         json.dumps(result, default=str),
-    #         mimetype='application/json',
-    #         status=status_code
-    #     )
