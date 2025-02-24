@@ -1,19 +1,19 @@
 const ShiftsData = {
-  "30207": {
+  "shelter-1": {
     name: "Crystal Geyser Recovery",
     distance: 1.0,
     shifts: [
       { id: "30207", start: 1739782800000, end: 1739797200000, title: "Morning Shift" },
     ]
   },
-  "6093": {
+  "shelter-2": {
     name: "National Institute for Change PC",
     distance: 3.25,
     shifts: [
       { id: "6093", start: 1739811600000, end: 1739826000000, title: "Evening Shift" }
     ]
   },
-  "30027": {
+  "shelter-3": {
     name: "Municipality Facility",
     distance: 4.76,
     shifts: [
