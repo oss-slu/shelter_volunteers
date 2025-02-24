@@ -1,8 +1,10 @@
-
-/* client_app/src/styles/shelter/Schedule.css */
-
 /* Container for the entire Schedule view */
 .schedule-container {
+    /* Let this container fill the browser height and use flex layout */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Avoid extra scrolling on the root level */
     padding: 1rem;
   }
   
@@ -21,12 +23,12 @@
     border-radius: 4px;
   }
   
-  /* Highlighted style when a shift card is active/selected */
+  /* Style when a shift card is active (selected) */
   .shift-card-active {
     background-color: #d0eaff;
   }
   
-  /* Default style when a shift card is inactive/unselected */
+  /* Default style when a shift card is inactive */
   .shift-card-inactive {
     background-color: #f0f0f0;
   }
@@ -43,10 +45,24 @@
   
   /* Container to constrain the calendar’s height */
   .calendar-container {
-    height: 500px;
+    /* Grow to fill remaining vertical space and allow scrolling */
+    flex-grow: 1;
+    overflow-y: auto;
   }
   
   /* Additional styling for the Calendar component */
   .calendar-style {
-    height: 100%;
+    height: 100%; /* The Calendar will fill the .calendar-container */
   }
+  
+  /* Styling for the custom "Open" button */
+  .open-button {
+    margin-top: 12px; /* Adjust this value to lower or raise the button */
+    background-color: #1f3b52;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
