@@ -7,10 +7,13 @@ from use_cases.add_service_shifts import shift_add_use_case
 from repository.mongorepo import MongoRepo
 from domains.service_shift import ServiceShift
 import json
+import os
+
 
 service_shift_bp = Blueprint('service_shift', __name__)
-
-repo = MongoRepo()
+uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")  # Default if not set
+database_name = os.getenv("MONGO_DATABASE", "shelter_database")
+repo = MongoRepo(uri, database_name)
 
 @service_shift_bp.route('/service_shift', methods=['GET', 'POST'])
 @cross_origin()

@@ -1,16 +1,20 @@
 """
 This module handles Mongo database interactions with new service_shift
 """
+import pymongo
 from bson import ObjectId
+import certifi
+from domains.service_shift import ServiceShift
 
 class ServiceShiftsMongoRepo:
     """
     repo class for service shifts MongoDB operations
     """
-    def __init__(self, database):
+    def __init__(self, uri, database):
         """
         database connection
         """
+        client = pymongo.MongoClient(uri, tlsCAFile=certifi.where())
         self.db = database
         self.collection = database.service_shifts
 
