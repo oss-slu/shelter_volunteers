@@ -28,11 +28,13 @@ def shift_add_use_case(repo, new_shift, existing_shifts, shelter_id):
         if existing_shifts and shift_already_exists(new_shift, existing_shifts):
             return {
                 'service_shift_id': None,
-                '[success': 'false',
+                'success': 'false',
                 'message': "You are signed up for another shift at this time"
             }
         #shift to dict, add to database
         shift_dict = new_shift.to_dict()
+        if '_id' in shift_dict and shift_dict['_id'] is None:
+            del shift_dict['_id']
         #checks overlapping shifts in database
         if repo.check_shift_overlap(
             shift_dict['shelter_id'],
