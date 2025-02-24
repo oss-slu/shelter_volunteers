@@ -21,13 +21,14 @@ const IndividualShelter = (props) => {
   const [loading, setLoading] = useState(false);
   const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
   
-  const { v4: uuidv4 } = require("uuid");
+  //const { v4: uuidv4 } = require("uuid");
 
   function addShift(shift) {
     if (props.addShiftFunction) {
       let id = shelter.id;
       let newShift = {
-        code: `${uuidv4()}-${id}`,
+        //code: `${uuidv4()}-${id}`,
+        code: shift.id,
         shelter: id,
         start_time: shift.start,
         end_time: shift.end,
