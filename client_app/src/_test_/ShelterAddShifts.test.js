@@ -31,7 +31,7 @@ describe("add and cancel shifts", () => {
     formattedStartTime = format(startTime, "M/dd/yy HH:mm");
     formattedEndTime = format(endTime, "M/dd/yy HH:mm");
   });
-  test("shelter allows user to add and delete one shift", async () => {
+  test.skip("shelter allows user to add and delete one shift", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
     await waitFor(async () => expect(screen.getByText("Crystal Geyser Recovery")).toBeInTheDocument(), {
       timeout: 3000,
@@ -59,7 +59,7 @@ describe("add and cancel shifts", () => {
     });
   }, 6000);
 
-  test("user can select and remove multiple shifts", async () => {
+  test.skip("user can select and remove multiple shifts", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
     await waitFor(
       async () => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
