@@ -32,7 +32,7 @@ def add_service_commitments(repo, user_email, shifts):
         commitments.append(commitment)
     repo.insert_service_commitments(commitments)
     return [{
-        "service_commitment_id": c["service_commitment_id"]
+        "service_commitment_id": c["_id"]
         , "success": True}
             for c in commitments]
 
