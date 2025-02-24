@@ -54,3 +54,9 @@ class ServiceShiftsMongoRepo:
             return self.collection.find_one({"_id": ObjectId(shift_id)})
         except:
             return None
+    def list(self):
+        """
+        Gets all service shifts in the database
+        returns list of all shift documents
+        """
+        return list(self.collection.find({}))
