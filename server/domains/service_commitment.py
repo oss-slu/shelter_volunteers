@@ -13,14 +13,17 @@ class ServiceCommitment:
 
     Represents a volunteer signing up for a specific ServiceShift.
     """
-    commitment_id: uuid.UUID  # Unique ID for this commitment
     volunteer_id: str  # Typically an email address
     service_shift_id: uuid.UUID  # The ID of the associated ServiceShift
+    _id: uuid.UUID = None  # Unique ID for this commitment
 
-    def __post_init__(self):
-        """Ensures commitment_id is generated if not provided."""
-        if self.commitment_id is None:
-            self.commitment_id = uuid.uuid4()  # Auto-generate a unique ID
+    def get_id(self):
+        """Returns the ID of the service shift."""
+        return self._id
+
+    def set_id(self, new_id):
+        """Sets the ID of the service shift."""
+        self._id = new_id
 
     @classmethod
     def from_dict(cls, d):
