@@ -28,14 +28,10 @@ class MongoRepoCommitments:
         Returns:
             list: A list of inserted IDs for the commitments.
         """
-        # Create a new list with _id removed from each commitment
-        cleaned_commitments = []
+        # remove the _id field to let MongoDB generate unique IDs
         for commitment in commitments:
-            commitment_copy = commitment.copy()
-            commitment_copy.pop("_id", None)  # Remove _id if it exists
-            cleaned_commitments.append(commitment_copy)
-
-        result = self.collection.insert_many(cleaned_commitments)
+            commitment.pop("_id", None)
+        result = self.collection.insert_many(commitments)
         return result.inserted_ids
 
     def fetch_service_commitments(self, user_email):

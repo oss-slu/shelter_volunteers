@@ -5,7 +5,7 @@ Provides functions to create and retrieve service commitments for users.
 
 import uuid
 
-def add_service_commitments(repo, user_email, shifts):
+def add_service_commitments(repo, user_email, commitments):
     """
     Creates service commitments for the given user and shifts.
 
@@ -19,22 +19,12 @@ def add_service_commitments(repo, user_email, shifts):
         list: A list of dictionaries indicating
         the success and service commitment IDs.
     """
-    commitments = []
-    for shift in shifts:
-        if "service_shift_id" not in shift:
-            continue
-
-        commitment = {
-            "service_commitment_id": str(uuid.uuid4()),
-            "service_shift_id": shift["service_shift_id"],
-            "user_email": user_email
-        }
-        commitments.append(commitment)
-    repo.insert_service_commitments(commitments)
+    commitments_as_dict = [c.to_dict() for c in commitments]
+    repo.insert_service_commitments(commitments_as_dict)
     return [{
-        "service_commitment_id": c["_id"]
+        "service_commitment_id": str(c["_id"])
         , "success": True}
-            for c in commitments]
+            for c in commitments_as_dict]
 
 
 def get_service_commitments(repo, user_email):

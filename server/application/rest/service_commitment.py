@@ -2,7 +2,10 @@
 Module for handling service commitment API endpoints.
 Provides endpoints for creating and retrieving service commitments.
 """
-from flask import Blueprint, request, jsonify
+import json
+from flask import Blueprint, request, Response, jsonify
+from domains.service_commitment import ServiceCommitment
+
 from application.rest.work_shift import (
     get_user_from_token, HTTP_STATUS_CODES_MAPPING, ResponseTypes
 )
@@ -43,10 +46,17 @@ def create_service_commitment():
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
         # Pass the repo object to the use case function
-        commitments = add_service_commitments(repo, user_email, request_data)
-        return (
-            jsonify(commitments),
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
+        commitments_as_obj = []
+        for commitment in request_data:
+            commitment["volunteer_id"] = user_email
+            commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
+
+        response = add_service_commitments(repo, user_email, commitments_as_obj)
+        return Response(
+            json.dumps(response, default=str),
+            mimetype="application/json",
+            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        )
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),

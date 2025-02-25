@@ -13,9 +13,9 @@ class ServiceCommitment:
 
     Represents a volunteer signing up for a specific ServiceShift.
     """
-    _id: uuid.UUID  # Unique ID for this commitment
     volunteer_id: str  # Typically an email address
     service_shift_id: uuid.UUID  # The ID of the associated ServiceShift
+    _id: uuid.UUID = None  # Unique ID for this commitment
 
     def __post_init__(self):
         """Ensures _id is generated if not provided."""
