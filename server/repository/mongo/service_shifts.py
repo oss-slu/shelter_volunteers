@@ -2,7 +2,6 @@
 This module handles Mongo database interactions with new service_shift
 """
 import pymongo
-import certifi
 from domains.service_shift import ServiceShift
 
 class ServiceShiftsMongoRepo:
@@ -13,7 +12,7 @@ class ServiceShiftsMongoRepo:
         """
         database connection
         """
-        client = pymongo.MongoClient(uri, tlsCAFile=certifi.where())
+        client = pymongo.MongoClient(uri)
         self.db = client[database_name]
         self.collection = self.db.service_shifts
 
