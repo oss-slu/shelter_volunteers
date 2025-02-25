@@ -1,5 +1,6 @@
 """
-This module is for a custom JSON encoder for serializing ServiceCommitment objects.
+This module is for a custom JSON encoder for serializing 
+ServiceCommitment objects.
 """
 import json
 
