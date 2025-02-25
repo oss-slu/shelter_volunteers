@@ -4,7 +4,6 @@ Module handles the mongo DB operations for shelter related data
 import pymongo
 from domains.shelter.shelter import Shelter
 from bson.objectid import ObjectId
-import certifi
 
 class ShelterRepo:
     """
@@ -14,7 +13,7 @@ class ShelterRepo:
         """
         Initialize the repo with passed data.
         """
-        client = pymongo.MongoClient(uri, tlsCAFile=certifi.where())
+        client = pymongo.MongoClient(uri)
         self.db = client[database]
         self.collection = self.db.shelters
 
