@@ -1,19 +1,18 @@
 """
 This module handles Mongo database interactions with new service_shift
 """
-import pymongo
 from domains.service_shift import ServiceShift
+from config.mongodb_config import get_db
 
 class ServiceShiftsMongoRepo:
     """
     repo class for service shifts MongoDB operations
     """
-    def __init__(self, uri, database_name):
+    def __init__(self):
         """
         database connection
         """
-        client = pymongo.MongoClient(uri)
-        self.db = client[database_name]
+        self.db = get_db()
         self.collection = self.db.service_shifts
 
     def add_service_shifts(self, shift_data):

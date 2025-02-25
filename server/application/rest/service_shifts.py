@@ -7,7 +7,6 @@ from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from domains.service_shift import ServiceShift
-from application.rest.work_shift import db_configuration
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
 from serializers.service_shift import ServiceShiftJsonEncoder
@@ -21,8 +20,7 @@ def service_shift():
     """
     Handles POST to add service shift, GET to list all shifts for a shelter.
     """
-    db_config = db_configuration()
-    repo = ServiceShiftsMongoRepo(db_config[0], db_config[1])
+    repo = ServiceShiftsMongoRepo()
     if request.method == 'GET':
         shelter_id_string = request.args.get('shelter_id')
         shelter_id = int(shelter_id_string) if shelter_id_string else None
