@@ -17,6 +17,3 @@ def list_service_commitments(repo, user_email):
     """
     commitments = repo.fetch_service_commitments(user_email)
     return commitments
-    # return [{"service_commitment_id": c["_id"],
-    #          "service_shift_id": c["service_shift_id"]}
-    #         for c in commitments]
