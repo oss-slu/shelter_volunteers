@@ -24,7 +24,8 @@ def service_shift():
     db_config = db_configuration()
     repo = ServiceShiftsMongoRepo(db_config[0], db_config[1])
     if request.method == 'GET':
-        shelter_id = int(request.args.get('shelter_id'))
+        shelter_id_string = request.args.get('shelter_id')
+        shelter_id = int(shelter_id_string) if shelter_id_string else None
         shifts_as_dict = service_shifts_list_use_case(repo, shelter_id)
         shifts_as_json = [
             json.dumps(service_shift, cls = ServiceShiftJsonEncoder)
@@ -38,11 +39,10 @@ def service_shift():
     elif request.method == 'POST':
         shifts_as_dict = request.get_json()
         print(shifts_as_dict)
-        if isinstance(shifts_as_dict, list) and shifts_as_dict:
-            shifts_as_dict = shifts_as_dict[0]
-        shifts_obj = ServiceShift.from_dict(shifts_as_dict)
-        add_response = shift_add_use_case(repo, shifts_obj, 
-                                          existing_shifts=[], shelter_id=None)
+        # convert to ServiceShift objects
+        shifts_obj = [ServiceShift.from_dict(shift) for shift in shifts_as_dict]
+
+        add_response = shift_add_use_case(repo, shifts_obj)
         status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         if add_response['success']:
             status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
