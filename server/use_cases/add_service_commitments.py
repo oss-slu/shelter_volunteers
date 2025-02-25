@@ -3,9 +3,7 @@ Module for handling service commitments.
 Provides functions to create and retrieve service commitments for users.
 """
 
-import uuid
-
-def add_service_commitments(repo, user_email, commitments):
+def add_service_commitments(repo, commitments):
     """
     Creates service commitments for the given user and shifts.
 

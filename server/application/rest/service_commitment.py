@@ -51,7 +51,7 @@ def create_service_commitment():
             commitment["volunteer_id"] = user_email
             commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
 
-        response = add_service_commitments(repo, user_email, commitments_as_obj)
+        response = add_service_commitments(repo, commitments_as_obj)
         return Response(
             json.dumps(response, default=str),
             mimetype="application/json",
