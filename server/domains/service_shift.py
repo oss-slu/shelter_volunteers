@@ -12,12 +12,12 @@ class ServiceShift:
     Data class for work shift-related data.
     """
     shelter_id: int
-    shift_name: str
-    start_time: int  # Number of milliseconds since the Epoch in UTC
-    end_time: int
-    required_volunteer_count: int
-    max_volunteer_count: int
-    can_sign_up: bool
+    shift_start: int  # Number of milliseconds since the Epoch in UTC
+    shift_end: int
+    shift_name: str = 'Default Shift'
+    required_volunteer_count: int = 1
+    max_volunteer_count: int = 5
+    can_sign_up: bool = True
     _id: uuid.UUID = None
 
     def get_id(self):

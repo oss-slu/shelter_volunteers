@@ -12,6 +12,7 @@ import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
 import { useShelterData } from "./hooks/useShelterData";
+import ShiftsData from "./ShiftsData";
 
 const Shelters = (props) => {
   let defaultRadius = "5";
