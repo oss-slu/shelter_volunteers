@@ -24,7 +24,8 @@ def service_shift():
     db_config = db_configuration()
     repo = ServiceShiftsMongoRepo(db_config[0], db_config[1])
     if request.method == 'GET':
-        shifts_as_dict = service_shifts_list_use_case(repo)
+        shelter_id = int(request.args.get('shelter_id'))
+        shifts_as_dict = service_shifts_list_use_case(repo, shelter_id)
         shifts_as_json = [
             json.dumps(service_shift, cls = ServiceShiftJsonEncoder)
             for service_shift in shifts_as_dict

@@ -54,10 +54,14 @@ class ServiceShiftsMongoRepo:
         return [ServiceShift.from_dict(i) 
                 for i in self.collection.find(id_filter)]
         
-    def list(self):
+    def list(self, shelter=None):
         """
         Gets all service shifts in the database
         returns list of all shift documents
         """
-        service_shifts = [ServiceShift.from_dict(i) for i in self.collection.find()]
+        db_filter = {}
+        if shelter:
+            db_filter["shelter_id"] = shelter
+        service_shifts = [ServiceShift.from_dict(i) for i in self.collection.find \
+                          (filter=db_filter)]
         return service_shifts
