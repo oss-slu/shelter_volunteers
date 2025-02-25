@@ -50,12 +50,10 @@ class ServiceShiftsMongoRepo:
         get a specific shift by its ID
         gives the shift data or None if not found
         """
-        id_filter = {"_id": ObjectId(shift_id)}
-        item = self.collection.find_one(filter=id_filter)
-        if item:
-            return ServiceShift.from_dict(item)
-        else:
-            return None
+        id_filter = {"shelter_id": shift_id} 
+        return [ServiceShift.from_dict(i) 
+                for i in self.collection.find(id_filter)]
+        
     def list(self):
         """
         Gets all service shifts in the database

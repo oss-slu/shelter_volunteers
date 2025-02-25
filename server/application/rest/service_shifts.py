@@ -1,7 +1,7 @@
 """
 This module handles service shift operations.
 """
-from flask import Blueprint, request, Response, jsonify
+from flask import Blueprint, request, Response
 from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
@@ -30,24 +30,23 @@ def service_shift():
             for service_shift in shifts_as_dict
         ]
         return Response(
-            shifts_as_json, 
+            shifts_as_json,
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
-    elif request.method == "POST": 
+    elif request.method == 'POST':
         shifts_as_dict = request.get_json()
         print(shifts_as_dict)
         if isinstance(shifts_as_dict, list) and shifts_as_dict:
-        # Take the first item if it's a list
             shifts_as_dict = shifts_as_dict[0]
-        
         shifts_obj = ServiceShift.from_dict(shifts_as_dict)
-        add_response = shift_add_use_case(repo, shifts_obj, existing_shifts=[], shelter_id=None)
+        add_response = shift_add_use_case(repo, shifts_obj, 
+                                          existing_shifts=[], shelter_id=None)
         status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        if add_response["success"]:
+        if add_response['success']:
             status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         return Response(
             json.dumps(add_response, default=str),
-            mimetype = "application/json", 
+            mimetype = 'application/json',
             status = status_code
         )
