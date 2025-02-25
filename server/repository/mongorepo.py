@@ -1,7 +1,7 @@
 """
 Module handles the mongo DB operations
 """
-import pymongo
+from pymongo import MongoClient
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
 
@@ -13,7 +13,7 @@ class MongoRepo:
         """
         Initialize the repo with passed data.
         """
-        client = pymongo.MongoClient(uri)
+        client = MongoClient(uri)
         self.db = client[database]
         self.collection = self.db.shifts
 
