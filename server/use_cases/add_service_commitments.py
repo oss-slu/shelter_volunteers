@@ -36,6 +36,7 @@ def add_service_commitments(repo, user_email, shifts):
         , "success": True}
             for c in commitments]
 
+
 def get_service_commitments(repo, user_email):
     """
     Retrieves all service commitments for a given user.
