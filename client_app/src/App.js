@@ -27,6 +27,7 @@ function NavigationControl({ auth }) {
     "/request-for-help",
     "/upcoming-requests",
     "/shelter-login",
+    "/set-shifts"
   ].includes(location.pathname)) return <NavBarShelterDashboard auth={auth} />;
   return <NavBarVolunteerDashboard auth={auth} />;
 }

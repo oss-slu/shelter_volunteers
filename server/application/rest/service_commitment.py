@@ -14,11 +14,11 @@ from use_cases.list_service_commitments import list_service_commitments
 from repository.mongo.service_commitments import MongoRepoCommitments
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 
-blueprint = Blueprint("service_commitment", __name__)
+service_commitment_bp = Blueprint("service_commitment", __name__)
 
 repo = MongoRepoCommitments()
 
-@blueprint.route("/service_commitment", methods=["POST"])
+@service_commitment_bp.route("/service_commitment", methods=["POST"])
 def create_service_commitment():
     """
     Handle POST request to create service commitments.
@@ -67,7 +67,7 @@ def create_service_commitment():
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
-@blueprint.route("/service_commitment", methods=["GET"])
+@service_commitment_bp.route("/service_commitment", methods=["GET"])
 def fetch_service_commitments():
     """
     Handle GET request to retrieve service commitments for a user.
