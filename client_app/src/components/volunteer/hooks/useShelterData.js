@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GETHELP_API } from '../../../config';
+import ShiftsData from "../ShiftsData";
 
 export const useShelterData = (defaultRadius) => {
   const [data, setData] = useState([]);
@@ -10,6 +11,10 @@ export const useShelterData = (defaultRadius) => {
   const [loading, setLoading] = useState(true);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
   
+  useEffect(() => {
+    fetchData();
+  }, [latitude, longitude, radius]);
+
   const fetchData = () => {
     setLoading(true);
     const newEndpoint = `${GETHELP_API}v2/facilities?page=0&pageSize=1000&latitude=${latitude}&longitude=${longitude}&radius=${radius}`;
@@ -19,12 +24,26 @@ export const useShelterData = (defaultRadius) => {
       headers: { "Content-Type": "application/json" }
     })
       .then(response => response.json())
-      .then(data => {
-        setOriginalData(data.content);
-        setLoading(false);
-      })
+      // uncomment this when we switch to using our /shelter API endpoint
+      // .then(data => {
+      //   setOriginalData(data.content);
+      //   setLoading(false);
+      // })
       .catch(error => console.log(error));
   };
+
+  useEffect(() => {
+    // convert ShiftsData into an array format expected by ShelterList
+    const sheltersArray = Object.keys(ShiftsData).map((shelterKey) => ({
+      id: shelterKey,  // assign a unique identifier
+      name: ShiftsData[shelterKey].name,
+      distance: ShiftsData[shelterKey].distance,
+      shifts: ShiftsData[shelterKey].shifts
+    }));
+
+    setOriginalData(sheltersArray);
+    setLoading(false);
+  }, []);
 
   const getLocation = () => {
     setLoading(true);
@@ -42,9 +61,7 @@ export const useShelterData = (defaultRadius) => {
     setRadius(event.target.value);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [latitude, longitude, radius]);
+
 
   return {
     data,
