@@ -2,6 +2,9 @@
 This module handles the creation of Flask app
 """
 from flask import Flask, send_from_directory
+
+from application.rest import work_shift
+from application.rest.service_shifts import service_shift_bp
 from dotenv import load_dotenv
 from application.rest import work_shift
 from application.rest import service_commitment
@@ -22,6 +25,7 @@ def create_app(config_name = "development"):
 
     app.register_blueprint(work_shift.blueprint)
     app.register_blueprint(service_commitment.blueprint)
+    app.register_blueprint(service_shift_bp)
     load_dotenv()  # Load environment variables from the .env file
 
     # Serve static files

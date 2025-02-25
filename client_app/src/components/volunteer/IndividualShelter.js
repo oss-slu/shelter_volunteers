@@ -1,87 +1,40 @@
-import { useState, forwardRef, useEffect } from "react";
-import DatePicker from "react-datepicker";
+import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
 import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
-import GraphComponent from "./GraphComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
-  const [startTime, setStartDate] = useState(
+  const [startTime] = useState(
     setHours(
       setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
       new Date().getHours() + 1,
     ),
   );
-  const [endTime, setEndDate] = useState(
-    setHours(
-      setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
-      new Date().getHours() + 2,
-    ),
-  );
+
   const [shiftCounts, setShiftCounts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [volunteerCountsHidden, setVolunteerCountsHidden] = useState(true);
+  
+  //const { v4: uuidv4 } = require("uuid");
 
-  const filterPastStartTime = (time) => {
-    const currentDate = new Date();
-    const selectedDate = new Date(time);
-    return currentDate.getTime() < selectedDate.getTime();
-  };
-
-  const filterPastEndTime = (time) => {
-    const currentDate = new Date();
-    const selectedDate = new Date(time);
-    currentDate.setHours(currentDate.getHours() + 1);
-    return currentDate.getTime() < selectedDate.getTime();
-  };
-  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button
-      className="example-custom-input"
-      onClick={(event) => {
-        onClick(event);
-        setVolunteerCountsHidden(false);
-      }}
-      ref={ref}>
-      {value}
-    </button>
-  ));
-  const { v4: uuidv4 } = require("uuid");
-
-  function addShift() {
+  function addShift(shift) {
     if (props.addShiftFunction) {
       let id = shelter.id;
-      let start = startTime.getTime();
-      let end = endTime.getTime();
-      let shift = {
-        code: `${uuidv4()}-${id}`,
+      let newShift = {
+        //code: `${uuidv4()}-${id}`,
+        code: shift.id,
         shelter: id,
-        start_time: start,
-        end_time: end,
+        start_time: shift.start,
+        end_time: shift.end,
+        title: shift.title,
       };
-      props.addShiftFunction(shift);
-    }
-  }
-
-  function modifyStart(date) {
-    if (endTime.getTime() <= date) {
-      setEndDate(setHours(date, date.getHours() + 1));
-    }
-    setStartDate(date);
-  }
-
-  function modifyEnd(date) {
-    if (startTime.getTime() >= date) {
-      setEndDate(setHours(date, date.getHours() + 1));
-      setStartDate(date);
-    } else {
-      setEndDate(date);
+      props.addShiftFunction(newShift);
     }
   }
 
@@ -151,65 +104,43 @@ const IndividualShelter = (props) => {
           <div className="signupcard">
             <div className="column1">
               <h2>{shelter.name}</h2>
-              <p>
-                {shelter.city}, {shelter.state} {shelter.zipCode}
-              </p>
-              <p>{shelter.phone}</p>
-              {shelter.website ? <a href={shelter.website}>View website</a> : null}
               <p>{+shelter.distance.toFixed(2)} miles away</p>
               <button
                 className="current-volunteer-count"
                 onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
-                {volunteerCountsHidden ? "View Volunteer Counts  " : "Hide Volunteer Counts  "}
-                <FontAwesomeIcon
-                  icon={volunteerCountsHidden ? faChevronDown : faChevronUp}
-                  size="lg"
-                />
+                {volunteerCountsHidden ? "View Volunteer Counts" : "Hide Volunteer Counts"}
+                <FontAwesomeIcon icon={volunteerCountsHidden ? faChevronDown : faChevronUp} size="lg" />
               </button>
             </div>
             <div className="column2">
-              <div className="dates">
-                <div className="date-row">
-                  <div className="date-label">
-                    <p>Start Time: </p>
-                  </div>
-                  <div className="picker" data-testid="startTime">
-                    <DatePicker
-                      className="date-picker"
-                      selected={startTime}
-                      filterTime={filterPastStartTime}
-                      onChange={(date) => modifyStart(date)}
-                      showTimeSelect
-                      dateFormat="M/dd/yy hh:mm aa"
-                      minDate={new Date()}
-                      showDisabledMonthNavigation
-                      customInput={<ExampleCustomInput />}
-                    />
-                  </div>
-                </div>
-                <div className="date-row">
-                  <div className="date-label">
-                    <p>End Time: </p>
-                  </div>
-                  <div className="picker" data-testid="endTime">
-                    <DatePicker
-                      selected={endTime}
-                      filterTime={filterPastEndTime}
-                      onChange={(date) => modifyEnd(date)}
-                      showTimeSelect
-                      dateFormat="M/dd/yy hh:mm aa"
-                      minDate={new Date()}
-                      showDisabledMonthNavigation
-                      customInput={<ExampleCustomInput />}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="add-btn">
-                <button data-testid="add-button" onClick={() => addShift()}>
-                  <FontAwesomeIcon icon={faCirclePlus} size="1x" className="plus-icon" />
-                  <p className="label">Add shift </p>
-                </button>
+              <div className="available-shifts">
+                <h3>Available Shifts:</h3>
+                {shelter.shifts && shelter.shifts.length > 0 ? (
+                  shelter.shifts.map((shift) => (
+                    <div key={shift.id} style={{ marginBottom: "10px" }}> {/* Added div for spacing */}
+                      <button 
+                        className="shift-button" 
+                        data-testid="add-button" 
+                        onClick={() => addShift(shift)}
+                      >
+                        {new Date(shift.start).toLocaleTimeString("en-US", { 
+                          timeZone: "America/Chicago", 
+                          hour: "2-digit", 
+                          minute: "2-digit", 
+                          hourCycle: "h23" 
+                        })} - 
+                        {new Date(shift.end).toLocaleTimeString("en-US", { 
+                          timeZone: "America/Chicago", 
+                          hour: "2-digit", 
+                          minute: "2-digit", 
+                          hourCycle: "h23" 
+                        })}
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p>No available shifts.</p>
+                )}
               </div>
             </div>
           </div>
@@ -217,11 +148,10 @@ const IndividualShelter = (props) => {
             <div className="signupcard shift-graph text-center">
               <h3>Current Volunteer Counts</h3>
               <div className="shift-count">
-                {!loading && shiftCounts && shiftCounts.length > 0 && (
-                  <div>{<GraphComponent shifts={shiftCounts} />}</div>
-                )}
-                {!loading && shiftCounts && shiftCounts.length === 0 && (
-                  <p>No volunteers are currently signed up during your selected time range.</p>
+                {!loading && shiftCounts.length > 0 ? (
+                  <div>{shiftCounts.map((shift) => <p key={shift.start_time}>{shift.count} volunteers</p>)}</div>
+                ) : (
+                  <p>No volunteers currently signed up.</p>
                 )}
                 {loading && <p>Loading...</p>}
               </div>
@@ -232,9 +162,6 @@ const IndividualShelter = (props) => {
       {!props.isSignupPage && (
         <div className="shelter text-center" key={shelter.id}>
           <h2>{shelter.name}</h2>
-          <p>
-            {shelter.city}, {shelter.state} {shelter.zipCode}
-          </p>
           <p>{+shelter.distance.toFixed(2)} miles away</p>
         </div>
       )}
