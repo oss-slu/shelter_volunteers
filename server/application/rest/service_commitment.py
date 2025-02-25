@@ -42,11 +42,11 @@ def create_service_commitment():
                 jsonify({"error": "Invalid request format, expected a list"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-
         # Pass the repo object to the use case function
         commitments = add_service_commitments(repo, user_email, request_data)
-        return jsonify(commitments), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-
+        return (
+            jsonify(commitments),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),
@@ -77,7 +77,9 @@ def fetch_service_commitments():
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
         commitments = get_service_commitments(repo, user_email)
-        return jsonify(commitments), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        return (
+            jsonify(commitments),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),

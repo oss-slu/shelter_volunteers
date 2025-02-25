@@ -13,7 +13,7 @@ class ServiceCommitment:
 
     Represents a volunteer signing up for a specific ServiceShift.
     """
-    commitment_id: uuid.UUID  # Unique ID for this commitment
+    _id: uuid.UUID  # Unique ID for this commitment
     volunteer_id: str  # Typically an email address
     service_shift_id: uuid.UUID  # The ID of the associated ServiceShift
 
