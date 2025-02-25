@@ -9,12 +9,11 @@ from domains.service_commitment import ServiceCommitment
 from application.rest.work_shift import (
     get_user_from_token, HTTP_STATUS_CODES_MAPPING, ResponseTypes
 )
-from use_cases.add_service_commitments import (
-    add_service_commitments, get_service_commitments
-)
-from repository.mongodb.service_commitments import (
-    MongoRepoCommitments
-)
+from use_cases.add_service_commitments import add_service_commitments
+from use_cases.list_service_commitments import list_service_commitments
+from repository.mongo.service_commitments import MongoRepoCommitments
+from serializers.service_commitment import ServiceCommitmentJsonEncoder
+
 blueprint = Blueprint("service_commitment", __name__)
 
 repo = MongoRepoCommitments()
@@ -67,6 +66,7 @@ def create_service_commitment():
             jsonify({"error": f"Missing key: {str(error)}"}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
+
 @blueprint.route("/service_commitment", methods=["GET"])
 def fetch_service_commitments():
     """
@@ -86,10 +86,16 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-        commitments = get_service_commitments(repo, user_email)
-        return (
-            jsonify(commitments),
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
+        commitments = list_service_commitments(repo, user_email)
+
+        commitments_as_json = [
+            json.dumps(commitment, cls = ServiceCommitmentJsonEncoder)
+            for commitment in commitments
+        ]
+        return Response(
+            commitments_as_json,
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),

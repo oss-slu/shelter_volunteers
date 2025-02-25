@@ -4,6 +4,7 @@ Provides methods to insert and fetch service commitments from the database.
 """
 
 from config.mongodb_config import get_db
+from domains.service_commitment import ServiceCommitment
 
 class MongoRepoCommitments:
     """
@@ -30,11 +31,11 @@ class MongoRepoCommitments:
         """
         # remove the _id field to let MongoDB generate unique IDs
         for commitment in commitments:
-            commitment.pop("_id", None)
+            commitment.pop('_id', None)
         result = self.collection.insert_many(commitments)
         return result.inserted_ids
 
-    def fetch_service_commitments(self, user_email):
+    def fetch_service_commitments(self, user_id):
         """
         Fetches all service commitments for a specific user.
 
@@ -46,7 +47,13 @@ class MongoRepoCommitments:
             list: A list of service commitment 
             documents (excluding the _id field).
         """
-        commitments = list(self.collection.find(
-            {"user_email": user_email}, {"_id": 0}))
+        db_filter = {}
+        if user_id:
+            db_filter['volunteer_id'] = user_id
+
+        commitments = [
+            ServiceCommitment.from_dict(i) for i in self.collection.find \
+            (filter=db_filter)
+        ]
         return commitments
-    
+        

@@ -17,10 +17,13 @@ class ServiceCommitment:
     service_shift_id: uuid.UUID  # The ID of the associated ServiceShift
     _id: uuid.UUID = None  # Unique ID for this commitment
 
-    def __post_init__(self):
-        """Ensures _id is generated if not provided."""
-        if self._id is None:
-            self._id = uuid.uuid4()  # Auto-generate a unique ID
+    def get_id(self):
+        """Returns the ID of the service shift."""
+        return self._id
+
+    def set_id(self, new_id):
+        """Sets the ID of the service shift."""
+        self._id = new_id
 
     @classmethod
     def from_dict(cls, d):
