@@ -12,11 +12,13 @@ from application.rest.work_shift import (
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
 from repository.mongo.service_commitments import MongoRepoCommitments
+from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
 
-repo = MongoRepoCommitments()
+commitments_repo = MongoRepoCommitments()
+shifts_repo = ServiceShiftsMongoRepo()
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
 def create_service_commitment():
@@ -50,7 +52,11 @@ def create_service_commitment():
             commitment["volunteer_id"] = user_email
             commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
 
-        response = add_service_commitments(repo, commitments_as_obj)
+        response = add_service_commitments(
+            commitments_repo,
+            shifts_repo,
+            commitments_as_obj)
+
         return Response(
             json.dumps(response, default=str),
             mimetype="application/json",
@@ -86,7 +92,10 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-        commitments = list_service_commitments(repo, user_email)
+        commitments = list_service_commitments(
+            commitments_repo,
+            shifts_repo,
+            user_email)
 
         commitments_as_json = [
             json.dumps(commitment, cls = ServiceCommitmentJsonEncoder)
