@@ -22,7 +22,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     shifts = shifts_repo.get_shifts(shift_ids)
 
     # temporary implementation for overlapping shifts
-    # Needs to be fixed later to match the requirmenets
+    # Needs to be fixed later to match the requirements
     has_overlap = check_time_overlap(shifts)
     if has_overlap:
         return [{
