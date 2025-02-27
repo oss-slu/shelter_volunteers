@@ -92,7 +92,7 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-        commitments = list_service_commitments(
+        commitments, _ = list_service_commitments(
             commitments_repo,
             shifts_repo,
             user_email)
