@@ -35,25 +35,24 @@ class MongoRepoCommitments:
         result = self.collection.insert_many(commitments)
         return result.inserted_ids
 
-    def fetch_service_commitments(self, user_id):
+    def fetch_service_commitments(self, user_id=None, shift_id =None):
         """
-        Fetches all service commitments for a specific user.
+        Fetches service commitments based on provided filters.
 
         Args:
-            user_email (str): The email of 
-            the user for whom to fetch commitments.
+            user_id (str, optional): The email of the user for whom to fetch commitments.
+            shift_id (str, optional): The ID of the service shift to filter by.
 
         Returns:
-            list: A list of service commitment 
-            documents (excluding the _id field).
+            list: A list of service commitment objects.
         """
         db_filter = {}
         if user_id:
             db_filter['volunteer_id'] = user_id
+        if shift_id:
+            db_filter['service_shift_id'] = shift_id
 
         commitments = [
-            ServiceCommitment.from_dict(i) for i in self.collection.find \
-            (filter=db_filter)
+            ServiceCommitment.from_dict(i) for i in self.collection.find(filter=db_filter)
         ]
         return commitments
-        

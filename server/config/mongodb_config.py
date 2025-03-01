@@ -23,7 +23,7 @@ def load_env_file():
 class MongoConfig(object):
     """Base configuration class."""
     load_env_file()
-    MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongodb')
+    MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongod')
     MONGODB_PORT = int(os.getenv('MONGODB_PORT', '27017'))
     MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'volunteers_db')
     MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')

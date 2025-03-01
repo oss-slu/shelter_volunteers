@@ -11,8 +11,8 @@ from application.rest.work_shift import (
 )
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
-from repository.mongo.service_commitments import MongoRepoCommitments
-from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from repository.mongod.service_commitments import MongoRepoCommitments
+from repository.mongod.service_shifts import ServiceShiftsMongoRepo
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
@@ -76,9 +76,13 @@ def create_service_commitment():
 @service_commitment_bp.route("/service_commitment", methods=["GET"])
 def fetch_service_commitments():
     """
-    Handle GET request to retrieve service commitments for a user.
+    Handle GET request to retrieve service commitments.
+    Can filter by user (from token) and optionally by shift_id.
     """
     try:
+        # Extract shift_id from query parameters if provided
+        shift_id = request.args.get('shift_id')
+        
         user_tuple = get_user_from_token(request.headers)
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
@@ -92,17 +96,26 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
+            
+        # If shift_id is provided, we want all commitments for that shift
+        # regardless of the user, as per requirements for shelters to view all volunteers
+        # If shift_id is not provided, we filter by user_email as before
+        filter_user = None if shift_id else user_email
+        
         commitments, _ = list_service_commitments(
             commitments_repo,
             shifts_repo,
-            user_email)
+            filter_user,
+            shift_id)
 
-        commitments_as_json = [
-            json.dumps(commitment, cls = ServiceCommitmentJsonEncoder)
-            for commitment in commitments
-        ]
+        # Convert commitments to JSON
+        commitments_list = []
+        for commitment in commitments:
+            commitment_dict = json.loads(json.dumps(commitment, cls=ServiceCommitmentJsonEncoder))
+            commitments_list.append(commitment_dict)
+            
         return Response(
-            commitments_as_json,
+            json.dumps({"success": True, "results": commitments_list}, default=str),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
