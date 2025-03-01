@@ -40,7 +40,8 @@ class MongoRepoCommitments:
         Fetches service commitments based on provided filters.
 
         Args:
-            user_id (str, optional): The email of the user for whom to fetch commitments.
+            user_id (str, optional): The email of the user for whom to 
+            fetch commitments.
             shift_id (str, optional): The ID of the service shift to filter by.
 
         Returns:
@@ -53,6 +54,7 @@ class MongoRepoCommitments:
             db_filter['service_shift_id'] = shift_id
 
         commitments = [
-            ServiceCommitment.from_dict(i) for i in self.collection.find(filter=db_filter)
+            ServiceCommitment.from_dict(i) for i in self.collection.find(
+                filter=db_filter)
         ]
         return commitments

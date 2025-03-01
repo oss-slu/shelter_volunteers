@@ -81,8 +81,7 @@ def fetch_service_commitments():
     """
     try:
         # Extract shift_id from query parameters if provided
-        shift_id = request.args.get('shift_id')
-        
+        shift_id = request.args.get("shift_id")
         user_tuple = get_user_from_token(request.headers)
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
@@ -96,12 +95,11 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-            
         # If shift_id is provided, we want all commitments for that shift
-        # regardless of the user, as per requirements for shelters to view all volunteers
+        # regardless of the user, as per requirements for shelters to
+        # view all volunteers
         # If shift_id is not provided, we filter by user_email as before
         filter_user = None if shift_id else user_email
-        
         commitments, _ = list_service_commitments(
             commitments_repo,
             shifts_repo,
@@ -111,11 +109,12 @@ def fetch_service_commitments():
         # Convert commitments to JSON
         commitments_list = []
         for commitment in commitments:
-            commitment_dict = json.loads(json.dumps(commitment, cls=ServiceCommitmentJsonEncoder))
+            commitment_dict = json.loads(json.dumps(
+                commitment, cls=ServiceCommitmentJsonEncoder))
             commitments_list.append(commitment_dict)
-            
         return Response(
-            json.dumps({"success": True, "results": commitments_list}, default=str),
+            json.dumps(
+                {"success": True, "results": commitments_list}, default=str),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
