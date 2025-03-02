@@ -47,3 +47,18 @@ def test_add_non_overlapping_shifts(mock_repo):
 
     assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
+
+def test_add_shifts_same_time_different_shelters(mock_repo):
+    """
+    Test: Two shifts at the same time but for different shelters.
+    Expected: Both should be added.
+    """
+    shift1 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 2, 10, 0), shift_end=datetime(2025, 3, 2, 12, 0))
+    shift2 = ServiceShift(shelter_id=2, shift_start=datetime(2025, 3, 2, 10, 0), shift_end=datetime(2025, 3, 2, 12, 0))
+
+    print("\n Adding shifts at the same time for different shelters...")
+    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    print(" Result:", result)
+
+    assert result["success"] is True
+    assert len(result["service_shift_ids"]) == 2
