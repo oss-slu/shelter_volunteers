@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { GETHELP_API } from '../../../config';
+//import { GETHELP_API } from '../../../config';
+import { SERVER } from '../../../config';
 import ShiftsData from "../ShiftsData";
 
 export const useShelterData = (defaultRadius) => {
@@ -17,7 +18,7 @@ export const useShelterData = (defaultRadius) => {
 
   const fetchData = () => {
     setLoading(true);
-    const newEndpoint = `${GETHELP_API}v2/facilities?page=0&pageSize=1000&latitude=${latitude}&longitude=${longitude}&radius=${radius}`;
+    const newEndpoint = `${SERVER}/shelter`;
     
     fetch(newEndpoint, {
       method: "GET",
@@ -25,10 +26,10 @@ export const useShelterData = (defaultRadius) => {
     })
       .then(response => response.json())
       // uncomment this when we switch to using our /shelter API endpoint
-      // .then(data => {
-      //   setOriginalData(data.content);
-      //   setLoading(false);
-      // })
+       .then(data => {
+         setOriginalData(data.content);
+         setLoading(false);
+       })
       .catch(error => console.log(error));
   };
 
