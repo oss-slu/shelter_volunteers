@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from server.use_cases.list_service_shifts_use_case import service_shifts_list_use_case
+from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
 
 class TestServiceShiftsListUseCase(unittest.TestCase):
     def test_service_shifts_list_use_case(self):
