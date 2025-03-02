@@ -1,7 +1,7 @@
 """
 This module handles service shift operations.
 """
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, jsonify
 from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
@@ -18,34 +18,39 @@ service_shift_bp = Blueprint('service_shift', __name__)
 @cross_origin()
 def service_shift():
     """
-    Handles POST to add service shift, GET to list all shifts for a shelter.
+    Handles POST to add service shifts and GET to list all shifts for a shelter.
     """
     repo = ServiceShiftsMongoRepo()
+    
     if request.method == 'GET':
         shelter_id_string = request.args.get('shelter_id')
+        filter_start_after_string = request.args.get('filter_start_after')
+        
         shelter_id = int(shelter_id_string) if shelter_id_string else None
-        shifts_as_dict = service_shifts_list_use_case(repo, shelter_id)
-        shifts_as_json = [
-            json.dumps(service_shift, cls = ServiceShiftJsonEncoder)
-            for service_shift in shifts_as_dict
-        ]
+        filter_start_after = int(filter_start_after_string) if filter_start_after_string else None
+        
+        shifts = service_shifts_list_use_case(repo, shelter_id, filter_start_after)
+        
         return Response(
-            shifts_as_json,
+            json.dumps([shift.to_dict() for shift in shifts], cls=ServiceShiftJsonEncoder),
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
+    
     elif request.method == 'POST':
         shifts_as_dict = request.get_json()
-        print(shifts_as_dict)
-        # convert to ServiceShift objects
+        
+        # Convert to ServiceShift objects
         shifts_obj = [ServiceShift.from_dict(shift) for shift in shifts_as_dict]
 
         add_response = shift_add_use_case(repo, shifts_obj)
         status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        
         if add_response['success']:
             status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        
         return Response(
             json.dumps(add_response, default=str),
-            mimetype = 'application/json',
-            status = status_code
+            mimetype='application/json',
+            status=status_code
         )
