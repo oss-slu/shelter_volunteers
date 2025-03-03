@@ -62,3 +62,18 @@ def test_add_shifts_same_time_different_shelters(mock_repo):
 
     assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
+
+def test_add_exact_duplicate_shift(mock_repo):
+    """
+    Test: Adding the same shift twice for the same shelter.
+    Expected: Should be rejected.
+    """
+    shift1 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 4, 14, 0), shift_end=datetime(2025, 3, 4, 18, 0))
+    shift2 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 4, 14, 0), shift_end=datetime(2025, 3, 4, 18, 0))
+
+    print("\n Adding duplicate shift for the same shelter...")
+    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    print("Result:", result)
+
+    assert result["success"] == "false"
+    assert result["message"] == "overlapping shift"
