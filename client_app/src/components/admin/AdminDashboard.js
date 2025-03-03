@@ -5,11 +5,9 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('add');
-  
   return (
     <div className="admin-dashboard">
       <h1>Shelter Admin Dashboard</h1>
-      
       <div className="tab-navigation">
         <button 
           className={`tab-button ${activeTab === 'add' ? 'active' : ''}`}
