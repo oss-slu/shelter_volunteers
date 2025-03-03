@@ -5,9 +5,11 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
-from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
+from use_cases.list_service_shifts_use_case import (
+    service_shifts_list_use_case,
+)
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
-from domains.service_shift import ServiceShift  # Ensure we are importing it instead of redefining
+from domains.service_shift import ServiceShift
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
 from serializers.service_shift import ServiceShiftJsonEncoder
@@ -28,7 +30,9 @@ def handle_service_shift():
 
         # Convert safely
         shelter_id = (
-            int(shelter_id_str) if shelter_id_str and shelter_id_str.isdigit() else None
+            int(shelter_id_str)
+            if shelter_id_str and shelter_id_str.isdigit()
+            else None
         )
         filter_start_after = (
             int(filter_start_after_str)
@@ -36,7 +40,9 @@ def handle_service_shift():
             else None
         )
 
-        shifts = service_shifts_list_use_case(repo, shelter_id, filter_start_after)
+        shifts = service_shifts_list_use_case(
+            repo, shelter_id, filter_start_after
+        )
 
         return Response(
             json.dumps(
@@ -47,7 +53,7 @@ def handle_service_shift():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
         )
 
-    elif request.method == "POST":
+    if request.method == "POST":
         shifts_as_dict = request.get_json()
 
         # Validate JSON payload
@@ -55,7 +61,10 @@ def handle_service_shift():
             return jsonify({"error": "Invalid JSON payload"}), 400
 
         try:
-            shifts_obj = [ServiceShift.from_dict(shift) for shift in shifts_as_dict]
+            shifts_obj = [
+                ServiceShift.from_dict(shift)
+                for shift in shifts_as_dict
+            ]
         except (KeyError, TypeError, ValueError) as err:
             return jsonify({"error": f"Invalid data format: {str(err)}"}), 400
 
