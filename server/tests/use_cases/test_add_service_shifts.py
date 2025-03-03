@@ -38,8 +38,8 @@ def test_add_non_overlapping_shifts(mock_repo):
     Test: Two shifts for the same shelter, no overlap.
     Expected: Both should be added.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 1, 9, 0), shift_end=datetime(2025, 3, 1, 12, 0))
-    shift2 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 1, 13, 0), shift_end=datetime(2025, 3, 1, 16, 0))
+    shift1 = ServiceShift(shelter_id=1, shift_start=1730432400000, shift_end=1730443200000)  # 09:00 AM - 12:00 PM
+    shift2 = ServiceShift(shelter_id=1, shift_start=1730446800000, shift_end=1730457600000)  # 01:00 PM - 04:00 PM
 
     print("\n Adding non-overlapping shifts for the same shelter...")
     result = shift_add_use_case(mock_repo, [shift1, shift2])
@@ -53,8 +53,8 @@ def test_add_shifts_same_time_different_shelters(mock_repo):
     Test: Two shifts at the same time but for different shelters.
     Expected: Both should be added.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 2, 10, 0), shift_end=datetime(2025, 3, 2, 12, 0))
-    shift2 = ServiceShift(shelter_id=2, shift_start=datetime(2025, 3, 2, 10, 0), shift_end=datetime(2025, 3, 2, 12, 0))
+    shift1 = ServiceShift(shelter_id=1, shift_start=1730518800000, shift_end=1730526000000)  # 10:00 AM - 12:00 PM
+    shift2 = ServiceShift(shelter_id=2, shift_start=1730518800000, shift_end=1730526000000)  # 10:00 AM - 12:00 PM
 
     print("\n Adding shifts at the same time for different shelters...")
     result = shift_add_use_case(mock_repo, [shift1, shift2])
@@ -68,8 +68,8 @@ def test_add_exact_duplicate_shift(mock_repo):
     Test: Adding the same shift twice for the same shelter.
     Expected: Should be rejected.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 4, 14, 0), shift_end=datetime(2025, 3, 4, 18, 0))
-    shift2 = ServiceShift(shelter_id=1, shift_start=datetime(2025, 3, 4, 14, 0), shift_end=datetime(2025, 3, 4, 18, 0))
+    shift1 = ServiceShift(shelter_id=1, shift_start=1730691600000, shift_end=1730706000000)  # 02:00 PM - 06:00 PM
+    shift2 = ServiceShift(shelter_id=1, shift_start=1730691600000, shift_end=1730706000000)  # 02:00 PM - 06:00 PM
 
     print("\n Adding duplicate shift for the same shelter...")
     result = shift_add_use_case(mock_repo, [shift1, shift2])
