@@ -10,6 +10,7 @@ class ServiceShiftsMongoRepo:
     """
     MongoDB repository class for managing service shifts.
     """
+
     def __init__(self):
         """
         Initialize the repository with a MongoDB connection.
@@ -28,9 +29,9 @@ class ServiceShiftsMongoRepo:
             list: A list of inserted shift IDs.
         """
         for shift in shift_data:
-            shift.pop('_id', None)  # Remove _id to let MongoDB generate it
+            shift.pop("_id", None)  # Remove _id to let MongoDB generate it
         result = self.collection.insert_many(shift_data)
-        return [str(id) for id in result.inserted_ids]
+        return [str(shift_id) for shift_id in result.inserted_ids]
 
     def check_shift_overlap(self, shelter_id, shift_start, shift_end):
         """
@@ -44,11 +45,13 @@ class ServiceShiftsMongoRepo:
         Returns:
             bool: True if there is an overlap, False otherwise.
         """
-        overlapping = self.collection.find_one({
-            'shelter_id': shelter_id,
-            'shift_start': {'$lt': shift_end},
-            'shift_end': {'$gt': shift_start}
-        })
+        overlapping = self.collection.find_one(
+            {
+                "shelter_id": shelter_id,
+                "shift_start": {"$lt": shift_end},
+                "shift_end": {"$gt": shift_start},
+            }
+        )
         return overlapping is not None
 
     def list(self, shelter_id=None, filter_start_after=None):
@@ -64,9 +67,12 @@ class ServiceShiftsMongoRepo:
         """
         db_filter = {}
         if shelter_id:
-            db_filter['shelter_id'] = shelter_id
+            db_filter["shelter_id"] = shelter_id
         if filter_start_after:
-            db_filter['shift_start'] = {'$gt': filter_start_after}
+            db_filter["shift_start"] = {"$gt": filter_start_after}
 
-        service_shifts = [ServiceShift.from_dict(i) for i in self.collection.find(db_filter)]
+        service_shifts = [
+            ServiceShift.from_dict(shift)
+            for shift in self.collection.find(db_filter)
+        ]
         return service_shifts
