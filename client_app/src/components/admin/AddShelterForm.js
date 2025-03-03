@@ -111,13 +111,11 @@ const AddShelterForm = () => {
   return (
     <div className="add-shelter-form-container">
       <h2>Add New Shelter</h2>
-      
       {submitMessage.text && (
         <div className={`message ${submitMessage.type}`}>
           {submitMessage.text}
         </div>
       )}
-      
       <form onSubmit={handleSubmit}> 
         <div className="form-group">
           <label htmlFor="name">Shelter Name *</label>
@@ -142,7 +140,6 @@ const AddShelterForm = () => {
             required
           />
         </div>
-        
         <div className="form-group">
           <label htmlFor="street_address_2">Street Address 2</label>
           <input
@@ -153,7 +150,6 @@ const AddShelterForm = () => {
             onChange={handleChange}
           />
         </div>
-        
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="city">City *</label>
@@ -166,7 +162,6 @@ const AddShelterForm = () => {
               required
             />
           </div>
-          
           <div className="form-group">
             <label htmlFor="state">State *</label>
             <input
@@ -178,7 +173,6 @@ const AddShelterForm = () => {
               required
             />
           </div>
-          
           <div className="form-group">
             <label htmlFor="postal_code">Postal Code *</label>
             <input
@@ -191,7 +185,6 @@ const AddShelterForm = () => {
             />
           </div>
         </div>
-        
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="latitude">Latitude</label>
@@ -206,7 +199,6 @@ const AddShelterForm = () => {
               max="90"
             />
           </div>
-          
           <div className="form-group">
             <label htmlFor="longitude">Longitude</label>
             <input
@@ -220,8 +212,7 @@ const AddShelterForm = () => {
               max="180"
             />
           </div>
-        </div>
-        
+        </div>   
         <div className="form-actions">
           <button 
             type="submit" 
