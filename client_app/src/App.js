@@ -17,6 +17,7 @@ import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
 import { useLocation } from "react-router-dom";
 import Schedule from "./components/shelter/Schedule"; // <-- now a .jsx file
+import AdminDashboard from "./components/admin/AdminDashboard"; //still integrating into app
 
 function NavigationControl({ auth }) {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
         <Route path="/set-shifts" element={<Schedule />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Route>
     </Routes>
   </Router>);
