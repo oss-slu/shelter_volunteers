@@ -14,8 +14,7 @@ def shelter_data():
     """
     return Shelter(
         name="Safe Haven Shelter",
-        location="123 Main St, Springfield",
-        capacity=50
+        address="123 Main St, Springfield"
     )
 
 def test_shelter_add_use_case(shelter_data):
