@@ -1,19 +1,6 @@
 """
 Module containing test cases for adding shelters.
 """
-class MockShelterRepo:
-    def add(self, shelter):
-        shelter_id = shelter.pop("_id")        
-        return  {
-                    'id': shelter_id,
-                    'success': 'true',
-                    'message': 'shelter added successfully'
-                }
-
-        
-"""
-Module containing test cases for adding shelters.
-"""
 
 import pytest
 from unittest import mock
@@ -54,3 +41,13 @@ def test_shelter_add_use_case(shelter_data):
     
     assert response == expected_response
     repo.add.assert_called_once_with(shelter_data.to_dict())
+
+class MockShelterRepo:
+    def add(self, shelter):
+        shelter_id = shelter.pop("_id") 
+        return  {
+                    "id": shelter_id,
+                    "success": "true",
+                    "message": "shelter added successfully"
+                }
+
