@@ -33,11 +33,11 @@ class MockShiftRepository:
 
 
 @pytest.fixture
-def mock_repo_fixture():
+def moch_repo():
     return MockShiftRepository()
 
 # pylint: disable=redefined-outer-name
-def test_add_non_overlapping_shifts(mock_repo_fixture):
+def test_add_non_overlapping_shifts(moch_repo):
     """
     Test: Two shifts for the same shelter, no overlap.
     Expected: Both should be added.
@@ -54,14 +54,14 @@ def test_add_non_overlapping_shifts(mock_repo_fixture):
     )
 
     print("\n Adding non-overlapping shifts for the same shelter...")
-    result = shift_add_use_case(mock_repo_fixture, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
     assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
 
 
-def test_add_shifts_same_time_different_shelters(mock_repo_fixture):
+def test_add_shifts_same_time_different_shelters(moch_repo):
     """
     Test: Two shifts at the same time but for different shelters.
     Expected: Both should be added.
@@ -78,14 +78,14 @@ def test_add_shifts_same_time_different_shelters(mock_repo_fixture):
     )
 
     print("\n Adding shifts at the same time for different shelters...")
-    result = shift_add_use_case(mock_repo_fixture, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
     assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
 
 
-def test_add_exact_duplicate_shift(mock_repo_fixture):
+def test_add_exact_duplicate_shift(moch_repo):
     """
     Test: Adding the same shift twice for the same shelter.
     Expected: Should be rejected.
@@ -102,14 +102,14 @@ def test_add_exact_duplicate_shift(mock_repo_fixture):
     )
 
     print("\n Adding duplicate shift for the same shelter...")
-    result = shift_add_use_case(mock_repo_fixture, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print("Result:", result)
 
     assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_overlapping_shifts_case1(mock_repo_fixture):
+def test_add_overlapping_shifts_case1(moch_repo):
     """
     Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME2 < END_TIME1)
     Expected: Should be rejected.
@@ -126,14 +126,14 @@ def test_add_overlapping_shifts_case1(mock_repo_fixture):
     )
 
     print("\n Adding overlapping shifts (Case 1)...")
-    result = shift_add_use_case(mock_repo_fixture, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
     assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_overlapping_shifts_case2(mock_repo_fixture):
+def test_add_overlapping_shifts_case2(moch_repo):
     """
     Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME1 < END_TIME2)
     Expected: Should be rejected.
@@ -150,14 +150,14 @@ def test_add_overlapping_shifts_case2(mock_repo_fixture):
     )
 
     print("\n Adding overlapping shifts (Case 2)...")
-    result = shift_add_use_case(mock_repo_fixture, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
     assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_shift_conflicting_with_existing_shift(mock_repo_fixture):
+def test_add_shift_conflicting_with_existing_shift(moch_repo):
     """
     Test: Adding a shift that conflicts with an existing shift in the database.
     Expected: Should be rejected.
@@ -167,7 +167,7 @@ def test_add_shift_conflicting_with_existing_shift(mock_repo_fixture):
         "shift_start": 1730785200000,  # 10:00 AM
         "shift_end": 1730803200000     # 02:00 PM
     }
-    mock_repo_fixture.shifts.append(existing_shift)
+    moch_repo.shifts.append(existing_shift)
 
     new_shift = ServiceShift(
         shelter_id=1,
@@ -176,7 +176,7 @@ def test_add_shift_conflicting_with_existing_shift(mock_repo_fixture):
     )
 
     print("\nAdding a shift that conflicts with an existing shift in DB...")
-    result = shift_add_use_case(mock_repo_fixture, [new_shift])
+    result = shift_add_use_case(moch_repo, [new_shift])
     print(" Result:", result)
 
     assert result["success"] is False
