@@ -10,7 +10,7 @@ def shift_add_use_case(repo, new_shifts):
 
     overlapping_shift_response = {
                 'service_shift_id': None,
-                'success': 'false',
+                'success': False,
                 'message': 'overlapping shift'
             }
     #checks overlapping shifts in the input
