@@ -107,4 +107,25 @@ def test_add_overlapping_shifts_case2(mock_repo):
 
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
+    
+def test_add_shift_conflicting_with_existing_shift(mock_repo):
+    """
+    Test: Adding a shift that conflicts with an existing shift in the database.
+    Expected: Should be rejected.
+    """
+    existing_shift = {
+        "shelter_id": 1,
+        "shift_start": 1730785200000,  # 10:00 AM
+        "shift_end": 1730803200000     # 02:00 PM
+    }
+    mock_repo.shifts.append(existing_shift)
+
+    new_shift = ServiceShift(shelter_id=1, shift_start=1730788800000, shift_end=1730796000000)  # 11:00 AM - 01:00 PM
+
+    print("\nAdding a shift that conflicts with an existing shift in DB...")
+    result = shift_add_use_case(mock_repo, [new_shift])
+    print(" Result:", result)
+
+    assert result["success"] == "false"
+    assert result["message"] == "overlapping shift"
 
