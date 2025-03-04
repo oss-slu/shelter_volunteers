@@ -36,7 +36,7 @@ class PermissionManager:
         """
         Add a system admin to the system
         """
-        userPermission = self.permissions_repo.get_user_permissions(user_email)
+        user_permission = self.permissions_repo.get_user_permissions(user_email)
         create_new_user_permission = False
 
         if user_permission == None:

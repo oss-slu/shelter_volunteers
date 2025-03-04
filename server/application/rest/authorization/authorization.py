@@ -4,7 +4,8 @@ from use_cases.authorization.permission_manager import PermissionManager
 from application.rest.work_shift import get_user_from_token
 from repository.mongo.authorization import PermissionsMongoRepo
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
-from serializers.user_permission import UesrPermissionJsonEncoder
+from serializers.user_permission import UserPermissionJsonEncoder
+from domains.resources import Resources
 from responses import ResponseTypes
 
 authorization_blueprint = Blueprint("authorization", __name__)
@@ -24,16 +25,22 @@ def permission():
     if request.method == 'GET':
         response = permission_manager.get_user_permissions(user_id)
         return Response(
-            json.dumps(response.value, cls=UesrPermissionJsonEncoder),
+            json.dumps(response.value, cls=UserPermissionJsonEncoder),
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
 
     if request.method == 'POST':
         data = request.get_json()
-        shelter_id = data.get('shelter_id')
+        resource_type = data.get('resource_type')
         user_email = data.get('user_email')
-        permission_response = permission_manager.add_shelter_admin(shelter_id, user_email)
+        permission_response = None
+        if resource_type == Resources.SYSTEM:
+            permission_response = permission_manager.add_system_admin(user_email)
+        elif resource_type == Resources.SHELTER:
+            resource_id = data.get('resource_id')
+            print(resource_id)
+            permission_response = permission_manager.add_shelter_admin(resource_id, user_email)
         return Response(
             json.dumps(permission_response.value),
             mimetype='application/json',
