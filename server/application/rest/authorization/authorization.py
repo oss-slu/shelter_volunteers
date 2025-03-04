@@ -1,23 +1,40 @@
-from flask import Flask, request, jsonify
-from authorization.use_cases.add_permission import PermissionManager
-from authorization.auth import get_user_id_from_token
+import json
+from flask import Blueprint, request, Response
+from use_cases.authorization.permission_manager import PermissionManager
+from application.rest.work_shift import get_user_from_token
+from repository.mongo.authorization import PermissionsMongoRepo
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from responses import ResponseTypes
 
-app = Flask(__name__)
-permission_manager = PermissionManager()
+authorization_blueprint = Blueprint("authorization", __name__)
+permissions_repo = PermissionsMongoRepo()
+permission_manager = PermissionManager(permissions_repo)
 
-@app.route('/user_permission', methods=['GET', 'POST'])
+@authorization_blueprint.route("/user_permission", methods=['GET', 'POST'])
 def permission():
-    user_id = get_user_id_from_token(request.headers.get('Authorization'))
+    user = get_user_from_token(request.headers)
+    if user is None:
+        return Response(
+            json.dumps({'message': 'Unauthorized'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+    user_id = user[0]   
     if request.method == 'GET':
-        permissions = permission_manager.get_all_permissions()
-        return jsonify(permissions), 200
+        response = permission_manager.get_user_permissions(user_id)
+        return Response(
+            json.dumps(response.value),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        )
 
     if request.method == 'POST':
         data = request.get_json()
         shelter_id = data.get('shelter_id')
         user_email = data.get('user_email')
         permission_response = permission_manager.add_shelter_admin(shelter_id, user_email)
-        return jsonify(permission_response), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        return Response(
+            json.dumps(permission_response.value),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[permission_response.response_type]
+        )

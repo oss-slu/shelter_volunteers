@@ -1,7 +1,7 @@
 """
 This module handles Mongo database interactions with new service_shift
 """
-from permissions.domains.user_permission import UserPermission
+from domains.authorization.user_permission import UserPermission
 from config.mongodb_config import get_db
 
 class PermissionsMongoRepo:
@@ -21,6 +21,7 @@ class PermissionsMongoRepo:
         returns the new unique ID assigned to the shift
         """
         user_permission_as_dict = user_permission.to_dict()
+        print(user_permission_as_dict)
         user_permission_as_dict.pop('_id', None)
         self.db.permissions.insert_one(user_permission_as_dict)
         user_permission.set_id(user_permission_as_dict['_id'])
@@ -30,6 +31,8 @@ class PermissionsMongoRepo:
         gets user permissions by email
         """
         user_permission = self.collection.find_one({'email': user_email})
+        if user_permission is None:
+            return None
         return UserPermission.from_dict(user_permission)
 
     def update(self, user_permission):
@@ -37,10 +40,10 @@ class PermissionsMongoRepo:
         updates user permission in the database
         """
         user_permission_as_dict = user_permission.to_dict()
-        self.collection.update_one({'_id': user_permission.id}, {'$set': user_permission_as_dict})
+        self.collection.update_one({'_id': user_permission._id}, {'$set': user_permission_as_dict})
 
     def delete(self, user_permission):
         """
         deletes user permission from the database
         """
-        self.collection.delete_one({'_id': user_permission.id})
+        self.collection.delete_one({'_id': user_permission._id})

@@ -19,6 +19,7 @@ from serializers.staffing import StaffingJsonEncoder
 from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 import os
 
 
