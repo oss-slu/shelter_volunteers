@@ -4,6 +4,7 @@ from use_cases.authorization.permission_manager import PermissionManager
 from application.rest.work_shift import get_user_from_token
 from repository.mongo.authorization import PermissionsMongoRepo
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from serializers.user_permission import UesrPermissionJsonEncoder
 from responses import ResponseTypes
 
 authorization_blueprint = Blueprint("authorization", __name__)
@@ -23,7 +24,7 @@ def permission():
     if request.method == 'GET':
         response = permission_manager.get_user_permissions(user_id)
         return Response(
-            json.dumps(response.value),
+            json.dumps(response.value, cls=UesrPermissionJsonEncoder),
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )

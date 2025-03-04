@@ -1,13 +1,13 @@
 import uuid
 import dataclasses
-
-from dataclasses import dataclass
 from typing import List
+
+from domains.authorization.access import Access
 
 @dataclasses.dataclass
 class UserPermission:
     email: str
-    roles: List[str] = dataclasses.field(default_factory=list) # Role IDs
+    full_access: List[Access] = dataclasses.field(default_factory=list) # Roles
     _id: uuid.UUID = None
 
     def get_id(self):
@@ -22,8 +22,19 @@ class UserPermission:
     def from_dict(cls, d):
         """
         Creates a UserPermission instance from a dictionary.
+        Converts full_access dictionary objects to Access objects.
         """
-        return cls(**d)
+        # Create a copy of the dictionary to avoid modifying the original
+        dict_copy = d.copy()
+        
+        # Convert full_access list if it exists
+        if 'full_access' in dict_copy:
+            dict_copy['full_access'] = [
+                Access.from_dict(access) if isinstance(access, dict) else access 
+                for access in dict_copy['full_access']
+            ]
+        
+        return cls(**dict_copy)
 
     def to_dict(self):
         """

@@ -1,16 +1,12 @@
 import dataclasses
 from typing import List
-from domains.authorization.permission import Permission
-
-class RoleTypes:
-    SYSTEM_ADMIN = "system admin"
-    SHELTER_ADMIN = "shelter admin"
-    VOLUNTEER = "volunteer"
 
 @dataclasses.dataclass
-class Role:
-    role_type: RoleTypes
-    permissions: List[Permission] = dataclasses.field(default_factory=list)
+class Access:
+    # one of the values from domains.resources.Resources
+    resource_type: str 
+    # List of resource IDs
+    resource_ids: List[str] = dataclasses.field(default_factory=list) 
 
     @classmethod
     def from_dict(cls, d):

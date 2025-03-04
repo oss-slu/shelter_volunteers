@@ -17,8 +17,8 @@ class PermissionsMongoRepo:
 
     def add(self, user_permission):
         """
-        adds new service shift to the database
-        returns the new unique ID assigned to the shift
+        adds new UserPermission to the database
+        returns the new unique ID assigned to the permission
         """
         user_permission_as_dict = user_permission.to_dict()
         print(user_permission_as_dict)
