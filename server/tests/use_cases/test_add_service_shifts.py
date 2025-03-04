@@ -1,6 +1,10 @@
+"""
+test_add_service_shifts.py: Tests for the add_service_shifts use case.
+"""
+
 import pytest
-from server.use_cases.add_service_shifts import shift_add_use_case
-from server.domains.service_shift import ServiceShift
+from use_cases.add_service_shifts import shift_add_use_case
+from domains.service_shift import ServiceShift
 
 
 class MockShiftRepository:
@@ -16,7 +20,8 @@ class MockShiftRepository:
         """
         for shift in self.shifts:
             if shift["shelter_id"] == shelter_id and \
-               max(shift["shift_start"], shift_start) < min(shift["shift_end"], shift_end):
+               max(shift["shift_start"], shift_start) < \
+               min(shift["shift_end"], shift_end):
                 return True  # Overlap detected
         return False
 
@@ -28,91 +33,131 @@ class MockShiftRepository:
 
 
 @pytest.fixture
-def mock_repo():
+def moch_repo():
     return MockShiftRepository()
 
-
-def test_add_non_overlapping_shifts(mock_repo):
+# pylint: disable=redefined-outer-name
+def test_add_non_overlapping_shifts(moch_repo):
     """
     Test: Two shifts for the same shelter, no overlap.
     Expected: Both should be added.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=1730432400000, shift_end=1730443200000)  # 09:00 AM - 12:00 PM
-    shift2 = ServiceShift(shelter_id=1, shift_start=1730446800000, shift_end=1730457600000)  # 01:00 PM - 04:00 PM
+    shift1 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730432400000,  # 09:00 AM - 12:00 PM
+        shift_end=1730443200000
+    )
+    shift2 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730446800000,  # 01:00 PM - 04:00 PM
+        shift_end=1730457600000
+    )
 
     print("\n Adding non-overlapping shifts for the same shelter...")
-    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] == True
+    assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
 
 
-def test_add_shifts_same_time_different_shelters(mock_repo):
+def test_add_shifts_same_time_different_shelters(moch_repo):
     """
     Test: Two shifts at the same time but for different shelters.
     Expected: Both should be added.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=1730518800000, shift_end=1730526000000)  # 10:00 AM - 12:00 PM
-    shift2 = ServiceShift(shelter_id=2, shift_start=1730518800000, shift_end=1730526000000)  # 10:00 AM - 12:00 PM
+    shift1 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730518800000,
+        shift_end=1730526000000  # 10:00 AM - 12:00 PM
+    )
+    shift2 = ServiceShift(
+        shelter_id=2,
+        shift_start=1730518800000,
+        shift_end=1730526000000  # 10:00 AM - 12:00 PM
+    )
 
     print("\n Adding shifts at the same time for different shelters...")
-    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] == True
+    assert result["success"] is True
     assert len(result["service_shift_ids"]) == 2
 
 
-def test_add_exact_duplicate_shift(mock_repo):
+def test_add_exact_duplicate_shift(moch_repo):
     """
     Test: Adding the same shift twice for the same shelter.
     Expected: Should be rejected.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=1730691600000, shift_end=1730706000000)  # 02:00 PM - 06:00 PM
-    shift2 = ServiceShift(shelter_id=1, shift_start=1730691600000, shift_end=1730706000000)  # 02:00 PM - 06:00 PM
+    shift1 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730691600000,
+        shift_end=1730706000000  # 02:00 PM - 06:00 PM
+    )
+    shift2 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730691600000,
+        shift_end=1730706000000  # 02:00 PM - 06:00 PM
+    )
 
     print("\n Adding duplicate shift for the same shelter...")
-    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print("Result:", result)
 
-    assert result["success"] == "false"
+    assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_overlapping_shifts_case1(mock_repo):
+def test_add_overlapping_shifts_case1(moch_repo):
     """
-    Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME2 < END_TIME1).
+    Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME2 < END_TIME1)
     Expected: Should be rejected.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=1730605200000, shift_end=1730616000000)  # 09:00 AM - 12:00 PM
-    shift2 = ServiceShift(shelter_id=1, shift_start=1730608800000, shift_end=1730619600000)  # 10:00 AM - 01:00 PM
+    shift1 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730605200000,
+        shift_end=1730616000000  # 09:00 AM - 12:00 PM
+    )
+    shift2 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730608800000,
+        shift_end=1730619600000  # 10:00 AM - 01:00 PM
+    )
 
     print("\n Adding overlapping shifts (Case 1)...")
-    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] == "false"
+    assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_overlapping_shifts_case2(mock_repo):
+def test_add_overlapping_shifts_case2(moch_repo):
     """
-    Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME1 < END_TIME2).
+    Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME1 < END_TIME2)
     Expected: Should be rejected.
     """
-    shift1 = ServiceShift(shelter_id=1, shift_start=1730605200000, shift_end=1730612400000)  # 09:00 AM - 11:00 AM
-    shift2 = ServiceShift(shelter_id=1, shift_start=1730608800000, shift_end=1730616000000)  # 10:00 AM - 12:00 PM
+    shift1 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730605200000,
+        shift_end=1730612400000  # 09:00 AM - 11:00 AM
+    )
+    shift2 = ServiceShift(
+        shelter_id=1,
+        shift_start=1730608800000,
+        shift_end=1730616000000  # 10:00 AM - 12:00 PM
+    )
 
     print("\n Adding overlapping shifts (Case 2)...")
-    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    result = shift_add_use_case(moch_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] == "false"
+    assert result["success"] is False
     assert result["message"] == "overlapping shift"
 
 
-def test_add_shift_conflicting_with_existing_shift(mock_repo):
+def test_add_shift_conflicting_with_existing_shift(moch_repo):
     """
     Test: Adding a shift that conflicts with an existing shift in the database.
     Expected: Should be rejected.
@@ -122,14 +167,18 @@ def test_add_shift_conflicting_with_existing_shift(mock_repo):
         "shift_start": 1730785200000,  # 10:00 AM
         "shift_end": 1730803200000     # 02:00 PM
     }
-    mock_repo.shifts.append(existing_shift)
+    moch_repo.shifts.append(existing_shift)
 
-    new_shift = ServiceShift(shelter_id=1, shift_start=1730788800000, shift_end=1730796000000)  # 11:00 AM - 01:00 PM
+    new_shift = ServiceShift(
+        shelter_id=1,
+        shift_start=1730788800000,  # 11:00 AM
+        shift_end=1730796000000     # 01:00 PM
+    )
 
     print("\nAdding a shift that conflicts with an existing shift in DB...")
-    result = shift_add_use_case(mock_repo, [new_shift])
+    result = shift_add_use_case(moch_repo, [new_shift])
     print(" Result:", result)
 
-    assert result["success"] == "false"
+    assert result["success"] is False
     assert result["message"] == "overlapping shift"
     
