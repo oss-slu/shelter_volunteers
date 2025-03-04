@@ -1,5 +1,4 @@
 import pytest
-from datetime import datetime, timedelta
 from server.use_cases.add_service_shifts import shift_add_use_case
 from server.domains.service_shift import ServiceShift
 
@@ -45,8 +44,9 @@ def test_add_non_overlapping_shifts(mock_repo):
     result = shift_add_use_case(mock_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] is True
+    assert result["success"] == True
     assert len(result["service_shift_ids"]) == 2
+
 
 def test_add_shifts_same_time_different_shelters(mock_repo):
     """
@@ -60,8 +60,9 @@ def test_add_shifts_same_time_different_shelters(mock_repo):
     result = shift_add_use_case(mock_repo, [shift1, shift2])
     print(" Result:", result)
 
-    assert result["success"] is True
+    assert result["success"] == True
     assert len(result["service_shift_ids"]) == 2
+
 
 def test_add_exact_duplicate_shift(mock_repo):
     """
@@ -78,6 +79,7 @@ def test_add_exact_duplicate_shift(mock_repo):
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
 
+
 def test_add_overlapping_shifts_case1(mock_repo):
     """
     Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME2 < END_TIME1).
@@ -93,6 +95,7 @@ def test_add_overlapping_shifts_case1(mock_repo):
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
 
+
 def test_add_overlapping_shifts_case2(mock_repo):
     """
     Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME1 < END_TIME2).
@@ -107,7 +110,8 @@ def test_add_overlapping_shifts_case2(mock_repo):
 
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
-    
+
+
 def test_add_shift_conflicting_with_existing_shift(mock_repo):
     """
     Test: Adding a shift that conflicts with an existing shift in the database.
@@ -128,4 +132,4 @@ def test_add_shift_conflicting_with_existing_shift(mock_repo):
 
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
-
+    
