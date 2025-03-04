@@ -18,7 +18,7 @@ Module containing test cases for adding shelters.
 import pytest
 from unittest import mock
 from domains.shelter.shelter import Shelter
-from server.use_cases.shelters.add_shelter_use_case import shelter_add_use_case
+from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 
 @pytest.fixture
 def shelter_data():
