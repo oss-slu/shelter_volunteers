@@ -92,3 +92,19 @@ def test_add_overlapping_shifts_case1(mock_repo):
 
     assert result["success"] == "false"
     assert result["message"] == "overlapping shift"
+
+def test_add_overlapping_shifts_case2(mock_repo):
+    """
+    Test: Overlapping shifts (START_TIME1 < START_TIME2 < END_TIME1 < END_TIME2).
+    Expected: Should be rejected.
+    """
+    shift1 = ServiceShift(shelter_id=1, shift_start=1730605200000, shift_end=1730612400000)  # 09:00 AM - 11:00 AM
+    shift2 = ServiceShift(shelter_id=1, shift_start=1730608800000, shift_end=1730616000000)  # 10:00 AM - 12:00 PM
+
+    print("\n Adding overlapping shifts (Case 2)...")
+    result = shift_add_use_case(mock_repo, [shift1, shift2])
+    print(" Result:", result)
+
+    assert result["success"] == "false"
+    assert result["message"] == "overlapping shift"
+
