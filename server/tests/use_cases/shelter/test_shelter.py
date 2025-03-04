@@ -17,36 +17,24 @@ def shelter_data():
         address="123 Main St, Springfield"
     )
 
+# pylint: disable=redefined-outer-name
 def test_shelter_add_use_case(shelter_data):
     repo = mock.Mock()
     shelter_id = "SHELTER_ID"
-    
     # Mocking repo.add to insert an _id field in the shelter data
     def mock_add(shelter_dict):
         shelter_dict["_id"] = shelter_id
         return shelter_dict
-    
     repo.add.side_effect = mock_add
-    
     # Call the function
     response = shelter_add_use_case(repo, shelter_data)
-    
     # Expected response
     expected_response = {
         "id": shelter_id,
         "success": True,
         "message": "Shelter added successfully"
     }
-    
     assert response == expected_response
     repo.add.assert_called_once_with(shelter_data.to_dict())
 
-class MockShelterRepo:
-    def add(self, shelter):
-        shelter_id = shelter.pop("_id") 
-        return  {
-                    "id": shelter_id,
-                    "success": "true",
-                    "message": "shelter added successfully"
-                }
-
+# pylint: enable=redefined-outer-name
