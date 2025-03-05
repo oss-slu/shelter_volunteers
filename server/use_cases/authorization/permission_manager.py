@@ -18,7 +18,7 @@ class PermissionManager:
         if user_permission == None:
             user_permission = UserPermission(email=admin_email)
             self.permissions_repo.add(user_permission)
-        if self.user_has_permission(user_permission, Resources.SHELTER, shelter_id):
+        if self.user_manages(user_permission, Resources.SHELTER, shelter_id):
             return ResponseSuccess({'message': 'This user is already an admin for this shelter'})
 
         # check if this user is already an admin for some other shelter
@@ -42,7 +42,7 @@ class PermissionManager:
         if user_permission == None:
             user_permission = UserPermission.from_dict({'email': user_email})
             create_new_user_permission = True
-        if self.user_has_permission(user_permission, Resources.SYSTEM):
+        if self.user_manages(user_permission, Resources.SYSTEM):
             return ResponseSuccess({'message': 'This user is already a system admin'})
 
         # add system_admin role to the user
@@ -63,17 +63,15 @@ class PermissionManager:
         if userPermission == None:
             return False
 
+        if self.user_manages(userPermission, resource_type, resource_id):
+            return True
+
         # check if this user already has shelter_admin role
         for access in userPermission.full_access:
             # system admin can do anything
             if access.resource_type == Resources.SYSTEM:
                 return True
-            # check permissions associated with the role and see if they match
-            # the requested resource type and resource id
-            elif access.resource_type == resource_type:
-                for id in access.resource_ids:
-                    if id == resource_id:
-                        return True
+
         return False
 
     def find_access(self, user_permission, resource_type: str):
@@ -81,3 +79,17 @@ class PermissionManager:
             if access.resource_type == resource_type:
                 return access
         return None
+
+    def user_manages(self, user_permission: UserPermission, resource_type: str, resource_id=None):
+        if user_permission == None:
+            return False
+        for access in user_permission.full_access:
+            if (access.resource_type == resource_type and 
+                resource_id is None and 
+                access.resource_ids == []):
+                return True
+            elif access.resource_type == resource_type and resource_id is not None:
+                for id in access.resource_ids:
+                    if id == resource_id:
+                        return True
+        return False
