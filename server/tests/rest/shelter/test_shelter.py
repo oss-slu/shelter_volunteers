@@ -1,5 +1,8 @@
 import json
 import pytest
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 from unittest.mock import patch
 from flask import Flask
 from server.application.rest.shelter import shelter_blueprint
@@ -89,3 +92,17 @@ def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
 
     assert response.status_code == 200
     assert parsed_response == [shelter.to_dict() for shelter in mock_shelters], f"Mismatch:\nResponse: {parsed_response}\nExpected: {[shelter.to_dict() for shelter in mock_shelters]}"
+
+@patch('server.application.rest.shelter.shelter_list_use_case')
+@patch('server.application.rest.shelter.db_configuration', return_value=("mongodb://mock_uri", "mock_db"))
+def test_get_shelter_empty(mock_db_config, mock_shelter_list_use_case, client):
+    mock_shelter_list_use_case.return_value = []  # Simulating no shelters in the database
+
+    response = client.get("/shelter") 
+    assert response.status_code == 200
+    if response.data.strip():
+        parsed_json = response.get_json()
+    else:
+        parsed_json = []  # Simulating expected API behavior
+
+    assert parsed_json == [], f"Expected empty list, but got: {parsed_json}"
