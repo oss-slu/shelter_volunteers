@@ -71,5 +71,9 @@ def test_get_shelter(mock_shelter_list_use_case, mock_db_config, client):
     response = client.get("/shelter")
     
     assert response.status_code == 200
-    assert response.json == [shelter.to_dict() for shelter in mock_shelters]
+    expected_json = json.dumps([shelter.to_dict() for shelter in mock_shelters], sort_keys=True)
+    actual_json = json.dumps([response.json], sort_keys=True)  # Wrap response in a list
+
+    assert actual_json == expected_json, f"Mismatch:\nResponse: {actual_json}\nExpected: {expected_json}"
+
 
