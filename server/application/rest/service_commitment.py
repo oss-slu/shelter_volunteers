@@ -110,4 +110,8 @@ def fetch_service_commitments():
             jsonify({"error": str(error)}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
         )
-    
+    except KeyError as error:
+        return (
+            jsonify({"error": f"Missing key: {str(error)}"}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
