@@ -31,7 +31,7 @@ describe("add and cancel shifts", () => {
     formattedStartTime = format(startTime, "M/dd/yy HH:mm");
     formattedEndTime = format(endTime, "M/dd/yy HH:mm");
   });
-  test("shelter allows user to add and delete one shift", async () => { // skip is here
+  test("shelter allows user to add and delete one shift", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
 
     // wait for shelter name to appear
