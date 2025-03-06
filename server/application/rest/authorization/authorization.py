@@ -79,7 +79,7 @@ def permission():
             return Response(
                 json.dumps({'message': 'Unauthorized'}),
                 mimetype='application/json',
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
             )
 
         user_email = data.get('user_email')

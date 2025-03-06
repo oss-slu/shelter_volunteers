@@ -1,6 +1,7 @@
 from use_cases.authorization.get_user_permission import get_user_permission
 from responses import ResponseSuccess
 from domains.resources import Resources
+from domains.authorization.user_permission import UserPermission
 
 def add_shelter_admin(repo, shelter_id: str,  admin_email: str):
     """
