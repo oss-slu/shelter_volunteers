@@ -1,4 +1,4 @@
-from user_cases.authorization.get_user_permission import get_user_permissions
+from use_cases.authorization.get_user_permission import get_user_permission
 from responses import ResponseSuccess
 from domains.resources import Resources
 

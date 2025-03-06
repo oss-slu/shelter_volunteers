@@ -58,8 +58,11 @@ class UserPermission:
         """
         for access in self.full_access:
             if access.resource_type == resource_type:
-                # no duplicated access is allowed: if a user already has access, we don't add it again
+                # no duplicated access is allowed: if a user already has access,
+                # we don't add it again
                 if resource_id is not None and resource_id not in access.resource_ids:
                     access.resource_ids.append(resource_id)
                 return
-        self.full_access.append(Access(resource_type=resource_type, resource_ids=[resource_id]))
+        self.full_access.append(
+            Access(resource_type=resource_type, resource_ids=[resource_id])
+        )

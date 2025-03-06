@@ -1,15 +1,16 @@
 """
 Adds system admin role to the user
 """
-from user_cases.authorization.get_user_permission import get_user_permission
+from use_cases.authorization.get_user_permission import get_user_permission
 from domains.resources import Resources
+from domains.authorization.user_permission import UserPermission
 from responses import ResponseSuccess
 
 def add_system_admin(repo, user_email: str):
     """
     Add a system admin to the system
     """
-    user_permission = get_user_permission(user_email)
+    user_permission = get_user_permission(repo, user_email)
     if user_permission == None:
         user_permission = UserPermission.from_dict({'email': user_email})
         repo.add(user_permission)
