@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock
-from server.use_cases.list_service_commitments import list_service_commitments
+from use_cases.list_service_commitments import list_service_commitments
 
 class FakeCommitment:
     def __init__(self, service_shift_id, user_email):
