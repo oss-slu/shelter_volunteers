@@ -22,9 +22,8 @@ class PermissionsMongoRepo:
         """
         user_permission_as_dict = user_permission.to_dict()
         user_permission_as_dict.pop('_id', None)
-        self.db.permissions.insert_one(user_permission_as_dict)
-        user_permission.set_id(user_permission_as_dict['_id'])
-
+        result = self.db.permissions.insert_one(user_permission_as_dict)
+        user_permission.set_id(result.inserted_id)
     def get_user_permissions(self, user_email):
         """
         gets user permissions by email
