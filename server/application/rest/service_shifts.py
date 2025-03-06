@@ -60,7 +60,10 @@ def handle_service_shift():
             )
 
         try:
-            shifts_obj = [ServiceShift.from_dict(shift) for shift in shifts_as_dict]
+            shifts_obj = [
+                ServiceShift.from_dict(shift)
+                for shift in shifts_as_dict
+            ]
         except (KeyError, TypeError, ValueError) as err:
             return Response(
                 json.dumps({"error": f"Invalid data format: {str(err)}"}),
