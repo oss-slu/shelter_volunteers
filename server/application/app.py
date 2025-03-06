@@ -30,7 +30,7 @@ def create_app(config_name = "development"):
     app.register_blueprint(service_commitment_bp)
     app.register_blueprint(service_shift_bp)
     app.register_blueprint(authorization_blueprint)
-    
+
     load_dotenv()  # Load environment variables from the .env file
 
     # Serve static files

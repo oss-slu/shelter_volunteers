@@ -40,10 +40,13 @@ class PermissionsMongoRepo:
         updates user permission in the database
         """
         user_permission_as_dict = user_permission.to_dict()
-        self.collection.update_one({'_id': user_permission._id}, {'$set': user_permission_as_dict})
+        self.collection.update_one(
+            {'_id': user_permission.get_id()},
+            {'$set': user_permission_as_dict}
+        )
 
     def delete(self, user_permission):
         """
         deletes user permission from the database
         """
-        self.collection.delete_one({'_id': user_permission._id})
+        self.collection.delete_one({'_id': user_permission.get_id()})

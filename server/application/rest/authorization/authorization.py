@@ -1,3 +1,6 @@
+"""
+API endpoints for managing user permissions.
+"""
 import json
 from flask import Blueprint, request, Response
 from use_cases.authorization.add_shelter_admin import add_shelter_admin
@@ -11,10 +14,10 @@ from serializers.user_permission import UserPermissionJsonEncoder
 from domains.resources import Resources
 from responses import ResponseTypes
 
-authorization_blueprint = Blueprint("authorization", __name__)
+authorization_blueprint = Blueprint('authorization', __name__)
 repo = PermissionsMongoRepo()
 
-@authorization_blueprint.route("/user_permission", methods=['GET', 'POST'])
+@authorization_blueprint.route('/user_permission', methods=['GET', 'POST'])
 def permission():
     """
     Endpoint to manage user permissions.
@@ -38,8 +41,8 @@ def permission():
             status code.
 
     Raises:
-            Unauthorized: If the user token is invalid, missing, or the user is not 
-            authorized to make this request.
+            Unauthorized: If the user token is invalid, missing,
+            or the user is not authorized to make this request.
     """
     user = get_user_from_token(request.headers)
     if user is None:
@@ -48,7 +51,7 @@ def permission():
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
         )
-    user_id = user[0]   
+    user_id = user[0]
     if request.method == 'GET':
         user_permission = get_user_permission(repo, user_id)
         return Response(
@@ -79,7 +82,7 @@ def permission():
             return Response(
                 json.dumps({'message': 'Unauthorized'}),
                 mimetype='application/json',
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
             )
 
         user_email = data.get('user_email')

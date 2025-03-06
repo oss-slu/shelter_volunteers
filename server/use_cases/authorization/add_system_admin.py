@@ -11,11 +11,13 @@ def add_system_admin(repo, user_email: str):
     Add a system admin to the system
     """
     user_permission = get_user_permission(repo, user_email)
-    if user_permission == None:
+    if user_permission is None:
         user_permission = UserPermission.from_dict({'email': user_email})
         repo.add(user_permission)
     elif user_permission.has_access(Resources.SYSTEM):
-        return ResponseSuccess({'message': 'This user is already a system admin'})
+        return ResponseSuccess(
+            {'message': 'This user is already a system admin'}
+        )
 
     user_permission.add_access(Resources.SYSTEM)
     repo.update(user_permission)

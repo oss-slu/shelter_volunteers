@@ -20,4 +20,3 @@ class UserPermissionJsonEncoder(json.JSONEncoder):
             return to_serialize
         except AttributeError:
             return super().default(user_permission)
-
