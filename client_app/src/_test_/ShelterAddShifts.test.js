@@ -75,53 +75,51 @@ describe("add and cancel shifts", () => {
       { timeout: 4000 }
     );
   
-    // Click the first available shift button
+    // Find available shift buttons
     const shiftButtons = await screen.findAllByTestId("add-button");
+  
+    // Click the first available shift
     userEvent.click(shiftButtons[0]);
   
-    // Debugging: Log the DOM structure
+    // Log the DOM to verify if the shift appears in the selection
     await waitFor(() => {
-      console.log(screen.debug()); // Helps identify the correct selector
+      console.log(screen.debug());
     });
   
-    // Ensure the shift appears in the UI
+    // Ensure the shift appears in the UI using a function-based matcher
     await waitFor(() => {
-      expect(screen.getByText(/03:00 - 07:00/i)).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes("03:00") && content.includes("07:00")))
+        .toBeInTheDocument();
     });
   
-    // Ensure Submit Shifts is enabled
-    await waitFor(() => {
-      expect(screen.getByText("Submit Shifts")).toBeEnabled();
-    });
+    // Ensure Submit Shifts button is enabled
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
   
     // Click to add another shift
     userEvent.click(shiftButtons[1]);
   
     // Ensure second shift appears
     await waitFor(() => {
-      expect(screen.getByText(/Municipality Facility/i)).toBeInTheDocument();
+      expect(screen.getByText("Municipality Facility")).toBeInTheDocument();
     });
   
     // Ensure Submit Shifts remains enabled
-    await waitFor(() => {
-      expect(screen.getByText("Submit Shifts")).toBeEnabled();
-    });
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
   
-    // Click cancel button to remove first shift
+    // Find and click the cancel button for the first shift
     const cancelButtons = await screen.findAllByText("X");
     userEvent.click(cancelButtons[0]);
   
-    // Ensure first shift is removed
+    // Verify the first shift is removed
     await waitFor(() =>
-      expect(screen.queryByText(/03:00 - 07:00/i)).not.toBeInTheDocument()
+      expect(screen.queryByText((content) => content.includes("03:00") && content.includes("07:00")))
+        .not.toBeInTheDocument()
     );
   
     // Ensure Submit Shifts is still enabled as the second shift remains
-    await waitFor(() => {
-      expect(screen.getByText("Submit Shifts")).toBeEnabled();
-    });
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
   
-    // Click cancel button to remove second shift
+    // Click cancel button to remove the second shift
     userEvent.click(cancelButtons[1]);
   
     // Ensure all shifts are removed
@@ -130,8 +128,6 @@ describe("add and cancel shifts", () => {
     );
   
     // Ensure Submit Shifts is disabled again
-    await waitFor(() =>
-      expect(screen.getByText("Submit Shifts")).toBeDisabled()
-    );
+    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
   }, 6000);
 });
