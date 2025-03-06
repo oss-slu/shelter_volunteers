@@ -21,7 +21,6 @@ class PermissionsMongoRepo:
         returns the new unique ID assigned to the permission
         """
         user_permission_as_dict = user_permission.to_dict()
-        print(user_permission_as_dict)
         user_permission_as_dict.pop('_id', None)
         self.db.permissions.insert_one(user_permission_as_dict)
         user_permission.set_id(user_permission_as_dict['_id'])
