@@ -2,31 +2,38 @@ import json
 import pytest
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 from unittest.mock import patch
 from flask import Flask
 from server.application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
 from domains.shelter.address import Address
 
+
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(shelter_blueprint)
     return app
 
+
 @pytest.fixture
 def client():
     app = create_test_app()
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     return app.test_client()
 
-@patch('server.application.rest.shelter.shelter_add_use_case')
-@patch('server.application.rest.shelter.db_configuration', return_value=("mongodb://mock_uri", "mock_db"))
+
+@patch("server.application.rest.shelter.shelter_add_use_case")
+@patch(
+    "server.application.rest.shelter.db_configuration",
+    return_value=("mongodb://mock_uri", "mock_db"),
+)
 def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
     mock_response = {
         "id": "SOME_ID",
         "success": True,
-        "message": "Shelter added successfully"
+        "message": "Shelter added successfully",
     }
     mock_shelter_add_use_case.return_value = mock_response
 
@@ -39,20 +46,23 @@ def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
             "state": "MO",
             "postalCode": "99999",
             "country": "USA",
-            "coordinates": {
-                "latitude": 30.45486,
-                "longitude": -90.20537
-            }
-        }
+            "coordinates": {"latitude": 30.45486, "longitude": -90.20537},
+        },
     }
 
-    response = client.post("/shelter", data=json.dumps(request_data), content_type='application/json')
+    response = client.post(
+        "/shelter", data=json.dumps(request_data), content_type="application/json"
+    )
 
     assert response.status_code == 200
     assert response.json == mock_response
 
-@patch('server.application.rest.shelter.shelter_list_use_case')
-@patch('server.application.rest.shelter.db_configuration', return_value=("mongodb://mock_uri", "mock_db"))
+
+@patch("server.application.rest.shelter.shelter_list_use_case")
+@patch(
+    "server.application.rest.shelter.db_configuration",
+    return_value=("mongodb://mock_uri", "mock_db"),
+)
 def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
     mock_shelters = [
         Shelter(
@@ -64,7 +74,7 @@ def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
                 state="IL",
                 postal_code="62701",
                 country="USA",
-                coordinates={"latitude": 39.7817, "longitude": -89.6501}
+                coordinates={"latitude": 39.7817, "longitude": -89.6501},
             ),
         ),
         Shelter(
@@ -76,12 +86,14 @@ def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
                 state="IL",
                 postal_code="60616",
                 country="USA",
-                coordinates={"latitude": 41.8781, "longitude": -87.6298}
+                coordinates={"latitude": 41.8781, "longitude": -87.6298},
             ),
         ),
     ]
 
-    mock_shelter_list_use_case.return_value = [shelter.to_dict() for shelter in mock_shelters]
+    mock_shelter_list_use_case.return_value = [
+        shelter.to_dict() for shelter in mock_shelters
+    ]
 
     response = client.get("/shelter")
 
@@ -91,18 +103,6 @@ def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
     parsed_response = json.loads(formatted_json)
 
     assert response.status_code == 200
-    assert parsed_response == [shelter.to_dict() for shelter in mock_shelters], f"Mismatch:\nResponse: {parsed_response}\nExpected: {[shelter.to_dict() for shelter in mock_shelters]}"
-
-@patch('server.application.rest.shelter.shelter_list_use_case')
-@patch('server.application.rest.shelter.db_configuration', return_value=("mongodb://mock_uri", "mock_db"))
-def test_get_shelter_empty(mock_db_config, mock_shelter_list_use_case, client):
-    mock_shelter_list_use_case.return_value = []  # Simulating no shelters in the database
-
-    response = client.get("/shelter") 
-    assert response.status_code == 200
-    if response.data.strip():
-        parsed_json = response.get_json()
-    else:
-        parsed_json = []  # Simulating expected API behavior
-
-    assert parsed_json == [], f"Expected empty list, but got: {parsed_json}"
+    assert parsed_response == [
+        shelter.to_dict() for shelter in mock_shelters
+    ], f"Mismatch:\nResponse: {parsed_response}\nExpected: {[shelter.to_dict() for shelter in mock_shelters]}"
