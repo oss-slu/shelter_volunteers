@@ -91,10 +91,16 @@ describe("add and cancel shifts", () => {
     // Click to add a second shift
     userEvent.click(shiftButtons[1]);
   
+    // Debug button state to verify expected behavior
+    await waitFor(() => {
+      console.log("Submit button state after adding second shift:", submitButton.disabled);
+    });
+  
     // If the button doesn't actually get disabled, don't check for it
     await waitFor(() => expect(submitButton).toBeEnabled());
   
     // Remove the first shift
+    console.log("Before removing shift:", screen.debug());
     const cancelButtons = await screen.findAllByText("X");
     userEvent.click(cancelButtons[0]);
   
