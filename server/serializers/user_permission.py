@@ -8,7 +8,6 @@ class UserPermissionJsonEncoder(json.JSONEncoder):
     def default(self, user_permission):
         """Encode a UserPermission object to JSON."""
         try:
-            print(user_permission)
             to_serialize = {
                 "full_access": [
                     {
