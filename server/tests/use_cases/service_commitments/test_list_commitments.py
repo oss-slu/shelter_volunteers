@@ -14,7 +14,9 @@ def test_list_service_commitments_no_commitments():
     shifts_repo.get_shifts.return_value = []
 
     user_email = "test@example.com"
-    commitments, shifts = list_service_commitments(commitments_repo, shifts_repo, user_email)
+    commitments, shifts = list_service_commitments(
+        commitments_repo, shifts_repo, user_email
+    )
 
     assert commitments == []
     assert shifts == []
