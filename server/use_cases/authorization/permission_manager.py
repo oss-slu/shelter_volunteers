@@ -88,7 +88,7 @@ class PermissionManager:
                 resource_id is None and 
                 access.resource_ids == []):
                 return True
-            elif access.resource_type == resource_type and resource_id
+            elif access.resource_type == resource_type and resource_id:
                 for id in access.resource_ids:
                     if id == resource_id:
                         return True
