@@ -1,5 +1,5 @@
 """
-Tests for the add_service_commitments use case.
+This module contains tests for the add_service_commitments use case.
 """
 
 import pytest
