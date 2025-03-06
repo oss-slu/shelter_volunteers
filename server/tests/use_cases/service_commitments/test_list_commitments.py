@@ -1,3 +1,7 @@
+"""
+Tests for listing service commitments
+"""
+
 from unittest.mock import MagicMock
 from use_cases.list_service_commitments import list_service_commitments
 
