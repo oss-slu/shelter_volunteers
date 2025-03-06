@@ -69,64 +69,67 @@ describe("add and cancel shifts", () => {
   test("user can select and remove multiple shifts", async () => {
     render(<Shelters condensed={false} isSignupPage={true} />);
   
-    // Wait for shelters to load
+    // Wait for shelter to appear
     await waitFor(() =>
       expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
       { timeout: 4000 }
     );
   
-    // Select first available shift
+    // Find available shift buttons
     const shiftButtons = await screen.findAllByTestId("add-button");
+  
+    // Click first available shift
     userEvent.click(shiftButtons[0]);
   
-    // Ensure shift is selected
+    // Verify shift appears in the Current Selection
     await waitFor(() =>
-      expect(screen.queryByText("Please add your desired shifts from the list")).not.toBeInTheDocument()
+      expect(screen.getByText(/Current Selection/i)).toBeInTheDocument()
     );
   
-    // Check if shift appears in the current selection
-    const selectedShifts = await screen.findByTestId("selected-shifts");
-    expect(selectedShifts).toBeInTheDocument();
-  
     // Ensure Submit Shifts is enabled
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    await waitFor(() =>
+      expect(screen.getByText("Submit Shifts")).toBeEnabled()
+    );
   
-    // Select another shift from a different shelter
-    await waitFor(() => expect(screen.getByText("Municipality Facility")).toBeInTheDocument());
+    // Select another shift
+    await waitFor(() =>
+      expect(screen.getByText("Municipality Facility")).toBeInTheDocument()
+    );
     userEvent.click(shiftButtons[1]);
   
-    // Ensure second shift appears in the UI
-    await waitFor(() => {
-      const selectedShifts = screen.getByTestId("selected-shifts");
-      expect(selectedShifts).toBeInTheDocument();
-    });
+    // Ensure second shift appears
+    await waitFor(() =>
+      expect(screen.getByText("Municipality Facility")).toBeInTheDocument()
+    );
   
     // Ensure Submit Shifts is still enabled
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    await waitFor(() =>
+      expect(screen.getByText("Submit Shifts")).toBeEnabled()
+    );
   
     // Cancel first shift
     const cancelButtons = await screen.findAllByText("X");
     userEvent.click(cancelButtons[0]);
   
-    // Verify first shift is removed
-    await waitFor(() => {
-      expect(screen.queryByText("Please add your desired shifts from the list")).not.toBeInTheDocument();
-    });
-  
-    // Ensure second shift is still present
-    await waitFor(() => {
-      expect(screen.getByTestId("selected-shifts")).toBeInTheDocument();
-    });
+    // Verify first shift is removed but second remains
+    await waitFor(() =>
+      expect(screen.queryByText("National Institute for Change PC")).not.toBeInTheDocument()
+    );
+    await waitFor(() =>
+      expect(screen.getByText("Municipality Facility")).toBeInTheDocument()
+    );
   
     // Cancel second shift
     userEvent.click(cancelButtons[1]);
   
-    // Verify all shifts are removed
+    // Ensure all shifts are removed
     await waitFor(() =>
       expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument()
     );
   
     // Ensure Submit Shifts is disabled again
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
-  }, 6000);  
+    await waitFor(() =>
+      expect(screen.getByText("Submit Shifts")).toBeDisabled()
+    );
+  }, 6000);
 });
