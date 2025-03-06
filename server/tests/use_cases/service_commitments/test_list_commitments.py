@@ -37,7 +37,9 @@ def test_list_service_commitments_with_commitments():
     ]
 
     user_email = "test@example.com"
-    commitments, shifts = list_service_commitments(commitments_repo, shifts_repo, user_email)
+    commitments, shifts = list_service_commitments(
+        commitments_repo, shifts_repo, user_email
+    )
 
     assert len(commitments) == 2
     assert len(shifts) == 2
