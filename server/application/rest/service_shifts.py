@@ -40,7 +40,9 @@ def handle_service_shift():
             else None
         )
 
-        shifts = service_shifts_list_use_case(repo, shelter_id, filter_start_after)
+        shifts = service_shifts_list_use_case(
+            repo, shelter_id, filter_start_after
+        )
 
         return Response(
             json.dumps(shifts, cls=ServiceShiftJsonEncoder),
