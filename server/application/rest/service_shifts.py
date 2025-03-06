@@ -35,7 +35,9 @@ def handle_service_shift():
             else None
         )
         filter_start_after = (
-            int(filter_start_after_str) if filter_start_after_str and filter_start_after_str.isdigit() else None
+            int(filter_start_after_str)
+            if filter_start_after_str and filter_start_after_str.isdigit()
+            else None
         )
 
         shifts = service_shifts_list_use_case(repo, shelter_id, filter_start_after)
