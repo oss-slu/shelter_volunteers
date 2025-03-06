@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 import sys
 import os
 
-# ✅ Ensure correct import path for the project
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(_file_), "../../../..")))
+# Ensure correct import path for the project
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 from server.use_cases.add_service_commitments import add_service_commitments
 
