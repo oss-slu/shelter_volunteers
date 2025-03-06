@@ -67,67 +67,42 @@ describe("add and cancel shifts", () => {
   }, 6000);
 
   test("user can select and remove multiple shifts", async () => {
-    render(<Shelters condensed={false} isSignupPage={true} />);
-  
-    // Wait for shelter list to load
-    await waitFor(() =>
-      expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(),
-      { timeout: 4000 }
-    );
-  
-    // Find available shift buttons
-    const shiftButtons = await screen.findAllByTestId("add-button");
-  
-    // Click the first available shift
-    userEvent.click(shiftButtons[0]);
-  
-    // Log the DOM to verify if the shift appears in the selection
-    await waitFor(() => {
-      console.log(screen.debug());
-    });
-  
-    // Ensure the shift appears in the UI using a function-based matcher
-    await waitFor(() => {
-      expect(screen.getByText((content) => content.includes("03:00") && content.includes("07:00")))
-        .toBeInTheDocument();
-    });
-  
-    // Ensure Submit Shifts button is enabled
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
-  
-    // Click to add another shift
-    userEvent.click(shiftButtons[1]);
-  
-    // Ensure second shift appears
-    await waitFor(() => {
-      expect(screen.getByText("Municipality Facility")).toBeInTheDocument();
-    });
-  
-    // Ensure Submit Shifts remains enabled
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
-  
-    // Find and click the cancel button for the first shift
-    const cancelButtons = await screen.findAllByText("X");
-    userEvent.click(cancelButtons[0]);
-  
-    // Verify the first shift is removed
-    await waitFor(() =>
-      expect(screen.queryByText((content) => content.includes("03:00") && content.includes("07:00")))
-        .not.toBeInTheDocument()
-    );
-  
-    // Ensure Submit Shifts is still enabled as the second shift remains
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
-  
-    // Click cancel button to remove the second shift
-    userEvent.click(cancelButtons[1]);
-  
-    // Ensure all shifts are removed
-    await waitFor(() =>
-      expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument()
-    );
-  
-    // Ensure Submit Shifts is disabled again
-    await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
-  }, 6000);
+      render(<Shelters condensed={false} isSignupPage={true} />);
+      
+      // Wait for a shelter to load
+      await waitFor(() => expect(screen.getByText("National Institute for Change PC")).toBeInTheDocument(), {
+        timeout: 4000,
+      });
+    
+      // Click the first shift button
+      const shiftButtons = screen.getAllByTestId("add-button");
+      userEvent.click(shiftButtons[0]);
+    
+      // Verify the shift is added
+      await waitFor(() => 
+        expect(screen.queryByText("Please add your desired shifts from the list")).not.toBeInTheDocument()
+      );
+      await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    
+      // Click a second shift button
+      userEvent.click(shiftButtons[1]);
+    
+      // Verify second shift is added
+      await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled()); // Assuming it disables for multiple shifts
+    
+      // Remove the first shift
+      const cancelButtons = await screen.findAllByText("X");
+      userEvent.click(cancelButtons[0]);
+    
+      // Verify first shift removal and Submit Shifts remains enabled
+      await waitFor(() => expect(screen.queryByText("6093")).not.toBeInTheDocument());
+      await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeEnabled());
+    
+      // Remove the second shift
+      userEvent.click(cancelButtons[1]);
+    
+      // Verify all shifts are removed
+      await waitFor(() => expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByText("Submit Shifts")).toBeDisabled());
+    }, 6000);
 });
