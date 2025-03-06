@@ -127,9 +127,10 @@ describe("add and cancel shifts", () => {
       expect(screen.getByText("Please add your desired shifts from the list")).toBeInTheDocument()
     );
   
-    // Ensure Submit Shifts is disabled again
+    // Ensure Submit Shifts is disabled
     await waitFor(() =>
       expect(screen.getByText("Submit Shifts")).toBeDisabled()
     );
   }, 6000);
+  //try 2
 });
