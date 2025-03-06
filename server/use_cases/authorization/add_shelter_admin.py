@@ -11,6 +11,11 @@ def add_shelter_admin(repo, shelter_id: str,  admin_email: str):
     """
     Add a shelter admin to the system
     """
+    if shelter_id is None:
+        raise ValueError('shelter_id cannot be None')
+    if admin_email is None:
+        raise ValueError('admin_email cannot be None')
+
     user_permission = get_user_permission(repo, admin_email)
     if user_permission is None:
         user_permission = UserPermission(email=admin_email)

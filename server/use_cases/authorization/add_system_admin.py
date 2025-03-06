@@ -11,6 +11,7 @@ def add_system_admin(repo, user_email: str):
     Add a system admin to the system
     """
     user_permission = get_user_permission(repo, user_email)
+    print(user_permission)
     if user_permission is None:
         user_permission = UserPermission.from_dict({'email': user_email})
         repo.add(user_permission)
