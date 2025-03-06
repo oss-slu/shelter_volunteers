@@ -15,8 +15,8 @@ class TestAddShelterAdmin(unittest.TestCase):
     """
     def setUp(self):
         self.repo = Mock()
-        self.shelter_id = "shelter_123"
-        self.admin_email = "admin@example.com"
+        self.shelter_id = 'shelter_123'
+        self.admin_email = 'admin@example.com'
 
     def test_add_shelter_admin_new_user(self):
         self.repo.get_user_permissions.return_value = None
@@ -71,7 +71,7 @@ class TestAddShelterAdmin(unittest.TestCase):
         )
 
     def test_add_shelter_admin_existing_user_admin_for_another_shelter(self):
-        another_shelter_id = "shelter_456"
+        another_shelter_id = 'shelter_456'
         user_permission = UserPermission(email=self.admin_email)
         user_permission.add_access(Resources.SHELTER, another_shelter_id)
         self.repo.get_user_permissions.return_value = user_permission
