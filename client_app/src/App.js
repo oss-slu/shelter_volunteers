@@ -28,7 +28,8 @@ function NavigationControl({ auth }) {
     "/request-for-help",
     "/upcoming-requests",
     "/shelter-login",
-    "/set-shifts"
+    "/set-shifts",
+    "/admin-dashboard"
   ].includes(location.pathname)) return <NavBarShelterDashboard auth={auth} />;
   return <NavBarVolunteerDashboard auth={auth} />;
 }
@@ -43,6 +44,7 @@ function App() {
       <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
       <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/" element={<ProtectedRoute />}>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
         <Route path="/shelters" element={<Shelters />} />
@@ -54,7 +56,6 @@ function App() {
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
         <Route path="/set-shifts" element={<Schedule />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Route>
     </Routes>
   </Router>);

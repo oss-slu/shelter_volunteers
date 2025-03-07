@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AddShelterForm from './AddShelterForm';
 import ShelterList from './ShelterList';
-import './AdminDashboard.css';
+import '../../styles/admin/AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('add');

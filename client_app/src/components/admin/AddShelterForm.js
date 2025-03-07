@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AddShelterForm.css';
+import '../../styles/admin/AddShelterForm.css';
 
 const AddShelterForm = () => {
   const [formData, setFormData] = useState({

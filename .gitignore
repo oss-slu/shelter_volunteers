@@ -2,3 +2,5 @@
 .vscode/settings.json
 venv/
 .env.pre-production
+amalserver.sh
+mongorepo.py
