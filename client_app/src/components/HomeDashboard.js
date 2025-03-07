@@ -23,6 +23,12 @@ function HomeDashboard() {
           >
             Shelter Admin Login
           </button>
+          <button
+            onClick={() => navigate("/admin-dashboard")}
+            className="admin-button"
+          >
+            System Admin
+          </button>
         </div>
       </div>
     );

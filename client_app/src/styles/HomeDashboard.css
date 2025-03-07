@@ -40,6 +40,24 @@
     font-weight: bold;
 }
 
+.admin-button {
+    background-color: #1e4c5b;
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-button:hover {
+    background-color: #173e4a;
+}
+
 .content-container {
     margin-top: 50px; /* Add spacing below the header */
 }
