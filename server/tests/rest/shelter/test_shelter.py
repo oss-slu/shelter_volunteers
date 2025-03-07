@@ -23,9 +23,9 @@ def client():
     return app.test_client()
 
 
-@patch("server.application.rest.shelter.shelter_add_use_case")
+@patch("application.rest.shelter.shelter_add_use_case")
 @patch(
-    "server.application.rest.shelter.db_configuration",
+    "application.rest.shelter.db_configuration",
     return_value=("mongodb://mock_uri", "mock_db"),
 )
 def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
@@ -57,9 +57,9 @@ def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
     assert response.json == mock_response
 
 
-@patch("server.application.rest.shelter.shelter_list_use_case")
+@patch("application.rest.shelter.shelter_list_use_case")
 @patch(
-    "server.application.rest.shelter.db_configuration",
+    "application.rest.shelter.db_configuration",
     return_value=("mongodb://mock_uri", "mock_db"),
 )
 def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
