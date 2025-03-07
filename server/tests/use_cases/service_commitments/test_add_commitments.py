@@ -14,10 +14,10 @@ def mocked_repos():
         "shifts_repo": MagicMock()
     }
 
-def test_add_service_commitment_non_existing_shift(mocked_repos):
+def test_add_service_commitment_non_existing_shift(repos):
     """Test adding a service commitment for a non-existing shift."""
-    commitments_repo = mocked_repos["commitments_repo"]
-    shifts_repo = mocked_repos["shifts_repo"]
+    commitments_repo = repos["commitments_repo"]
+    shifts_repo = repos["shifts_repo"]
 
     # Mock no shifts found
     shifts_repo.get_shifts.return_value = []
