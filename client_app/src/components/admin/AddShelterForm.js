@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/admin/AddShelterForm.css';
+import { SERVER } from "../../config";
 
 const AddShelterForm = () => {
   const [formData, setFormData] = useState({
@@ -67,7 +68,7 @@ const AddShelterForm = () => {
     setSubmitMessage({ type: '', text: '' });
     
     try {
-      const response = await fetch('/api/shelter', {
+      const response = await fetch(`${SERVER}/shelter`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
