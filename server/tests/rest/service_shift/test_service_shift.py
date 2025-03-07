@@ -1,14 +1,14 @@
 import unittest
 import json
 from unittest.mock import patch
-from server.application.rest.service_shifts import app
+from application.rest.service_shifts import app  # Updated import
 
 class TestServiceShiftAPI(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
         self.client.testing = True
 
-    @patch('server.application.rest.service_shifts.shift_add_use_case')
+    @patch('application.rest.service_shifts.shift_add_use_case')
     def test_post_service_shift(self, mock_shift_add_use_case):
         # Arrange: Set up the expected IDs returned by the use case.
         expected_ids = [101, 102]
@@ -24,8 +24,6 @@ class TestServiceShiftAPI(unittest.TestCase):
             'Content-Type': 'application/json'
         }
 
-    
-
         # Act: Send POST request.
         response = self.client.post('/service_shift', data=json.dumps(payload), headers=headers)
 
@@ -36,7 +34,7 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(data.get('service_shift_ids'), expected_ids)
         mock_shift_add_use_case.assert_called_once_with(payload)
 
-    @patch('server.application.rest.service_shifts.service_shifts_list_use_case')
+    @patch('application.rest.service_shifts.service_shifts_list_use_case')
     def test_get_service_shift(self, mock_list_use_case):
         # Arrange: Define the expected shift list.
         expected_shifts = [
