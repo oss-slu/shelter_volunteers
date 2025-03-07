@@ -23,9 +23,8 @@ class MockShift:
 
 def test_add_service_commitment_non_existing_shift(mock_repos):
     """Test adding a service commitment for a non-existing shift."""
-    _mock_repos = mock_repos
-    commitments_repo = _mock_repos["commitments_repo"]
-    shifts_repo = _mock_repos["shifts_repo"]
+    commitments_repo = mock_repos["commitments_repo"]
+    shifts_repo = mock_repos["shifts_repo"]
 
     # Mock no shifts found
     shifts_repo.get_shifts.return_value = []
@@ -33,7 +32,7 @@ def test_add_service_commitment_non_existing_shift(mock_repos):
     # Mock commitment object
     commitment = MagicMock()
     commitment.service_shift_id = "non_existing_shift"
-    commitment.to_dict.return_value = {"_id": "None"}  
+    commitment.to_dict.return_value = {"_id": "None"}
 
     # Call function
     result = add_service_commitments(
@@ -64,7 +63,7 @@ def test_add_multiple_service_commitments_mixed(mock_repos):
 
     commitment_2 = MagicMock()
     commitment_2.service_shift_id = "non_existing_shift"
-    commitment_2.to_dict.return_value = {"_id": "None"}  
+    commitment_2.to_dict.return_value = {"_id": "None"}
 
     commitment_3 = MagicMock()
     commitment_3.service_shift_id = existing_shift_2.shift_id
@@ -72,13 +71,13 @@ def test_add_multiple_service_commitments_mixed(mock_repos):
 
     # Call function
     result = add_service_commitments(
-        commitments_repo, shifts_repo, 
+        commitments_repo, shifts_repo,
         [commitment_1, commitment_2, commitment_3])
 
     # Expected result
     assert result == [
         {"service_commitment_id": "commitment_1", "success": True},
-        {"service_commitment_id": "None", "success": True},  
+        {"service_commitment_id": "None", "success": True},
         {"service_commitment_id": "commitment_3", "success": True}
     ]
 
