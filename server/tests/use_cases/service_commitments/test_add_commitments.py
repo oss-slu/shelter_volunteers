@@ -2,7 +2,6 @@
 Unit tests for add_service_commitments function.
 """
 
-import pytest
 from unittest.mock import MagicMock
 from use_cases.add_service_commitments import add_service_commitments  # Clean import
 
@@ -29,13 +28,16 @@ def test_add_service_commitment_existing_shift():
     commitment.to_dict.return_value = {"_id": "commitment_1"}
 
     # Call function
-    result = add_service_commitments(commitments_repo, shifts_repo, [commitment])
+    result = add_service_commitments(
+        commitments_repo, shifts_repo, [commitment])
 
     # Expected result
-    assert result == [{"service_commitment_id": "commitment_1", "success": True}]
+    assert result == [
+        {"service_commitment_id": "commitment_1", "success": True}]
 
     # Verify insert_service_commitments was called correctly
-    commitments_repo.insert_service_commitments.assert_called_once_with([{"_id": "commitment_1"}])
+    commitments_repo.insert_service_commitments.assert_called_once_with(
+        [{"_id": "commitment_1"}])
 
 def test_add_service_commitment_non_existing_shift():
     """Test adding a service commitment for a non-existing shift."""
@@ -52,13 +54,15 @@ def test_add_service_commitment_non_existing_shift():
     commitment.to_dict.return_value = {"_id": "None"}
 
     # Call function
-    result = add_service_commitments(commitments_repo, shifts_repo, [commitment])
+    result = add_service_commitments(
+        commitments_repo, shifts_repo, [commitment])
 
     # Expected result
     assert result == [{"service_commitment_id": "None", "success": True}]
 
     # Verify insert_service_commitments was called with the invalid commitment
-    commitments_repo.insert_service_commitments.assert_called_once_with([{"_id": "None"}])
+    commitments_repo.insert_service_commitments.assert_called_once_with(
+        [{"_id": "None"}])
 
 def test_add_multiple_service_commitments_mixed():
     """Test adding multiple service commitments, some valid and some invalid."""
