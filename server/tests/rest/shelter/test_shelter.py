@@ -5,7 +5,7 @@ import os
 
 from unittest.mock import patch
 from flask import Flask
-from server.application.rest.shelter import shelter_blueprint
+from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
 from domains.shelter.address import Address
 
