@@ -7,7 +7,7 @@ import pytest
 from use_cases.add_service_commitments import add_service_commitments
 
 @pytest.fixture
-def mock_repos():
+def mocked_repos():
     """Fixture to provide mocked repositories."""
     return {
         "commitments_repo": MagicMock(),
