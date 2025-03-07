@@ -19,6 +19,7 @@ from serializers.staffing import StaffingJsonEncoder
 from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 import os
 
 
@@ -54,15 +55,6 @@ shifts = [
     },
 
 ]
-
-HTTP_STATUS_CODES_MAPPING = {
-    ResponseTypes.NOT_FOUND: 404,
-    ResponseTypes.SYSTEM_ERROR: 500,
-    ResponseTypes.AUTHORIZATION_ERROR: 403,
-    ResponseTypes.PARAMETER_ERROR: 400,
-    ResponseTypes.SUCCESS: 200,
-    ResponseTypes.CONFLICT: 409
-}
 
 @blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
 @cross_origin()

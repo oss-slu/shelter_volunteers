@@ -6,14 +6,14 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from domains.service_commitment import ServiceCommitment
 
-from application.rest.work_shift import (
-    get_user_from_token, HTTP_STATUS_CODES_MAPPING, ResponseTypes
-)
+from application.rest.work_shift import get_user_from_token
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
+from responses import ResponseTypes
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
 
