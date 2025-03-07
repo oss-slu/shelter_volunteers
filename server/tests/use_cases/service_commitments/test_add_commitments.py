@@ -44,22 +44,6 @@ def test_add_service_commitment_non_existing_shift():
     # Create mocks
     commitments_repo = MagicMock()
     shifts_repo = MagicMock()
-=======
-import pytest
-from use_cases.add_service_commitments import add_service_commitments
-
-@pytest.fixture
-def mocked_repos():
-    """Fixture to provide mocked repositories."""
-    return {
-        "commitments_repo": MagicMock(),
-        "shifts_repo": MagicMock()
-    }
-
-def test_add_service_commitment_non_existing_shift(repos):
-    """Test adding a service commitment for a non-existing shift."""
-    commitments_repo = repos["commitments_repo"]
-    shifts_repo = repos["shifts_repo"]
 
     # Mock no shifts found
     shifts_repo.get_shifts.return_value = []
