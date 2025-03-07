@@ -2,13 +2,13 @@ import unittest
 import json
 from unittest.mock import patch
 from flask import Flask
-from application.rest.service_shifts import service_shifts_bp  # assuming this blueprint is defined in service_shifts.py
+from application.rest.service_shifts import service_shift_bp  # assuming this blueprint is defined in service_shifts.py
 
 class TestServiceShiftAPI(unittest.TestCase):
     def setUp(self):
         # Create a test Flask app and register the service_shifts blueprint.
         self.app = Flask(__name__)
-        self.app.register_blueprint(service_shifts_bp)
+        self.app.register_blueprint(service_shift_bp)
         self.app.testing = True
         self.client = self.app.test_client()
 
