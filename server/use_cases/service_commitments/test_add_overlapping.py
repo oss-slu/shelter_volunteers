@@ -26,6 +26,7 @@ def setup_repos():
         {"id": 1, "shift_start": 10, "shift_end": 20},
         {"id": 2, "shift_start": 10, "shift_end": 20},  # Overlapping with shift 1 (same start time)
         {"id": 3, "shift_start": 30, "shift_end": 40},  # No overlap
+        {"id": 4, "shift_start": 50, "shift_end": 60},  # No overlap
     ]
     return MockCommitmentRepo(), MockShiftRepo(shifts)
 
@@ -63,3 +64,29 @@ def test_overlapping_commitments_different_shift_ids(setup_repos):
     assert response2[0]["success"] is False
     assert response2[0]["message"] == "Overlapping commitment"
 
+def test_duplicate_commitment_same_shift(setup_repos):
+    """Test that a user cannot sign up for the same shift twice"""
+    commitment_repo, shift_repo = setup_repos
+    user_id = "test_user"
+
+    # First commitment should succeed
+    response1 = add_service_commitments(commitment_repo, shift_repo, [{"service_shift_id": 1}], user_id)
+    assert response1[0]["success"] is True
+
+    # Second attempt for the same shift should fail
+    response2 = add_service_commitments(commitment_repo, shift_repo, [{"service_shift_id": 1}], user_id)
+    assert response2[0]["success"] is False
+    assert response2[0]["message"] == "Overlapping commitment"
+
+def test_two_non_overlapping_commitments(setup_repos):
+    """Test that a user can sign up for two non-overlapping shifts"""
+    commitment_repo, shift_repo = setup_repos
+    user_id = "test_user"
+
+    # First commitment should succeed
+    response1 = add_service_commitments(commitment_repo, shift_repo, [{"service_shift_id": 3}], user_id)
+    assert response1[0]["success"] is True
+
+    # Second commitment should also succeed as there is no overlap
+    response2 = add_service_commitments(commitment_repo, shift_repo, [{"service_shift_id": 4}], user_id)
+    assert response2[0]["success"] is True
