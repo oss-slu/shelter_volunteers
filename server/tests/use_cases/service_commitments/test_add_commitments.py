@@ -4,10 +4,10 @@ Unit tests for add_service_commitments function.
 
 import pytest
 from unittest.mock import MagicMock
-from use_cases.add_service_commitments import add_service_commitments  # Clean import
+from use_cases.add_service_commitments import add_service_commitments  
 
 @pytest.fixture
-def mock_repos():
+def mock_repos_fixtures():
     """Fixture to provide mocked repositories."""
     return {
         "commitments_repo": MagicMock(),
@@ -21,10 +21,10 @@ class MockShift:
         self.shift_start = shift_start
         self.shift_end = shift_end
 
-def test_add_service_commitment_non_existing_shift(mock_repos):
+def test_add_service_commitment_non_existing_shift(mock_repos_fixtures):
     """Test adding a service commitment for a non-existing shift."""
-    commitments_repo = mock_repos["commitments_repo"]
-    shifts_repo = mock_repos["shifts_repo"]
+    commitments_repo = mock_repos_fixtures["commitments_repo"]
+    shifts_repo = mock_repos_fixtures["shifts_repo"]
 
     # Mock no shifts found
     shifts_repo.get_shifts.return_value = []
@@ -45,10 +45,10 @@ def test_add_service_commitment_non_existing_shift(mock_repos):
     commitments_repo.insert_service_commitments.assert_called_once_with(
         [{"_id": "None"}])
 
-def test_add_multiple_service_commitments_mixed(mock_repos):
+def test_add_multiple_service_commitments_mixed(mock_repos_fixtures):
     """Test adding multiple service commitments, some valid and some invalid."""
-    commitments_repo = mock_repos["commitments_repo"]
-    shifts_repo = mock_repos["shifts_repo"]
+    commitments_repo = mock_repos_fixtures["commitments_repo"]
+    shifts_repo = mock_repos_fixtures["shifts_repo"]
 
     # Mock existing shifts
     existing_shift_1 = MockShift("existing_shift_1", "10:00", "12:00")
