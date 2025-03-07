@@ -2,27 +2,9 @@
 This module contains tests for the service_commitments use case, focusing on 
 adding service commitments.
 """
-import sys
-import os
 from unittest.mock import MagicMock
 import pytest
-from server.use_cases.add_service_commitments import add_service_commitments
-
-# Ensure correct import path for the project
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../../../..")
-    )
-)
-
-
-
-# Ensure correct import path for the project
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../../../..")
-    )
-)
+from use_cases.add_service_commitments import add_service_commitments
 
 @pytest.fixture
 def mock_repos():
