@@ -6,6 +6,7 @@ import sys
 import os
 from unittest.mock import MagicMock
 import pytest
+from server.use_cases.add_service_commitments import add_service_commitments
 
 # Ensure correct import path for the project
 sys.path.append(
@@ -14,7 +15,7 @@ sys.path.append(
     )
 )
 
-from server.use_cases.add_service_commitments import add_service_commitments
+
 
 # Ensure correct import path for the project
 sys.path.append(
