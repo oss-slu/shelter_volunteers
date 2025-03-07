@@ -2,10 +2,18 @@
 This module contains tests for the service_commitments use case, focusing on 
 adding service commitments.
 """
-import pytest
-from unittest.mock import MagicMock
 import sys
 import os
+from unittest.mock import MagicMock
+import pytest
+
+# Ensure correct import path for the project
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../../../..")
+    )
+)
+
 from server.use_cases.add_service_commitments import add_service_commitments
 
 # Ensure correct import path for the project
@@ -34,7 +42,7 @@ def test_add_service_commitment_non_existing_shift(mocked_repos):
     # Mock commitment object
     commitment = MagicMock()
     commitment.service_shift_id = "non_existing_shift"
-    commitment.to_dict.return_value = {"_id": "None"} 
+    commitment.to_dict.return_value = {"_id": "None"}
 
     # Call function
     result = add_service_commitments(
@@ -48,4 +56,3 @@ def test_add_service_commitment_non_existing_shift(mocked_repos):
     commitments_repo.insert_service_commitments.assert_called_once_with(
         [{"_id": "None"}]
     )
-
