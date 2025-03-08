@@ -5,7 +5,7 @@ from flask import Blueprint, request, Response
 from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
-from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from repository.mongod.service_shifts import ServiceShiftsMongoRepo
 from domains.service_shift import ServiceShift
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
