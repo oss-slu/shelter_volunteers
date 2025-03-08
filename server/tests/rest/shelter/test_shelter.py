@@ -1,7 +1,8 @@
+"""
+This module contains tests for the shelter REST API.
+"""
 import json
 import pytest
-import sys
-import os
 
 from unittest.mock import patch
 from flask import Flask
@@ -22,7 +23,8 @@ def client():
     app.config["TESTING"] = True
     return app.test_client()
 
-
+# pylint: disable=unused-argument
+# pylint: disable=redefined-outer-name
 @patch("application.rest.shelter.shelter_add_use_case")
 @patch(
     "application.rest.shelter.db_configuration",
@@ -50,7 +52,9 @@ def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
     }
 
     response = client.post(
-        "/shelter", data=json.dumps(request_data), content_type="application/json"
+        "/shelter",
+        data=json.dumps(request_data),
+        content_type="application/json"
     )
 
     assert response.status_code == 200
@@ -104,4 +108,6 @@ def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
     assert response.status_code == 200
     assert parsed_response == [
         shelter.to_dict() for shelter in mock_shelters
-    ], f"Mismatch:\nResponse: {parsed_response}\nExpected: {[shelter.to_dict() for shelter in mock_shelters]}"
+    ]
+# pylint: enable=unused-argument
+# pylint: enable=redefined-outer-name
