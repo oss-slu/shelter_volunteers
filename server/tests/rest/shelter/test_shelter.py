@@ -26,11 +26,7 @@ def client():
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
 @patch("application.rest.shelter.shelter_add_use_case")
-@patch(
-    "application.rest.shelter.db_configuration",
-    return_value=("mongodb://mock_uri", "mock_db"),
-)
-def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
+def test_post_shelter(mock_shelter_add_use_case, client):
     mock_response = {
         "id": "SOME_ID",
         "success": True,
@@ -62,11 +58,7 @@ def test_post_shelter(mock_db_config, mock_shelter_add_use_case, client):
 
 
 @patch("application.rest.shelter.shelter_list_use_case")
-@patch(
-    "application.rest.shelter.db_configuration",
-    return_value=("mongodb://mock_uri", "mock_db"),
-)
-def test_get_shelter(mock_db_config, mock_shelter_list_use_case, client):
+def test_get_shelter(mock_shelter_list_use_case, client):
     mock_shelters = [
         Shelter(
             name="Shelter One",
