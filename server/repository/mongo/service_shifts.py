@@ -76,3 +76,16 @@ class ServiceShiftsMongoRepo:
             for shift in self.collection.find(db_filter)
         ]
         return service_shifts
+
+    def get_shifts(self, shift_ids):
+        """
+        Gets multiple shifts by a list of IDs.
+        
+        Args:
+            shift_ids (list): A list of shift IDs.
+        
+        Returns:
+            list: A list of ServiceShift objects.
+        """
+        shifts = self.collection.find({'_id': {'$in': shift_ids}})
+        return [ServiceShift.from_dict(shift) for shift in shifts]
