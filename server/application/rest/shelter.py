@@ -23,8 +23,7 @@ def shelter():
     On GET: The function returns a list of all shelters in the system.
     On POST: The function adds a shelter to the system.
     """
-    db_config = db_configuration()
-    repo = ShelterRepo(db_config[0], db_config[1])
+    repo = ShelterRepo()
 
     # add user authentication and authorization logic here
 
