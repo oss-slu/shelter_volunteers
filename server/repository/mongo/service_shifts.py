@@ -87,5 +87,5 @@ class ServiceShiftsMongoRepo:
         Returns:
             list: A list of ServiceShift objects.
         """
-        shifts = self.collection.find({'_id': {'$in': shift_ids}})
+        shifts = self.collection.find({"_id": {"$in": shift_ids}})
         return [ServiceShift.from_dict(shift) for shift in shifts]
