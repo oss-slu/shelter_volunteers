@@ -9,7 +9,6 @@ from repository.mongo.shelter import ShelterRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
 from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
-from application.rest.work_shift import db_configuration
 from domains.shelter.shelter import Shelter
 from serializers.shelter import ShelterJsonEncoder
 from responses import ResponseTypes
@@ -23,8 +22,7 @@ def shelter():
     On GET: The function returns a list of all shelters in the system.
     On POST: The function adds a shelter to the system.
     """
-    db_config = db_configuration()
-    repo = ShelterRepo(db_config[0], db_config[1])
+    repo = ShelterRepo()
 
     # add user authentication and authorization logic here
 
