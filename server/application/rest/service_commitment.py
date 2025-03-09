@@ -95,7 +95,8 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-        # If service_shift_id is provided, we want all commitments for that shift
+        # If service_shift_id is provided, we want all
+        # commitments for that shift
         # regardless of the user, as per requirements for shelters to
         # view all volunteers
         # If service_shift_id is not provided, we filter by user_email as before
