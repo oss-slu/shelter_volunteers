@@ -1,7 +1,7 @@
 """
 Module handles the mongo DB operations for shelter related data
 """
-import pymongo
+from config.mongodb_config import get_db
 from domains.shelter.shelter import Shelter
 from bson.objectid import ObjectId
 
@@ -9,12 +9,11 @@ class ShelterRepo:
     """
     A mongo repository for storing work shifts.
     """
-    def __init__(self, uri, database):
+    def __init__(self):
         """
         Initialize the repo with passed data.
         """
-        client = pymongo.MongoClient(uri)
-        self.db = client[database]
+        self.db = get_db()
         self.collection = self.db.shelters
 
     def _create_shelter_objects(self, results):
