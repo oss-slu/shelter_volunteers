@@ -56,12 +56,12 @@ const ShelterList = () => {
                 <tr key={shelter.id || shelter._id}>
                   <td>{shelter.name}</td>
                   <td>
-                    {shelter.street_address_1}
-                    {shelter.street_address_2 && <>, {shelter.street_address_2}</>}
+                    {shelter.street1}
+                    {shelter.street2 && <>, {shelter.street2}</>}
                   </td>
                   <td>{shelter.city}</td>
                   <td>{shelter.state}</td>
-                  <td>{shelter.postal_code}</td>
+                  <td>{shelter.postalCode}</td>
                   <td>
                     {shelter.latitude && shelter.longitude 
                       ? `${shelter.latitude}, ${shelter.longitude}`

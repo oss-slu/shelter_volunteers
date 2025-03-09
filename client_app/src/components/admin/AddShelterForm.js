@@ -5,11 +5,11 @@ import { SERVER } from "../../config";
 const AddShelterForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    street_address_1: '',
-    street_address_2: '',
+    street1: '',
+    street2: '',
     city: '',
     state: '',
-    postal_code: '',
+    postalCode: '',
     latitude: '',
     longitude: ''
   });
@@ -26,7 +26,7 @@ const AddShelterForm = () => {
   };
   
   const validateForm = () => {
-    const requiredFields = ['name', 'street_address_1', 'city', 'state', 'postal_code'];
+    const requiredFields = ['name', 'street1', 'city', 'state', 'postalCode'];
     for (const field of requiredFields) {
       if (!formData[field]) {
         setSubmitMessage({
@@ -68,12 +68,27 @@ const AddShelterForm = () => {
     setSubmitMessage({ type: '', text: '' });
     
     try {
+      const formattedData = {
+        name: formData.name,
+        address: {
+          street1: formData.street1,
+          street2: formData.street2,
+          city: formData.city,
+          state: formData.state,
+          postalCode: formData.postalCode
+        },
+      };
+      if (formData.latitude && formData.longitude) {
+        formattedData.latitude = formData.latitude;
+        formattedData.longitude = formData.longitude;
+      }
+    
       const response = await fetch(`${SERVER}/shelter`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formattedData)
       });
       
       if (!response.ok) {
@@ -90,11 +105,11 @@ const AddShelterForm = () => {
       //reset to original form
       setFormData({
         name: '',
-        street_address_1: '',
-        street_address_2: '',
+        street1: '',
+        street2: '',
         city: '',
         state: '',
-        postal_code: '',
+        postalCode: '',
         latitude: '',
         longitude: ''
       });
@@ -131,23 +146,23 @@ const AddShelterForm = () => {
         </div>
         {/* form grouping for organization, need to style still */}
         <div className="form-group">
-          <label htmlFor="street_address_1">Street Address 1 *</label>
+          <label htmlFor="street1">Street Address 1 *</label>
           <input
             type="text"
-            id="street_address_1"
-            name="street_address_1"
-            value={formData.street_address_1}
+            id="street1"
+            name="street1"
+            value={formData.street1}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="street_address_2">Street Address 2</label>
+          <label htmlFor="street2">Street Address 2</label>
           <input
             type="text"
-            id="street_address_2"
-            name="street_address_2"
-            value={formData.street_address_2}
+            id="street2"
+            name="street2"
+            value={formData.street2}
             onChange={handleChange}
           />
         </div>
@@ -175,12 +190,12 @@ const AddShelterForm = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="postal_code">Postal Code *</label>
+            <label htmlFor="postalCode">Postal Code *</label>
             <input
               type="text"
-              id="postal_code"
-              name="postal_code"
-              value={formData.postal_code}
+              id="postalCode"
+              name="postalCode"
+              value={formData.postalCode}
               onChange={handleChange}
               required
             />
