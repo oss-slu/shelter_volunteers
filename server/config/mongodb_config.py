@@ -3,7 +3,7 @@
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
-
+import certifi
 
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
@@ -60,5 +60,5 @@ def get_db():
         pymongo.database.Database: MongoDB database connection
     """
     config = get_config()
-    client = MongoClient(config.MONGODB_URI)
+    client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
     return client[config.MONGODB_DATABASE]
