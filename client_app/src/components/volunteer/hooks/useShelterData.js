@@ -18,17 +18,19 @@ export const useShelterData = (defaultRadius) => {
   const fetchData = () => {
     setLoading(true);
     const newEndpoint = `${SERVER}/shelter`;
-    
+    console.log(newEndpoint);
     fetch(newEndpoint, {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     })
-      .then(response => response.json())
-      // uncomment this when we switch to using our /shelter API endpoint
-       .then(data => {
-         setOriginalData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
-         setLoading(false);
-       })
+      .then(response => response.json().catch(() => ({})))
+      .then(data => {
+        console.log(data);
+        setData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
+        setOriginalData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
+        setLoading(false);
+
+      })
       .catch(error => console.log(error));
   };
 
