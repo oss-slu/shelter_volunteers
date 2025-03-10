@@ -26,7 +26,7 @@ export const useShelterData = (defaultRadius) => {
       .then(response => response.json())
       // uncomment this when we switch to using our /shelter API endpoint
        .then(data => {
-         setOriginalData(data.content);
+         setOriginalData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
          setLoading(false);
        })
       .catch(error => console.log(error));

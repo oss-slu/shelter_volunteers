@@ -180,7 +180,7 @@ const Shelters = (props) => {
             <div className="text-center">
               <button onClick={getLocation}>Get Shelters from Current Location</button>
               <ShelterList
-                shelters={originalData.slice(0, 3)}
+                shelters={Array.isArray(originalData) ? originalData : []} // making sure it's array
                 loadingFunction={setLoading}
                 manageShiftsFunction={manageShifts}
                 isSignupPage={false}
