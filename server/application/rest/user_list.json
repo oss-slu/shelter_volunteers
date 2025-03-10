@@ -1,6 +1,6 @@
 {
-    "nhi.tran@slu.edu": ["Nhi", "Tran", "token-nhi.tran@slu.edu"],
-    "chloe.biddle@slu.edu": ["Chloe", "Biddle", "token1234-chloe.biddle@slu.edu"],
-    "siri.chandana@slu.edu": ["Siri", "Chandana","mytokensiri.chandana@slu.edu"],
-    "developer@slu.edu": ["SLU", "Developer", "1234567890-developer-token"]
+    "nhi.tran@slu.edu": ["Nhi", "Tran"],
+    "chloe.biddle@slu.edu": ["Chloe", "Biddle"],
+    "siri.chandana@slu.edu": ["Siri", "Chandana"],
+    "developer@slu.edu": ["SLU", "Developer"]
 }

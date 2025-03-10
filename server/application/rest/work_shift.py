@@ -23,9 +23,6 @@ import os
 
 
 blueprint = Blueprint("work_shift", __name__)
-user_list = {}
-with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
-    user_list = json.load(file)
 
 shifts = [
     {
@@ -188,11 +185,12 @@ def get_user_from_token(headers):
     # in debug mode, see if real authentication should be bypassed
     if (current_app.config["DEBUG"] and
         "DEV_USER" in current_app.config and
-        "DEV_TOKEN" in current_app.config):
-        if token in [details[2] for details in user_list.values()]:
-            for username, details in user_list.items():
-                if details[2] == token:
-                    return (username, details[0], details[1])
+        "DEV_TOKEN" in current_app.config and
+        token == current_app.config["DEV_TOKEN"]):
+        return (current_app.config["DEV_USER"],
+            current_app.config["FIRST_NAME"],
+            current_app.config["LAST_NAME"])
+
     user = get_user(token)
     if user is None:
         raise ValueError
@@ -236,17 +234,16 @@ def login():
     if (current_app.config["DEBUG"] and
         "DEV_TOKEN" in current_app.config and
         "DEV_USER" in current_app.config):
-
-        #os.environ["DEV_USER"] = data["username"]
-        #current_app.config["DEV_USER"] = data["username"]
+        os.environ["DEV_USER"] = data["username"]
+        current_app.config["DEV_USER"] = data["username"]
         if data["username"] in user_list:
-            first_name, last_name, token = user_list[data["username"]]
-            #os.environ["FIRST_NAME"] = first_name
-            #os.environ["LAST_NAME"] = last_name
-            #current_app.config["FIRST_NAME"] = first_name
-            #current_app.config["LAST_NAME"] = last_name
+            first_name, last_name = user_list[data["username"]]
+            os.environ["FIRST_NAME"] = first_name
+            os.environ["LAST_NAME"] = last_name
+            current_app.config["FIRST_NAME"] = first_name
+            current_app.config["LAST_NAME"] = last_name
         return Response(
-            json.dumps({"access_token":token}),
+            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[status])
 

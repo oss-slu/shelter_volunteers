@@ -2,12 +2,6 @@
 .vscode/settings.json
 venv/
 .env.pre-production
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
 *__pycache__/
 *.pyc
 .pytest_cache/
@@ -15,12 +9,4 @@ venv/
 .venv
 __init__.py
 settings.json
-<<<<<<< Updated upstream
 package-lock.json
-=======
-package-lock.json
-=======
-amalserver.sh
->>>>>>> Stashed changes
->>>>>>> Stashed changes
->>>>>>> Stashed changes
