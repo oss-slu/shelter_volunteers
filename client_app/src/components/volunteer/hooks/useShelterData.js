@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GETHELP_API } from '../../../config';
-import ShiftsData from "../ShiftsData";
+import { SERVER } from '../../../config';
 
 export const useShelterData = (defaultRadius) => {
   const [data, setData] = useState([]);
@@ -10,41 +9,107 @@ export const useShelterData = (defaultRadius) => {
   const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
-  
-  useEffect(() => {
+
+  useEffect(() => 
+  {
+    const fetchData = async () => {
+      setLoading(true);
+      const newEndpoint = `${SERVER}/shelter`;
+
+      try {
+        const response = await fetch(newEndpoint, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        const payload = await response.json();
+        console.log(payload)
+
+      // define hardcoded shift times
+      const defaultShifts = [
+        { id: "1", start: 1739761200000, end: 1739775600000, title: "Early Morning Shift" }, 
+        { id: "2", start: 1739782800000, end: 1739797200000, title: "Morning Shift" },    
+        { id: "3", start: 1739804400000, end: 1739818800000, title: "Afternoon Shift" },     
+        { id: "4", start: 1739818800000, end: 1739833200000, title: "Night Shift" }         
+      ];
+
+      const sheltersWithShifts = payload.map((shelter, index) => ({
+        ...shelter,
+        id: shelter._id ? shelter._id.$oid || shelter._id : `shelter-${index + 1}`, // Ensure id exists
+        shifts: defaultShifts.map((shift) => ({ ...shift, id: `${shelter._id || index}-${shift.id}` })), // Unique ID for each shift
+      }));
+
+        setOriginalData(sheltersWithShifts);
+        setData(sheltersWithShifts);
+        setLoading(false);
+      } catch (error) {
+        console.error("fetch error:", error);
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, [latitude, longitude, radius]);
 
-  const fetchData = () => {
+  /*
+  const fetchData = async () => {
     setLoading(true);
-    const newEndpoint = `${GETHELP_API}v2/facilities?page=0&pageSize=1000&latitude=${latitude}&longitude=${longitude}&radius=${radius}`;
-    
-    fetch(newEndpoint, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(response => response.json())
-      // uncomment this when we switch to using our /shelter API endpoint
-      // .then(data => {
-      //   setOriginalData(data.content);
-      //   setLoading(false);
-      // })
-      .catch(error => console.log(error));
+    const newEndpoint = `${SERVER}/shelter`;
+
+    console.log("fetching shelters from:", newEndpoint);
+
+    try {
+      const response = await fetch(newEndpoint, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      const payload = await response.json();
+      console.log(payload);
+
+      const rawText = await response.text();
+      let data;
+
+
+      try {
+        // check if the response is multiple concatenated objects
+        if (rawText.trim().startsWith("{") && rawText.trim().endsWith("}")){
+          const fixedJson = `[${rawText.replace(/}{/g, "},{")}]`; // ensure it is a valid array
+          data = JSON.parse(fixedJson);
+        } else {
+          data = JSON.parse(rawText);
+        }
+      } catch (parseError){
+      console.error("JSON parse error:", parseError);
+      console.error(" ~~ raw response ~~ ", rawText);
+      data = {};
+    }
+
+      console.log("shelters fetched from API:", data);
+
+      if (!data?.content || !Array.isArray(data.content)) {
+        console.error("API response does not contain a valid 'content' array", data);
+        setOriginalData([]);
+        setData([]);
+      } else {
+        setOriginalData(data.content);
+        setData(data.content);
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("fetch error:", error);
+      setLoading(false);
+    }
   };
-
-  useEffect(() => {
-    // convert ShiftsData into an array format expected by ShelterList
-    const sheltersArray = Object.keys(ShiftsData).map((shelterKey) => ({
-      id: shelterKey,  // assign a unique identifier
-      name: ShiftsData[shelterKey].name,
-      distance: ShiftsData[shelterKey].distance,
-      shifts: ShiftsData[shelterKey].shifts
-    }));
-
-    setOriginalData(sheltersArray);
-    setLoading(false);
-  }, []);
-
+*/
   const getLocation = () => {
     setLoading(true);
     if (navigator.geolocation) {
@@ -61,8 +126,6 @@ export const useShelterData = (defaultRadius) => {
     setRadius(event.target.value);
   };
 
-
-
   return {
     data,
     setData,
@@ -72,6 +135,6 @@ export const useShelterData = (defaultRadius) => {
     noSearchDataAvailable,
     setNoSearchDataAvailable,
     getLocation,
-    setRadiusfromLocation
+    setRadiusfromLocation,
   };
 };

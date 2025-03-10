@@ -29,10 +29,9 @@ def shelter():
     if request.method == "GET":
         # process the GET request parameters
         shelters_as_dict = shelter_list_use_case(repo)
-        shelters_as_json = [
-            json.dumps(shelter, cls=ShelterJsonEncoder)
-            for shelter in shelters_as_dict
-        ]
+        shelters_as_json = json.dumps(
+            [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
+        )
         return Response(
             shelters_as_json,
             mimetype="application/json",
