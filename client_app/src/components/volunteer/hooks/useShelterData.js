@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { SERVER } from '../../../config';
-import ShiftsData from "../ShiftsData";
 
 export const useShelterData = (defaultRadius) => {
   const [data, setData] = useState([]);
@@ -29,8 +28,23 @@ export const useShelterData = (defaultRadius) => {
 
         const payload = await response.json();
         console.log(payload)
-        setOriginalData(payload);
-        setData(payload);
+
+      // define hardcoded shift times
+      const defaultShifts = [
+        { id: "1", start: 1739761200000, end: 1739775600000, title: "Early Morning Shift" }, 
+        { id: "2", start: 1739782800000, end: 1739797200000, title: "Morning Shift" },    
+        { id: "3", start: 1739804400000, end: 1739818800000, title: "Afternoon Shift" },     
+        { id: "4", start: 1739818800000, end: 1739833200000, title: "Night Shift" }         
+      ];
+
+      const sheltersWithShifts = payload.map((shelter, index) => ({
+        ...shelter,
+        id: shelter._id ? shelter._id.$oid || shelter._id : `shelter-${index + 1}`, // Ensure id exists
+        shifts: defaultShifts.map((shift) => ({ ...shift, id: `${shelter._id || index}-${shift.id}` })), // Unique ID for each shift
+      }));
+
+        setOriginalData(sheltersWithShifts);
+        setData(sheltersWithShifts);
         setLoading(false);
       } catch (error) {
         console.error("fetch error:", error);
@@ -40,19 +54,6 @@ export const useShelterData = (defaultRadius) => {
 
     fetchData();
   }, [latitude, longitude, radius]);
-  
-  useEffect(() => {
-    // convert ShiftsData into an array format expected by ShelterList
-    const sheltersArray = Object.keys(ShiftsData).map((shelterKey) => ({
-      id: shelterKey,  // assign a unique identifier
-      name: ShiftsData[shelterKey].name,
-      distance: ShiftsData[shelterKey].distance,
-      shifts: ShiftsData[shelterKey].shifts
-    }));
-
-    setOriginalData(sheltersArray);
-    setLoading(false);
-  }, []);
 
   /*
   const fetchData = async () => {
