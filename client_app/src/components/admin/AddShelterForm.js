@@ -95,7 +95,7 @@ const AddShelterForm = () => {
         throw new Error(`Server responded with status: ${response.status}`);
       }
       
-      const result = await response.json();
+      await response.json();
       
       setSubmitMessage({
         type: 'success',
