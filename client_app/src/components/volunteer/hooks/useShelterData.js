@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-//import { GETHELP_API } from '../../../config';
 import { SERVER } from '../../../config';
 
 export const useShelterData = (defaultRadius) => {
@@ -10,28 +9,60 @@ export const useShelterData = (defaultRadius) => {
   const [radius, setRadius] = useState(defaultRadius);
   const [loading, setLoading] = useState(true);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
-  
+
   useEffect(() => {
     fetchData();
   }, [latitude, longitude, radius]);
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setLoading(true);
     const newEndpoint = `${SERVER}/shelter`;
-    console.log(newEndpoint);
-    fetch(newEndpoint, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(response => response.json().catch(() => ({})))
-      .then(data => {
-        console.log(data);
-        setData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
-        setOriginalData(Array.isArray(data?.content) ? data.content : []); // ensuring it is an array
-        setLoading(false);
 
-      })
-      .catch(error => console.log(error));
+    console.log("fetching shelters from:", newEndpoint);
+
+    try {
+      const response = await fetch(newEndpoint, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const rawText = await response.text();
+      let data;
+
+      try {
+        // check if the response is multiple concatenated objects
+        if (rawText.trim().startsWith("{") && rawText.trim().endsWith("}")){
+          const fixedJson = `[${rawText.replace(/}{/g, "},{")}]`; // ensure it is a valid array
+          data = JSON.parse(fixedJson);
+        } else {
+          data = JSON.parse(rawText);
+        }
+      } catch (parseError){
+      console.error("JSON parse error:", parseError);
+      console.error(" ~~ raw response ~~ ", rawText);
+      data = {};
+    }
+
+      console.log("shelters fetched from API:", data);
+
+      if (!data?.content || !Array.isArray(data.content)) {
+        console.error("API response does not contain a valid 'content' array", data);
+        setOriginalData([]);
+        setData([]);
+      } else {
+        setOriginalData(data.content);
+        setData(data.content);
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("fetch error:", error);
+      setLoading(false);
+    }
   };
 
   const getLocation = () => {
@@ -50,8 +81,6 @@ export const useShelterData = (defaultRadius) => {
     setRadius(event.target.value);
   };
 
-
-
   return {
     data,
     setData,
@@ -61,6 +90,6 @@ export const useShelterData = (defaultRadius) => {
     noSearchDataAvailable,
     setNoSearchDataAvailable,
     getLocation,
-    setRadiusfromLocation
+    setRadiusfromLocation,
   };
 };
