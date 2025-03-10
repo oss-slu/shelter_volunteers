@@ -2,5 +2,11 @@
 .vscode/settings.json
 venv/
 .env.pre-production
-amalserver.sh
-mongorepo.py
+*__pycache__/
+*.pyc
+.pytest_cache/
+.idea/
+.venv
+__init__.py
+settings.json
+package-lock.json
