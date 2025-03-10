@@ -75,13 +75,13 @@ const AddShelterForm = () => {
           street2: formData.street2,
           city: formData.city,
           state: formData.state,
-          postalCode: formData.postalCode
+          postalCode: formData.postalCode,
+          coordinates: {
+            latitude: formData.latitude,
+            longitude: formData.longitude
+          }
         },
       };
-      if (formData.latitude && formData.longitude) {
-        formattedData.latitude = formData.latitude;
-        formattedData.longitude = formData.longitude;
-      }
     
       const response = await fetch(`${SERVER}/shelter`, {
         method: 'POST',
