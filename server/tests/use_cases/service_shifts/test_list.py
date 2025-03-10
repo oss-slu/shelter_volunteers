@@ -31,7 +31,7 @@ class TestServiceShiftsListUseCase(unittest.TestCase):
         result = service_shifts_list_use_case(mock_repo)
 
         self.assertEqual(result, [service_shift_1, service_shift_2])
-        mock_repo.list.assert_called_once_with(None)
+        mock_repo.list.assert_called_once_with(None, None)
 
     def test_service_shifts_list_use_case_empty(self):
         """Test if service_shifts_list_use_case handles an empty list."""
@@ -41,7 +41,7 @@ class TestServiceShiftsListUseCase(unittest.TestCase):
         result = service_shifts_list_use_case(mock_repo)
 
         self.assertEqual(result, [])
-        mock_repo.list.assert_called_once_with(None)
+        mock_repo.list.assert_called_once_with(None, None)
 
     def test_service_shifts_list_use_case_with_shelter(self):
         """Test if service_shifts_list_use_case filters by shelter correctly."""
@@ -67,7 +67,7 @@ class TestServiceShiftsListUseCase(unittest.TestCase):
         result = service_shifts_list_use_case(mock_repo, shelter="shelter1")
 
         self.assertEqual(result, [service_shift_1, service_shift_2])
-        mock_repo.list.assert_called_once_with("shelter1")
+        mock_repo.list.assert_called_once_with("shelter1", None)
 
     def test_service_shifts_list_use_case_with_exception(self):
         """Test if service_shifts_list_use_case handles exceptions properly."""
@@ -78,7 +78,7 @@ class TestServiceShiftsListUseCase(unittest.TestCase):
             service_shifts_list_use_case(mock_repo)
 
         self.assertTrue("Database error" in str(context.exception))
-        mock_repo.list.assert_called_once_with(None)
+        mock_repo.list.assert_called_once_with(None, None)
 
 
 if __name__ == "__main__":
