@@ -10,10 +10,37 @@ export const useShelterData = (defaultRadius) => {
   const [loading, setLoading] = useState(true);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => 
+  {
+    const fetchData = async () => {
+      setLoading(true);
+      const newEndpoint = `${SERVER}/shelter`;
+
+      try {
+        const response = await fetch(newEndpoint, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        const payload = await response.json();
+        console.log(payload)
+        setOriginalData(payload);
+        setData(payload);
+        setLoading(false);
+      } catch (error) {
+        console.error("fetch error:", error);
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, [latitude, longitude, radius]);
 
+  /*
   const fetchData = async () => {
     setLoading(true);
     const newEndpoint = `${SERVER}/shelter`;
@@ -29,9 +56,12 @@ export const useShelterData = (defaultRadius) => {
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
+      const payload = await response.json();
+      console.log(payload);
 
       const rawText = await response.text();
       let data;
+
 
       try {
         // check if the response is multiple concatenated objects
@@ -64,7 +94,7 @@ export const useShelterData = (defaultRadius) => {
       setLoading(false);
     }
   };
-
+*/
   const getLocation = () => {
     setLoading(true);
     if (navigator.geolocation) {
