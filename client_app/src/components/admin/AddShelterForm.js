@@ -37,7 +37,7 @@ const AddShelterForm = () => {
       }
     }
     
-    //if given long and lat, checking this here otherwise give fomratting error
+    //if given long and lat, checking this here otherwise give formatting error
     if (formData.latitude && (isNaN(formData.latitude) || formData.latitude < -90 || formData.latitude > 90)) {
       setSubmitMessage({
         type: 'error',
