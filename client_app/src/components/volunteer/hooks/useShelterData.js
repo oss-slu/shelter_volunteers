@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SERVER } from '../../../config';
+import ShiftsData from "../ShiftsData";
 
 export const useShelterData = (defaultRadius) => {
   const [data, setData] = useState([]);
@@ -39,6 +40,19 @@ export const useShelterData = (defaultRadius) => {
 
     fetchData();
   }, [latitude, longitude, radius]);
+  
+  useEffect(() => {
+    // convert ShiftsData into an array format expected by ShelterList
+    const sheltersArray = Object.keys(ShiftsData).map((shelterKey) => ({
+      id: shelterKey,  // assign a unique identifier
+      name: ShiftsData[shelterKey].name,
+      distance: ShiftsData[shelterKey].distance,
+      shifts: ShiftsData[shelterKey].shifts
+    }));
+
+    setOriginalData(sheltersArray);
+    setLoading(false);
+  }, []);
 
   /*
   const fetchData = async () => {
