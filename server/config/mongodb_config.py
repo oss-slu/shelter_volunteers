@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
 
-
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
     env = os.getenv('FLASK_ENV', 'development')
