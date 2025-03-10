@@ -22,7 +22,6 @@ const AdminDashboard = () => {
           View All Shelters
         </button>
       </div>
-      {/* need to readd shelterlist, had some issues with it */}
       <div className="tab-content">
         {activeTab === 'add' && <AddShelterForm />}
         {activeTab === 'view' && <ShelterList />} 

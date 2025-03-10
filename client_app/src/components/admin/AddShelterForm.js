@@ -144,7 +144,7 @@ const AddShelterForm = () => {
             required
           />
         </div>
-        {/* form grouping for organization, need to style still */}
+        {/* form grouping for organization */}
         <div className="form-group">
           <label htmlFor="street1">Street Address 1 *</label>
           <input
