@@ -17,6 +17,7 @@ import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
 import { useLocation } from "react-router-dom";
 import Schedule from "./components/shelter/Schedule"; // <-- now a .jsx file
+import AdminDashboard from "./components/admin/AdminDashboard"; //still integrating into app
 
 function NavigationControl({ auth }) {
   const location = useLocation();
@@ -27,7 +28,8 @@ function NavigationControl({ auth }) {
     "/request-for-help",
     "/upcoming-requests",
     "/shelter-login",
-    "/set-shifts"
+    "/set-shifts",
+    "/admin-dashboard"
   ].includes(location.pathname)) return <NavBarShelterDashboard auth={auth} />;
   return <NavBarVolunteerDashboard auth={auth} />;
 }
@@ -42,6 +44,7 @@ function App() {
       <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
       <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/" element={<ProtectedRoute />}>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
         <Route path="/shelters" element={<Shelters />} />
