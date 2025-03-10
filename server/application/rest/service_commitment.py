@@ -76,9 +76,12 @@ def create_service_commitment():
 @service_commitment_bp.route("/service_commitment", methods=["GET"])
 def fetch_service_commitments():
     """
-    Handle GET request to retrieve service commitments for a user.
+    Handle GET request to retrieve service commitments.
+    Can filter by user (from token) and optionally by service_shift_id.
     """
     try:
+        # Extract service_shift_id from query parameters if provided
+        service_shift_id = request.args.get("service_shift_id")
         user_tuple = get_user_from_token(request.headers)
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
@@ -92,17 +95,27 @@ def fetch_service_commitments():
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
+        # If service_shift_id is provided, we want all
+        # commitments for that shift
+        # regardless of the user, as per requirements for shelters to
+        # view all volunteers
+        # If service_shift_id is not provided, we filter by user_email as before
+        filter_user = None if service_shift_id else user_email
         commitments, _ = list_service_commitments(
             commitments_repo,
             shifts_repo,
-            user_email)
+            filter_user,
+            service_shift_id)
 
-        commitments_as_json = [
-            json.dumps(commitment, cls = ServiceCommitmentJsonEncoder)
-            for commitment in commitments
-        ]
+        # Convert commitments to JSON
+        commitments_list = []
+        for commitment in commitments:
+            commitment_dict = json.loads(json.dumps(
+                commitment, cls=ServiceCommitmentJsonEncoder))
+            commitments_list.append(commitment_dict)
         return Response(
-            commitments_as_json,
+            json.dumps(
+                {"success": True, "results": commitments_list}, default=str),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
