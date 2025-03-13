@@ -36,8 +36,8 @@ class TestServiceShiftAPI(unittest.TestCase):
             {"shelter_id": 12345, "shift_start": 100, "shift_end": 200}
         ]
         headers = {
-            "Authorization': '1234567890-developer-token",
-            "Content-Type': 'application/json"  
+            "Authorization": "1234567890-developer-token",
+            "Content-Type": "application/json"  
         }
 
         # Act: Send POST request.
