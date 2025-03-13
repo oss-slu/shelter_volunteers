@@ -104,7 +104,6 @@ const IndividualShelter = (props) => {
           <div className="signupcard">
             <div className="column1">
               <h2>{shelter.name}</h2>
-              <p>{+shelter.distance.toFixed(2)} miles away</p>
               <button
                 className="current-volunteer-count"
                 onClick={() => setVolunteerCountsHidden(!volunteerCountsHidden)}>
