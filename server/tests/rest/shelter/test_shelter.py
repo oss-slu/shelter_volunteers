@@ -8,8 +8,6 @@ from unittest.mock import patch
 from flask import Flask
 from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
-from domains.shelter.address import Address
-
 
 def create_test_app():
     app = Flask(__name__)
@@ -59,47 +57,49 @@ def test_post_shelter(mock_shelter_add_use_case, client):
 
 @patch("application.rest.shelter.shelter_list_use_case")
 def test_get_shelter(mock_shelter_list_use_case, client):
+    mock_shelters_json = [
+        {
+            "_id": "SOME_ID1",
+            "name": "Shelter One",
+            "address": {
+                "street1": "456 Elm St",
+                "street2": "",
+                "city": "Springfield",
+                "state": "IL",
+                "postalCode": "62701",
+                "country": "USA",
+                "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
+            },
+        },
+        {
+            "_id": "SOME_ID2",
+            "name": "Shelter Two",
+            "address": {
+                "street1": "789 Oak St",
+                "street2": "",
+                "city": "Chicago",
+                "state": "IL",
+                "postalCode": "60616",
+                "country": "USA",
+                "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
+            },
+        },
+    ]
     mock_shelters = [
-        Shelter(
-            name="Shelter One",
-            address=Address(
-                street1="456 Elm St",
-                street2="",
-                city="Springfield",
-                state="IL",
-                postal_code="62701",
-                country="USA",
-                coordinates={"latitude": 39.7817, "longitude": -89.6501},
-            ),
-        ),
-        Shelter(
-            name="Shelter Two",
-            address=Address(
-                street1="789 Oak St",
-                street2="",
-                city="Chicago",
-                state="IL",
-                postal_code="60616",
-                country="USA",
-                coordinates={"latitude": 41.8781, "longitude": -87.6298},
-            ),
-        ),
+        Shelter.from_dict(shelter)
+        for shelter in mock_shelters_json
     ]
 
-    mock_shelter_list_use_case.return_value = [
-        shelter.to_dict() for shelter in mock_shelters
-    ]
+    mock_shelter_list_use_case.return_value = mock_shelters
+
 
     response = client.get("/shelter")
 
     # Fix: Ensure response is treated as a valid JSON array
     raw_data = response.data.decode()
-    formatted_json = f"[{raw_data.replace('}{', '},{')}]"
-    parsed_response = json.loads(formatted_json)
+    parsed_response = json.loads(raw_data)
 
     assert response.status_code == 200
-    assert parsed_response == [
-        shelter.to_dict() for shelter in mock_shelters
-    ]
+    assert parsed_response == mock_shelters_json
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name

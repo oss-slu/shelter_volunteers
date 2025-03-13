@@ -12,7 +12,9 @@ class ShelterJsonEncoder(json.JSONEncoder):
             to_serialize = {
                 "_id": str(shelter.get_id()),
                 "name": shelter.name,
-                "address": json.loads(json.dumps(shelter.address, cls=AddressJsonEncoder)),
+                "address": json.loads(
+                    json.dumps(shelter.address, cls=AddressJsonEncoder)
+                    ),
             }
             return to_serialize
         except AttributeError:
@@ -30,7 +32,10 @@ class AddressJsonEncoder(json.JSONEncoder):
                 "state": address.state,
                 "postalCode": address.postal_code,
                 "country": address.country,
-                "coordinates": {address.coordinates.latitude, address.coordinates.longitude},
+                "coordinates": {
+                    address.coordinates.latitude,
+                    address.coordinates.longitude
+                    },
             }
             return to_serialize
         except AttributeError:
