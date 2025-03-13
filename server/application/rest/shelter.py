@@ -8,7 +8,7 @@ from flask_cors import cross_origin
 from repository.mongo.shelter import ShelterRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
-from application.rest.work_shift import HTTP_STATUS_CODES_MAPPING
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from domains.shelter.shelter import Shelter
 from serializers.shelter import ShelterJsonEncoder
 from responses import ResponseTypes
