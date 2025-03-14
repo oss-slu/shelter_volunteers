@@ -20,6 +20,7 @@ from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from authentication.authenticate_user import get_user_from_token
 import os
 
 
@@ -169,26 +170,6 @@ def work_shifts():
             status=status_code
         )
 
-def get_user_from_token(headers):
-    token = headers.get("Authorization")
-    if not token:
-        raise ValueError
-
-    # in debug mode, see if real authentication should be bypassed
-    if (current_app.config["DEBUG"] and
-        "DEV_USER" in current_app.config and
-        "DEV_TOKEN" in current_app.config and
-        token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"],
-            current_app.config["FIRST_NAME"],
-            current_app.config["LAST_NAME"])
-
-    user = get_user(token)
-    if user is None:
-        raise ValueError
-
-    return user
-
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
@@ -207,64 +188,8 @@ def delete_work_shift(shift_id):
         status=status_code
     )
 
-@blueprint.route("/login", methods=["POST"])
-@cross_origin()
-def login():
-    data = request.get_json()
-    if not ("username" in data and "password" in data):
-        return Response([],
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        )
-
-    status = ResponseTypes.SUCCESS
-
-    with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
-        user_list = json.load(file)
-
-    # check if authentication should be bypassed for development purposes
-    if (current_app.config["DEBUG"] and
-        "DEV_TOKEN" in current_app.config and
-        "DEV_USER" in current_app.config):
-        os.environ["DEV_USER"] = data["username"]
-        current_app.config["DEV_USER"] = data["username"]
-        if data["username"] in user_list:
-            first_name, last_name = user_list[data["username"]]
-            os.environ["FIRST_NAME"] = first_name
-            os.environ["LAST_NAME"] = last_name
-            current_app.config["FIRST_NAME"] = first_name
-            current_app.config["LAST_NAME"] = last_name
-        return Response(
-            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[status])
-
-    # go through the login process
-    response = login_user(data["username"], data["password"])
-    if not response.ok:
-        status = ResponseTypes.AUTHORIZATION_ERROR
-
-    return Response(json.dumps(response.json()),
-        mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
 
 def db_configuration():
     #result = manage.read_json_configuration("mongo_config")
     return (current_app.config["MONGODB_URI"],
             current_app.config["MONGODB_DATABASE"])
-
-#@blueprint.route("/service_shift", methods=["POST"])
-# @cross_origin()
-# def service_shift():
-#     data = request.get_json(force=True)
-
-#     if not data:
-#         return jsonify({
-#             "message": "Invalid or missing JSON"
-#         }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-
-#     print("==== PARSED JSON DATA ====", flush=True)
-#     print(json.dumps(data, indent=2), flush=True)
-
-#     return jsonify({
-#         "message": "Shift received successfully!"
-#     }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
