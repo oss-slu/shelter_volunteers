@@ -9,6 +9,7 @@ from application.rest.service_commitment import service_commitment_bp
 from application.rest.shelter import shelter_blueprint
 from application.rest.service_shifts import service_shift_bp
 from application.rest.authorization.authorization import authorization_blueprint
+from application.rest.login import login_blueprint
 
 from config import mongodb_config
 import os
@@ -30,6 +31,7 @@ def create_app(config_name = "development"):
     app.register_blueprint(service_commitment_bp)
     app.register_blueprint(service_shift_bp)
     app.register_blueprint(authorization_blueprint)
+    app.register_blueprint(login_blueprint)
 
     load_dotenv()  # Load environment variables from the .env file
 

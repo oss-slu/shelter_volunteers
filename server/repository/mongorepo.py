@@ -1,20 +1,19 @@
 """
 Module handles the mongo DB operations
 """
-from pymongo import MongoClient
 from domains.work_shift import WorkShift
 from bson.objectid import ObjectId
+from config.mongodb_config import get_db
 
 class MongoRepo:
     """
     A mongo repository for storing work shifts.
     """
-    def __init__(self, uri, database):
+    def __init__(self):
         """
         Initialize the repo with passed data.
         """
-        client = MongoClient(uri)
-        self.db = client[database]
+        self.db = get_db()
         self.collection = self.db.shifts
 
     def _create_shift_objects(self, results):

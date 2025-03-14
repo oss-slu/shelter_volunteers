@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from domains.service_commitment import ServiceCommitment
 
-from application.rest.work_shift import get_user_from_token
+from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments

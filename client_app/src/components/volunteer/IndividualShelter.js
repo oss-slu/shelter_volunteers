@@ -161,7 +161,6 @@ const IndividualShelter = (props) => {
       {!props.isSignupPage && (
         <div className="shelter text-center" key={shelter.id}>
           <h2>{shelter.name}</h2>
-          <p>{+shelter.distance.toFixed(2)} miles away</p>
         </div>
       )}
     </div>

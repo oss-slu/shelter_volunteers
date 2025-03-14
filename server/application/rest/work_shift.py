@@ -3,7 +3,7 @@ This module contains the RESTful route handlers
 for work shifts in the server application.
 """
 import json
-from flask import Blueprint, Response, request, jsonify, current_app
+from flask import Blueprint, Response, request, jsonify
 from flask_cors import cross_origin
 from repository import mongorepo
 from use_cases.list_workshifts import workshift_list_use_case
@@ -12,16 +12,13 @@ from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_volunteers import get_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
-from use_cases.authenticate import login_user
-from use_cases.authenticate import get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from serializers.volunteer import VolunteerJsonEncoder
 from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
-import os
-
+from authentication.authenticate_user import get_user_from_token
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -63,8 +60,7 @@ def get_volunteers(shelter_id):
     On GET: The function returns volunteer counts and usernames for times 
     that are specified by parameters.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -83,8 +79,7 @@ def counts(shelter_id):
     On GET: The function returns volunteer counts for times that are
     specified by parameters.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -103,10 +98,10 @@ def work_shifts():
     On GET: The function returns a list of all work shifts in the system.
     On POST: The function adds shifts to the system.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     user = get_user_from_token(request.headers)
 
+    print(user)
     if not user[0]:
         return jsonify({"message": "Invalid or missing token"}), \
             ResponseTypes.AUTHORIZATION_ERROR
@@ -145,8 +140,7 @@ def work_shifts():
             )
 
     elif request.method == "POST":
-        db_config = db_configuration()
-        repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+        repo = mongorepo.MongoRepo()
         user, first_name, last_name = get_user_from_token(request.headers)
         if not user:
             return jsonify({"message": "Invalid or missing token"}), \
@@ -169,34 +163,13 @@ def work_shifts():
             status=status_code
         )
 
-def get_user_from_token(headers):
-    token = headers.get("Authorization")
-    if not token:
-        raise ValueError
-
-    # in debug mode, see if real authentication should be bypassed
-    if (current_app.config["DEBUG"] and
-        "DEV_USER" in current_app.config and
-        "DEV_TOKEN" in current_app.config and
-        token == current_app.config["DEV_TOKEN"]):
-        return (current_app.config["DEV_USER"],
-            current_app.config["FIRST_NAME"],
-            current_app.config["LAST_NAME"])
-
-    user = get_user(token)
-    if user is None:
-        raise ValueError
-
-    return user
-
 @blueprint.route("/shifts/<shift_id>", methods=["DELETE"])
 @cross_origin()
 def delete_work_shift(shift_id):
     shift_id = str(shift_id)
     user_email = get_user_from_token(request.headers)
 
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
 
     response = delete_shift_use_case(repo, shift_id, user_email[0])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
@@ -206,65 +179,3 @@ def delete_work_shift(shift_id):
         mimetype="application/json",
         status=status_code
     )
-
-@blueprint.route("/login", methods=["POST"])
-@cross_origin()
-def login():
-    data = request.get_json()
-    if not ("username" in data and "password" in data):
-        return Response([],
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        )
-
-    status = ResponseTypes.SUCCESS
-
-    with open("application/rest/user_list.json", "r", encoding="utf-8") as file:
-        user_list = json.load(file)
-
-    # check if authentication should be bypassed for development purposes
-    if (current_app.config["DEBUG"] and
-        "DEV_TOKEN" in current_app.config and
-        "DEV_USER" in current_app.config):
-        os.environ["DEV_USER"] = data["username"]
-        current_app.config["DEV_USER"] = data["username"]
-        if data["username"] in user_list:
-            first_name, last_name = user_list[data["username"]]
-            os.environ["FIRST_NAME"] = first_name
-            os.environ["LAST_NAME"] = last_name
-            current_app.config["FIRST_NAME"] = first_name
-            current_app.config["LAST_NAME"] = last_name
-        return Response(
-            json.dumps({"access_token":current_app.config["DEV_TOKEN"]}),
-            mimetype="application/json",
-            status = HTTP_STATUS_CODES_MAPPING[status])
-
-    # go through the login process
-    response = login_user(data["username"], data["password"])
-    if not response.ok:
-        status = ResponseTypes.AUTHORIZATION_ERROR
-
-    return Response(json.dumps(response.json()),
-        mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[status])
-
-def db_configuration():
-    #result = manage.read_json_configuration("mongo_config")
-    return (current_app.config["MONGODB_URI"],
-            current_app.config["MONGODB_DATABASE"])
-
-#@blueprint.route("/service_shift", methods=["POST"])
-# @cross_origin()
-# def service_shift():
-#     data = request.get_json(force=True)
-
-#     if not data:
-#         return jsonify({
-#             "message": "Invalid or missing JSON"
-#         }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-
-#     print("==== PARSED JSON DATA ====", flush=True)
-#     print(json.dumps(data, indent=2), flush=True)
-
-#     return jsonify({
-#         "message": "Shift received successfully!"
-#     }), HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
