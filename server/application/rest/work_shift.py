@@ -3,7 +3,7 @@ This module contains the RESTful route handlers
 for work shifts in the server application.
 """
 import json
-from flask import Blueprint, Response, request, jsonify, current_app
+from flask import Blueprint, Response, request, jsonify
 from flask_cors import cross_origin
 from repository import mongorepo
 from use_cases.list_workshifts import workshift_list_use_case
@@ -12,8 +12,6 @@ from use_cases.delete_workshifts import delete_shift_use_case
 from use_cases.count_volunteers import count_volunteers_use_case
 from use_cases.get_volunteers import get_volunteers_use_case
 from use_cases.get_facility_info import get_facility_info_use_case
-from use_cases.authenticate import login_user
-from use_cases.authenticate import get_user
 from serializers.work_shift import WorkShiftJsonEncoder
 from serializers.staffing import StaffingJsonEncoder
 from serializers.volunteer import VolunteerJsonEncoder
@@ -21,8 +19,6 @@ from responses import ResponseTypes
 from application.rest.request_from_params import list_shift_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from authentication.authenticate_user import get_user_from_token
-import os
-
 
 blueprint = Blueprint("work_shift", __name__)
 
@@ -64,8 +60,7 @@ def get_volunteers(shelter_id):
     On GET: The function returns volunteer counts and usernames for times 
     that are specified by parameters.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -84,8 +79,7 @@ def counts(shelter_id):
     On GET: The function returns volunteer counts for times that are
     specified by parameters.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     request_object = list_shift_request(request.args)
 
     # find workshifts matching the request object
@@ -104,10 +98,10 @@ def work_shifts():
     On GET: The function returns a list of all work shifts in the system.
     On POST: The function adds shifts to the system.
     """
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
     user = get_user_from_token(request.headers)
 
+    print(user)
     if not user[0]:
         return jsonify({"message": "Invalid or missing token"}), \
             ResponseTypes.AUTHORIZATION_ERROR
@@ -146,8 +140,7 @@ def work_shifts():
             )
 
     elif request.method == "POST":
-        db_config = db_configuration()
-        repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+        repo = mongorepo.MongoRepo()
         user, first_name, last_name = get_user_from_token(request.headers)
         if not user:
             return jsonify({"message": "Invalid or missing token"}), \
@@ -176,8 +169,7 @@ def delete_work_shift(shift_id):
     shift_id = str(shift_id)
     user_email = get_user_from_token(request.headers)
 
-    db_config = db_configuration()
-    repo = mongorepo.MongoRepo(db_config[0], db_config[1])
+    repo = mongorepo.MongoRepo()
 
     response = delete_shift_use_case(repo, shift_id, user_email[0])
     status_code = HTTP_STATUS_CODES_MAPPING[response.response_type]
@@ -187,9 +179,3 @@ def delete_work_shift(shift_id):
         mimetype="application/json",
         status=status_code
     )
-
-
-def db_configuration():
-    #result = manage.read_json_configuration("mongo_config")
-    return (current_app.config["MONGODB_URI"],
-            current_app.config["MONGODB_DATABASE"])
