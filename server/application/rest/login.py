@@ -1,3 +1,6 @@
+"""
+This module is responsible for handling the login request.
+"""
 from flask import Blueprint, Response, request, current_app
 from flask_cors import cross_origin
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
@@ -21,10 +24,13 @@ def login():
         current_app.config["DEBUG"]
         )
     if token:
-        return Response(json.dumps({"access_token": token}),
-            mimetype="application/json", status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
+        return Response(json.dumps(
+            {"access_token": token}),
+            mimetype="application/json",
+            status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+            )
     else:
         return Response([],
-            mimetype="application/json", 
+            mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
             )
