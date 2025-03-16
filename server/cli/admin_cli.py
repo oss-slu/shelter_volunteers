@@ -5,7 +5,6 @@ import argparse
 from use_cases.authorization.add_system_admin import add_system_admin
 from use_cases.authorization.add_shelter_admin import add_shelter_admin
 from repository.mongo.authorization import PermissionsMongoRepo
-from responses import ResponseTypes
 
 def create_system_admin(email):
     permissions_repo = PermissionsMongoRepo()
