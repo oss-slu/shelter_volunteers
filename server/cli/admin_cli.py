@@ -10,19 +10,13 @@ from responses import ResponseTypes
 def create_system_admin(email):
     permissions_repo = PermissionsMongoRepo()
     response = add_system_admin(permissions_repo, email)
-    if response.response_type == ResponseTypes.SUCCESS:
-        print(f"System admin permissions granted to {email}")
-    else:
-        print(response.value)
+    print(response.value)
 
 
 def create_shelter_admin(email, shelter_id):
     permissions_repo = PermissionsMongoRepo()
     response = add_shelter_admin(permissions_repo, shelter_id, email)
-    if response.response_type == ResponseTypes.SUCCESS:
-        print(f"Shelter admin permissions granted to {email} for shelter {shelter_id}")
-    else:
-        print(response.value)
+    print(response.value)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -40,7 +34,8 @@ def main():
     system_admin_parser.add_argument(
         'email',
         type=str,
-        help='The email address of the user to be granted system admin permissions'
+        help='The email address of the user to be granted system admin '
+             'permissions'
         )
 
     shelter_admin_parser = subparsers.add_parser(
@@ -50,7 +45,8 @@ def main():
     shelter_admin_parser.add_argument(
         'email',
         type=str,
-        help='The email address of the user to be granted shelter admin permissions'
+        help='The email address of the user to be granted shelter admin '
+             'permissions'
         )
     shelter_admin_parser.add_argument(
         'shelter_id',
@@ -64,5 +60,5 @@ def main():
     elif args.admin_type == 'shelter':
         create_shelter_admin(args.email, args.shelter_id)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
