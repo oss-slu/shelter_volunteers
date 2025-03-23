@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/admin/ShelterList.css';
-import { SERVER } from "../../config";
+import {shelterAPI} from '../../api/shelter';
 
 const ShelterList = () => {
   const [shelters, setShelters] = useState([]);
@@ -10,54 +10,7 @@ const ShelterList = () => {
   useEffect(() => {
     const fetchShelters = async () => {
       try {
-        const response = await fetch(`${SERVER}/shelter`);
-        
-        if (!response.ok) {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-        const rawText = await response.text(); //get raw text to deal with malformed JSON situtation
-        let data; //first attempt to fix malformed JSON (concatenated sequence)
-        try {
-          data = JSON.parse(rawText);
-        } catch (parseError) {
-          if (rawText.trim().startsWith('{') && !rawText.trim().startsWith('[')) {
-            try {
-              const fixedJson = '[' + rawText.replace(/}{/g, '},{') + ']';
-              data = JSON.parse(fixedJson);
-            } catch (fixError) {
-              //attempt 2 for malformed JSON using regex to find valid JSON objects
-              try {
-                const jsonObjects = [];
-                let objStr = '';
-                let braceCount = 0;
-                for (let i = 0; i < rawText.length; i++) {
-                  const char = rawText[i];
-                  if (char === '{') braceCount++;
-                  if (char === '}') braceCount--;
-                  objStr += char;
-                  if (braceCount === 0 && objStr.trim() !== '') {
-                    try {
-                      const parsedObj = JSON.parse(objStr);
-                      jsonObjects.push(parsedObj);
-                      objStr = '';
-                    } catch (e) {
-                      //continue
-                    }
-                  }
-                }
-                if (jsonObjects.length > 0) {
-                  data = jsonObjects;
-                } else {
-                  throw new Error("Could not extract valid JSON objects");
-                }
-              } catch (regexError) {
-                throw new Error(`Advanced JSON fixing failed: ${regexError.message}`);
-              }
-            }
-          } else {
-            throw parseError;
-          }
-        }
+        const data = await shelterAPI.getShelters()
         setShelters(Array.isArray(data) ? data : [data]);
         setError(null);
       } catch (err) {
@@ -67,6 +20,7 @@ const ShelterList = () => {
         setIsLoading(false);
       }
     };
+
     fetchShelters();
   }, []);
   

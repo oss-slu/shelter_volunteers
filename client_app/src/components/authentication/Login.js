@@ -1,30 +1,14 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { SERVER } from "../../config";
 import { Form, Button, Container, Card, Col, Row, FloatingLabel } from "react-bootstrap";
 import About from "../About";
+import { loginAPI } from "../../api/login";
 
 async function LoginUser(user, pass) {
   try {
-    const response = await fetch(SERVER + "/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: user,
-        password: pass,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await loginAPI.login(user, pass);
     localStorage.setItem("token", JSON.stringify(data.access_token));
   } catch (error) {
-    // Handle login error
     console.error("Login error", error);
   }
 }
