@@ -14,7 +14,7 @@ export const fetchClient = async (endpoint, options = {}) => {
   
   // Add auth token if available
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization = `${token}`;
   }
   
   // Prepare the complete request config
