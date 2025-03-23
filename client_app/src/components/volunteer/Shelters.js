@@ -93,12 +93,16 @@ const Shelters = (props) => {
     setTimeout(() => setShaking(false), 200);
     //setSelectedShifts([...selectedShifts, shift]);
     //setButtonDisabled(selectedShifts.length === 0);
-    const shiftStart = dayjs(shift.start);
-    const shiftEnd = dayjs(shift.end);
+    console.log("HERE")
+    const shiftStart = dayjs(shift.shift_start);
+    const shiftEnd = dayjs(shift.shift_end);
+    const formattedShiftStart = shiftStart.format('YYYY-MM-DD HH:mm:ss');
+    const formattedShiftEnd = shiftEnd.format('YYYY-MM-DD HH:mm:ss');
+    console.log(`Shift starts at: ${formattedShiftStart} and ends at: ${formattedShiftEnd}`);
 
     const overlap = selectedShifts.some(selectedShift => {
-      const selectedShiftStart = dayjs(selectedShift.start);
-      const selectedShiftEnd = dayjs(selectedShift.end);
+      const selectedShiftStart = dayjs(selectedShift.shift_start);
+      const selectedShiftEnd = dayjs(selectedShift.shift_end);
 
       // Check for overlap
       return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
