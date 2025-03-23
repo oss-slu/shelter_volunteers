@@ -31,7 +31,7 @@ export const fetchClient = async (endpoint, options = {}) => {
       // Clear authentication data
       localStorage.removeItem('token');
       // Redirect to login page
-      useNavigate("/home")
+      window.location.assign("/home")
       return Promise.reject(new Error('Authentication failed'));
     }
     

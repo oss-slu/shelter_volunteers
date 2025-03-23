@@ -93,7 +93,6 @@ const Shelters = (props) => {
     setTimeout(() => setShaking(false), 200);
     //setSelectedShifts([...selectedShifts, shift]);
     //setButtonDisabled(selectedShifts.length === 0);
-    console.log("HERE")
     const shiftStart = dayjs(shift.shift_start);
     const shiftEnd = dayjs(shift.shift_end);
     const formattedShiftStart = shiftStart.format('YYYY-MM-DD HH:mm:ss');

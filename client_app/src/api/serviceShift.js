@@ -6,7 +6,7 @@ export const serviceShiftAPI = {
         return response;
     },
     getFutureShifts: async() => {
-        const timeNow = new Date().getMilliseconds();
+        const timeNow = Date.now();
         const response = await fetchClient(`/service_shift?filter_start_after=${timeNow}`);
         return response;
     },
