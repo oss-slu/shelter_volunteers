@@ -115,13 +115,13 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_list_use_case.return_value = [expected_shift]
 
         # Act: Send GET request with shelter_id filter
-        response = self.client.get(f"/service_shift?shelter_id={test_shelter_id}")
+        response = self.client.get(
+            f"/service_shift?shelter_id={test_shelter_id}")
 
         # Parse response data
         data_str = response.get_data(as_text=True)
         json_strings = re.findall(r"\{.*?\}", data_str)
         parsed_objects = [json.loads(s) for s in json_strings]
-  
         # Assert: Verify the response contains only the filtered shift
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(parsed_objects), 1)
