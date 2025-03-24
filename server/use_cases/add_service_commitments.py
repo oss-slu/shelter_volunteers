@@ -19,22 +19,49 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         the success and service commitment IDs.
     """
     shift_ids = [c.service_shift_id for c in commitments]
-    shifts = shifts_repo.get_shifts(shift_ids)
+    existing_shifts = {s._id: s for s in shifts_repo.get_shifts(shift_ids)}
 
-    # temporary implementation for overlapping shifts
-    # Needs to be fixed later to match the requirements
-    has_overlap = check_time_overlap(shifts)
-    if has_overlap:
+    valid_commitments = []
+    results = []
+
+    for commitment in commitments:
+        shift_id = commitment.service_shift_id
+        if shift_id not in existing_shifts:
+            results.append({
+                "service_commitment_id": None,
+                "success": False,
+                "message": f"cannot commit to non-existing shift {shift_id}"
+            })
+            continue
+        valid_commitments.append(commitment)
+        results.append(None) # placeholder to fill
+
+    if not valid_commitments:
+        return [r for r in results if r is not None]
+        
+    # check for time overlap in valid shift only
+    valid_shifts = [existing_shifts[c.service_shift_id] for c in valid_commitments]
+    if check_time_overlap(valid_shifts):
         return [{
-            "service_commitment_id": None
-            , "success": False}]
-
-    commitments_as_dict = [c.to_dict() for c in commitments]
+            "service_commitment_id": None,
+            "success": False
+        }]
+        
+    # insert valid commitments
+    commitments_as_dict = [c.to_dict() for c in valid_commitments]
     commitments_repo.insert_service_commitments(commitments_as_dict)
-    return [{
-        "service_commitment_id": str(c["_id"])
-        , "success": True}
-            for c in commitments_as_dict]
+
+    # fill in success results for valid commitments
+    idx = 0
+    for i in range(len(results)):
+        if results[i] is None:
+            results[i] = {
+                "service_commitment_id": str(commitments_as_dict[idx]["_id"]),
+                "success": True
+            }
+            idx += 1
+
+    return results
 
 def check_time_overlap(shifts):
     """
