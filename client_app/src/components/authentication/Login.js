@@ -24,14 +24,12 @@ async function LoginUser(user, pass) {
     const data = await response.json();
     localStorage.setItem("token", JSON.stringify(data.access_token));
   } catch (error) {
-    // Handle login error
     console.error("Login error", error);
   }
 }
 
 export default function Login({ setAuth, userRole }) {
   const token = localStorage.getItem("token");
-
   const navigate = useNavigate();
 
   const [username, setUserName] = useState();
@@ -41,15 +39,16 @@ export default function Login({ setAuth, userRole }) {
     e.preventDefault();
     await LoginUser(username, password);
     setAuth(true);
-    navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
-  };  
+    navigate("/unified-dashboard");
+  };
+
   if (token) {
-    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard"} />;
-  }  
+    return <Navigate to="/unified-dashboard" />;
+  }
 
   return (
     <Container>
-      <br></br>
+      <br />
       <Row>
         <Col md={6} order={1} style={{ marginBottom: "2rem" }}>
           <Card>
