@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
@@ -15,12 +15,9 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
-import { useLocation } from "react-router-dom";
 import Schedule from "./components/shelter/Schedule";
 import AdminDashboard from "./components/admin/AdminDashboard";
-
-// ✅ New import
-import UnifiedDashboard from "./components/authentication/UnifiedDashboard";
+import UnifiedDashboard from "./components/authentication/UnifiedDashboard"; // ✅ New import
 
 function NavigationControl({ auth }) {
   const location = useLocation();
@@ -35,8 +32,9 @@ function NavigationControl({ auth }) {
       "/set-shifts",
       "/admin-dashboard"
     ].includes(location.pathname)
-  )
+  ) {
     return <NavBarShelterDashboard auth={auth} />;
+  }
   return <NavBarVolunteerDashboard auth={auth} />;
 }
 
@@ -54,7 +52,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-        {/* ✅ New Route for Unified Dashboard */}
+        {/* ✅ Unified dashboard route */}
         <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
 
         <Route path="/" element={<ProtectedRoute />}>
