@@ -51,10 +51,7 @@ function App() {
         <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-
-        {/* ✅ Unified dashboard route */}
-        <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
-
+        <Route path="/unified-dashboard" element={<UnifiedDashboard />} /> {/* ✅ Unified dashboard route */}
         <Route path="/" element={<ProtectedRoute />}>
           <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
           <Route path="/shelters" element={<Shelters />} />
