@@ -3,18 +3,25 @@ This module contains the RESTful route handlers
 for shelters in the server application.
 """
 import json
+
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
+
+from application.rest.auth_utils import get_user_email_from_token
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+
+from domains.resources import Resources
+from domains.shelter.shelter import Shelter
+
 from repository.mongo.shelter import ShelterRepo
+
+from responses import ResponseTypes
+
+from serializers.shelter import ShelterJsonEncoder
+
+from use_cases.authorization.is_authorized import is_authorized
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
-from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
-from domains.shelter.shelter import Shelter
-from serializers.shelter import ShelterJsonEncoder
-from responses import ResponseTypes
-from domains.resources import Resources
-from use_cases.authorization.is_authorized import is_authorized
-from application.rest.auth_utils import get_user_email_from_token
 
 
 shelter_blueprint = Blueprint("shelter", __name__)
@@ -37,9 +44,8 @@ def shelter():
         return Response(
             json.dumps({"message": "Authentication required"}),
             mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
-        )
-    
+            status=HTTP_STATUS_CODES_MAPPING[
+                ResponseTypes.UNAUTHORIZED])
     # Get the user email from the token
     user_email = get_user_email_from_token(auth_token)
     if not user_email:
@@ -55,10 +61,8 @@ def shelter():
             return Response(
                 json.dumps({"message": "Unauthorized to view shelters"}),
                 mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
-            )
-            
-        # process the GET request parameters
+                status=HTTP_STATUS_CODES_MAPPING[
+                    ResponseTypes.UNAUTHORIZED])
         shelters_as_dict = shelter_list_use_case(repo)
         shelters_as_json = json.dumps(
             [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
@@ -76,7 +80,6 @@ def shelter():
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
             )
-            
         shelter_data_dict = request.get_json()
         # shelter_add_use_case expects a Shelter object
         shelter_obj = Shelter.from_dict(shelter_data_dict)
