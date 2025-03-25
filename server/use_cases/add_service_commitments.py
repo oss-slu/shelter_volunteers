@@ -38,15 +38,17 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
 
     if not valid_commitments:
         return [r for r in results if r is not None]
-        
+
     # check for time overlap in valid shift only
-    valid_shifts = [existing_shifts[c.service_shift_id] for c in valid_commitments]
+    valid_shifts = [existing_shifts[c.service_shift_id] for     
+        c in valid_commitments]
+
     if check_time_overlap(valid_shifts):
         return [{
             "service_commitment_id": None,
             "success": False
         }]
-        
+
     # insert valid commitments
     commitments_as_dict = [c.to_dict() for c in valid_commitments]
     commitments_repo.insert_service_commitments(commitments_as_dict)
@@ -90,7 +92,9 @@ if __name__ == "__main__":
         valid_commitment = Mock()
         valid_commitment.service_shift_id = "mocked-valid-shift-id"
 
-        valid_commitment.to_dict.return_value = {"_id": "commitment-id"}
+        valid_commitment.to_dict.return_value = (
+            {"_id": "commitment-id"}
+        )
 
         result = add_service_commitments(commitments_repo, shifts_repo, [valid_commitment])
 
@@ -108,8 +112,9 @@ if __name__ == "__main__":
         invalid_commitment = Mock()
         invalid_commitment.service_shift_id = "this-id-does-not-exist"
 
-        invalid_commitment.to_dict.return_value = {"_id": "commitment-id"}
-
+        invalid_commitment.to_dict.return_value = (
+            {"_id": "commitment-id"}
+        )
         result = add_service_commitments(commitments_repo, shifts_repo, [invalid_commitment])
 
         assert result[0]["success"] is False
@@ -126,12 +131,19 @@ if __name__ == "__main__":
         shifts_repo.get_shifts.return_value = [valid_shift]
 
         valid_commitment = Mock()
-        valid_commitment.service_shift_id = "mocked-valid-shift-id"
+        valid_commitment.service_shift_id = (
+            "mocked-valid-shift-id"
+        )
         invalid_commitment = Mock()
-        invalid_commitment.service_shift_id = "this-id-does-not-exist"
-
-        valid_commitment.to_dict.return_value = {"_id": "valid-commitment-id"}
-        invalid_commitment.to_dict.return_value = {"_id": "invalid-commitment-id"}
+        invalid_commitment.service_shift_id = (
+            "this-id-does-not-exist"
+        )
+        valid_commitment.to_dict.return_value = (
+            {"_id": "valid-commitment-id"}
+        )
+        invalid_commitment.to_dict.return_value = (
+            {"_id": "invalid-commitment-id"}
+        )
 
         result = add_service_commitments(commitments_repo, shifts_repo, [valid_commitment, invalid_commitment])
 
