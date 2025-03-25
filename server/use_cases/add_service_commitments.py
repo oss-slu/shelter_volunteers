@@ -19,7 +19,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         the success and service commitment IDs.
     """
     shift_ids = [c.service_shift_id for c in commitments]
-    existing_shifts = {s._id: s for s in shifts_repo.get_shifts(shift_ids)}
+    existing_shifts = {s.get_id(): s for s in shifts_repo.get_shifts(shift_ids)}
 
     valid_commitments = []
     results = []
@@ -86,7 +86,9 @@ if __name__ == "__main__":
         commitments_repo = Mock()
 
         valid_shift = Mock()
-        valid_shift._id = "mocked-valid-shift-id"
+        valid_shift.get_id.return_value = (
+            "mocked-valid-shift-id"
+        )
         shifts_repo.get_shifts.return_value = [valid_shift]
 
         valid_commitment = Mock()
@@ -133,7 +135,9 @@ if __name__ == "__main__":
         commitments_repo = Mock()
 
         valid_shift = Mock()
-        valid_shift._id = "mocked-valid-shift-id"
+        valid_shift.get_id.return_value = (
+            "mocked-valid-shift-id"
+        )
         shifts_repo.get_shifts.return_value = [valid_shift]
 
         valid_commitment = Mock()
