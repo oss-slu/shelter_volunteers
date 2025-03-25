@@ -40,7 +40,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         return [r for r in results if r is not None]
 
     # check for time overlap in valid shift only
-    valid_shifts = [existing_shifts[c.service_shift_id] for     
+    valid_shifts = [existing_shifts[c.service_shift_id] for
         c in valid_commitments]
 
     if check_time_overlap(valid_shifts):
@@ -96,7 +96,9 @@ if __name__ == "__main__":
             {"_id": "commitment-id"}
         )
 
-        result = add_service_commitments(commitments_repo, shifts_repo, [valid_commitment])
+        result = add_service_commitments(commitments_repo, shifts_repo, (
+            [valid_commitment])
+        )
 
         assert result[0]["success"] is True
         assert result[0]["service_commitment_id"] == "commitment-id"
@@ -115,10 +117,14 @@ if __name__ == "__main__":
         invalid_commitment.to_dict.return_value = (
             {"_id": "commitment-id"}
         )
-        result = add_service_commitments(commitments_repo, shifts_repo, [invalid_commitment])
+        result = add_service_commitments(commitments_repo, shifts_repo, (
+            [invalid_commitment])
+        )
 
         assert result[0]["success"] is False
-        assert result[0]["message"] == "cannot commit to non-existing shift this-id-does-not-exist"
+        assert result[0]["message"] == (
+            "cannot commit to non-existing shift this-id-does-not-exist"
+        )
         print(f"Invalid shift ID -> {result}\n")
 
     # mixed valid and invalid shift IDs
@@ -145,12 +151,16 @@ if __name__ == "__main__":
             {"_id": "invalid-commitment-id"}
         )
 
-        result = add_service_commitments(commitments_repo, shifts_repo, [valid_commitment, invalid_commitment])
+        result = add_service_commitments(commitments_repo, shifts_repo, (
+            [valid_commitment, invalid_commitment])
+        )
 
         assert result[0]["success"] is True
         assert result[0]["service_commitment_id"] == "valid-commitment-id"
         assert result[1]["success"] is False
-        assert result[1]["message"] == "cannot commit to non-existing shift this-id-does-not-exist"
+        assert result[1]["message"] == (
+            "cannot commit to non-existing shift this-id-does-not-exist"
+        )
         print(f"Mixed shifts -> {result}\n")
 
     # run all tests
