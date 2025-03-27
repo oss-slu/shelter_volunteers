@@ -94,3 +94,4 @@ if __name__ == "__main__":
     test_valid_shift_commitment()
     test_invalid_shift_commitment()
     test_mixed_shifts_commitment()
+    
