@@ -13,24 +13,22 @@ if __name__ == "__main__":
         commitments_repo = Mock()
 
         valid_shift = Mock()
-        valid_shift.get_id.return_value = (
-            "mocked-valid-shift-id"
-        )
+        valid_shift.get_id.return_value = "mocked-valid-shift-id"
         shifts_repo.get_shifts.return_value = [valid_shift]
 
         valid_commitment = Mock()
         valid_commitment.service_shift_id = "mocked-valid-shift-id"
+        valid_commitment.to_dict.return_value = {}
 
-        valid_commitment.to_dict.return_value = (
+        commitments_repo.insert_service_commitments.return_value = [
             {"_id": "commitment-id"}
-        )
+        ]
 
         result = add_service_commitments(commitments_repo, shifts_repo, (
             [valid_commitment])
         )
 
-        assert result[0]["success"] is True
-        assert result[0]["service_commitment_id"] == "commitment-id"
+        assert result == [{"service_commitment_id": "commitment-id", "success": True}]
         print(f"Valid shift ID -> {result}\n")
 
     # invalid shift ID (unsuccessful case)
@@ -42,18 +40,18 @@ if __name__ == "__main__":
 
         invalid_commitment = Mock()
         invalid_commitment.service_shift_id = "this-id-does-not-exist"
+        invalid_commitment.to_dict.return_value = {}
 
-        invalid_commitment.to_dict.return_value = (
-            {"_id": "commitment-id"}
-        )
-        result = add_service_commitments(commitments_repo, shifts_repo, (
-            [invalid_commitment])
-        )
+        result = add_service_commitments(commitments_repo, shifts_repo, [invalid_commitment])
 
-        assert result[0]["success"] is False
-        assert result[0]["message"] == (
-            "cannot commit to non-existing shift this-id-does-not-exist"
-        )
+        assert result == [{
+            "service_commitment_id": None,
+            "success": False,
+            "message": "cannot commit to non-existing shift this-id-does-not-exist"
+        }]
+
+        commitments_repo.insert_service_commitments.assert_not_called()
+
         print(f"Invalid shift ID -> {result}\n")
 
     # mixed valid and invalid shift IDs
@@ -62,36 +60,36 @@ if __name__ == "__main__":
         commitments_repo = Mock()
 
         valid_shift = Mock()
-        valid_shift.get_id.return_value = (
-            "mocked-valid-shift-id"
-        )
+        valid_shift.get_id.return_value = "mocked-valid-shift-id"
         shifts_repo.get_shifts.return_value = [valid_shift]
 
         valid_commitment = Mock()
-        valid_commitment.service_shift_id = (
-            "mocked-valid-shift-id"
-        )
+        valid_commitment.service_shift_id = "mocked-valid-shift-id"
+        valid_commitment.to_dict.return_value = {}
+
         invalid_commitment = Mock()
-        invalid_commitment.service_shift_id = (
-            "this-id-does-not-exist"
-        )
-        valid_commitment.to_dict.return_value = (
+        invalid_commitment.service_shift_id = "this-id-does-not-exist"
+        invalid_commitment.to_dict.return_value = {}
+
+        commitments_repo.insert_service_commitments.return_value = [
             {"_id": "valid-commitment-id"}
-        )
-        invalid_commitment.to_dict.return_value = (
-            {"_id": "invalid-commitment-id"}
-        )
+        ]
 
         result = add_service_commitments(commitments_repo, shifts_repo, (
             [valid_commitment, invalid_commitment])
         )
 
-        assert result[0]["success"] is True
-        assert result[0]["service_commitment_id"] == "valid-commitment-id"
-        assert result[1]["success"] is False
-        assert result[1]["message"] == (
-            "cannot commit to non-existing shift this-id-does-not-exist"
-        )
+        assert result == [
+            {"service_commitment_id": "valid-commitment-id", "success": True},
+            {
+                "service_commitment_id": None,
+                "success": False,
+                "message": "cannot commit to non-existing shift this-id-does-not-exist"
+            }
+        ]
+
+        commitments_repo.insert_service_commitments.assert_called_once()
+
         print(f"Mixed shifts -> {result}\n")
 
     # run all tests
