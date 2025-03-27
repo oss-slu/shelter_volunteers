@@ -85,7 +85,7 @@ if __name__ == "__main__":
         )
 
         assert result == [
-            {"service_commitment_id": "valid-commitment-id", 
+            {"service_commitment_id": "valid-commitment-id",
              "success": True},
             {
                 "service_commitment_id": None,
