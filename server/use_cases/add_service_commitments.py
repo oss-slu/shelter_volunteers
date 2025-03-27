@@ -51,14 +51,14 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
 
     # insert valid commitments
     commitments_as_dict = [c.to_dict() for c in valid_commitments]
-    commitments_repo.insert_service_commitments(commitments_as_dict)
+    inserted_commitments = commitments_repo.insert_service_commitments(commitments_as_dict)
 
     # fill in success results for valid commitments
     idx = 0
     for i in range(len(results)):
         if results[i] is None:
             results[i] = {
-                "service_commitment_id": str(commitments_as_dict[idx]["_id"]),
+                "service_commitment_id": str(inserted_commitments[idx]["_id"]),
                 "success": True
             }
             idx += 1
