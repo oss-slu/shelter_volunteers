@@ -1,4 +1,8 @@
-from server.use_cases.add_service_commitments import add_service_commitments
+"""
+test_add_service_commitments.py: Tests for the add_service_commitments use case.
+"""
+
+from use_cases.add_service_commitments import add_service_commitments
 
 if __name__ == "__main__":
     from unittest.mock import Mock
@@ -94,4 +98,3 @@ if __name__ == "__main__":
     test_valid_shift_commitment()
     test_invalid_shift_commitment()
     test_mixed_shifts_commitment()
-    
