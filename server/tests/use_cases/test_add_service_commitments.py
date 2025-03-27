@@ -28,7 +28,8 @@ if __name__ == "__main__":
             [valid_commitment])
         )
 
-        assert result == [{"service_commitment_id": "commitment-id", "success": True}]
+        assert result == [{"service_commitment_id": "commitment-id",
+                           "success": True}]
         print(f"Valid shift ID -> {result}\n")
 
     # invalid shift ID (unsuccessful case)
@@ -42,12 +43,16 @@ if __name__ == "__main__":
         invalid_commitment.service_shift_id = "this-id-does-not-exist"
         invalid_commitment.to_dict.return_value = {}
 
-        result = add_service_commitments(commitments_repo, shifts_repo, [invalid_commitment])
+        result = add_service_commitments(commitments_repo, shifts_repo, (
+            [invalid_commitment])
+        )
 
         assert result == [{
             "service_commitment_id": None,
             "success": False,
-            "message": "cannot commit to non-existing shift this-id-does-not-exist"
+            "message": (
+                "cannot commit to non-existing shift this-id-does-not-exist"
+            )
         }]
 
         commitments_repo.insert_service_commitments.assert_not_called()
@@ -80,11 +85,14 @@ if __name__ == "__main__":
         )
 
         assert result == [
-            {"service_commitment_id": "valid-commitment-id", "success": True},
+            {"service_commitment_id": "valid-commitment-id", 
+             "success": True},
             {
                 "service_commitment_id": None,
                 "success": False,
-                "message": "cannot commit to non-existing shift this-id-does-not-exist"
+                "message": (
+                    "cannot commit to non-existing shift this-id-does-not-exist"
+                )
             }
         ]
 
