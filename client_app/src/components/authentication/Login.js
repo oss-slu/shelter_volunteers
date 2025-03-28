@@ -24,14 +24,12 @@ async function LoginUser(user, pass) {
     const data = await response.json();
     localStorage.setItem("token", JSON.stringify(data.access_token));
   } catch (error) {
-    // Handle login error
     console.error("Login error", error);
   }
 }
 
-export default function Login({ setAuth, userRole }) {
+export default function Login({ setAuth }) {
   const token = localStorage.getItem("token");
-
   const navigate = useNavigate();
 
   const [username, setUserName] = useState();
@@ -41,19 +39,20 @@ export default function Login({ setAuth, userRole }) {
     e.preventDefault();
     await LoginUser(username, password);
     setAuth(true);
-    navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
-  };  
+    navigate("/unified-dashboard");
+  };
+
   if (token) {
-    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard"} />;
-  }  
+    return <Navigate to="/unified-dashboard" />;
+  }
 
   return (
     <Container>
-      <br></br>
+      <br />
       <Row>
-        <Col md={6} order={1} style={{ marginBottom: "2rem" }}>
+        <Col md={6} style={{ marginBottom: "2rem" }}>
           <Card>
-            <Card.Header>{userRole === "shelter" ? "Shelter Admin Sign In" : "Volunteer Sign In"}</Card.Header>
+            <Card.Header>Login</Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
                 <FloatingLabel controlId="formBasicEmail" label="Email address" className="mb-2">
@@ -77,21 +76,10 @@ export default function Login({ setAuth, userRole }) {
                   Don't have an account? <Link to="/signup">Sign Up</Link>
                 </div>
               </Form>
-              <div className="mt-3">
-                {userRole === "shelter" ? (
-                  <p>
-                    Not a Shelter Admin? <Link to="/volunteer-login">Sign in as a volunteer HERE</Link>
-                  </p>
-                ) : (
-                  <p>
-                    Not a Volunteer? <Link to="/shelter-login">Sign in as a Shelter Admin HERE</Link>
-                  </p>
-                )}
-              </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={6} order={2}>
+        <Col md={6}>
           <About />
         </Col>
       </Row>
