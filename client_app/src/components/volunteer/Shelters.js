@@ -91,19 +91,30 @@ const Shelters = (props) => {
   function manageShifts(shift) {
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
-    //setSelectedShifts([...selectedShifts, shift]);
-    //setButtonDisabled(selectedShifts.length === 0);
-    const shiftStart = dayjs(shift.start);
-    const shiftEnd = dayjs(shift.end);
+    setSelectedShifts([...selectedShifts, shift]);
+    setButtonDisabled(selectedShifts.length === 0);
 
+    /*
+    const shiftStart = dayjs(shift.shift_start)
+    const shiftEnd = dayjs(shift.shift_end)
+    console.log(shiftStart, shiftEnd);
+    
     const overlap = selectedShifts.some(selectedShift => {
-      const selectedShiftStart = dayjs(selectedShift.start);
-      const selectedShiftEnd = dayjs(selectedShift.end);
+      const selectedShiftStart = dayjs(selectedShift.shift_start);
+      const selectedShiftEnd = dayjs(selectedShift.shift_end);
 
       // Check for overlap
-      return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
-    });
 
+      return ((shiftStart.isBefore(selectedShiftStart) || shiftStart.isSame(selectedShiftStart)) 
+          && (shiftEnd.isAfter(selectedShiftStart) || shiftEnd.isSame(selectedShiftStart))) ||
+        ((shiftStart.isBefore(selectedShiftEnd) || shiftStart.isSame(selectedShiftEnd))
+          && (shiftEnd.isAfter(selectedShiftEnd)|| shiftEnd.isSame(selectedShiftEnd))) ||
+        ((shiftStart.isAfter(selectedShiftStart)||shiftStart.isSame(selectedShiftStart)) 
+          && (shiftEnd.isBefore(selectedShiftEnd)|| shiftEnd.isSame(selectedShiftEnd))) ||
+        ((shiftStart.isBefore(selectedShiftStart)|| shiftStart.isSame(selectedShiftStart)) 
+          && (shiftEnd.isAfter(selectedShiftEnd)|| shiftEnd.isSame(selectedShiftEnd)));
+    });
+  
     if (overlap) {
       alert("The selected shift overlaps with another shift.");
       setButtonDisabled(true); // Disable submit button
@@ -111,6 +122,7 @@ const Shelters = (props) => {
       setSelectedShifts([...selectedShifts, shift]);
       setButtonDisabled(false); // Enable submit button
     }
+      */
   }
 
   function onShiftClose(event) {

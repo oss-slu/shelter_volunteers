@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/admin/AddShelterForm.css';
-import { SERVER } from "../../config";
+import { shelterAPI } from '../../api/shelter';
 
 const AddShelterForm = () => {
   const [formData, setFormData] = useState({
@@ -67,53 +67,29 @@ const AddShelterForm = () => {
     setIsSubmitting(true);
     setSubmitMessage({ type: '', text: '' });
     
-    try {
-      const formattedData = {
-        name: formData.name,
-        address: {
-          street1: formData.street1,
-          street2: formData.street2,
-          city: formData.city,
-          state: formData.state,
-          postalCode: formData.postalCode,
-          coordinates: {
-            latitude: formData.latitude,
-            longitude: formData.longitude
-          }
-        },
-      };
+
+    const formattedData = {
+      name: formData.name,
+      address: {
+        street1: formData.street1,
+        street2: formData.street2,
+        city: formData.city,
+        state: formData.state,
+        postalCode: formData.postalCode,
+        coordinates: {
+          latitude: formData.latitude,
+          longitude: formData.longitude
+        }
+      },
+    };
     
-      const response = await fetch(`${SERVER}/shelter`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formattedData)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-      
-      await response.json();
-      
+    try{
+      await shelterAPI.addShelter(formattedData);
       setSubmitMessage({
         type: 'success',
         text: 'Shelter added successfully!'
       });
-      
-      //reset to original form
-      setFormData({
-        name: '',
-        street1: '',
-        street2: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        latitude: '',
-        longitude: ''
-      });
-      
+
     } catch (error) {
       console.error('Error adding shelter:', error);
       setSubmitMessage({
@@ -123,7 +99,20 @@ const AddShelterForm = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+    
+    //reset to original form
+    setFormData({
+      name: '',
+      street1: '',
+      street2: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      latitude: '',
+      longitude: ''
+    });
+  };    
+
   return (
     <div className="add-shelter-form-container">
       <h2>Add New Shelter</h2>

@@ -28,16 +28,20 @@ const IndividualShelter = (props) => {
       let id = shelter.id;
       let newShift = {
         //code: `${uuidv4()}-${id}`,
-        code: shift.id,
+        code: shift._id + "-" + shelter._id,
         shelter: id,
-        start_time: shift.start,
-        end_time: shift.end,
+        start_time: shift.shift_start,
+        end_time: shift.shift_end,
         title: shift.title,
+        shelter_name: shelter.name,
       };
+      console.log("NEW SHIFT")
+      console.log(newShift)
       props.addShiftFunction(newShift);
     }
   }
 
+  /*
   useEffect(() => {
     let start = setMilliseconds(setSeconds(setMinutes(setHours(startTime, 0), 0), 0), 0);
     let end = setMilliseconds(setSeconds(setMinutes(setHours(startTime, 23), 59), 59), 999);
@@ -96,7 +100,7 @@ const IndividualShelter = (props) => {
         .catch((error) => console.log(error));
     }
   }, [startTime, volunteerCountsHidden, shelter]);
-
+  */
   return (
     <div>
       {props.isSignupPage && (
@@ -116,23 +120,29 @@ const IndividualShelter = (props) => {
                 <h3>Available Shifts:</h3>
                 {shelter.shifts && shelter.shifts.length > 0 ? (
                   shelter.shifts.map((shift) => (
-                    <div key={shift.id} style={{ marginBottom: "10px" }}> {/* Added div for spacing */}
+                    <div key={shift._id} style={{ marginBottom: "10px" }}> {/* Added div for spacing */}
                       <button 
                         className="shift-button" 
                         data-testid="add-button" 
                         onClick={() => addShift(shift)}
                       >
-                        {new Date(shift.start).toLocaleTimeString("en-US", { 
+                        {new Date(shift.shift_start).toLocaleString("en-US", { 
                           timeZone: "America/Chicago", 
-                          hour: "2-digit", 
-                          minute: "2-digit", 
-                          hourCycle: "h23" 
-                        })} - 
-                        {new Date(shift.end).toLocaleTimeString("en-US", { 
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hourCycle: "h23"
+                        })} -
+                        {new Date(shift.shift_end).toLocaleString("en-US", { 
                           timeZone: "America/Chicago", 
-                          hour: "2-digit", 
-                          minute: "2-digit", 
-                          hourCycle: "h23" 
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hourCycle: "h23"
                         })}
                       </button>
                     </div>
