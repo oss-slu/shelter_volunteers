@@ -17,7 +17,7 @@ import "./styles/App.css";
 import HomeDashboard from "./components/HomeDashboard";
 import Schedule from "./components/shelter/Schedule";
 import AdminDashboard from "./components/admin/AdminDashboard";
-import UnifiedDashboard from "./components/authentication/UnifiedDashboard"; // ✅ New import
+import UnifiedDashboard from "./components/authentication/UnifiedDashboard";
 
 function NavigationControl({ auth }) {
   const location = useLocation();
@@ -28,7 +28,7 @@ function NavigationControl({ auth }) {
       "/shift-details",
       "/request-for-help",
       "/upcoming-requests",
-      "/shelter-login",
+      "/shelter-login", // legacy
       "/set-shifts",
       "/admin-dashboard"
     ].includes(location.pathname)
@@ -45,13 +45,12 @@ function App() {
     <Router>
       <NavigationControl auth={auth} />
       <Routes>
-        <Route index element={<HomeDashboard />} />
+        <Route index element={<Login setAuth={setAuth} />} />
         <Route path="/home" element={<HomeDashboard />} />
-        <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
-        <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
+        {/* Role-specific login routes removed as per feedback */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/unified-dashboard" element={<UnifiedDashboard />} /> {/* ✅ Unified dashboard route */}
+        <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
         <Route path="/" element={<ProtectedRoute />}>
           <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
           <Route path="/shelters" element={<Shelters />} />

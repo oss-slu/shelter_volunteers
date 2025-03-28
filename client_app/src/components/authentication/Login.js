@@ -28,7 +28,7 @@ async function LoginUser(user, pass) {
   }
 }
 
-export default function Login({ setAuth, userRole }) {
+export default function Login({ setAuth }) {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -50,9 +50,9 @@ export default function Login({ setAuth, userRole }) {
     <Container>
       <br />
       <Row>
-        <Col md={6} order={1} style={{ marginBottom: "2rem" }}>
+        <Col md={6} style={{ marginBottom: "2rem" }}>
           <Card>
-            <Card.Header>{userRole === "shelter" ? "Shelter Admin Sign In" : "Volunteer Sign In"}</Card.Header>
+            <Card.Header>Login</Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
                 <FloatingLabel controlId="formBasicEmail" label="Email address" className="mb-2">
@@ -76,21 +76,10 @@ export default function Login({ setAuth, userRole }) {
                   Don't have an account? <Link to="/signup">Sign Up</Link>
                 </div>
               </Form>
-              <div className="mt-3">
-                {userRole === "shelter" ? (
-                  <p>
-                    Not a Shelter Admin? <Link to="/volunteer-login">Sign in as a volunteer HERE</Link>
-                  </p>
-                ) : (
-                  <p>
-                    Not a Volunteer? <Link to="/shelter-login">Sign in as a Shelter Admin HERE</Link>
-                  </p>
-                )}
-              </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={6} order={2}>
+        <Col md={6}>
           <About />
         </Col>
       </Row>
