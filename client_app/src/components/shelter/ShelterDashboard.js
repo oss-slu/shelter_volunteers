@@ -12,12 +12,11 @@ import { SERVER } from "../../config";
 import AllVolunteers from "./AllVolunteers";
 import AllTodaysShifts from "./AllTodaysShifts";
 
-function ShelterDashboard() {
+function ShelterDashboard({ shelterId }) {
   const [shiftDetails, setShiftDetails] = useState([]);
   const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   const [showAllTodaysShifts, setShowAllTodaysShifts] = useState(false);
 
-  let shelterId = 30207;
   let startTime = 
       setHours(
         setMinutes(setSeconds(setMilliseconds(new Date(), 0), 0), 0),
