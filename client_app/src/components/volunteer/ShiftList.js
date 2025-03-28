@@ -63,6 +63,7 @@ const ShiftList = props => {
             props.shifts.filter((s) => s !== shift)
           );
           // helps keep track of whether or not the end time of the shift is in the past
+          console.log(shift);
           const isPastShift = endTime.getTime() < Date.now();
           return (
             <div key={shift._id || shift.code}>
@@ -72,7 +73,7 @@ const ShiftList = props => {
                     <tbody>
                       <tr>
                         <td>
-                          <p>{shift.shelter}</p>
+                          <p>{shift.shelter_name}</p>
                         </td>
                         <td>
                           <p>
