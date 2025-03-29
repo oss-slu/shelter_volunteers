@@ -63,7 +63,7 @@ def shelter():
                 json.dumps({"message": "Unauthorized to view shelters"}),
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[
-                    ResponseTypes.UNAUTHORIZED])
+                    ResponseTypes.FORBIDDEN])  # Changed from UNAUTHORIZED to FORBIDDEN
         shelters_as_dict = shelter_list_use_case(repo)
         shelters_as_json = json.dumps(
             [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
@@ -79,7 +79,7 @@ def shelter():
             return Response(
                 json.dumps({"message": "Unauthorized to add shelters"}),
                 mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.FORBIDDEN]  # Changed from UNAUTHORIZED to FORBIDDEN
             )
         shelter_data_dict = request.get_json()
         # shelter_add_use_case expects a Shelter object
