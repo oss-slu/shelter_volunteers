@@ -8,7 +8,7 @@ from flask_cors import cross_origin
 
 # Application-specific imports grouped by package
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
-from application.rest.auth_utils import get_user_email_from_token
+from authentication.authenticate_user import get_user_from_token
 
 from domains.service_shift import ServiceShift
 from domains.resources import Resources
@@ -54,7 +54,7 @@ def handle_service_shift():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
         )
     # Get the user email from the token
-    user_email = get_user_email_from_token(auth_token)
+    user_email = get_user_from_token(auth_token)
     if not user_email:
         return Response(
             json.dumps({"message": "Invalid authentication token"}),
@@ -84,7 +84,7 @@ def handle_service_shift():
                 json.dumps({"message": "Unauthorized to view service "
                 "shifts for this shelter"}),
                 mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.FORBIDDEN]
             )
 
         shifts = service_shifts_list_use_case(
@@ -133,7 +133,7 @@ def handle_service_shift():
                     "add service shifts for this shelter"}),
                     mimetype="application/json",
                     status=HTTP_STATUS_CODES_MAPPING
-                    [ResponseTypes.UNAUTHORIZED])
+                    [ResponseTypes.FORBIDDEN])
         except (KeyError, TypeError, ValueError) as err:
             return Response(
                 json.dumps({"error": f"Invalid data format: {str(err)}"}),
@@ -153,3 +153,4 @@ def handle_service_shift():
             mimetype="application/json",
             status=status_code,
         )
+    

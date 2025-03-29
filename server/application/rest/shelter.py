@@ -7,7 +7,8 @@ import json
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
 
-from application.rest.auth_utils import get_user_email_from_token
+from authentication.authenticate_user import get_user_from_token
+
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 
 from domains.resources import Resources
@@ -47,7 +48,7 @@ def shelter():
             status=HTTP_STATUS_CODES_MAPPING[
                 ResponseTypes.UNAUTHORIZED])
     # Get the user email from the token
-    user_email = get_user_email_from_token(auth_token)
+    user_email = get_user_from_token(auth_token)
     if not user_email:
         return Response(
             json.dumps({"message": "Invalid authentication token"}),

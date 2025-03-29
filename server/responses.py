@@ -14,6 +14,7 @@ class ResponseTypes:
     PARAMETER_ERROR = "ParameterError"
     SUCCESS = "Success"
     CONFLICT = "Conflict"
+    FORBIDDEN = "Forbidden"  
 
 
 class ResponseFailure:
