@@ -128,3 +128,4 @@ def fetch_service_commitments():
             jsonify({"error": f"Missing key: {str(error)}"}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
+    
