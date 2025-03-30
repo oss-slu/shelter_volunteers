@@ -29,11 +29,12 @@ def handle_service_shift():
         filter_start_after_str = request.args.get("filter_start_after")
 
         # Ensure proper conversion to int, handling empty or invalid cases
-        shelter_id = (
-            int(shelter_id_str)
-            if shelter_id_str and shelter_id_str.isdigit()
-            else None
-        )
+        # shelter_id = (
+        #     int(shelter_id_str)
+        #     if shelter_id_str and shelter_id_str.isdigit()
+        #     else None
+        # )
+        shelter_id = shelter_id_str
         filter_start_after = (
             int(filter_start_after_str)
             if filter_start_after_str and filter_start_after_str.isdigit()

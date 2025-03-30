@@ -71,7 +71,7 @@ class TestServiceShiftAPI(unittest.TestCase):
             },
             {
                 "_id": 202,
-                "shelter_id": 2222,
+                "shelter_id": "2222",
                 "shift_start": 10,
                 "shift_end": 20,
                 "required_volunteer_count": 1,
