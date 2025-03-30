@@ -42,7 +42,7 @@ def handle_service_shift():
 
         shifts = service_shifts_list_use_case(
             repo,
-            shelter_id=shelter_id,
+            shelter_id,
             filter_start_after=filter_start_after
         )
 
