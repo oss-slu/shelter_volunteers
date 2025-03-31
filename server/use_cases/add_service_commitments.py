@@ -25,49 +25,63 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
 
     valid_commitments = []
     results = []
+    valid_indexes = []
 
-    for commitment in commitments:
+    for i, commitment in enumerate(commitments):
         shift_id = commitment.service_shift_id
         if shift_id not in existing_shifts:
             results.append({
                 "service_commitment_id": None,
                 "success": False,
-                "message": f"cannot commit to non-existing shift {shift_id}"
+                "message": (
+                    f"cannot commit to non-existing shift {shift_id}"
+                )
             })
-            continue
-        valid_commitments.append(commitment)
-        results.append(None) # placeholder to fill
+        else:
+            valid_commitments.append(commitment)
+            valid_indexes.append(i)
+            results.append(None)  # placeholder for now
 
     if not valid_commitments:
-        return [r for r in results if r is not None]
+        return results
 
-    # check for time overlap in valid shift only
-    valid_shifts = [existing_shifts[c.service_shift_id] for
-        c in valid_commitments]
-
+    # check for time overlap in valid shifts
+    valid_shifts = [
+        existing_shifts[c.service_shift_id] 
+        for c in valid_commitments
+    ]
     if check_time_overlap(valid_shifts):
-        return [{
-            "service_commitment_id": None,
-            "success": False
-        }]
+        for i in valid_indexes:
+            results[i] = {
+                "service_commitment_id": None,
+                "success": False
+            }
+        return results
 
     # insert valid commitments
     commitments_as_dict = [c.to_dict() for c in valid_commitments]
     inserted_commitments = (
-        commitments_repo.insert_service_commitments(commitments_as_dict)
+        commitments_repo.insert_service_commitments(
+            (commitments_as_dict)
+        )
     )
 
     # fill in success results for valid commitments
-    idx = 0
-    for i in range(len(results)):
-        if results[i] is None:
+    for idx, i in enumerate(valid_indexes):
+        if idx < len(inserted_commitments):
             results[i] = {
-                "service_commitment_id": str(inserted_commitments[idx]),
+                "service_commitment_id": 
+                    str(inserted_commitments[idx]),
                 "success": True
             }
-            idx += 1
+        else:
+            results[i] = {
+                "service_commitment_id": None,
+                "success": False
+            }
 
     return results
+
 
 def check_time_overlap(shifts):
     """
