@@ -65,7 +65,7 @@ def create_service_commitment():
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),
-            HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
     except KeyError as error:
         return (
