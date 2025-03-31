@@ -61,7 +61,7 @@ class TestServiceShiftAPI(unittest.TestCase):
         # Arrange: Define the expected list of shift objects.
         expected_shifts = [
             {
-                "_id": 201,
+                "_id": "201",
                 "shelter_id": "1111",
                 "shift_start": 10,
                 "shift_end": 20,
@@ -71,7 +71,7 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "shift_name": "Default Shift"
             },
             {
-                "_id": 202,
+                "_id": "202",
                 "shelter_id": "2222",
                 "shift_start": 10,
                 "shift_end": 20,
