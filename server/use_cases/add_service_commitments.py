@@ -20,9 +20,8 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     """
     shift_ids = [c.service_shift_id for c in commitments]
     existing_shifts = {
-        (s.get_id()): s for s in shifts_repo.get_shifts(shift_ids)
+        str(s.get_id()): s for s in shifts_repo.get_shifts(shift_ids)
     }
-
     valid_commitments = []
     results = []
     valid_indexes = []
