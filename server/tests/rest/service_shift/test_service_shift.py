@@ -81,7 +81,7 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "shift_name": "Default Shift"
             }
         ]
-        mock_list_use_case.return_value = [ServiceShift.from_dict(shift) for shift in expected_shifts]
+        mock_list_use_case.return_value = [ServiceShift.from_dict(expected_shifts)]
 
         # Act: Send GET request.
         response = self.client.get("/service_shift")
