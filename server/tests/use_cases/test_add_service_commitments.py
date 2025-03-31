@@ -20,7 +20,7 @@ def test_valid_shift_commitment():
     valid_commitment.to_dict.return_value = {}
 
     commitments_repo.insert_service_commitments.return_value = [
-        {"_id": "commitment-id"}
+        "commitment-id"
     ]
 
     result = add_service_commitments(commitments_repo, shifts_repo, (
@@ -76,7 +76,7 @@ def test_mixed_shifts_commitment():
     invalid_commitment.to_dict.return_value = {}
 
     commitments_repo.insert_service_commitments.return_value = [
-        {"_id": "valid-commitment-id"}
+        "valid-commitment-id"
     ]
 
     result = add_service_commitments(commitments_repo, shifts_repo, (
