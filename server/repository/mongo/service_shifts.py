@@ -87,5 +87,7 @@ class ServiceShiftsMongoRepo:
         Returns:
             list: A list of ServiceShift objects.
         """
-        shifts = self.collection.find({"_id": {"$in": shift_ids}})
+        from bson import ObjectId
+        object_ids = [ObjectId(sid) for sid in shift_ids]
+        shifts = list(self.collection.find({"_id": {"$in": object_ids}}))
         return [ServiceShift.from_dict(shift) for shift in shifts]
