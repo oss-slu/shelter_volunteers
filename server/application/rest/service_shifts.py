@@ -78,15 +78,6 @@ def handle_service_shift():
             else None
         )
 
-        # Authorization check for viewing service shifts for a specific shelter
-        if not is_authorized(repo, user_email, Resources.SHIFT, shelter_id):
-            return Response(
-                json.dumps({"message": "Unauthorized to view service "
-                "shifts for this shelter"}),
-                mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.FORBIDDEN]
-            )
-
         shifts = service_shifts_list_use_case(
             repo, shelter_id, filter_start_after
         )
@@ -127,7 +118,8 @@ def handle_service_shift():
             shelter_id = shifts_obj[0].shelter_id
             # Authorization check for adding service
             # shifts to a specific shelter
-            if not is_authorized(repo, user_email, Resources.SHIFT, shelter_id):
+            if not is_authorized(repo, user_email,
+                                 Resources.SHELTER, shelter_id):
                 return Response(
                     json.dumps({"message": "Unauthorized to "
                     "add service shifts for this shelter"}),

@@ -32,7 +32,7 @@ shelter_blueprint = Blueprint("shelter", __name__)
 def shelter():
     """
     On GET: The function returns a list of all shelters in the system.
-        Required permissions: READ access to Resources.SHELTER or system admin
+        Required permissions: Any authenticated user
     
     On POST: The function adds a shelter to the system.
         Required permissions: WRITE access to Resources.SHELTER or system admin
@@ -45,8 +45,9 @@ def shelter():
         return Response(
             json.dumps({"message": "Authentication required"}),
             mimetype="application/json",
-            status=HTTP_STATUS_CODES_MAPPING[
-                ResponseTypes.UNAUTHORIZED])
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+
     # Get the user email from the token
     user_email = get_user_from_token(auth_token)
     if not user_email:
@@ -57,13 +58,7 @@ def shelter():
         )
 
     if request.method == "GET":
-        # Authorization check for viewing shelters
-        if not is_authorized(repo, user_email, Resources.SHELTER):
-            return Response(
-                json.dumps({"message": "Unauthorized to view shelters"}),
-                mimetype="application/json",
-                status=HTTP_STATUS_CODES_MAPPING[
-                    ResponseTypes.FORBIDDEN])
+        # All authenticated users can view shelters
         shelters_as_dict = shelter_list_use_case(repo)
         shelters_as_json = json.dumps(
             [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
@@ -73,9 +68,10 @@ def shelter():
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
+
     elif request.method == "POST":
         # Authorization check for adding shelters
-        if not is_authorized(repo, user_email, Resources.SHELTER):
+        if not is_authorized(repo, user_email, Resources.SYSTEM):
             return Response(
                 json.dumps({"message": "Unauthorized to add shelters"}),
                 mimetype="application/json",
