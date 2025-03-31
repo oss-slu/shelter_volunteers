@@ -41,10 +41,10 @@ export default function Login({ setAuth, userRole }) {
     e.preventDefault();
     await LoginUser(username, password);
     setAuth(true);
-    navigate(userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard");
+    navigate(userRole === "shelter" ? "/shelter-dashboard/30207" : "/volunteer-dashboard");
   };  
   if (token) {
-    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard" : "/volunteer-dashboard"} />;
+    return <Navigate to={userRole === "shelter" ? "/shelter-dashboard/30207" : "/volunteer-dashboard"} />;
   }  
 
   return (
