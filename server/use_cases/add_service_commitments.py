@@ -19,8 +19,8 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         the success and service commitment IDs.
     """
     shift_ids = [c.service_shift_id for c in commitments]
-    existing_shifts = {s.get_id(): s for s in shifts_repo.get_shifts(shift_ids)}
-
+    existing_shifts = {(s.get_id()): s for s in shifts_repo.get_shifts(shift_ids)}
+    
     valid_commitments = []
     results = []
 
@@ -60,7 +60,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     for i in range(len(results)):
         if results[i] is None:
             results[i] = {
-                "service_commitment_id": str(inserted_commitments[idx]["_id"]),
+                "service_commitment_id": str(inserted_commitments[idx]),
                 "success": True
             }
             idx += 1
