@@ -3,7 +3,6 @@ This module contains unit tests for the service_shift API.
 """
 import unittest
 import json
-import re
 from unittest.mock import patch
 from flask import Flask
 from application.rest.service_shifts import service_shift_bp
@@ -87,17 +86,10 @@ class TestServiceShiftAPI(unittest.TestCase):
         # Act: Send GET request.
         response = self.client.get("/service_shift")
 
-        # The production code returns an iterable of JSON strings
-        # without proper array delimiters.
-        # We'll extract each JSON object from the concatenated response.
-        data_str = response.get_data(as_text=True)
-        # Find all JSON object substrings (assuming the objects are not nested).
-        json_strings = re.findall(r"\{.*?\}", data_str)
-        parsed_objects = [json.loads(s) for s in json_strings]
-
+        data = json.loads(response.data.decode("utf-8"))
         # Assert: Verify that the parsed objects match the expected shifts.
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(parsed_objects, expected_shifts)
+        self.assertEqual(data, expected_shifts)
         mock_list_use_case.assert_called_once()
 
     @patch("application.rest.service_shifts.service_shifts_list_use_case")
