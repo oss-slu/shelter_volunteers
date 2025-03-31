@@ -52,7 +52,7 @@ function App() {
         <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
         <Route path="/upcoming-requests" element={<UpcomingRequests />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
+        <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboard />} />
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
         <Route path="/set-shifts" element={<Schedule />} />
