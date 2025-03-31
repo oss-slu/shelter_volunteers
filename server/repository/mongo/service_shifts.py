@@ -93,4 +93,4 @@ class ServiceShiftsMongoRepo:
             shifts = list(self.collection.find({"_id": {"$in": object_ids}}))
             return [ServiceShift.from_dict(shift) for shift in shifts]
         except Exception as e:
-            raise ValueError(f"Invalid shift ID: {e}")
+            raise ValueError(f'Invalid shift ID: {e}') from e

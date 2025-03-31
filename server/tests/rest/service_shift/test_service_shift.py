@@ -3,7 +3,6 @@ This module contains unit tests for the service_shift API.
 """
 import unittest
 import json
-import re
 from unittest.mock import patch
 from flask import Flask
 from application.rest.service_shifts import service_shift_bp
