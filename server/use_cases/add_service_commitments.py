@@ -47,7 +47,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
 
     # check for time overlap in valid shifts
     valid_shifts = [
-        existing_shifts[c.service_shift_id] 
+        existing_shifts[c.service_shift_id]
         for c in valid_commitments
     ]
     if check_time_overlap(valid_shifts):
