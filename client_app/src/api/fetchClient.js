@@ -1,6 +1,5 @@
 // fetchClient.js
 import { SERVER } from "../config";
-import { useNavigate } from "react-router-dom";
 
 // Central fetch wrapper function
 export const fetchClient = async (endpoint, options = {}) => {

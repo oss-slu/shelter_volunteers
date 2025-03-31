@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, animated } from "@react-spring/web";
-import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
 import { useShelterData } from "./hooks/useShelterData";
 
