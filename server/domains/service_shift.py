@@ -32,9 +32,9 @@ class ServiceShift:
         """
         Creates an instance of ServiceShift from a dictionary.
         """
-        _id = str(d.pop("_id", None)) if "_id" in d else None
+        id_ = str(d.pop("_id", None)) if "_id" in d else None
         obj = cls(**d)
-        obj.set_id(_id)
+        obj.set_id(id_)
         return obj
 
     def to_dict(self):
