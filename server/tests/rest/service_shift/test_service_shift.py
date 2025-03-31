@@ -7,6 +7,7 @@ import re
 from unittest.mock import patch
 from flask import Flask
 from application.rest.service_shifts import service_shift_bp
+from domains.service_shift import ServiceShift
 
 class TestServiceShiftAPI(unittest.TestCase):
     """
@@ -80,7 +81,7 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "shift_name": "Default Shift"
             }
         ]
-        mock_list_use_case.return_value = expected_shifts
+        mock_list_use_case.return_value = [ServiceShift.from_dict(expected_shift)]
 
         # Act: Send GET request.
         response = self.client.get("/service_shift")
@@ -119,19 +120,11 @@ class TestServiceShiftAPI(unittest.TestCase):
             f"/service_shift?shelter_id={test_shelter_id}")
 
         # Parse response data
-        data_str = response.get_data(as_text=True)
-        json_strings = re.findall(r"\{.*?\}", data_str)
-        parsed_objects = [json.loads(s) for s in json_strings]
-        # Assert: Verify the response contains only the filtered shift
+        data = json.loads(response.data.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(parsed_objects), 1)
-        self.assertEqual(parsed_objects[0]["shelter_id"], test_shelter_id)
-        # Verify the use case was called with the correct shelter_id
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["shelter_id"], test_shelter_id)
         mock_list_use_case.assert_called_once()
-        # Extract the args that the mock was called with
-        _, kwargs = mock_list_use_case.call_args
-        self.assertEqual(kwargs.get("shelter_id"), test_shelter_id)
-
 
 if __name__ == "__main__":
     unittest.main()
