@@ -4,7 +4,7 @@ This module handles MongoDB interactions with the service_shifts collection.
 
 from domains.service_shift import ServiceShift
 from config.mongodb_config import get_db
-
+from bson import ObjectId
 
 class ServiceShiftsMongoRepo:
     """
@@ -87,5 +87,6 @@ class ServiceShiftsMongoRepo:
         Returns:
             list: A list of ServiceShift objects.
         """
-        shifts = self.collection.find({"_id": {"$in": shift_ids}})
+        object_ids = [ObjectId(sid) for sid in shift_ids]
+        shifts = list(self.collection.find({"_id": {"$in": object_ids}}))
         return [ServiceShift.from_dict(shift) for shift in shifts]

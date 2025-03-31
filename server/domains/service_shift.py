@@ -2,7 +2,6 @@
 This module handles data conversion from 
 dictionary to class obj or vice versa.
 """
-import uuid
 import dataclasses
 
 @dataclasses.dataclass
@@ -14,11 +13,11 @@ class ServiceShift:
     shelter_id: str
     shift_start: int  # Number of milliseconds since the Epoch in UTC
     shift_end: int
-    shift_name: str = 'Default Shift'
+    shift_name: str = "Default Shift"
     required_volunteer_count: int = 1
     max_volunteer_count: int = 5
     can_sign_up: bool = True
-    _id: uuid.UUID = None
+    _id: str = None
 
     def get_id(self):
         """Returns the ID of the service shift."""
@@ -33,7 +32,10 @@ class ServiceShift:
         """
         Creates an instance of ServiceShift from a dictionary.
         """
-        return cls(**d)
+        id_ = str(d.pop("_id", None)) if "_id" in d else None
+        obj = cls(**d)
+        obj.set_id(id_)
+        return obj
 
     def to_dict(self):
         """
