@@ -47,7 +47,6 @@ function App() {
       <Routes>
         <Route index element={<Login setAuth={setAuth} />} />
         <Route path="/home" element={<HomeDashboard />} />
-        {/* Role-specific login routes removed as per feedback */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/unified-dashboard" element={<UnifiedDashboard />} />

@@ -39,7 +39,7 @@ export default function Login({ setAuth }) {
     e.preventDefault();
     await LoginUser(username, password);
     setAuth(true);
-    navigate("/unified-dashboard");
+    navigate("/unified-dashboard"); // ✅ Use unified dashboard after login
   };
 
   if (token) {
