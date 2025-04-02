@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../config";
 import { Container, Button, Row, Col, Card } from "react-bootstrap";
+import getAuthHeader from "../authentication/getAuthHeader"; // ✅ Import the shared header helper
 
 const UnifiedDashboard = () => {
   const [roles, setRoles] = useState([]);
@@ -10,12 +11,9 @@ const UnifiedDashboard = () => {
 
   useEffect(() => {
     const fetchPermissions = async () => {
-      const token = localStorage.getItem("token");
       try {
         const response = await fetch(`${SERVER}/user_permission`, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`,
-          },
+          headers: getAuthHeader(), // ✅ Use shared helper here
         });
         const data = await response.json();
 
@@ -42,7 +40,9 @@ const UnifiedDashboard = () => {
             <Card className="mb-3">
               <Card.Body>
                 <Card.Title>System Admin</Card.Title>
-                <Button onClick={() => navigate("/admin-dashboard")}>Go to Admin Dashboard</Button>
+                <Button variant="dark" onClick={() => navigate("/admin-dashboard")}>
+                  Go to Admin Dashboard
+                </Button>
               </Card.Body>
             </Card>
           </Col>
@@ -52,7 +52,7 @@ const UnifiedDashboard = () => {
             <Card className="mb-3">
               <Card.Body>
                 <Card.Title>Shelter Admin</Card.Title>
-                <Button onClick={() => navigate("/shelter-dashboard", { state: { shelterId: id } })}>
+                <Button variant="dark" onClick={() => navigate("/shelter-dashboard", { state: { shelterId: id } })}>
                   Manage Shelter {id}
                 </Button>
               </Card.Body>
@@ -63,7 +63,9 @@ const UnifiedDashboard = () => {
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Volunteer</Card.Title>
-              <Button onClick={() => navigate("/volunteer-dashboard")}>Go to Volunteer Dashboard</Button>
+              <Button variant="dark" onClick={() => navigate("/volunteer-dashboard")}>
+                Go to Volunteer Dashboard
+              </Button>
             </Card.Body>
           </Card>
         </Col>
