@@ -23,12 +23,35 @@ class Shelter:
         self._id = new_id
 
     @classmethod
-    def from_dict(self, d):
+    def from_dict(cls, d):
         """
         The function is a class method that takes in a dictionary
         and returns an instance of the class.
+        
+        Validates that the required address fields are present.
         """
-        return self(**d)
+        #validating address fields
+        if 'address' not in d:
+            raise ValueError("Missing required field: address")
+            
+        address_data = d.get('address', {})
+        if not isinstance(address_data, dict):
+            raise ValueError("Address must be a dictionary")
+            
+        #check required address fields
+        required_fields = ['address1', 'city', 'state']
+        missing_fields = [field for field in required_fields if field not in address_data or not address_data[field]]
+        
+        if missing_fields:
+            raise ValueError(f"Missing required address fields: {', '.join(missing_fields)}")
+        
+        #address object then shelter object is created
+        address_obj = Address(**address_data)
+        shelter_data = d.copy()
+        shelter_data['address'] = address_obj
+        
+        return cls(**shelter_data)
+        
     def to_dict(self):
         """
         The function takes an object and returns a dictionary
