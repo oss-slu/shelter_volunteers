@@ -1,33 +1,8 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { SERVER } from "../../config";
-import { Form, Button, Container, Card, Col, Row, FloatingLabel } from "react-bootstrap";
+import { Form, Alert, Button, Container, Card, Col, Row, FloatingLabel } from "react-bootstrap";
 import About from "../About";
-
-async function LoginUser(user, pass) {
-  try {
-    const response = await fetch(SERVER + "/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: user,
-        password: pass,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    localStorage.setItem("token", JSON.stringify(data.access_token));
-  } catch (error) {
-    // Handle login error
-    console.error("Login error", error);
-  }
-}
+import {loginAPI} from "../../api/login"
 
 export default function Login({ setAuth, userRole }) {
   const token = localStorage.getItem("token");
@@ -36,13 +11,22 @@ export default function Login({ setAuth, userRole }) {
 
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [error, setError] = useState(null); // State for error message
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await LoginUser(username, password);
-    setAuth(true);
-    navigate(userRole === "shelter" ? "/shelter-dashboard/30207" : "/volunteer-dashboard");
-  };  
+    try {
+        const data = await loginAPI.login(username, password);
+        localStorage.setItem("token", JSON.stringify(data.access_token));
+        setAuth(true);
+        navigate(userRole === "shelter" ? "/shelter-dashboard/30207" : "/volunteer-dashboard");
+    } catch (error) {
+        // Handle login error
+        console.error("Login error", error);
+        setError("Login error");
+    }
+  };
+  
   if (token) {
     return <Navigate to={userRole === "shelter" ? "/shelter-dashboard/30207" : "/volunteer-dashboard"} />;
   }  
@@ -88,6 +72,7 @@ export default function Login({ setAuth, userRole }) {
                   </p>
                 )}
               </div>
+              {error && <Alert variant="danger">{error}</Alert>} {/* Display error message */}
             </Card.Body>
           </Card>
         </Col>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/admin/AddShelterForm.css';
-import { SERVER } from "../../config";
-
+import { shelterAPI } from '../../api/shelter';
 const AddShelterForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -82,21 +81,9 @@ const AddShelterForm = () => {
           }
         },
       };
-    
-      const response = await fetch(`${SERVER}/shelter`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formattedData)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-      
-      await response.json();
-      
+   
+      await shelterAPI.addShelter(formattedData);
+     
       setSubmitMessage({
         type: 'success',
         text: 'Shelter added successfully!'
