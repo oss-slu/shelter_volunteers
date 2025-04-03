@@ -3,15 +3,13 @@ import {useNavigate} from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./authentication/Login";
 import { permissionsAPI } from "../api/permission";
-
+import { shelterAPI } from "../api/shelter";
 function HomeDashboard({ setAuth }) {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSystemAdmin, setSystemAdmin] = useState(false);
-  const [isShelterAdmin, setShelterAdmin] = useState(false);
-  const [shelters, setShelters] = useState([]);
-
+  const [shelterInfo, setShelterInfo] = useState([]);
   useEffect(() => {
     console.log("We are here");
     const fetchPermissions = async () => {
@@ -31,9 +29,11 @@ function HomeDashboard({ setAuth }) {
             const shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
 
             setSystemAdmin(systemAccess);
-            setShelterAdmin(shelterAccess && shelterAccess.resource_ids.length > 0);
-            setShelters(shelterAccess ? shelterAccess.resource_ids : []);
-
+            if (shelterAccess) {
+              const sheltersInfoAll = await shelterAPI.getShelters();
+              setShelterInfo(sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id)));
+            }      
+            console.log("Shelter info:", shelterInfo);
             setIsAuthenticated(true);
             setLoading(false);
         } catch (error) {
@@ -65,13 +65,18 @@ function HomeDashboard({ setAuth }) {
         >
           Your Volunteer Dashboard
         </button>
-        {isShelterAdmin && (
-        <button
-          onClick={() => navigate("/shelter-dashboard")}
-          className="shelter-button"
-        >
-          Shelter Admin Dashboard
-        </button>
+        {shelterInfo.length > 0 && (
+          <>
+            {shelterInfo.map((shelter) => (
+              <button
+                key={shelter._id}
+                onClick={() => navigate(`/shelter-dashboard/${shelter._id}`)}
+                className="shelter-button"
+              >
+                {shelter.name} Dashboard
+              </button>
+            ))}
+          </>
         )}
         {isSystemAdmin && (
           <button
