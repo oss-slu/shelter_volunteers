@@ -1,10 +1,10 @@
 // fetchClient.js
 import { SERVER } from "../config";
-
+import getToken from "../authentication/getToken";
 // Central fetch wrapper function
 export const fetchClient = async (endpoint, options = {}) => {
   // Get the token from storage
-  const token = localStorage.getItem('token');
+  const token = getToken();
   
   // Prepare headers with authentication
   const headers = {
