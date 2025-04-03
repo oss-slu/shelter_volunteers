@@ -29,8 +29,7 @@ export const fetchClient = async (endpoint, options = {}) => {
     if (response.status === 401) {
       // Clear authentication data
       localStorage.removeItem('token');
-      // Redirect to login page
-      window.location.assign("/home")
+      // TODO: somehow redirect the application back to login 
       return Promise.reject(new Error('Authentication failed'));
     }
     
