@@ -7,7 +7,7 @@ from use_cases.authorization.add_shelter_admin import add_shelter_admin
 from use_cases.authorization.add_system_admin import add_system_admin
 from use_cases.authorization.get_user_permission import get_user_permission
 from use_cases.authorization.is_authorized import is_authorized
-from application.rest.work_shift import get_user_from_token
+from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from repository.mongo.authorization import PermissionsMongoRepo
 from serializers.user_permission import UserPermissionJsonEncoder
