@@ -11,7 +11,6 @@ function HomeDashboard({ setAuth, auth }) {
   const [isSystemAdmin, setSystemAdmin] = useState(false);
   const [shelterInfo, setShelterInfo] = useState([]);
   
-  console.log("Auth status:", auth);
   useEffect(() => {
     const fetchPermissions = async () => {
       if (!auth) {
