@@ -1,23 +1,24 @@
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Form, Alert, Button, Container, Card, Col, Row, FloatingLabel } from "react-bootstrap";
 import About from "../About";
 import {loginAPI} from "../../api/login"
+import { haveToken, setToken } from "../../authentication/getToken";
 
 export default function Login({ setAuth }) {
-  const token = localStorage.getItem("token");
+
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
   const [error, setError] = useState(null); // State for error message
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
         const data = await loginAPI.login(username, password);
-        localStorage.setItem("token", JSON.stringify(data.access_token));
+        setToken(data.access_token);
         setAuth(true);
-        window.location.href="/home";
-        console.log('Navigation called');
+        navigate("/home")
     } catch (error) {
         // Handle login error
         console.error("Login error", error);
@@ -25,7 +26,7 @@ export default function Login({ setAuth }) {
     }
   };
   
-  if (token) {
+  if (haveToken()) {
     return <Navigate to={"/home"} />;
   }  
 
