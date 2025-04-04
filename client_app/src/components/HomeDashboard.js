@@ -4,20 +4,16 @@ import { useEffect, useState } from "react";
 import Login from "./authentication/Login";
 import { permissionsAPI } from "../api/permission";
 import { shelterAPI } from "../api/shelter";
-function HomeDashboard({ setAuth }) {
+
+function HomeDashboard({ setAuth, auth }) {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSystemAdmin, setSystemAdmin] = useState(false);
   const [shelterInfo, setShelterInfo] = useState([]);
+  
   useEffect(() => {
-    console.log("We are here");
     const fetchPermissions = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        console.log("Token not found");
-        setIsAuthenticated(false);
+      if (!auth) {
         setLoading(false);
       } else {
         try {
@@ -33,23 +29,20 @@ function HomeDashboard({ setAuth }) {
               const sheltersInfoAll = await shelterAPI.getShelters();
               setShelterInfo(sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id)));
             }      
-            console.log("Shelter info:", shelterInfo);
-            setIsAuthenticated(true);
             setLoading(false);
         } catch (error) {
           console.error("Error fetching permissions:", error);
         }
       }
     };
-
     fetchPermissions();
-  }, []);
+  }, [auth]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!auth) {
     return <Login setAuth={setAuth}/>;
   }
 

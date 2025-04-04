@@ -1,6 +1,6 @@
 // fetchClient.js
 import { SERVER } from "../config";
-import getToken from "../authentication/getToken";
+import { getToken, removeToken } from "../authentication/getToken";
 // Central fetch wrapper function
 export const fetchClient = async (endpoint, options = {}) => {
   // Get the token from storage
@@ -28,7 +28,7 @@ export const fetchClient = async (endpoint, options = {}) => {
     // Check if the response indicates authentication failure
     if (response.status === 401) {
       // Clear authentication data
-      localStorage.removeItem('token');
+      removeToken();
       // TODO: somehow redirect the application back to login 
       return Promise.reject(new Error('Authentication failed'));
     }

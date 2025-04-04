@@ -1,4 +1,4 @@
-import getToken from "./getToken";
+import { getToken } from "./getToken";
 
 export default function getAuthHeader() {
   const token = getToken();
