@@ -38,8 +38,8 @@ function App() {
   return (<Router>
     <NavigationControl auth={auth} />
     <Routes>
-      <Route index element={<HomeDashboard setAuth={setAuth} />} />
-      <Route path="/home" element={<HomeDashboard setAuth={setAuth} />} />
+      <Route index element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
+      <Route path="/home" element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/" element={<ProtectedRoute />}>
@@ -48,7 +48,7 @@ function App() {
         <Route path="/past-shifts" element={<PastShifts />} />
         <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
         <Route path="/upcoming-requests" element={<UpcomingRequests />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path="/logout" element={<Logout setAuth={setAuth} />} />
         <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboard />} />
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
