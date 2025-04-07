@@ -54,6 +54,9 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     user_id = valid_commitments[0].volunteer_id
     existing_user_commitments = commitments_repo.fetch_service_commitments(
         user_id=user_id)
+    if existing_user_commitments is None or not hasattr(
+        existing_user_commitments, "__iter__"):
+        existing_user_commitments = []
     existing_commitment_shift_ids = [str(c.service_shift_id)
                                      for c in existing_user_commitments
                                      if c.service_shift_id is not None]
