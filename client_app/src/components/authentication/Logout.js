@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-export default function Logout() {
+import { removeToken } from "../../authentication/getToken";
+export default function Logout({setAuth}) {
   const navigate = useNavigate();
   useEffect(() => {
-    localStorage.clear();
+    removeToken();
+    setAuth(false);
     navigate("/");
   }, []);
 }

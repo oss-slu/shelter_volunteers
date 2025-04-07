@@ -4,7 +4,6 @@ import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard"; // <-- Correct path: "volunteer"
 import NavBarVolunteerDashboard from "./components/volunteer/NavBarVolunteerDashboard";
 import NavBarShelterDashboard from "./components/shelter/NavBarShelterDashboard";
-import Login from "./components/authentication/Login";
 import Logout from "./components/authentication/Logout";
 import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
@@ -39,10 +38,8 @@ function App() {
   return (<Router>
     <NavigationControl auth={auth} />
     <Routes>
-      <Route index element={<HomeDashboard />} />
-      <Route path="/home" element={<HomeDashboard />} />
-      <Route path="/volunteer-login" element={<Login setAuth={setAuth} userRole="volunteer" />} />
-      <Route path="/shelter-login" element={<Login setAuth={setAuth} userRole="shelter" />} />
+      <Route index element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
+      <Route path="/home" element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/" element={<ProtectedRoute />}>
@@ -51,7 +48,7 @@ function App() {
         <Route path="/past-shifts" element={<PastShifts />} />
         <Route path="/upcoming-shifts" element={<UpcomingShifts />} />
         <Route path="/upcoming-requests" element={<UpcomingRequests />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path="/logout" element={<Logout setAuth={setAuth} />} />
         <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboard />} />
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
