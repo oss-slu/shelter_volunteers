@@ -122,7 +122,6 @@ function ShelterDashboard({ shelterId }) {
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-
           {/* Add Shelter Admin section starts here */}
           <div className="container-small">
             <div className="container-align">
