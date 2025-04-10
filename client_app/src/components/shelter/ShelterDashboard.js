@@ -123,7 +123,6 @@ function ShelterDashboard() {
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-
           {/* Existing inline AddUserForm section */}
           <div className="container-small">
             <div className="container-align">
@@ -147,7 +146,6 @@ function ShelterDashboard() {
             </div>
             {showAddUserForm && <AddUserForm shelterId={shelterId} />}
           </div>
-
           {/* ✅ Link to new Settings screen */}
           <div className="container-small">
             <div className="container-align">
