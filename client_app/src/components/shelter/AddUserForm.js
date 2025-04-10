@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { SERVER } from "../../config";
+import { permissionsAPI } from "../../api/permission";
 
 const AddUserForm = ({ shelterId }) => {
   const [email, setEmail] = useState("");
@@ -9,27 +8,22 @@ const AddUserForm = ({ shelterId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${SERVER}/user_permission`,
-        {
-          resource_type: "shelter",
-          resource_id: shelterId,
-          user_email: email
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
-      if (response.status === 200) {
+      const result = await permissionsAPI.addPermission({
+        resource_type: "shelter",
+        resource_id: shelterId,
+        user_email: email,
+      });
+
+      if (result?.success) {
         setStatus({ type: "success", message: "User added successfully." });
         setEmail("");
+      } else {
+        throw new Error(result?.message || "Unknown error");
       }
     } catch (err) {
       setStatus({
         type: "error",
-        message: err.response?.data?.message || "Failed to add user."
+        message: err.message || "Failed to add user.",
       });
     }
   };

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom"; 
 import OpenRequest from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
 import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
-import { useState, useRef, useEffect } from "react";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
@@ -13,7 +13,8 @@ import AllVolunteers from "./AllVolunteers";
 import AllTodaysShifts from "./AllTodaysShifts";
 import AddUserForm from "./AddUserForm";
 
-function ShelterDashboard({ shelterId }) {
+function ShelterDashboard() {
+  const { shelterId } = useParams(); // Extract from URL param
   const [shiftDetails, setShiftDetails] = useState([]);
   const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   const [showAllTodaysShifts, setShowAllTodaysShifts] = useState(false);
@@ -55,15 +56,15 @@ function ShelterDashboard({ shelterId }) {
           })
           .catch((error) => console.error(error))
         );
-    }
-    Promise.all(fetchPromises)
-      .then(() => {
-        validResponses.sort((a, b) => a.start_time - b.start_time);
-        setShiftDetails(validResponses);
-      })
-      .catch((error) => {
-        console.error("Error in fetching data:", error);
-      });
+      }
+      Promise.all(fetchPromises)
+        .then(() => {
+          validResponses.sort((a, b) => a.start_time - b.start_time);
+          setShiftDetails(validResponses);
+        })
+        .catch((error) => {
+          console.error("Error in fetching data:", error);
+        });
     }
   }, [shelterId]);
 
@@ -122,7 +123,8 @@ function ShelterDashboard({ shelterId }) {
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-          {/* Add Shelter Admin section starts here */}
+
+          {/* Existing inline AddUserForm section */}
           <div className="container-small">
             <div className="container-align">
               <h4>Settings</h4>
@@ -145,7 +147,15 @@ function ShelterDashboard({ shelterId }) {
             </div>
             {showAddUserForm && <AddUserForm shelterId={shelterId} />}
           </div>
-          {/* End Add Shelter Admin */}
+
+          {/* ✅ Link to new Settings screen */}
+          <div className="container-small">
+            <div className="container-align">
+              <h4>Settings</h4>
+              <a href={`/shelter-dashboard/${shelterId}/settings`}>Add or Remove Users</a>
+            </div>
+          </div>
+
         </div>
       )}
       {showAllTodaysShifts && (
@@ -164,7 +174,6 @@ function ShelterDashboard({ shelterId }) {
             onClick={() => setShowAllTodaysShifts(false)} 
           >
           </button>
-
         </div>
       )}
       {showAllPastVolunteers && (
@@ -173,7 +182,6 @@ function ShelterDashboard({ shelterId }) {
         </div>
       )}
     </div>
-      
   );
 }
 
