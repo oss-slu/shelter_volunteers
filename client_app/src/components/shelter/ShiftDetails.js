@@ -19,7 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { format } from "date-fns";
-import { serviceShiftAPI } from "../../api/serviceShift"
+// import { serviceShiftAPI } from "../../api/serviceShift"
 
 dayjs.extend(dayjsUTC);
 dayjs.extend(dayjsTimezone);
@@ -68,24 +68,6 @@ export const ShiftDetails = () => {
     })))
     }
 
-    const handleConfirmShifts = async() => {
-      // get selected shift objects from names
-      const confirmedShifts = shiftsList.shifts.filter(shift => {
-        const nameAndTime = shift.name
-        ? `${shift.name}: ${format(shift.startTime, "hh:mm aaaaa'm'")} - ${format(shift.endTime, "hh:mm aaaaa'm'")}`
-        : `${format(shift.startTime, "hh:mm aaaaa'm'")} - ${format(shift.endTime, "hh:mm aaaaa'm'")}`;
-        return selectedShifts.includes(nameAndTime);
-      });
-
-      try {
-        await serviceShiftAPI.addShifts(confirmedShifts);
-        alert("SUCCESS: Shifts sent to the server.");
-      } catch (error) {
-        console.error("Error saving shifts:", error);
-        alert(`Failed to save shifts: ${error.message}`);
-      }
-    };
-
     return (
       <div>
         {isVolunteerModalOpen && <ShiftsModal isVolunteerModalOpen={isVolunteerModalOpen} setIsVolunteerModalOpen={setIsVolunteerModalOpen} />}
@@ -114,21 +96,6 @@ export const ShiftDetails = () => {
                 {renderDropDown()}
               </Select>
             </FormControl>
-            <button
-              onClick={handleConfirmShifts}
-              disabled={selectedShifts.length === 0}
-              style={{
-                marginTop: "10px",
-                padding: "10px 20px",
-                backgroundColor: selectedShifts.length === 0 ? "#ccc" : "#1F75FE",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: selectedShifts.length === 0 ? "not-allowed" : "pointer"
-              }}
-            >
-              Confirm Selected Shifts
-            </button>
           </div> 
         </div>
         <div className="shiftdetails-table">
