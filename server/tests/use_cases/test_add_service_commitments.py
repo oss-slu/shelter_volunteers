@@ -13,12 +13,17 @@ def test_valid_shift_commitment():
 
     valid_shift = Mock()
     valid_shift.get_id.return_value = "mocked-valid-shift-id"
+    valid_shift.shift_start = 10
+    valid_shift.shift_end = 20
     shifts_repo.get_shifts.return_value = [valid_shift]
 
     valid_commitment = Mock()
     valid_commitment.service_shift_id = "mocked-valid-shift-id"
+    valid_commitment.volunteer_id = "user-123"
     valid_commitment.to_dict.return_value = {}
 
+    # Mock the new method calls added to our implementation
+    commitments_repo.fetch_service_commitments.return_value = []
     commitments_repo.insert_service_commitments.return_value = [
         "commitment-id"
     ]
@@ -41,6 +46,9 @@ def test_invalid_shift_commitment():
     invalid_commitment = Mock()
     invalid_commitment.service_shift_id = "this-id-does-not-exist"
     invalid_commitment.to_dict.return_value = {}
+
+    # Mock the new method calls (though they won't be reached in this test)
+    commitments_repo.fetch_service_commitments.return_value = []
 
     result = add_service_commitments(commitments_repo, shifts_repo, (
         [invalid_commitment])
@@ -65,15 +73,21 @@ def test_mixed_shifts_commitment():
 
     valid_shift = Mock()
     valid_shift.get_id.return_value = "mocked-valid-shift-id"
+    valid_shift.shift_start = 10
+    valid_shift.shift_end = 20
     shifts_repo.get_shifts.return_value = [valid_shift]
 
     valid_commitment = Mock()
     valid_commitment.service_shift_id = "mocked-valid-shift-id"
+    valid_commitment.volunteer_id = "user-123"
     valid_commitment.to_dict.return_value = {}
 
     invalid_commitment = Mock()
     invalid_commitment.service_shift_id = "this-id-does-not-exist"
     invalid_commitment.to_dict.return_value = {}
+
+    # Mock the new method calls
+    commitments_repo.fetch_service_commitments.return_value = []
 
     commitments_repo.insert_service_commitments.return_value = [
         "valid-commitment-id"
