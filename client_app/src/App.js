@@ -17,6 +17,7 @@ import HomeDashboard from "./components/HomeDashboard";
 import { useLocation } from "react-router-dom";
 import Schedule from "./components/shelter/Schedule"; // <-- now a .jsx file
 import AdminDashboard from "./components/admin/AdminDashboard"; //still integrating into app
+import Settings from "./components/shelter/Settings"; // newly added
 
 function NavigationControl({ auth }) {
   const location = useLocation();
@@ -50,6 +51,7 @@ function App() {
         <Route path="/upcoming-requests" element={<UpcomingRequests />} />
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
         <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboard />} />
+        <Route path="/shelter-dashboard/:shelterId/settings" element={<Settings />} /> {/* newly added */}
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
         <Route path="/set-shifts" element={<Schedule />} />
@@ -59,4 +61,3 @@ function App() {
 }
 
 export default App;
-
