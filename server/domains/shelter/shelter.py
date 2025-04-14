@@ -37,7 +37,7 @@ class Shelter:
         if not isinstance(address_data, dict):
             raise ValueError("Address must be a dictionary")
         #check required address fields
-        required_fields = ['address1', 'city', 'state']
+        required_fields = ['street1', 'city', 'state']
         missing_fields = [field for field in required_fields 
                           if field not in address_data or not address_data[field]]
         if missing_fields:

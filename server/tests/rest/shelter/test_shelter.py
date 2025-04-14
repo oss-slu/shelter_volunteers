@@ -54,6 +54,83 @@ def test_post_shelter(mock_shelter_add_use_case, client):
     assert response.status_code == 200
     assert response.json == mock_response
 
+@patch("application.rest.shelter.shelter_add_use_case")
+def test_post_shelter_missing_required_fields(mock_shelter_add_use_case, client):
+    #missing address
+    request_data = {
+        "name": "Test shelter"
+        #missing address field
+    }
+    
+    response = client.post(
+        "/shelter",
+        data=json.dumps(request_data),
+        content_type="application/json"
+    )
+    
+    assert response.status_code == 400  #bad request
+    assert not response.json["success"]
+    assert "address" in response.json["message"]
+    
+    #test missing street1
+    request_data = {
+        "name": "Test shelter",
+        "address": {
+            "city": "St.Louis",
+            "state": "MO",
+            #missing street1
+        }
+    }
+    
+    response = client.post(
+        "/shelter",
+        data=json.dumps(request_data),
+        content_type="application/json"
+    )
+    
+    assert response.status_code == 400  #bad request
+    assert not response.json["success"]
+    assert "street1" in response.json["message"]
+    
+    #test missing city
+    request_data = {
+        "name": "Test shelter",
+        "address": {
+            "street1": "123 Main",
+            "state": "MO",
+            #missing city
+        }
+    }
+    
+    response = client.post(
+        "/shelter",
+        data=json.dumps(request_data),
+        content_type="application/json"
+    )
+    
+    assert response.status_code == 400  #bad request
+    assert not response.json["success"]
+    assert "city" in response.json["message"]
+    
+    #test missing state
+    request_data = {
+        "name": "Test shelter",
+        "address": {
+            "street1": "123 Main",
+            "city": "St.Louis",
+            #missing state
+        }
+    }
+    
+    response = client.post(
+        "/shelter",
+        data=json.dumps(request_data),
+        content_type="application/json"
+    )
+    
+    assert response.status_code == 400  #bad request
+    assert not response.json["success"]
+    assert "state" in response.json["message"]
 
 @patch("application.rest.shelter.shelter_list_use_case")
 def test_get_shelter(mock_shelter_list_use_case, client):
