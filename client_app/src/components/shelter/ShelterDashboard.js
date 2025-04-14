@@ -11,14 +11,12 @@ import setMilliseconds from "date-fns/setMilliseconds";
 import { SERVER } from "../../config";
 import AllVolunteers from "./AllVolunteers";
 import AllTodaysShifts from "./AllTodaysShifts";
-import AddUserForm from "./AddUserForm";
 
 function ShelterDashboard() {
   const { shelterId } = useParams(); // Extract from URL param
   const [shiftDetails, setShiftDetails] = useState([]);
   const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   const [showAllTodaysShifts, setShowAllTodaysShifts] = useState(false);
-  const [showAddUserForm, setShowAddUserForm] = useState(false); 
 
   let startTime = 
       setHours(
