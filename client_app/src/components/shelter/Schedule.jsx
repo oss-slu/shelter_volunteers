@@ -1,5 +1,5 @@
 // client_app/src/components/shelter/Schedule.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Calendar, Views } from "react-big-calendar";
 import { dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
@@ -7,7 +7,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
-import { permissionsAPI } from "../../api/permission";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -21,56 +20,12 @@ function getDefaultWeekRange() {
   return range;
 }
 
-function Schedule() {
+function Schedule({ shelterId }) {
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
   // NEW: Track which days (midnight timestamp) have been opened already
   const [openedDays, setOpenedDays] = useState([]);
-  const [shelterId, setShelterId] = useState(null);
-
-  // fetch shelter ID from permissions
-  useEffect(() => {
-    const fetchShelterId = async () => {
-      try {
-        const permissions = await permissionsAPI.getPermissions();
-        const shelterAccess = permissions.full_access.find(
-          (access) => access.resource_type === "shelter"
-        );
-  
-        if (!shelterAccess || shelterAccess.resource_ids.length === 0) {
-          console.error("No shelter access found in permissions.");
-          return;
-        }
-  
-        const accessIds = shelterAccess.resource_ids;
-        console.log("Access resource_ids:", accessIds);
-  
-        const allShelters = await import("../../api/shelter").then(mod =>
-          mod.shelterAPI.getShelters()
-        );
-        const allIds = allShelters.map(s => s._id);
-        console.log("All shelter _ids:", allIds);
-  
-        // Actual match: check if any accessId matches a real shelter._id
-        const match = allShelters.find(shelter =>
-          accessIds.includes(shelter._id)
-        );
-  
-        if (match) {
-          console.log("Matched shelter:", match.name, match._id);
-          setShelterId(match._id);
-        } else {
-          console.error("Could not match any real shelter to permissions resource_ids.");
-        }
-      } catch (err) {
-        console.error("Error loading shelter ID:", err);
-      }
-    };
-  
-    fetchShelterId();
-  }, []);
-  
 
   // 1) Single shift–click logic (unchanged)
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
@@ -157,23 +112,17 @@ function Schedule() {
         shelter_id: shelterId
       }))
     };
-  
-    console.log("Confirming shifts with payload:", JSON.stringify(payload, null, 2));
-    console.log("shelter_id used:", shelterId);
-  
+
     try {
       await serviceShiftAPI.addShifts(payload);
       alert("Shifts successfully created!");
     } catch (error) {
       console.error("Shift creation error:", error);
-  
       try {
-        // Try to extract raw response body from server
         const text = await error?.response?.text();
         console.error("Server 400 Response Body:", text);
         alert("Failed to create shifts: " + (text || "Unknown backend error"));
       } catch (jsonErr) {
-        // Fallback error handling
         console.error("Could not read response body:", jsonErr);
         alert("Failed to create shifts: " + (error?.message || "Unknown error"));
       }
