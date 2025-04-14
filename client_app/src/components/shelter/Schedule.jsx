@@ -7,6 +7,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
+import { useParams } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -20,7 +21,9 @@ function getDefaultWeekRange() {
   return range;
 }
 
-function Schedule({ shelterId }) {
+function Schedule() {
+  const { shelterId } = useParams();
+
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
@@ -104,28 +107,19 @@ function Schedule({ shelterId }) {
 
   const handleConfirmShifts = async () => {
     const payload = scheduledShifts.map(shift => ({
-      name: shift.name,
-      start_time: shift.start_time,
-      end_time: shift.end_time,
-      people: shift.people,
+      shift_name: shift.name,
+      shift_start: shift.start_time,
+      shift_end: shift.end_time,
+      required_volunteer_count: shift.people,
       shelter_id: shelterId
     }));
-
-    console.log("shelter id here:", shelterId)
 
     try {
       await serviceShiftAPI.addShifts(payload);
       alert("Shifts successfully created!");
     } catch (error) {
-      console.error("Shift creation error:", error);
-      try {
-        const text = await error?.response?.text();
-        console.error("Server 400 Response Body:", text);
-        alert("Failed to create shifts: " + (text || "Unknown backend error"));
-      } catch (jsonErr) {
-        console.error("Could not read response body:", jsonErr);
-        alert("Failed to create shifts: " + (error?.message || "Unknown error"));
-      }
+      console.log("Error when creating shifts:", error);
+      alert("Issue when creating shifts.");
     }
   };
 
