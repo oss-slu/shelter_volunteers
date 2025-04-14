@@ -14,8 +14,8 @@ const AddUserForm = ({ shelterId }) => {
         user_email: email,
       });
 
-      if (result?.success) {
-        setStatus({ type: "success", message: "User added successfully." });
+      if (result?.success || result?.message?.toLowerCase().includes("added as admin")) {
+        setStatus({ type: "success", message: result.message || "User added successfully." });
         setEmail("");
       } else {
         throw new Error(result?.message || "Unknown error");
