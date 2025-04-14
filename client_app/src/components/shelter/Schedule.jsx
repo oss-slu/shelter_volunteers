@@ -1,5 +1,5 @@
 // client_app/src/components/shelter/Schedule.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, Views } from "react-big-calendar";
 import { dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
@@ -7,7 +7,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
-import { useParams } from "react-router-dom";
+import { permissionsAPI } from "../../api/permission";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -22,13 +22,33 @@ function getDefaultWeekRange() {
 }
 
 function Schedule() {
-  const { shelterId } = useParams();
-  console.log("shelterID from url:", shelterId);
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
   // NEW: Track which days (midnight timestamp) have been opened already
   const [openedDays, setOpenedDays] = useState([]);
+  const [shelterId, setShelterId] = useState(null);
+
+  // fetch shelter ID from permissions
+  useEffect(() => {
+    const fetchShelterId = async () => {
+      try {
+        const permissions = await permissionsAPI.getPermissions();
+        const shelterAccess = permissions.full_access.find(
+          (access) => access.resource_type === "shelter"
+        );
+        if (shelterAccess && shelterAccess.resource_ids.length > 0) {
+          setShelterId(shelterAccess.resource_ids[0]);
+        } else {
+          console.error("No shelter access found");
+        }
+      } catch (err) {
+        console.error("Error fetching shelter ID:", err);
+      }
+    };
+
+    fetchShelterId();
+  }, []);
 
   // 1) Single shift–click logic (unchanged)
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
@@ -116,7 +136,7 @@ const handleConfirmShifts = async () => {
     }))
   };
 
-  console.log("FINAL FINAL PAYLOAD:", JSON.stringify(payload));
+  console.log("FINAL PAYLOAD:", JSON.stringify(payload));
 
   try {
     await serviceShiftAPI.addShifts(payload);
