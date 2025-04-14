@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
+import { serviceShiftAPI } from "../../api/serviceShift";
+import { useParams } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -20,6 +22,8 @@ function getDefaultWeekRange() {
 }
 
 function Schedule() {
+  const { shelterId } = useParams();
+  console.log("shelterID from url:", shelterId);
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
@@ -101,6 +105,41 @@ function Schedule() {
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
 
+const handleConfirmShifts = async () => {
+  const payload = {
+    shifts: scheduledShifts.map(shift => ({
+      name: shift.name,
+      start_time: new Date(shift.start_time).toISOString(),
+      end_time: new Date(shift.end_time).toISOString(),
+      people: shift.people,
+      shelter_id: shelterId
+    }))
+  };
+
+  console.log("FINAL FINAL PAYLOAD:", JSON.stringify(payload));
+
+  try {
+    await serviceShiftAPI.addShifts(payload);
+    alert("Shifts successfully created!");
+  } catch (error) {
+    // Try to extract error message from response body
+    if (error.response && typeof error.response.json === "function") {
+      try {
+        const errorBody = await error.response.json();
+        console.error("Server error details:", errorBody);
+        alert("Failed to create shifts: " + (errorBody.message || JSON.stringify(errorBody)));
+      } catch (jsonErr) {
+        console.error("Failed to parse error response:", jsonErr);
+        alert("Failed to create shifts: An unknown error occurred (bad JSON).");
+      }
+    } else {
+      console.error("Shift creation error (generic):", error);
+      alert("Failed to create shifts: " + (error?.message || "Unknown error"));
+    }
+  }
+};
+  
+
   return (
     <div className="schedule-container">
       <h2>Set Repeatable Shifts</h2>
@@ -122,6 +161,25 @@ function Schedule() {
           </div>
         ))}
       </div>
+      <button
+        onClick={handleConfirmShifts}
+        disabled={scheduledShifts.length === 0}
+        style={{
+          backgroundColor: "#007bff",
+          color: "white",
+          fontSize: "17px",
+          padding: "8px 20px",
+          border: "none",
+          borderRadius: "4px",
+          cursor: scheduledShifts.length === 0 ? "not-allowed" : "pointer",
+          opacity: scheduledShifts.length === 0 ? 0.6 : 1,
+          margin: "10px 0",
+          width: "fit-content",
+          maxWidth: "220px",
+        }}
+      >
+        Confirm Shifts
+      </button>
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
