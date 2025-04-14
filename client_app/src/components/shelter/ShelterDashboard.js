@@ -123,29 +123,7 @@ function ShelterDashboard() {
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-          {/* Existing inline AddUserForm section */}
-          <div className="container-small">
-            <div className="container-align">
-              <h4>Settings</h4>
-              <button
-                style={{
-                  backgroundColor: "#f9f6f6",
-                  border: "none",
-                  outline: "none",
-                  color: "#1F75FE",
-                  fontSize: "1.0rem",
-                  textDecoration: "underline",
-                  textAlign: "center",
-                  padding: "0",
-                  marginTop: "-5px"
-                }}
-                onClick={() => setShowAddUserForm(!showAddUserForm)}
-              >
-                Add or Remove Users
-              </button>
-            </div>
-            {showAddUserForm && <AddUserForm shelterId={shelterId} />}
-          </div>
+
           {/* ✅ Link to new Settings screen */}
           <div className="container-small">
             <div className="container-align">
