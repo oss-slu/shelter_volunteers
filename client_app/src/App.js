@@ -53,6 +53,7 @@ function App() {
         <Route path="/shift-details" element={<ShiftDetails />} />
         <Route path="/request-for-help" element={<RequestForHelp />} />
         <Route path="/set-shifts" element={<Schedule />} />
+        <Route path="/set-shifts/:shelterId" element={<Schedule />} />
       </Route>
     </Routes>
   </Router>);

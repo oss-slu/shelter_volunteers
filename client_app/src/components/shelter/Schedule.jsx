@@ -103,15 +103,15 @@ function Schedule({ shelterId }) {
   const finalEvents = [...userEvents, ...openShiftEvents];
 
   const handleConfirmShifts = async () => {
-    const payload = {
-      shifts: scheduledShifts.map(shift => ({
-        name: shift.name,
-        start_time: new Date(shift.start_time).toISOString(),
-        end_time: new Date(shift.end_time).toISOString(),
-        people: shift.people,
-        shelter_id: shelterId
-      }))
-    };
+    const payload = scheduledShifts.map(shift => ({
+      name: shift.name,
+      start_time: shift.start_time,
+      end_time: shift.end_time,
+      people: shift.people,
+      shelter_id: shelterId
+    }));
+
+    console.log("shelter id here:", shelterId)
 
     try {
       await serviceShiftAPI.addShifts(payload);
