@@ -37,18 +37,40 @@ function Schedule() {
         const shelterAccess = permissions.full_access.find(
           (access) => access.resource_type === "shelter"
         );
-        if (shelterAccess && shelterAccess.resource_ids.length > 0) {
-          setShelterId(shelterAccess.resource_ids[0]);
+  
+        if (!shelterAccess || shelterAccess.resource_ids.length === 0) {
+          console.error("No shelter access found in permissions.");
+          return;
+        }
+  
+        const accessIds = shelterAccess.resource_ids;
+        console.log("Access resource_ids:", accessIds);
+  
+        const allShelters = await import("../../api/shelter").then(mod =>
+          mod.shelterAPI.getShelters()
+        );
+        const allIds = allShelters.map(s => s._id);
+        console.log("All shelter _ids:", allIds);
+  
+        // Actual match: check if any accessId matches a real shelter._id
+        const match = allShelters.find(shelter =>
+          accessIds.includes(shelter._id)
+        );
+  
+        if (match) {
+          console.log("Matched shelter:", match.name, match._id);
+          setShelterId(match._id);
         } else {
-          console.error("No shelter access found");
+          console.error("Could not match any real shelter to permissions resource_ids.");
         }
       } catch (err) {
-        console.error("Error fetching shelter ID:", err);
+        console.error("Error loading shelter ID:", err);
       }
     };
-
+  
     fetchShelterId();
   }, []);
+  
 
   // 1) Single shift–click logic (unchanged)
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
@@ -125,40 +147,38 @@ function Schedule() {
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
 
-const handleConfirmShifts = async () => {
-  const payload = {
-    shifts: scheduledShifts.map(shift => ({
-      name: shift.name,
-      start_time: new Date(shift.start_time).toISOString(),
-      end_time: new Date(shift.end_time).toISOString(),
-      people: shift.people,
-      shelter_id: shelterId
-    }))
-  };
-
-  console.log("FINAL PAYLOAD:", JSON.stringify(payload));
-
-  try {
-    await serviceShiftAPI.addShifts(payload);
-    alert("Shifts successfully created!");
-  } catch (error) {
-    // Try to extract error message from response body
-    if (error.response && typeof error.response.json === "function") {
-      try {
-        const errorBody = await error.response.json();
-        console.error("Server error details:", errorBody);
-        alert("Failed to create shifts: " + (errorBody.message || JSON.stringify(errorBody)));
-      } catch (jsonErr) {
-        console.error("Failed to parse error response:", jsonErr);
-        alert("Failed to create shifts: An unknown error occurred (bad JSON).");
-      }
-    } else {
-      console.error("Shift creation error (generic):", error);
-      alert("Failed to create shifts: " + (error?.message || "Unknown error"));
-    }
-  }
-};
+  const handleConfirmShifts = async () => {
+    const payload = {
+      shifts: scheduledShifts.map(shift => ({
+        name: shift.name,
+        start_time: new Date(shift.start_time).toISOString(),
+        end_time: new Date(shift.end_time).toISOString(),
+        people: shift.people,
+        shelter_id: shelterId
+      }))
+    };
   
+    console.log("Confirming shifts with payload:", JSON.stringify(payload, null, 2));
+    console.log("shelter_id used:", shelterId);
+  
+    try {
+      await serviceShiftAPI.addShifts(payload);
+      alert("Shifts successfully created!");
+    } catch (error) {
+      console.error("Shift creation error:", error);
+  
+      try {
+        // Try to extract raw response body from server
+        const text = await error?.response?.text();
+        console.error("Server 400 Response Body:", text);
+        alert("Failed to create shifts: " + (text || "Unknown backend error"));
+      } catch (jsonErr) {
+        // Fallback error handling
+        console.error("Could not read response body:", jsonErr);
+        alert("Failed to create shifts: " + (error?.message || "Unknown error"));
+      }
+    }
+  };
 
   return (
     <div className="schedule-container">
