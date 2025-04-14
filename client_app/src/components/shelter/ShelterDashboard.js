@@ -121,7 +121,6 @@ function ShelterDashboard() {
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
-
           {/* ✅ Link to new Settings screen */}
           <div className="container-small">
             <div className="container-align">
