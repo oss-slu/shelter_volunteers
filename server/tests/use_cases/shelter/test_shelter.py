@@ -51,7 +51,7 @@ def test_shelter_add_use_case_with_missing_fields():
     repo = mock.Mock()
     #shelter with missing req. fields should raise ValueError
     with pytest.raises(ValueError) as excinfo:
-        shelter_data = {
+        shelter_data = { # pylint: disable=redefined-outer-name
             "name": "Invalid Shelter",
             "address": {
                 #missing required fields
