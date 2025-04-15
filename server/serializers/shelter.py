@@ -33,8 +33,8 @@ class AddressJsonEncoder(json.JSONEncoder):
                 "postalCode": address.postal_code,
                 "country": address.country,
                 "coordinates": {
-                    address.coordinates.latitude,
-                    address.coordinates.longitude
+                    "latitude": address.coordinates.get("latitude"),
+                    "longitude": address.coordinates.get("longitude")
                     },
             }
             return to_serialize
