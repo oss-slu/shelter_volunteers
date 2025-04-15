@@ -10,16 +10,15 @@ class Address:
     Data class for address data.
     """
 
+    # Required fields (no defaults) must come first
     street1: str
-    street2: str # Optional
     city: str
-    state: str # State/Province/Region
-    postal_code: str
-    country: str
-    coordinates: {
-        "latitude": float,
-        "longitude": float
-    }
+    state: str
+    # Optional fields (with defaults) must come after required fields
+    street2: str = ""
+    postal_code: str = ""
+    country: str = "USA"
+    coordinates: dict = dataclasses.field(default_factory=dict) #user can provide longitude and latitude or thru json 
 
     @classmethod
     def from_dict(self, d):
