@@ -14,7 +14,6 @@ def create_test_app():
     app.register_blueprint(shelter_blueprint)
     return app
 
-
 @pytest.fixture
 def client():
     app = create_test_app()
@@ -56,49 +55,37 @@ def test_post_shelter(mock_shelter_add_use_case, client):
 
 @patch("application.rest.shelter.shelter_add_use_case")
 def test_post_shelter_missing_required_fields(mock_shelter_add_use_case, client):
-    #missing address
     request_data = {
-        "name": "Test shelter"
-        #missing address field
+        "name": "Test shelter" #missing address field
     }
-    
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
         content_type="application/json"
     )
-    
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400 #bad request
     assert not response.json["success"]
     assert "address" in response.json["message"]
-    
-    #test missing street1
     request_data = {
         "name": "Test shelter",
         "address": {
             "city": "St.Louis",
-            "state": "MO",
-            #missing street1
+            "state": "MO", #missing street1
         }
     }
-    
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
         content_type="application/json"
     )
-    
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400 #bad request
     assert not response.json["success"]
     assert "street1" in response.json["message"]
-    
-    #test missing city
     request_data = {
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "state": "MO",
-            #missing city
+            "state": "MO", #missing city
         }
     }
     
@@ -111,23 +98,18 @@ def test_post_shelter_missing_required_fields(mock_shelter_add_use_case, client)
     assert response.status_code == 400  #bad request
     assert not response.json["success"]
     assert "city" in response.json["message"]
-    
-    #test missing state
     request_data = {
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "city": "St.Louis",
-            #missing state
+            "city": "St.Louis", #missing state
         }
     }
-    
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
         content_type="application/json"
     )
-    
     assert response.status_code == 400  #bad request
     assert not response.json["success"]
     assert "state" in response.json["message"]
@@ -168,14 +150,9 @@ def test_get_shelter(mock_shelter_list_use_case, client):
     ]
 
     mock_shelter_list_use_case.return_value = mock_shelters
-
-
     response = client.get("/shelter")
-
-    # Fix: Ensure response is treated as a valid JSON array
     raw_data = response.data.decode()
     parsed_response = json.loads(raw_data)
-
     assert response.status_code == 200
     assert parsed_response == mock_shelters_json
 # pylint: enable=unused-argument
