@@ -30,7 +30,7 @@ class AddressJsonEncoder(json.JSONEncoder):
                 "street2": address.street2,
                 "city": address.city,
                 "state": address.state,
-                "postalCode": address.postal_code,
+                "postal_code": address.postal_code,
                 "country": address.country,
                 "coordinates": {
                     "latitude": address.coordinates.get("latitude"),
