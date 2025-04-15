@@ -49,8 +49,7 @@ def test_shelter_add_use_case_with_missing_fields():
     Test that validation fails when required fields are missing.
     """
     repo = mock.Mock()
-    
-    #attempt to create a shelter with missing required fields should raise ValueError
+    #shelter with missing req. fields should raise ValueError
     with pytest.raises(ValueError) as excinfo:
         shelter_data = {
             "name": "Invalid Shelter",
@@ -62,6 +61,5 @@ def test_shelter_add_use_case_with_missing_fields():
         #raise ValueError due to missing fields
         invalid_shelter = Shelter.from_dict(shelter_data)
         shelter_add_use_case(repo, invalid_shelter)
-    
     #verify error message contains missing field information
     assert "Missing required address fields" in str(excinfo.value)
