@@ -15,7 +15,7 @@ class Address:
     street2: str = ""
     postal_code: str = ""
     country: str = "USA"
-    coordinates: dict = dataclasses.field(default_factory=dict) 
+    coordinates: dict = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_dict(self, d):
