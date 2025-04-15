@@ -42,9 +42,9 @@ def shelter():
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
             )
-        if "name" not in shelter_data_dict or not shelter_data_dict['name']:
+        if "name" not in shelter_data_dict or not shelter_data_dict["name"]:
             return Response(
-                json.dumps({"success": False, "message": 
+                json.dumps({"success": False, "message":
                             "Missing required field: name"}),
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
@@ -55,11 +55,13 @@ def shelter():
             add_response = shelter_add_use_case(repo, shelter_obj)
             status_code = HTTP_STATUS_CODES_MAPPING[
                 ResponseTypes.SUCCESS] if add_response[
-                    "success"] else HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+                    "success"] else HTTP_STATUS_CODES_MAPPING[
+                        ResponseTypes.PARAMETER_ERROR]
         except ValueError as e:
             # Handle validation errors from Shelter.from_dict
             add_response = {"success": False, "message": str(e)}
-            status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+            status_code = HTTP_STATUS_CODES_MAPPING[
+                ResponseTypes.PARAMETER_ERROR]
         return Response(
             json.dumps(add_response, default=str),
             mimetype="application/json",
