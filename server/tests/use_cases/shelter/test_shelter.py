@@ -18,7 +18,7 @@ def shelter_data():
             "street1": "123 Main St",
             "city": "Springfield",
             "state": "IL",
-            "postalCode": "62701"
+            "postal_code": "62701"
         }
     )
 
@@ -56,7 +56,7 @@ def test_shelter_add_use_case_with_missing_fields():
             name="Invalid Shelter",
             address={
                 #missing required fields
-                "postalCode": "12345"
+                "postal_code": "12345"
             }
         )
         shelter_add_use_case(repo, invalid_shelter)
