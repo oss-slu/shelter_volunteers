@@ -52,13 +52,15 @@ def test_shelter_add_use_case_with_missing_fields():
     
     #attempt to create a shelter with missing required fields should raise ValueError
     with pytest.raises(ValueError) as excinfo:
-        invalid_shelter = Shelter(
-            name="Invalid Shelter",
-            address={
+        shelter_data = {
+            "name": "Invalid Shelter",
+            "address": {
                 #missing required fields
                 "postal_code": "12345"
             }
-        )
+        }
+        #raise ValueError due to missing fields
+        invalid_shelter = Shelter.from_dict(shelter_data)
         shelter_add_use_case(repo, invalid_shelter)
     
     #verify error message contains missing field information
