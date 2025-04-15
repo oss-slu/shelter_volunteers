@@ -49,7 +49,6 @@ class Shelter:
         shelter_data = d.copy()
         shelter_data["address"] = address_obj
         return cls(**shelter_data)
-        
     def to_dict(self):
         """
         The function takes an object and returns a dictionary
