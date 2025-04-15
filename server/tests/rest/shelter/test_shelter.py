@@ -39,7 +39,7 @@ def test_post_shelter(mock_shelter_add_use_case, client):
             "street2": "",
             "city": "St.Louis",
             "state": "MO",
-            "postalCode": "99999",
+            "postal_code": "99999",
             "country": "USA",
             "coordinates": {"latitude": 30.45486, "longitude": -90.20537},
         },
