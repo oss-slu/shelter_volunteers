@@ -71,17 +71,20 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         current_shift = valid_shifts[i]
         has_overlap = False
         # Check for overlap with existing user shifts
-        shifts_to_check = [current_shift]
-        shifts_to_check.extend(existing_user_shifts)
-        if check_time_overlap(shifts_to_check):
-            has_overlap = True
-        if not has_overlap and final_valid_indexes:
+        for existing_shift in existing_user_shifts:
+            if (current_shift.shift_start < existing_shift.shift_end and
+                current_shift.shift_end > existing_shift.shift_start):
+                has_overlap = True
+                break
+        # Check for overlap with previously approved shifts in this request
+        if not has_overlap:
             approved_shifts = [
                 valid_shifts[j] for j in range(i) if j in final_valid_indexes]
-            shifts_to_check = [current_shift]
-            shifts_to_check.extend(approved_shifts)
-            if check_time_overlap(shifts_to_check):
-                has_overlap = True
+            for approved_shift in approved_shifts:
+                if (current_shift.shift_start < approved_shift.shift_end and
+                    current_shift.shift_end > approved_shift.shift_start):
+                    has_overlap = True
+                    break
         if has_overlap:
             results[idx] = {
                 "service_commitment_id": None,
@@ -91,14 +94,10 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
         else:
             final_valid_commitments.append(valid_commitments[i])
             final_valid_indexes.append(idx)
+            # Add current shift to existing_user_shifts
+            # to check against subsequent commitments
+            existing_user_shifts.append(current_shift)
     if not final_valid_commitments:
-        for i in valid_indexes:
-            if results[i] is None:
-                results[i] = {
-                    "service_commitment_id": None,
-                    "success": False,
-                    "message": "Overlapping commitment"
-                }
         return results
     commitments_as_dict = [c.to_dict() for c in final_valid_commitments]
     inserted_commitments = commitments_repo.insert_service_commitments(
