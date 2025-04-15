@@ -9,12 +9,9 @@ class Address:
     """
     Data class for address data.
     """
-
-    # Required fields (no defaults) must come first
     street1: str
     city: str
     state: str
-    # Optional fields (with defaults) must come after required fields
     street2: str = ""
     postal_code: str = ""
     country: str = "USA"
