@@ -54,7 +54,8 @@ def test_post_shelter(mock_shelter_add_use_case, client):
     assert response.json == mock_response
 
 @patch("application.rest.shelter.shelter_add_use_case")
-def test_post_shelter_missing_required_fields(mock_shelter_add_use_case, client):
+def test_post_shelter_missing_required_fields(
+    mock_shelter_add_use_case, client):
     request_data = {
         "name": "Test shelter" #missing address field
     }
@@ -88,13 +89,11 @@ def test_post_shelter_missing_required_fields(mock_shelter_add_use_case, client)
             "state": "MO", #missing city
         }
     }
-    
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
         content_type="application/json"
     )
-    
     assert response.status_code == 400  #bad request
     assert not response.json["success"]
     assert "city" in response.json["message"]
