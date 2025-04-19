@@ -39,27 +39,37 @@ def shift_add_use_case(repo, new_shifts):
 def shifts_have_overlap(shifts):
     """
     Checks if any of the shifts in the list overlap with each other.
+    Only considers shifts at the same shelter as overlapping.
     """
     for i, shift in enumerate(shifts):
-        if check_time_overlap(shift, shifts[i + 1:]):
-            return True
+        for other_shift in shifts[i + 1:]:
+            # Check time overlap
+            time_overlap = (
+                max(shift.shift_start, other_shift.shift_start) <
+                min(shift.shift_end, other_shift.shift_end))
+            # Only consider it an overlap if at the same shelter
+            if time_overlap and shift.shelter_id == other_shift.shelter_id:
+                return True
     return False
 
 
 def check_time_overlap(shift_to_check, other_shifts):
     """
     Check if a shift overlaps with any shifts in a list.
+    Only considers shifts at the same shelter as overlapping.
     
     Args:
         shift_to_check: A shift object to check for overlap
         other_shifts: A list of shift objects to check against
         
     Returns:
-        bool: True if the shift overlaps with 
-        any shifts in the list, False otherwise
+        bool: True if the shift overlaps with any shifts 
+        in the list at the same shelter, False otherwise
     """
     for other_shift in other_shifts:
         if (shift_to_check.shift_start < other_shift.shift_end and
-            shift_to_check.shift_end > other_shift.shift_start):
+            shift_to_check.shift_end > other_shift.shift_start and
+            shift_to_check.shelter_id == other_shift.shelter_id):
             return True
     return False
+
