@@ -21,27 +21,26 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     """
     if not commitments:
         return []
+    # Initialize results list
+    results = [None] * len(commitments)
+    # Validate shifts existence
     shift_ids = [c.service_shift_id for c in commitments]
     existing_shifts = {
         str(s.get_id()): s for s in shifts_repo.get_shifts(shift_ids)
     }
     valid_commitments = []
-    results = []
     valid_indexes = []
     for i, commitment in enumerate(commitments):
         shift_id = commitment.service_shift_id
         if shift_id not in existing_shifts:
-            results.append({
+            results[i] = {
                 "service_commitment_id": None,
                 "success": False,
-                "message": (
-                    f"cannot commit to non-existing shift {shift_id}"
-                )
-            })
+                "message": f"cannot commit to non-existing shift {shift_id}"
+            }
         else:
             valid_commitments.append(commitment)
             valid_indexes.append(i)
-            results.append(None)
     if not valid_commitments:
         return results
     # Get user ID from first commitment
@@ -54,9 +53,11 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
             existing_user_commitments = []
     except (AttributeError, TypeError):
         existing_user_commitments = []
-    existing_commitment_shift_ids = [str(c.service_shift_id)
-                                    for c in existing_user_commitments
-                                    if c.service_shift_id is not None]
+    existing_commitment_shift_ids = [
+        str(c.service_shift_id)
+        for c in existing_user_commitments
+        if c.service_shift_id is not None
+    ]
     # Get existing shifts
     existing_user_shifts = []
     if existing_commitment_shift_ids:
@@ -65,27 +66,13 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     # Get valid shifts for current commitments
     valid_shifts = [
         existing_shifts[c.service_shift_id] for c in valid_commitments]
+    # Process commitments while checking for overlaps
     final_valid_commitments = []
     final_valid_indexes = []
     for i, idx in enumerate(valid_indexes):
         current_shift = valid_shifts[i]
-        has_overlap = False
-        # Check for overlap with existing user shifts
-        for existing_shift in existing_user_shifts:
-            if (current_shift.shift_start < existing_shift.shift_end and
-                current_shift.shift_end > existing_shift.shift_start):
-                has_overlap = True
-                break
-        # Check for overlap with previously approved shifts in this request
-        if not has_overlap:
-            approved_shifts = [
-                valid_shifts[j] for j in range(i) if j in final_valid_indexes]
-            for approved_shift in approved_shifts:
-                if (current_shift.shift_start < approved_shift.shift_end and
-                    current_shift.shift_end > approved_shift.shift_start):
-                    has_overlap = True
-                    break
-        if has_overlap:
+        # Use check_time_overlap to check for overlaps with existing shifts
+        if check_time_overlap(current_shift, existing_user_shifts):
             results[idx] = {
                 "service_commitment_id": None,
                 "success": False,
@@ -99,6 +86,7 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
             existing_user_shifts.append(current_shift)
     if not final_valid_commitments:
         return results
+    # Insert valid commitments
     commitments_as_dict = [c.to_dict() for c in final_valid_commitments]
     inserted_commitments = commitments_repo.insert_service_commitments(
         commitments_as_dict)
@@ -114,29 +102,23 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
                 "success": False,
                 "message": "Failed to insert commitment"
             }
-    for i in valid_indexes:
-        if results[i] is None:
-            results[i] = {
-                "service_commitment_id": None,
-                "success": False,
-                "message": "Overlapping commitment"
-            }
     return results
 
-def check_time_overlap(shifts):
+
+def check_time_overlap(shift_to_check, other_shifts):
     """
-    Check if the shifts have overlapping times.
+    Check if a shift overlaps with any shifts in a list.
     
     Args:
-        shifts: A list of shift objects 
-        with shift_start and shift_end attributes
+        shift_to_check: A shift object to check for overlap
+        other_shifts: A list of shift objects to check against
         
     Returns:
-        bool: True if any shifts overlap, False otherwise
+        bool: True if the shift overlaps with any 
+        shifts in the list, False otherwise
     """
-    for i in range(len(shifts)):
-        for j in range(i + 1, len(shifts)):
-            if (shifts[i].shift_start < shifts[j].shift_end and
-                shifts[i].shift_end > shifts[j].shift_start):
-                return True
+    for other_shift in other_shifts:
+        if (shift_to_check.shift_start < other_shift.shift_end and
+            shift_to_check.shift_end > other_shift.shift_start):
+            return True
     return False
