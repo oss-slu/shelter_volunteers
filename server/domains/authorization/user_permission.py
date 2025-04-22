@@ -3,6 +3,7 @@ UserPermission class definition.
 """
 import uuid
 import dataclasses
+from domains.resources import Resources
 from typing import List
 
 from domains.authorization.access import Access
@@ -73,3 +74,11 @@ class UserPermission:
         self.full_access.append(
             Access(resource_type=resource_type, resource_ids=[resource_id])
         )
+    def is_system_admin(self):
+        """
+        Check if the user has system admin access.
+        """
+        for access in self.full_access:
+            if access.resource_type == Resources.SYSTEM:
+                return True
+        return False

@@ -10,12 +10,14 @@ from use_cases.authorization.is_authorized import is_authorized
 from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from repository.mongo.authorization import PermissionsMongoRepo
+from repository.mongo.shelter import ShelterRepo
 from serializers.user_permission import UserPermissionJsonEncoder
 from domains.resources import Resources
 from responses import ResponseTypes
 
 authorization_blueprint = Blueprint('authorization', __name__)
 repo = PermissionsMongoRepo()
+shelter_repo = ShelterRepo()
 
 @authorization_blueprint.route('/user_permission', methods=['GET', 'POST'])
 def permission():
@@ -53,7 +55,7 @@ def permission():
         )
     user_id = user[0]
     if request.method == 'GET':
-        user_permission = get_user_permission(repo, user_id)
+        user_permission = get_user_permission(repo, user_id, shelter_repo)
         return Response(
             json.dumps(user_permission, cls=UserPermissionJsonEncoder),
             mimetype='application/json',
