@@ -7,7 +7,6 @@ to ensure it correctly retrieves user permissions from the repository.
 
 from unittest.mock import Mock
 from use_cases.authorization.get_user_permission import get_user_permission
-from responses import ResponseSuccess
 from domains.resources import Resources
 from domains.authorization.user_permission import UserPermission
 from domains.shelter.shelter import Shelter
@@ -29,8 +28,10 @@ def test_get_user_permission_system_admin():
     email = 'somebody@something.com'
     admin_permission = {
         'email': email,
-        'full_access':[{'resource_type': Resources.SYSTEM, 'resource_ids': None}]
-        }
+        'full_access':[{
+            'resource_type': Resources.SYSTEM, 'resource_ids': None
+        }]
+    }
     shelter_list = [
         {
             'name': 'shelter1',
