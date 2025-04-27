@@ -36,8 +36,8 @@ function App() {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route element={<ProtectedRoute />}>
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboardLayout />}>
           <Route index element={<ShelterDashboard />} />
           <Route path="settings" element={<Settings />} /> 
