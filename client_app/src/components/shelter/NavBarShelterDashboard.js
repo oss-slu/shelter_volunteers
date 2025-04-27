@@ -1,65 +1,68 @@
 
 // client_app/src/components/shelter/NavBarShelterDashboard.js
-import React, { useState, useEffect } from "react";
+import { NavLink, useParams } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
 import "../../styles/NavBar.css";
-import { useLocation } from "react-router-dom";
 
-function CustomNavBarShelter({ auth }) {
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+function NavBarShelterDashboard() {
+  // Get the resource ID from the current URL
+  const { shelterId } = useParams();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  }, []);
-
+  // Build the base path for this specific shelter's dashboard
+  const shelterBasePath = shelterId ? `/shelter-dashboard/${shelterId}` : '/shelter-dashboard';
+  console.log("Base path is " + shelterBasePath);
   return (
     <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
-      <Navbar.Brand href="/shelter-dashboard">Shelter Dashboard</Navbar.Brand>
+      <NavLink to={shelterBasePath} className="navbar-brand">Shelter Dashboard</NavLink>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="justify-content-end" style={{ width: "100%" }}>
-          {isAuthenticated || auth ? (
-            <>
-              <Nav.Link
-                href="/shelter-dashboard"
-                active={location.pathname === "/shelter-dashboard"}
-              >
-                Shelter Dashboard
-              </Nav.Link>
-              <Nav.Link
-                href="/shift-details"
-                active={location.pathname === "/shift-details"}
-              >
-                Shift Details
-              </Nav.Link>
-              {/* Link to the new schedule interface */}
-              <Nav.Link
-                href="/set-shifts"
-                active={location.pathname === "/set-shifts"}
-              >
-                Set Shifts
-              </Nav.Link>
-              <Nav.Link
-                href="/upcoming-requests"
-                active={location.pathname === "/upcoming-requests"}
-              >
-                Upcoming Shifts
-              </Nav.Link>
-              <Nav.Link href="/logout">Sign Out</Nav.Link>
-            </>
-          ) : (
-            <>
-              <Nav.Link href="/">Sign in</Nav.Link>
-              <Nav.Link href="/signup">Sign up</Nav.Link>
-            </>
-          )}
+          <Nav.Item>
+            <NavLink 
+              to={shelterBasePath}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+              end // Only match this exact path
+            >
+              Shelter Dashboard
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${shelterBasePath}/shift-details`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Shift Details
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${shelterBasePath}/schedule`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Schedule Shifts
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${shelterBasePath}/upcoming-requests`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Upcoming Shifts
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to="/logout" 
+              className="nav-link"
+            >
+              Sign Out
+            </NavLink>
+          </Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
   );
 }
 
-export default CustomNavBarShelter;
+export default NavBarShelterDashboard;
 
