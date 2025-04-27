@@ -2,6 +2,8 @@
 // client_app/src/components/shelter/NavBarShelterDashboard.js
 import { NavLink, useParams } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/NavBar.css";
 
 function NavBarShelterDashboard() {
@@ -13,7 +15,9 @@ function NavBarShelterDashboard() {
   console.log("Base path is " + shelterBasePath);
   return (
     <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
-      <NavLink to={shelterBasePath} className="navbar-brand">Shelter Dashboard</NavLink>
+      <NavLink to={'/home'} className="navbar-brand">
+        <FontAwesomeIcon icon={faHome} className="home-icon" />
+      </NavLink>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="justify-content-end" style={{ width: "100%" }}>
