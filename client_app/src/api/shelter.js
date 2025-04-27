@@ -15,5 +15,10 @@ export const shelterAPI = {
             body: JSON.stringify(data),
         });
         return response;
+    },
+    // Add this function to the shelterAPI object in shelter.js
+    getSchedule: async (shelterId) => {
+    const response = await fetchClient(`/schedule?shelter_id=${shelterId}`);
+    return response;
     }
 }
