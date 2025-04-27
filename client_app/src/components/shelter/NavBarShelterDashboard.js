@@ -12,7 +12,6 @@ function NavBarShelterDashboard() {
 
   // Build the base path for this specific shelter's dashboard
   const shelterBasePath = shelterId ? `/shelter-dashboard/${shelterId}` : '/shelter-dashboard';
-  console.log("Base path is " + shelterBasePath);
   return (
     <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
       <NavLink to={'/home'} className="navbar-brand">
