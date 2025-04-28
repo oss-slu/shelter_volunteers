@@ -18,19 +18,22 @@ def create_schedule():
         #parsing the request body as JSON
         shifts = request.get_json()
         if not shifts or not isinstance(shifts, list):
-            return jsonify({'error': 'Expected a list of service shifts'}), 400  
+            return jsonify({'error': 'Expected a list of service shifts'}), 400
         #going to process every shift
         inserted_ids = []
         for shift in shifts:
             #making sure the shift has required fields
             if 'timestamp' not in shift or 'service' not in shift:
-                return jsonify({'error': 'Each shift must have timestamp and service fields'}), 400
-            #timestamp here is "milliseconds since midnight" instead of epoch            
+                return jsonify({'error'
+                                : 'Each shift must have timestamp and service fields'}),
+                400
+            #timestamp here is "milliseconds since midnight" instead of epoch
             # check this, trying to insert the shift into the schedule collection
             result = schedule_repo.insert(shift)
             inserted_ids.append(str(result))
         #return success with the IDs of created schedules
-        return jsonify({'message': 'Schedule created successfully', 'ids': inserted_ids}), 201
+        return jsonify({'message': 'Schedule created successfully', 
+                        'ids': inserted_ids}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
