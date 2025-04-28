@@ -22,6 +22,7 @@ import { ShiftDetails } from "./components/shelter/ShiftDetails";
 import UpcomingRequests from "./components/shelter/UpcomingRequests";
 import Settings from "./components/shelter/Settings";
 import Schedule from "./components/shelter/Schedule"; 
+import RepeatableShifts from "./components/shelter/RepeatableShifts";
 
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -51,6 +52,7 @@ function App() {
           <Route path="shelters" element={<Shelters />} />
           <Route path="past-shifts" element={<PastShifts />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
+          <Route path="repeatable-shifts" element={<RepeatableShifts />} />
         </Route>
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
       </Route>
