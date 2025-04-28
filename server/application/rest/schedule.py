@@ -25,14 +25,14 @@ def create_schedule():
             #making sure the shift has required fields
             if 'timestamp' not in shift or 'service' not in shift:
                 return jsonify({'error'
-                                : 'Each shift must have timestamp and service fields'}),
+                                : 'Shift requires timestamp + service fields'}),
                 400
             #timestamp here is "milliseconds since midnight" instead of epoch
-            # check this, trying to insert the shift into the schedule collection
+            # check this, trying to insert shift into  schedule collection
             result = schedule_repo.insert(shift)
             inserted_ids.append(str(result))
         #return success with the IDs of created schedules
-        return jsonify({'message': 'Schedule created successfully', 
+        return jsonify({'message': 'Schedule created successfully',
                         'ids': inserted_ids}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
