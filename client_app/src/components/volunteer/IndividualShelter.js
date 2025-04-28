@@ -5,11 +5,15 @@ const IndividualShelter = (props) => {
 
   function addShift(shift) {
     if (props.addShiftFunction) {
-      let id = shelter.id;
+      if (!shelter.shiftCounter) {
+        shelter.shiftCounter = 0;
+      }
+      shelter.shiftCounter += 1;
+
       let newShift = {
-        //code: `${uuidv4()}-${id}`,
-        code: shift.id,
-        shelter: id,
+        code: `${shift.id}-${shelter.shiftCounter}`,
+        shelter: shelter.name,
+        shelter_id: shelter._id,
         start_time: shift.shift_start,
         end_time: shift.shift_end,
         title: shift.title,
