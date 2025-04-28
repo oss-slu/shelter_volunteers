@@ -64,7 +64,7 @@ const IndividualShelter = (props) => {
   return (
     <div>
       {props.isSignupPage && (
-        <div key={shelter.id}>
+        <div key={shelter._id}>
           <div className="signupcard">
             <div className="column1">
               <h2>{shelter.name}</h2>
@@ -106,7 +106,7 @@ const IndividualShelter = (props) => {
         </div>
       )}
       {!props.isSignupPage && (
-        <div className="shelter text-center" key={shelter.id}>
+        <div className="shelter text-center" key={shelter._id}>
           <h2>{shelter.name}</h2>
           <p>{formatAddress(shelter.address)}</p> 
         </div>

@@ -20,7 +20,6 @@ const ShelterList = (props) => {
         {/* Display the shelters*/}
         {props.shelters &&
           props.shelters
-            .sort((a, b) => a.distance - b.distance)
             .map((shelter) => {
               return (
                 <div key={shelter._id}>
