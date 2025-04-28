@@ -10,7 +10,6 @@ const Settings = () => {
     <div className="settings-page">
       <h2>Settings</h2>
       <AddUserForm shelterId={shelterId} />
-
       {/* Add link to define repeatable shifts */}
       <Link to={`/shelter-dashboard/${shelterId}/repeatable-shifts`}>
         <button>Define Repeatable Shifts</button>
