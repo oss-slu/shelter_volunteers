@@ -7,7 +7,7 @@ function VolunteerDashboard() {
   const navigate = useNavigate();
 
   const signupClick = () => {
-    navigate("/volunteer-dashboard/shelters");
+    navigate("/shelters");
   };
 
   return (
