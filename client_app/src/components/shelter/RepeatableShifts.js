@@ -4,57 +4,53 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 const RepeatableShifts = () => {
-  const { shelterId } = useParams();
+  const { shelterId } = useParams(); // grab the shelterId from URL
 
   const [shifts, setShifts] = useState([]);
   const [newShift, setNewShift] = useState({
-    shift_name: "",
-    shift_start: "",
-    shift_end: "",
-    required_volunteer_count: 1,
-    max_volunteer_count: 5
+    shiftName: "",
+    startTime: "",
+    endTime: "",
+    requiredVolunteers: 1,
+    maxVolunteers: 5,
   });
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Convert HH:MM to milliseconds since midnight
+  const timeStringToMillis = (timeStr) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    return (hours * 60 + minutes) * 60 * 1000;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewShift({ ...newShift, [name]: value });
   };
 
-  const timeToMilliseconds = (timeStr) => {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    return (hours * 60 + minutes) * 60 * 1000;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newShift.shift_start && newShift.shift_end) {
-      const formattedShift = {
-        shift_name: newShift.shift_name,
-        shift_start: timeToMilliseconds(newShift.shift_start),
-        shift_end: timeToMilliseconds(newShift.shift_end),
-        required_volunteer_count: Number(newShift.required_volunteer_count) || 1,
-        max_volunteer_count: Number(newShift.max_volunteer_count) || 5
+    if (newShift.startTime && newShift.endTime) {
+      const newEntry = {
+        ...newShift,
+        shift_start: timeStringToMillis(newShift.startTime),
+        shift_end: timeStringToMillis(newShift.endTime),
       };
-      setShifts([...shifts, formattedShift]);
+      setShifts([...shifts, newEntry]);
       setNewShift({
-        shift_name: "",
-        shift_start: "",
-        shift_end: "",
-        required_volunteer_count: 1,
-        max_volunteer_count: 5
+        shiftName: "",
+        startTime: "",
+        endTime: "",
+        requiredVolunteers: 1,
+        maxVolunteers: 5,
       });
+      setSuccessMessage("Shift added successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000); // Remove after 3 sec
     }
   };
 
   const updateShift = (index, field, value) => {
     const updatedShifts = [...shifts];
-    if (field === "shift_start" || field === "shift_end") {
-      updatedShifts[index][field] = timeToMilliseconds(value);
-    } else if (field === "required_volunteer_count" || field === "max_volunteer_count") {
-      updatedShifts[index][field] = Number(value);
-    } else {
-      updatedShifts[index][field] = value;
-    }
+    updatedShifts[index][field] = value;
     setShifts(updatedShifts);
   };
 
@@ -63,27 +59,19 @@ const RepeatableShifts = () => {
     setShifts(updatedShifts);
   };
 
-  const millisecondsToTime = (ms) => {
-    const totalMinutes = ms / (60 * 1000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = Math.floor(totalMinutes % 60);
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  };
-
   return (
-    <div className="repeatable-shifts-page" style={{ padding: "20px" }}>
+    <div className="repeatable-shifts-page" style={{ maxWidth: "900px", margin: "0 auto", padding: "20px" }}>
       <h2>Define Repeatable Shifts for Shelter {shelterId}</h2>
-      {/* Add New Shift Form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "30px" }}>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
         <label>
           Shift Name (optional):
           <input
             type="text"
-            name="shift_name"
-            value={newShift.shift_name}
+            name="shiftName"
+            value={newShift.shiftName}
             onChange={handleInputChange}
             placeholder="e.g., Morning Shift"
-            style={{ marginLeft: "10px", marginBottom: "10px" }}
           />
         </label>
         <br />
@@ -91,10 +79,9 @@ const RepeatableShifts = () => {
           Start Time:
           <input
             type="time"
-            name="shift_start"
-            value={newShift.shift_start}
+            name="startTime"
+            value={newShift.startTime}
             onChange={handleInputChange}
-            style={{ marginLeft: "10px", marginBottom: "10px" }}
           />
         </label>
         <br />
@@ -102,10 +89,9 @@ const RepeatableShifts = () => {
           End Time:
           <input
             type="time"
-            name="shift_end"
-            value={newShift.shift_end}
+            name="endTime"
+            value={newShift.endTime}
             onChange={handleInputChange}
-            style={{ marginLeft: "10px", marginBottom: "10px" }}
           />
         </label>
         <br />
@@ -113,11 +99,10 @@ const RepeatableShifts = () => {
           Required Volunteers:
           <input
             type="number"
-            name="required_volunteer_count"
-            value={newShift.required_volunteer_count}
+            name="requiredVolunteers"
+            value={newShift.requiredVolunteers}
             onChange={handleInputChange}
             min="1"
-            style={{ marginLeft: "10px", marginBottom: "10px" }}
           />
         </label>
         <br />
@@ -125,78 +110,85 @@ const RepeatableShifts = () => {
           Max Volunteers:
           <input
             type="number"
-            name="max_volunteer_count"
-            value={newShift.max_volunteer_count}
+            name="maxVolunteers"
+            value={newShift.maxVolunteers}
             onChange={handleInputChange}
             min="1"
-            style={{ marginLeft: "10px", marginBottom: "10px" }}
           />
         </label>
         <br />
-        <button type="submit">Add Shift</button>
+        <button type="submit" style={{ marginTop: "10px" }}>
+          Add Shift
+        </button>
+        {successMessage && <p style={{ color: "green", marginTop: "10px" }}>{successMessage}</p>}
       </form>
-      {/* Current Repeatable Shifts */}
-      <h3>Current Repeatable Shifts</h3>
-      {shifts.length === 0 ? (
-        <p>No shifts added yet.</p>
-      ) : (
-        <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", width: "100%" }}>
-          <thead>
-            <tr>
-              <th>Shift Name</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Required Volunteers</th>
-              <th>Max Volunteers</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shifts.map((shift, index) => (
-              <tr key={index}>
-                <td>
-                  <input
-                    type="text"
-                    value={shift.shift_name}
-                    onChange={(e) => updateShift(index, "shift_name", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="time"
-                    onChange={(e) => updateShift(index, "shift_start", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="time"
-                    onChange={(e) => updateShift(index, "shift_end", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={shift.required_volunteer_count}
-                    onChange={(e) => updateShift(index, "required_volunteer_count", e.target.value)}
-                    min="1"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={shift.max_volunteer_count}
-                    onChange={(e) => updateShift(index, "max_volunteer_count", e.target.value)}
-                    min="1"
-                  />
-                </td>
-                <td>
-                  <button onClick={() => deleteShift(index)}>Delete</button>
-                </td>
+
+      {/* List of shifts */}
+      <div>
+        <h3>Current Repeatable Shifts</h3>
+        {shifts.length === 0 ? (
+          <p>No shifts added yet.</p>
+        ) : (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th>Shift Name</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Required Volunteers</th>
+                <th>Max Volunteers</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {shifts.map((shift, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      type="text"
+                      value={shift.shiftName}
+                      onChange={(e) => updateShift(index, "shiftName", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="time"
+                      value={shift.startTime}
+                      onChange={(e) => updateShift(index, "startTime", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="time"
+                      value={shift.endTime}
+                      onChange={(e) => updateShift(index, "endTime", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      value={shift.requiredVolunteers}
+                      onChange={(e) => updateShift(index, "requiredVolunteers", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      value={shift.maxVolunteers}
+                      onChange={(e) => updateShift(index, "maxVolunteers", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => deleteShift(index)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 };
