@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import "../../styles/shelter/RepeatableShifts.css";
 
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -62,7 +63,6 @@ const RepeatableShifts = () => {
   return (
     <div className="repeatable-shifts-page" style={{ maxWidth: "900px", margin: "0 auto", padding: "20px" }}>
       <h2>Define Repeatable Shifts for Shelter {shelterId}</h2>
-
       <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
         <label>
           Shift Name (optional):
@@ -122,7 +122,6 @@ const RepeatableShifts = () => {
         </button>
         {successMessage && <p style={{ color: "green", marginTop: "10px" }}>{successMessage}</p>}
       </form>
-
       {/* List of shifts */}
       <div>
         <h3>Current Repeatable Shifts</h3>

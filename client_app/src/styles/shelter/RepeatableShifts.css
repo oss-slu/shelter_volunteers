@@ -1,0 +1,76 @@
+.repeatable-shifts-page {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .repeatable-shifts-page h2,
+  .repeatable-shifts-page h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  form input[type="text"],
+  form input[type="time"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  form button:hover {
+    background-color: #1565c0;
+  }
+  
+  .shift-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .shift-item input[type="text"],
+  .shift-item input[type="time"] {
+    flex: 1;
+  }
+  
+  .shift-item button {
+    padding: 6px 10px;
+    background-color: #e53935;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .shift-item button:hover {
+    background-color: #c62828;
+  }
+  
