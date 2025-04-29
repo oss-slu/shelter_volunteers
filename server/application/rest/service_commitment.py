@@ -149,7 +149,7 @@ def fetch_service_commitments():
                 commitments_list[i].update({**shifts_list[i]})
 
             # merge the shelters data into the commitments_list
-            # shelter_list might not be the same size as commitments_list 
+            # shelter_list might not be the same size as commitments_list
             # because there may be multiple commitments for the same shelter
             # so we will have to check if the shelter_id is the same
             # and then merge the data
@@ -158,7 +158,7 @@ def fetch_service_commitments():
                 shelter["_id"]: shelter for shelter in shelters_list
             }
             for commitment in commitments_list:
-                shelter_id = commitment.get('shelter_id')
+                shelter_id = commitment.get("shelter_id")
                 if shelter_id in shelters_dict:
                     commitment.update({"shelter": shelters_dict[shelter_id]})
         return Response(
