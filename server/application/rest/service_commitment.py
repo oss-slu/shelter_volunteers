@@ -89,11 +89,7 @@ def fetch_service_commitments():
         # Extract service_shift_id from query parameters if provided
         service_shift_id = request.args.get("service_shift_id")
         include_shift_details = is_true(request.args, "include_shift_details")
-        print("WE ARE HERE")
-        print(request.headers)
         user_tuple = get_user_from_token(request.headers)
-        print("user tuple is ", user_tuple)
-        print("HERE NOW")
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
             return (
