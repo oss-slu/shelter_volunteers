@@ -128,7 +128,7 @@ def fetch_service_commitments():
 
         if include_shift_details:
             shelters = list_shelters_for_shifts(shifts, shelter_repo)
-            # Confirt shifts to JSON
+            # Convert shifts to JSON
             shifts_list = []
             for shift in shifts:
                 shift_dict = json.loads(json.dumps(
