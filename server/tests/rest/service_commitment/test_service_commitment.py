@@ -1,4 +1,6 @@
-import json
+"""
+Test cases for the service commitment API endpoints.
+"""
 import pytest
 
 from unittest.mock import patch
@@ -46,7 +48,7 @@ def test_get_commitments_with_augmented_data(
         ServiceCommitment.from_dict(commitment)
         for commitment in mock_commitments_json
     ]
-    
+
     mock_shifts_json = [
         {
             "_id": "SHIFT_ID1",

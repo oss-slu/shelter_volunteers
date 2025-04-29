@@ -141,24 +141,22 @@ def fetch_service_commitments():
                     shelter, cls=ShelterJsonEncoder))
                 shelters_list.append(shelter_dict)
 
-            # merge the commitments_list, shifts_list 
+            # merge the commitments_list, shifts_list
             # there is the same number of elements in each list
-            # augment the data in commitments_list with the shift and shelter data
-            # by copying the fields of shift into the commitment
-            # for example, if we have 
-            # commitment data as  {shelter_id = 'some id', volunteer_id = 'volunteer'}
-            # shift data as {shelter_id = 'some id', shift_start = 'start time'}
-            # we will have
-            # commitment data as {shelter_id = 'some id', volunteer_id = 'volunteer', shift_start = 'start time'}
+            # augment the data in commitments_list with the shifts data
+            # by copying the fields of each shift into the commitment
             for i in range(len(commitments_list)):
                 commitments_list[i].update({**shifts_list[i]})
+
             # merge the shelters data into the commitments_list
-            # shelter_list might not be the same size as commitments_list because there may be multiple
-            # commitments for the same shelter
+            # shelter_list might not be the same size as commitments_list 
+            # because there may be multiple commitments for the same shelter
             # so we will have to check if the shelter_id is the same
             # and then merge the data
             # add a new field: shelter in the commitment data
-            shelters_dict = {shelter['_id']: shelter for shelter in shelters_list}
+            shelters_dict = {
+                shelter["_id"]: shelter for shelter in shelters_list
+            }
             for commitment in commitments_list:
                 shelter_id = commitment.get('shelter_id')
                 if shelter_id in shelters_dict:

@@ -14,7 +14,7 @@ def list_shelters_for_shifts(service_shifts, shelter_repo):
     """
 
     shelters = []
-    
+
     for shift in service_shifts:
         shelter = shelter_repo.get_by_id(shift.shelter_id)
         if shelter and shelter not in shelters:
