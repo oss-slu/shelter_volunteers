@@ -24,8 +24,6 @@ const Shelters = (props) => {
     setLoading,
     noSearchDataAvailable,
     setNoSearchDataAvailable,
-    getLocation,
-    setRadiusfromLocation
   } = useShelterData(defaultRadius);
 
   const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -178,7 +176,6 @@ const Shelters = (props) => {
         <div>
           {props.condensed && (
             <div className="text-center">
-              <button onClick={getLocation}>Get Shelters from Current Location</button>
               <ShelterList
                 shelters={Array.isArray(originalData) ? originalData : []} // making sure it's array
                 loadingFunction={setLoading}
@@ -186,7 +183,7 @@ const Shelters = (props) => {
                 isSignupPage={false}
               />
               <div className="text-center">
-                <Link to="/shelters">
+                <Link to="/volunteer-dashboard/shelters">
                   <button>View All Shelters</button>
                 </Link>
               </div>
@@ -198,7 +195,6 @@ const Shelters = (props) => {
                 <div className="column column-1">
                   <div className="text-center">
                     <h1>Volunteering Opportunities</h1>
-                    <button onClick={getLocation}>Show opportunities near me</button>
                     <br />
                     <SearchBar onSearch={handleSearch} />
                     {noSearchDataAvailable && (
@@ -209,14 +205,6 @@ const Shelters = (props) => {
                         </h1>
                       </div>
                     )}
-                    <label htmlFor="radius-select">Radius (miles): </label>
-                    <select id="radius-select" onChange={setRadiusfromLocation}>
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
                   </div>
                   {loading && <div className="loader"></div>}
                   <ShelterList

@@ -34,7 +34,7 @@ describe("tests that do not need shelters rendered", () => {
   beforeEach(async () => {
     renderWithRouter(<VolunteerDashboard />, 
     [{
-      path: "/shelters",
+      path: "/volunteer-dashboard/shelters",
       element: <h2>Shelter List Page</h2>,
     },])
   })
