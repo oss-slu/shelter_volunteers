@@ -1,3 +1,9 @@
+"""
+TimeFilter class and build_time_filter function.
+This module contains the TimeFilter class and a function to build it.
+The TimeFilter class is used to encapsulate time-related filters 
+for service commitments and service shifts
+"""
 from collections.abc import Mapping
 class TimeFilter:
     """
@@ -12,7 +18,7 @@ class TimeFilter:
         return self.filters
     def get_filter(self, key):
         return self.filters.get(key) if self.filters else None
-    
+
 def build_time_filter(filters=None):
     """
     Build a TimeFilter object.
@@ -40,9 +46,9 @@ def build_time_filter(filters=None):
                 )
             try:
                 converted_filters[key] = int(value)
-            except ValueError:
-                raise (
-                    ValueError("filters", f"Value of {key} must be an integer")
-                )
+            except ValueError as exc:
+                raise ValueError(
+                        "filters", f"Value of {key} must be an integer"
+                    ) from exc
 
     return TimeFilter(filters=converted_filters)

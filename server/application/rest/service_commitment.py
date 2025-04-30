@@ -16,7 +16,6 @@ from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.shelter import ShelterRepo
-from request.time_filter import build_time_filter
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from serializers.service_shift import ServiceShiftJsonEncoder
 from serializers.shelter import ShelterJsonEncoder
@@ -85,39 +84,6 @@ def create_service_commitment():
 def fetch_service_commitments():
     """
     Handle GET request to retrieve service commitments.
-
-    This endpoint retrieves service commitments, optionally filtered by a specific
-    service shift ID or user email (extracted from the authorization token). It can
-    also include additional details about shifts and shelters if requested.
-
-    Query Parameters:
-    - service_shift_id (str, optional): The ID of the service shift to filter commitments.
-    - include_shift_details (bool, optional): Whether to include details about shifts and shelters.
-
-    Headers:
-    - Authorization (str): Bearer token for user authentication.
-
-    Responses:
-    - 200 OK: Returns a list of service commitments, optionally augmented with shift and shelter details.
-    - 400 Bad Request: Returns an error message if the request parameters are invalid.
-    - 401 Unauthorized: Returns an error message if the authorization token is invalid.
-
-    Example Response (200 OK):
-    [
-        {
-            "commitment_id": "12345",
-            "volunteer_id": "user@example.com",
-            "service_shift_id": "67890",
-            "shelter_id": "54321",
-            "shift_start_time": "2023-01-01T08:00:00Z",
-            "shift_end_time": "2023-01-01T12:00:00Z",
-            "shelter": {
-                "shelter_id": "54321",
-                "name": "Happy Paws Shelter",
-                "location": "123 Main St, Cityville"
-            }
-        }
-    ]
     """
     try:
         # Extract service_shift_id from query parameters if provided

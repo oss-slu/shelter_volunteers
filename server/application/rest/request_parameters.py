@@ -1,8 +1,10 @@
-from request.time_filter import build_time_filter
-import re
 """
 This module contains supporting functions for parsing URL parameters
+and building request objects for the API.
 """
+from request.time_filter import build_time_filter
+import re
+
 def is_true(request_args, param_name):
     """
     Check if a parameter in the request arguments is set to "true".
