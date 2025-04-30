@@ -9,6 +9,7 @@ from domains.service_commitment import ServiceCommitment
 from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.request_parameters import is_true
+from application.rest.request_parameters import get_time_filters
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
@@ -83,13 +84,14 @@ def create_service_commitment():
 def fetch_service_commitments():
     """
     Handle GET request to retrieve service commitments.
-    Can filter by user (from token) and optionally by service_shift_id.
     """
     try:
         # Extract service_shift_id from query parameters if provided
         service_shift_id = request.args.get("service_shift_id")
         include_shift_details = is_true(request.args, "include_shift_details")
+        time_filter_obj = get_time_filters(request.args)
         user_tuple = get_user_from_token(request.headers)
+
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
             return (
@@ -111,9 +113,10 @@ def fetch_service_commitments():
         commitments, shifts = list_service_commitments(
             commitments_repo,
             shifts_repo,
+            time_filter_obj,
             filter_user,
             service_shift_id
-            )
+        )
 
         # Convert commitments to JSON
         commitments_list = []
