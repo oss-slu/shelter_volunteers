@@ -9,12 +9,14 @@ from domains.service_commitment import ServiceCommitment
 from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.request_parameters import is_true
+from application.rest.request_parameters import get_time_filters
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.shelter import ShelterRepo
+from request.time_filter import build_time_filter
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from serializers.service_shift import ServiceShiftJsonEncoder
 from serializers.shelter import ShelterJsonEncoder
@@ -83,13 +85,47 @@ def create_service_commitment():
 def fetch_service_commitments():
     """
     Handle GET request to retrieve service commitments.
-    Can filter by user (from token) and optionally by service_shift_id.
+
+    This endpoint retrieves service commitments, optionally filtered by a specific
+    service shift ID or user email (extracted from the authorization token). It can
+    also include additional details about shifts and shelters if requested.
+
+    Query Parameters:
+    - service_shift_id (str, optional): The ID of the service shift to filter commitments.
+    - include_shift_details (bool, optional): Whether to include details about shifts and shelters.
+
+    Headers:
+    - Authorization (str): Bearer token for user authentication.
+
+    Responses:
+    - 200 OK: Returns a list of service commitments, optionally augmented with shift and shelter details.
+    - 400 Bad Request: Returns an error message if the request parameters are invalid.
+    - 401 Unauthorized: Returns an error message if the authorization token is invalid.
+
+    Example Response (200 OK):
+    [
+        {
+            "commitment_id": "12345",
+            "volunteer_id": "user@example.com",
+            "service_shift_id": "67890",
+            "shelter_id": "54321",
+            "shift_start_time": "2023-01-01T08:00:00Z",
+            "shift_end_time": "2023-01-01T12:00:00Z",
+            "shelter": {
+                "shelter_id": "54321",
+                "name": "Happy Paws Shelter",
+                "location": "123 Main St, Cityville"
+            }
+        }
+    ]
     """
     try:
         # Extract service_shift_id from query parameters if provided
         service_shift_id = request.args.get("service_shift_id")
         include_shift_details = is_true(request.args, "include_shift_details")
+        time_filter_obj = get_time_filters(request.args)
         user_tuple = get_user_from_token(request.headers)
+
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
             return (
@@ -111,9 +147,10 @@ def fetch_service_commitments():
         commitments, shifts = list_service_commitments(
             commitments_repo,
             shifts_repo,
+            time_filter_obj,
             filter_user,
             service_shift_id
-            )
+        )
 
         # Convert commitments to JSON
         commitments_list = []

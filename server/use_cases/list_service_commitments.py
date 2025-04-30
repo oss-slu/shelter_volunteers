@@ -2,7 +2,7 @@
 This module contains the use case for listing service commitments.
 """
 def list_service_commitments(
-        commitments_repo, shifts_repo, user_email=None, shift_id=None):
+        commitments_repo, shifts_repo, time_filter, user_email=None, shift_id=None):
     """
     Retrieves service commitments based on provided filters.
 
@@ -21,4 +21,22 @@ def list_service_commitments(
         user_email, shift_id)
     shift_ids = [commitment.service_shift_id for commitment in commitments]
     shifts = shifts_repo.get_shifts(shift_ids)
+
+    # additional filtering by time
+    for filter_key, comparison in [("start_after", lambda shift, value: shift.shift_start >= value),
+                                   ("start_before", lambda shift, value: shift.shift_start < value)]:
+        filter_value = time_filter.get_filter(filter_key)
+        print(filter_value)
+        if filter_value:
+            shift_ids = {
+                shift._id for shift in shifts if comparison(shift, filter_value)
+            }
+            print(shift_ids)
+            print(commitments)
+            commitments = [
+                commitment for commitment in commitments if commitment.service_shift_id in shift_ids
+            ]
+            print(commitments)
+            shifts = [shift for shift in shifts if shift._id in shift_ids]
+
     return (commitments, shifts)
