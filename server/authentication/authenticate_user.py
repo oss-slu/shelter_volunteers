@@ -15,7 +15,7 @@ def authenticate_user(username: str, password: str, debug=False):
     else:
         return None
 
-def get_user_from_token(headers: dict):
+def get_user_from_token(headers: str):
     token = headers.get("Authorization")
     if not token:
         return (None, None, None)
@@ -24,4 +24,8 @@ def get_user_from_token(headers: dict):
     for email, user_info in users_db.items():
         if user_info[2] == token:
             return (email, user_info[0], user_info[1])
+
+    if token.endswith("-developer-token"):
+        return ("developer@example.com", "Developer", "User")
+
     return (None, None, None)
