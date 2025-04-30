@@ -14,21 +14,26 @@ def shelter_data():
     """
     return Shelter(
         name="Safe Haven Shelter",
-        address="123 Main St, Springfield"
+        address={
+            "street1": "123 Main St",
+            "city": "Springfield",
+            "state": "IL",
+            "postal_code": "62701"
+        }
     )
 
 # pylint: disable=redefined-outer-name
 def test_shelter_add_use_case(shelter_data):
     repo = mock.Mock()
     shelter_id = "SHELTER_ID"
-    # Mocking repo.add to insert an _id field in the shelter data
+    #mocking repo.add to insert an _id field in the shelter data
     def mock_add(shelter_dict):
         shelter_dict["_id"] = shelter_id
         return shelter_dict
     repo.add.side_effect = mock_add
-    # Call the function
+    #calling fxn
     response = shelter_add_use_case(repo, shelter_data)
-    # Expected response
+    #expected response
     expected_response = {
         "id": shelter_id,
         "success": True,
@@ -38,3 +43,23 @@ def test_shelter_add_use_case(shelter_data):
     repo.add.assert_called_once_with(shelter_data.to_dict())
 
 # pylint: enable=redefined-outer-name
+
+def test_shelter_add_use_case_with_missing_fields():
+    """
+    Test that validation fails when required fields are missing.
+    """
+    repo = mock.Mock()
+    #shelter with missing req. fields should raise ValueError
+    with pytest.raises(ValueError) as excinfo:
+        shelter_data = { # pylint: disable=redefined-outer-name
+            "name": "Invalid Shelter",
+            "address": {
+                #missing required fields
+                "postal_code": "12345"
+            }
+        }
+        #raise ValueError due to missing fields
+        invalid_shelter = Shelter.from_dict(shelter_data)
+        shelter_add_use_case(repo, invalid_shelter)
+    #verify error message contains missing field information
+    assert "Missing required address fields" in str(excinfo.value)

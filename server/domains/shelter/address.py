@@ -9,17 +9,13 @@ class Address:
     """
     Data class for address data.
     """
-
     street1: str
-    street2: str # Optional
     city: str
-    state: str # State/Province/Region
-    postal_code: str
-    country: str
-    coordinates: {
-        "latitude": float,
-        "longitude": float
-    }
+    state: str
+    street2: str = ""
+    postal_code: str = ""
+    country: str = "USA"
+    coordinates: dict = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_dict(self, d):
