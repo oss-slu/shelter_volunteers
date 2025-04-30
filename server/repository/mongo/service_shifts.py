@@ -77,7 +77,7 @@ class ServiceShiftsMongoRepo:
             for shift in self.collection.find(db_filter)
         ]
         for shift in service_shifts:
-            shift["_id"] = str(shift["_id"])
+            shift.set_id(str(shift.get_id()))
         return service_shifts
 
     def get_shifts(self, shift_ids):
@@ -94,7 +94,7 @@ class ServiceShiftsMongoRepo:
             object_ids = [ObjectId(sid) for sid in shift_ids]
             shifts = list(self.collection.find({"_id": {"$in": object_ids}}))
             for shift in shifts:
-                shift["_id"] = str(shift["_id"])
+                shift.set_id(str(shift.get_id()))
             return [ServiceShift.from_dict(shift) for shift in shifts]
         except Exception as e:
             raise ValueError(f"Invalid shift ID: {e}") from e
