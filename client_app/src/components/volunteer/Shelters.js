@@ -24,8 +24,6 @@ const Shelters = (props) => {
     setLoading,
     noSearchDataAvailable,
     setNoSearchDataAvailable,
-    getLocation,
-    setRadiusfromLocation
   } = useShelterData(defaultRadius);
 
   const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -89,29 +87,35 @@ const Shelters = (props) => {
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
 
   function manageShifts(shift) {
+    const startTime = performance.now(); // start timing
+  
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
-    //setSelectedShifts([...selectedShifts, shift]);
-    //setButtonDisabled(selectedShifts.length === 0);
+  
     const shiftStart = dayjs(shift.start);
     const shiftEnd = dayjs(shift.end);
-
+  
     const overlap = selectedShifts.some(selectedShift => {
       const selectedShiftStart = dayjs(selectedShift.start);
       const selectedShiftEnd = dayjs(selectedShift.end);
-
-      // Check for overlap
+  
       return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
     });
-
+  
     if (overlap) {
       alert("The selected shift overlaps with another shift.");
-      setButtonDisabled(true); // Disable submit button
+      setButtonDisabled(true);
     } else {
-      setSelectedShifts([...selectedShifts, shift]);
-      setButtonDisabled(false); // Enable submit button
+      setSelectedShifts(prev => {
+        const updated = [...prev, shift];
+        const endTime = performance.now();
+        console.log(`⏱️ Shift selection response time: ${Math.round(endTime - startTime)}ms`);
+        return updated;
+      });
+      setButtonDisabled(false);
     }
   }
+  
 
   function onShiftClose(event) {
     let id = event.target.id;
@@ -130,14 +134,20 @@ const Shelters = (props) => {
   }
 
   function submitShifts() {
-    let shifts = [...selectedShifts];
-    let shiftsPayload = shifts.map((shift) => ({ ...shift })); // Create new objects
-    shiftsPayload = shiftsPayload.map((shift) => {
-      delete shift.code;
-      return shift;
-    }); 
+    const shiftsPayload = selectedShifts.map((shift) => {
+      return {
+        worker: "developer@slu.edu",     // hardcoded for testing
+        first_name: "SLU",                // hardcoded for testing
+        last_name: "Developer",           // hardcoded for testing
+        shelter: 1,                       // TEMP: use an int, even if fake
+        start_time: shift.start_time,
+        end_time: shift.end_time
+      };
+    });
+  
     const shiftsEndpoint = SERVER + "/shifts";
     const header = getAuthHeader();
+  
     fetch(shiftsEndpoint, {
       method: "POST",
       body: JSON.stringify(shiftsPayload),
@@ -178,7 +188,6 @@ const Shelters = (props) => {
         <div>
           {props.condensed && (
             <div className="text-center">
-              <button onClick={getLocation}>Get Shelters from Current Location</button>
               <ShelterList
                 shelters={Array.isArray(originalData) ? originalData : []} // making sure it's array
                 loadingFunction={setLoading}
@@ -186,7 +195,7 @@ const Shelters = (props) => {
                 isSignupPage={false}
               />
               <div className="text-center">
-                <Link to="/shelters">
+                <Link to="/volunteer-dashboard/shelters">
                   <button>View All Shelters</button>
                 </Link>
               </div>
@@ -198,7 +207,6 @@ const Shelters = (props) => {
                 <div className="column column-1">
                   <div className="text-center">
                     <h1>Volunteering Opportunities</h1>
-                    <button onClick={getLocation}>Show opportunities near me</button>
                     <br />
                     <SearchBar onSearch={handleSearch} />
                     {noSearchDataAvailable && (
@@ -209,14 +217,6 @@ const Shelters = (props) => {
                         </h1>
                       </div>
                     )}
-                    <label htmlFor="radius-select">Radius (miles): </label>
-                    <select id="radius-select" onChange={setRadiusfromLocation}>
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
                   </div>
                   {loading && <div className="loader"></div>}
                   <ShelterList
@@ -224,6 +224,7 @@ const Shelters = (props) => {
                     loadingFunction={setLoading}
                     manageShiftsFunction={manageShifts}
                     isSignupPage={true}
+                    selectedShiftKeys={selectedShifts.map(s => `${s.id}-${s.start_time}`)}
                   />
                   <Pagination
                     currentPage={currentPage}

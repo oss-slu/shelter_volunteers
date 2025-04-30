@@ -20,14 +20,14 @@ const ShelterList = (props) => {
         {/* Display the shelters*/}
         {props.shelters &&
           props.shelters
-            .sort((a, b) => a.distance - b.distance)
             .map((shelter) => {
               return (
-                <div key={shelter.id}>
+                <div key={shelter._id}>
                   <IndividualShelter
                     shelter={shelter}
                     isSignupPage={props.isSignupPage}
                     addShiftFunction={addShift}
+                    selectedShiftKeys={props.selectedShiftKeys}
                   />
                 </div>
               );
