@@ -2,7 +2,7 @@ import { fetchClient } from "./fetchClient";
 
 export const serviceCommitmentAPI = {
     getCommitments: async () => {
-        const response = await fetchClient(`/service_commitmentß`);
+        const response = await fetchClient(`/service_commitment`);
         return response;
     },
     getFutureCommitments: async () => {
