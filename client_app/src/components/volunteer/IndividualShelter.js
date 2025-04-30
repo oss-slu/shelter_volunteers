@@ -12,6 +12,7 @@ const IndividualShelter = (props) => {
 
       let newShift = {
         code: `${shift.id}-${shelter.shiftCounter}`,
+        service_shift_id: shift.id,
         shelter: shelter.name,
         shelter_id: shelter._id,
         start_time: shift.shift_start,

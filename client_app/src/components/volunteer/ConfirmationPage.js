@@ -46,8 +46,8 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                   <p>{format(shift.end_time, "MMM, dd, yyyy HH:mm aa")}</p>
                 </td>
                 <td>
-                  <p className={shiftStatusList[index] ? "success" : "failure"}>
-                    {shiftStatusList[index] ? (
+                  <p className={shiftStatusList[index].success ? "success" : "failure"}>
+                    {shiftStatusList[index].success ? (
                       <>
                         Success
                         <IconButton>

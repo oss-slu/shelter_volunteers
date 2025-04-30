@@ -26,7 +26,7 @@ function renderWithRouter(children, routes = []) {
 }
 
 test("properly renders confirmation page with one successful shift", () => {
-  renderWithRouter(<ConfirmationPage selectedShifts={[mockShift]} shiftStatusList={[true]} />, [
+  renderWithRouter(<ConfirmationPage selectedShifts={[mockShift]} shiftStatusList={[{"success": true}]} />, [
     {
       path: "/",
       element: <h2>Dashboard</h2>,

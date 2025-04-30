@@ -12,7 +12,7 @@ import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
 import { useShelterData } from "./hooks/useShelterData";
-
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
@@ -127,26 +127,23 @@ const Shelters = (props) => {
     }
   }
 
-  function submitShifts() {
+  async function submitShifts() {
     let shifts = [...selectedShifts];
-    let shiftsPayload = shifts.map((shift) => ({ ...shift })); // Create new objects
-    shiftsPayload = shiftsPayload.map((shift) => {
-      delete shift.code;
-      return shift;
-    }); 
-    const shiftsEndpoint = SERVER + "/shifts";
-    const header = getAuthHeader();
-    fetch(shiftsEndpoint, {
-      method: "POST",
-      body: JSON.stringify(shiftsPayload),
-      headers: header,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShiftStatusList(data.map((item) => item.success));
-      })
-      .then(() => setShowConfirmation(true))
-      .catch((error) => console.log(error));
+    const shiftsList = shifts.map((shift) => ({
+      service_shift_id: shift.service_shift_id,
+    }));
+
+    try {
+      const response = await serviceCommitmentAPI.addCommitments(shiftsList);
+      if (response) {
+        setShiftStatusList(response);
+        setShowConfirmation(true);
+        setOnMobileContinueclicked(false);
+      }
+    }
+    catch (error) {
+      console.error("Error submitting shifts:", error);
+    }
   }
 
   function onMobileContinueClick() {

@@ -58,7 +58,6 @@ def create_service_commitment():
         for commitment in request_data:
             commitment["volunteer_id"] = user_email
             commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
-
         response = add_service_commitments(
             commitments_repo,
             shifts_repo,
