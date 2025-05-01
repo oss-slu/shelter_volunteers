@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom"; 
-import OpenRequest from "./OpenRequests";
+import OpenShifts from "./OpenRequests";
 import PastVolunteersContainer from "./PastVolunteersContainer";
 import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
@@ -75,7 +75,7 @@ function ShelterDashboard() {
               <h4>Open requests</h4>
               <a href="/shift-details">View all</a>
             </div>
-            <OpenRequest />
+            <OpenShifts />
           </div>
           <div className="container-medium">
             <div className="container-align">
