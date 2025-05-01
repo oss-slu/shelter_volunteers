@@ -34,4 +34,13 @@ export const serviceCommitmentAPI = {
         });
         return response;
     },
+    cancelCommitment: async (commitmentId) => {
+        const response = await fetchClient(
+            `/service_commitment/${commitmentId}`,
+            {
+                method: "DELETE",
+            }
+        );
+        return response;
+    }
 };
