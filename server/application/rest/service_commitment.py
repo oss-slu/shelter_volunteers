@@ -13,6 +13,7 @@ from application.rest.request_parameters import get_time_filters
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
+from use_cases.delete_service_commitment import delete_service_commitment
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.shelter import ShelterRepo
@@ -169,6 +170,48 @@ def fetch_service_commitments():
         return (
             jsonify({"error": str(error)}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
+        )
+    except KeyError as error:
+        return (
+            jsonify({"error": f"Missing key: {str(error)}"}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+
+# Add a DELETE /service_commitment/<COMMITMENT_ID>
+@service_commitment_bp.route(
+    "/service_commitment/<commitment_id>", methods=["DELETE"]
+)
+def delete_service_commitment_by_id(commitment_id):
+    """
+    Handle DELETE request to remove a service commitment.
+    """
+    try:
+        user_tuple = get_user_from_token(request.headers)
+        # get_user_from_token returns a tuple of (email, first_name, last_name)
+        if not user_tuple or not isinstance(user_tuple, tuple):
+            return (
+                jsonify({"error": "Invalid token"}),
+                HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
+            )
+        user_email = user_tuple[0]  # First element of tuple is the email
+        if not isinstance(user_email, str):
+            return (
+                jsonify({"error": "Invalid email format"}),
+                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+            )
+        response = delete_service_commitment(commitments_repo, commitment_id, user_email)
+        response_code = response["response_code"]
+        # remove "response_code" from the response
+        del response["response_code"]
+        return Response(
+            json.dumps(response, default=str),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[response_code])
+    
+    except ValueError as error:
+        return (
+            jsonify({"error": str(error)}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
     except KeyError as error:
         return (
