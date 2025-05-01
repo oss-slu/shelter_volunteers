@@ -13,7 +13,7 @@ function VolunteerDashboard() {
   return (
     <div className="volunteer-dashboard">
       <div className="column column-1">
-        <h3>Upcoming Shifts</h3><UpcomingCommitments />
+        <UpcomingCommitments />
       </div>
       <div className="column column-2">
         <h3>Shelters looking for Volunteers</h3><Shelters condensed={true} />
