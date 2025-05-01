@@ -23,8 +23,12 @@ def delete_service_commitment(commitments_repo, commitment_id, user_email):
         message = "User not authorized to delete this commitment"
     else:
         # Delete the commitment
-        commitments_repo.delete_service_commitment(commitment_id)
-        message = "Commitment deleted successfully"
+        result = commitments_repo.delete_service_commitment(commitment_id)
+        if result:
+            message = "Commitment deleted successfully"
+        else:
+            response_code = ResponseTypes.SYSTEM_ERROR
+            message = "Failed to delete commitment"
     response["response_code"] = response_code
     response["message"] = message
     return response
