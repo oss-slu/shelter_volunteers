@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SERVER } from "../../config";
-import getAuthHeader from "../../authentication/getAuthHeader";
-
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 const calculateTotalHours = (shifts) => {
   return shifts.reduce((acc, shift) => {
-    const start = new Date(shift.start_time);
-    const end = new Date(shift.end_time);
+    const start = new Date(shift.shift_start);
+    const end = new Date(shift.shift_end);
     return acc + Math.round((end - start) / (1000 * 60 * 60)); // Convert milliseconds to hours
   }, 0);
 };
@@ -22,13 +20,7 @@ const Impact = () => {
   });
 
   useEffect(() => {
-    const time_now = new Date().getTime();
-    const endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
-    const header = getAuthHeader();
-
-
-    fetch(endpoint, { method: "GET", headers: header })
-      .then((response) => response.json())
+    serviceCommitmentAPI.getPastCommitments()
       .then((shifts) => {
         if (shifts && shifts.length > 0) {
           const totalHours = calculateTotalHours(shifts);

@@ -72,7 +72,7 @@ const ShiftList = props => {
                     <tbody>
                       <tr>
                         <td>
-                          <p>{shift.shelter.name}</p>
+                          <p>{shift.shelter}</p>
                         </td>
                         <td>
                           <p>
