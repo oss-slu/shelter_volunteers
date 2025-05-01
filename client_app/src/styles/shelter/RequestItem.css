@@ -9,23 +9,10 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.request-item-container button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  color: #193b45;
-}
-
-.request-item-container button svg {
-  width: 24px;
-  height: 24px;
-}
-
-.request-item-container .info button svg{
-  color: #193b45; 
-}
 .request-item-container .delete button {
+  padding: 0;
   background-color: transparent;
+  border: black;
   cursor: pointer;
   margin-bottom: 10px;
 }
@@ -33,19 +20,21 @@
 .request-item-container .delete button svg {
   width: 24px;
   height: 24px;
-  color: #ff0000;
+  fill: #ff0000;
 }
 
 .request-item-container .edit button {
+  padding: 0;
+  background-color: transparent;
+  border: black;
   cursor: pointer;
   margin-bottom: 10px;
-  background-color: transparent;
 }
 
 .request-item-container .edit button svg {
   width: 24px;
   height: 24px;
-  color: #193b45; /* Using color instead of fill */
+  fill: #193b45;
 }
 
 .request-item-container .calendar button {

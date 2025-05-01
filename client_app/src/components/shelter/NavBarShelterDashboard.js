@@ -31,6 +31,14 @@ function NavBarShelterDashboard() {
           </Nav.Item>
           <Nav.Item>
             <NavLink 
+              to={`${shelterBasePath}/shift-details`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Shift Details
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
               to={`${shelterBasePath}/schedule`}
               className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             >
@@ -39,7 +47,7 @@ function NavBarShelterDashboard() {
           </Nav.Item>
           <Nav.Item>
             <NavLink 
-              to={`${shelterBasePath}/upcoming-shifts`}
+              to={`${shelterBasePath}/upcoming-requests`}
               className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             >
               Upcoming Shifts

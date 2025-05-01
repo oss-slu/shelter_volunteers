@@ -435,8 +435,9 @@ button {
 }
 
 .shelter-dashboard button {
+  background-color: #e74c3c;
   border-radius: 5px;
-  color: #0066b2;
+  color: #fff;
   border: none;
   padding: 0.717vw 1.434vw;
   cursor: pointer;
