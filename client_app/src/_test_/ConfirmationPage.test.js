@@ -8,11 +8,11 @@ import { format } from "date-fns";
 let mockShift = {
   code: 92341,
   shelter: 9321,
-  start_time: 1696255200000,
-  end_time: 1696269600000,
+  shift_start: 1696255200000,
+  shift_end: 1696269600000,
 };
-let formattedStartTime = format(mockShift.start_time, "MMM, dd, yyyy HH:mm aa");
-let formattedEndTime = format(mockShift.end_time, "MMM, dd, yyyy HH:mm aa");
+let formattedStartTime = format(mockShift.shift_start, "MMM, dd, yyyy HH:mm aa");
+let formattedEndTime = format(mockShift.shift_end, "MMM, dd, yyyy HH:mm aa");
 
 function renderWithRouter(children, routes = []) {
   const options = isValidElement(children) ? { element: children, path: "/" } : children;
