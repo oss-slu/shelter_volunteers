@@ -115,6 +115,10 @@ def test_get_commitments_with_augmented_data(
     print(mock_list_service_commitments.return_value)
     response = client.get("/service_commitment?include_shift_details=true")
     assert mock_get_user_from_token.called
+    # remove _id from mock_shifts_json
+    for shift in mock_shifts_json:
+        if "_id" in shift:
+            del shift["_id"]
     for i in range(len(mock_commitments_json)):
         mock_commitments_json[i].update({**mock_shifts_json[i]})
         mock_commitments_json[i].update({"shelter": mock_shelters_json[i]})
