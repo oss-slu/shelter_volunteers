@@ -200,8 +200,8 @@ def delete_service_commitment_by_id(commitment_id):
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
         response = delete_service_commitment(
-            commitments_repo, 
-            commitment_id, 
+            commitments_repo,
+            commitment_id,
             user_email)
         response_code = response["response_code"]
         # remove "response_code" from the response
