@@ -12,10 +12,10 @@ const CurrentSelection = props => {
         const shift1 = selectedShifts[i];
         const shift2 = selectedShifts[j];
 
-        const shift1Start = new Date(shift1.start_time);
-        const shift1End = new Date(shift1.end_time);
-        const shift2Start = new Date(shift2.start_time);
-        const shift2End = new Date(shift2.end_time);
+        const shift1Start = new Date(shift1.shift_start);
+        const shift1End = new Date(shift1.shift_end);
+        const shift2Start = new Date(shift2.shift_start);
+        const shift2End = new Date(shift2.shift_end);
 
         if (
           (shift1Start < shift2End && shift1End > shift2Start) ||

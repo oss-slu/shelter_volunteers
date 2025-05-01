@@ -8,10 +8,12 @@ export const serviceCommitmentAPI = {
     getFutureCommitments: async () => {
         // sends a GET request to /service_commitment endpoint
         // passing the current time (in milliseconds since epoch) as a
-        // value for the filter_start_after query parameter
+        // value for the filter_start_after query parameter.
+        // The include_shift_details=true parameter ensures that the API response
+        // includes detailed information about shifts associated with the commitments.
         const timeNow = Date.now();
         const response = await fetchClient(
-            `/service_commitment?filter_start_after=${timeNow}`
+            `/service_commitment?filter_start_after=${timeNow}&include_shift_details=true`
         );
         return response;
     },
@@ -21,12 +23,11 @@ export const serviceCommitmentAPI = {
         // value for the filter_start_before query parameter
         const timeNow = Date.now();
         const response = await fetchClient(
-            `/service_commitment?filter_start_before=${timeNow}`
+            `/service_commitment?filter_start_before=${timeNow}&include_shift_details=true`
         );
         return response;
     },
     addCommitments: async (data) => {
-        console.log("Adding commitment", data);
         const response = await fetchClient("/service_commitment", {
             method: "POST",
             body: JSON.stringify(data),

@@ -1,31 +1,26 @@
 import { useState, useEffect } from "react";
 import { SERVER } from "../../config";
 import ShiftList from "./ShiftList";
-import getAuthHeader from "../../authentication/getAuthHeader";
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 
-function Shifts({ request_endpoint }) {
+function Shifts({ request_api }) {
   const [data, setData] = useState([]);
-  const header = getAuthHeader();
 
+  
   useEffect(() => {
-    console.log("Fetching shifts from:", request_endpoint); // Debugging
-    fetch(request_endpoint, {
-      method: "GET", // Corrected typo
-      headers: header,
-    })
+    request_api()
       .then((response) => {
-        return response.json();
+        return response;
       })
       .then((response) => {
         setData(response);
       })
       .catch((error) => console.error("Error fetching shifts:", error));
-  }, [request_endpoint]);
+  }, [request_api]);
 
   const handleCancelShift = (shiftCode) => {
     fetch(`${SERVER}/shifts/${shiftCode}`, {
-      method: "DELETE",
-      headers: header,
+      method: "DELETE"
     })
       .then((response) => {
         if (response.ok) {
@@ -45,25 +40,19 @@ function Shifts({ request_endpoint }) {
 }
 
 export function UpcomingShifts() {
-  const time_now = new Date().getTime();
-  const shelters_endpoint = `${SERVER}/shifts?filter_start_after=${time_now}`;
-
   return (
     <div>
       <h1 className="text-center">Upcoming Shifts</h1>
-      <Shifts request_endpoint={shelters_endpoint} />
+      <Shifts request_api={serviceCommitmentAPI.getFutureCommitments} />
     </div>
   );
 }
 
 export function PastShifts() {
-  const time_now = new Date().getTime();
-  const shelters_endpoint = `${SERVER}/shifts?filter_end_before=${time_now}`;
-
   return (
     <div>
       <h1 className="text-center">Previous Shifts</h1>
-      <Shifts request_endpoint={shelters_endpoint} />
+      <Shifts request_api={serviceCommitmentAPI.getPastCommitments} />
     </div>
   );
 }
