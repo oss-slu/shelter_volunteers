@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { CalendarToday } from "@mui/icons-material";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import "../../styles/shelter/RequestItem.css";
 
@@ -23,7 +24,7 @@ class RequestItem extends Component {
         </div>
         <div className="volunteers">
           <div className="volunteers-info">
-            <PeopleAltIcon />
+            <FontAwesomeIcon icon={faUsers} />
             <span>{request.numVolunteersNeeded}</span>
           </div>
           <div className="progress-bar">
