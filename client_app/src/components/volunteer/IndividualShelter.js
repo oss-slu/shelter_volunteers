@@ -1,5 +1,5 @@
 import "react-datepicker/dist/react-datepicker.css";
-
+import { Address } from "./Address";
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
 
@@ -15,24 +15,14 @@ const IndividualShelter = (props) => {
         service_shift_id: shift.id,
         shelter: shelter.name,
         shelter_id: shelter._id,
-        start_time: shift.shift_start,
-        end_time: shift.shift_end,
+        shift_start: shift.shift_start,
+        shift_end: shift.shift_end,
         title: shift.title,
       };
       props.addShiftFunction(newShift);
     }
   }
 
-  const formatAddress = (address) => {
-    return (
-      <>
-        {address.street1}
-        {address.street2 && `, ${address.street2}`}
-        <br />
-        {address.city}, {address.state} {address.postalCode}
-      </>
-    );
-  }
   const formatShiftDate = (start, end) => {
     const options = {
       timeZone: "America/Chicago",
@@ -70,17 +60,7 @@ const IndividualShelter = (props) => {
             <div className="column1">
               <h2>{shelter.name}</h2>
               <p>
-                <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    `${shelter.address.street1}, ${shelter.address.street2 ? 
-                      shelter.address.street2 + ', ' : ''}${shelter.address.city}, 
-                      ${shelter.address.state} ${shelter.address.postalCode}`
-                  )}`}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  {formatAddress(shelter.address)}
-                </a>
+                <Address address={shelter.address} />
               </p>
             </div>
             <div className="column2">
@@ -109,7 +89,9 @@ const IndividualShelter = (props) => {
       {!props.isSignupPage && (
         <div className="shelter text-center" key={shelter._id}>
           <h2>{shelter.name}</h2>
-          <p>{formatAddress(shelter.address)}</p> 
+          <p>
+            <Address address={shelter.address} />
+          </p>
         </div>
       )}
     </div>

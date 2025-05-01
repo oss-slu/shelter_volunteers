@@ -40,10 +40,10 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
                   <p>{shift.shelter}</p>
                 </td>
                 <td>
-                  <p>{format(shift.start_time, "MMM, dd, yyyy HH:mm aa")}</p>
+                  <p>{format(shift.shift_start, "MMM, dd, yyyy HH:mm aa")}</p>
                 </td>
                 <td>
-                  <p>{format(shift.end_time, "MMM, dd, yyyy HH:mm aa")}</p>
+                  <p>{format(shift.shift_end, "MMM, dd, yyyy HH:mm aa")}</p>
                 </td>
                 <td>
                   <p className={shiftStatusList[index].success ? "success" : "failure"}>
@@ -77,13 +77,13 @@ const ConfirmationPage = ({ selectedShifts, shiftStatusList }) => {
         </table>
         <br />
         <div className="button-row">
-          <Link to="/">
+          <Link to="/volunteer-dashboard">
             <button>Your Dashboard</button>
           </Link>
-          <Link to="/shelters" onClick={handleReload}>
+          <Link to="/volunteer-dashboard/shelters" onClick={handleReload}>
             <button>Register for more shifts</button>
           </Link>
-          <Link to="/upcoming-shifts">
+          <Link to="/volunteer-dashboard/upcoming-shifts">
             <button>See all upcoming shifts</button>
           </Link>
         </div>
