@@ -20,12 +20,12 @@ const ShiftList = props => {
   }
 
   function checkForOverlap(shift, otherShifts) {
-    const shiftStartTime = new Date(shift.start_time);
-    const shiftEndTime = new Date(shift.end_time);
+    const shiftStartTime = new Date(shift.shift_start);
+    const shiftEndTime = new Date(shift.shift_end);
 
     return otherShifts.some((otherShift) => {
-      const otherShiftStartTime = new Date(otherShift.start_time);
-      const otherShiftEndTime = new Date(otherShift.end_time);
+      const otherShiftStartTime = new Date(otherShift.shift_start);
+      const otherShiftEndTime = new Date(otherShift.shift_end);
 
       // Check if there is an overlap
       return (
