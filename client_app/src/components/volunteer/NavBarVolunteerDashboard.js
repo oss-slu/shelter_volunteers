@@ -39,7 +39,7 @@ function NavBarVolunteerDashboard() {
               to={`${volunteerBasePath}/upcoming-shifts`}
               className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             >
-              Your Upcoming Shifts
+              Your Upcoming Commitments
             </NavLink>
           </Nav.Item>
           <Nav.Item>
@@ -47,7 +47,7 @@ function NavBarVolunteerDashboard() {
               to={`${volunteerBasePath}/past-shifts`}
               className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             >
-              Your Previous Shifts
+              Your Past Commitments
             </NavLink>
           </Nav.Item>
           <Nav.Item>

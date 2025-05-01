@@ -63,7 +63,7 @@ const ShiftList = props => {
             props.shifts.filter((s) => s !== shift)
           );
           // helps keep track of whether or not the end time of the shift is in the past
-          const isPastShift = endTime.getTime() < Date.now();
+          const isPastShift = startTime.getTime() < Date.now();
           return (
             <div key={shift._id || shift.code}>
               {props.currentSelectionSection === true && (
@@ -101,7 +101,7 @@ const ShiftList = props => {
                 </div>
               )}
               {props.currentSelectionSection !== true && (
-                <div className={endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"}>
+                <div className={isPastShift ? "shift past" : "shift upcoming"}>
                   {props.fromShelter === true && (
                     <div className="text-right">
                       <input

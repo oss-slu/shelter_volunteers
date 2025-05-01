@@ -37,16 +37,16 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-jest.mock("../components/volunteer/Shifts", () => ({
-  UpcomingShifts: () => {
-    return <div>Upcoming Shifts List...</div>;
+jest.mock("../components/volunteer/Commitments", () => ({
+  UpcomingCommitments: () => {
+    return <div>Upcoming Commitments ...</div>;
   },
 }));
 
 test("three shelter cards are loaded", async() => {
   renderWithRouter(<VolunteerDashboard/>, 
     [{
-      path: "/shelters",
+      path: "/volunteer-dashboard/shelters",
       element: <h2>Shelter List Page</h2>,
     },]);
 
