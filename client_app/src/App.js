@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 
 // Volunteer dashboard components
-import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
+import { PastCommitments, UpcomingCommitments } from "./components/volunteer/Commitments";
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboardLayout from "./components/volunteer/VolunteerDashboardLayout";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
@@ -49,8 +49,8 @@ function App() {
         <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
           <Route index element={<VolunteerDashboard />} />
           <Route path="shelters" element={<Shelters />} />
-          <Route path="past-shifts" element={<PastShifts />} />
-          <Route path="upcoming-shifts" element={<UpcomingShifts />} />
+          <Route path="past-shifts" element={<PastCommitments />} />
+          <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
         </Route>
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
       </Route>
