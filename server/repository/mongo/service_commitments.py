@@ -59,7 +59,7 @@ class MongoRepoCommitments:
                 filter=db_filter)
         ]
         return commitments
-    
+
     def get_service_commitment_by_id(self, commitment_id):
         """
         Fetches a service commitment by its ID.
@@ -71,11 +71,11 @@ class MongoRepoCommitments:
             ServiceCommitment: The service commitment object.
         """
         commitment_object_id = ObjectId(commitment_id)
-        commitment = self.collection.find_one({"_id": commitment_object_id})
+        commitment = self.collection.find_one({'_id': commitment_object_id})
         if commitment:
             return ServiceCommitment.from_dict(commitment)
         return None
-    
+
     def delete_service_commitment(self, commitment_id):
         """
         Deletes a service commitment by its ID.
@@ -84,5 +84,5 @@ class MongoRepoCommitments:
             commitment_id (str): The ID of the service commitment to delete.
         """
         commitment_object_id = ObjectId(commitment_id)
-        result = self.collection.delete_one({"_id": commitment_object_id})
+        result = self.collection.delete_one({'_id': commitment_object_id})
         return result.deleted_count > 0

@@ -199,7 +199,10 @@ def delete_service_commitment_by_id(commitment_id):
                 jsonify({"error": "Invalid email format"}),
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
-        response = delete_service_commitment(commitments_repo, commitment_id, user_email)
+        response = delete_service_commitment(
+            commitments_repo, 
+            commitment_id, 
+            user_email)
         response_code = response["response_code"]
         # remove "response_code" from the response
         del response["response_code"]
@@ -207,7 +210,7 @@ def delete_service_commitment_by_id(commitment_id):
             json.dumps(response, default=str),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[response_code])
-    
+
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),
