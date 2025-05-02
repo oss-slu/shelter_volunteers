@@ -1,27 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUsers, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/RequestItem.css";
-
+import { formatTime } from "../../formatting/FormatDateTime";
 
 const ServiceShiftDetails = ({shift, view, cancel, edit}) => {
 
-  const date = new Date(shift.shift_start).toLocaleDateString(
-    'en-US', { day: 'numeric', month: 'long', year: 'numeric' }
-  );
-  const startTime = new Date(shift.shift_start).toLocaleTimeString(
-    [], { hour: '2-digit', minute: '2-digit', hour12: true }
-  );
-  const endTime = new Date(shift.shift_end).toLocaleTimeString(
-    [], { hour: '2-digit', minute: '2-digit', hour12: true }
-  );
-
+  const startTime = formatTime(shift.shift_start);
+  const endTime = formatTime(shift.shift_end)
 
   return (
     <div className="request-item-container">
       <div className="calendar">
         <div className="date-time">
           <div className="request-details">
-            <span>{date}</span>
             <span>{startTime} - {endTime}</span>
           </div>
         </div>

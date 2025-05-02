@@ -74,6 +74,31 @@ export const shiftDetailsData =
           email: "afsd.gmail.com"
         }
       ]
+    },
+    {
+      _id: 4,
+      shift_name: "Night",
+      shift_start: 1731336057000,
+      shift_end: 1731347657000,
+      required_volunteer_count: 10,
+      max_volunteer_count: 2,
+      volunteers: [
+        {
+          first_name: "Bill",
+          last_name: "Bob",
+          email: "billy.bob.gmail.com"
+        },
+        {
+          first_name: "Wewe",
+          last_name: "Bob",
+          email: "wewe.gmail.com"
+        },
+        {
+          first_name: "Afds",
+          last_name: "Bob",
+          email: "afsd.gmail.com"
+        }
+      ]
     }
   ]
 
