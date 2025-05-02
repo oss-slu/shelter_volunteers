@@ -16,7 +16,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
     const { name, value } = e.target;
     setUpdatedShift((prevShift) => ({
       ...prevShift,
-      [name]: name === "required_volunteer_count" ? parseInt(value, 13) || 0 : value
+      [name]: name === "required_volunteer_count" ? parseInt(value, 10) || 0 : value
     }));
   };
 
