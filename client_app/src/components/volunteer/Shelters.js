@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./ShelterList";
 import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
-import { SERVER } from "../../config";
 import { Link } from "react-router-dom";
-import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +10,7 @@ import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
 import { useShelterData } from "./hooks/useShelterData";
-
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
@@ -133,32 +131,23 @@ const Shelters = (props) => {
     }
   }
 
-  function submitShifts() {
-    const shiftsPayload = selectedShifts.map((shift) => {
-      return {
-        worker: "developer@slu.edu",     // hardcoded for testing
-        first_name: "SLU",                // hardcoded for testing
-        last_name: "Developer",           // hardcoded for testing
-        shelter: 1,                       // TEMP: use an int, even if fake
-        start_time: shift.start_time,
-        end_time: shift.end_time
-      };
-    });
-  
-    const shiftsEndpoint = SERVER + "/shifts";
-    const header = getAuthHeader();
-  
-    fetch(shiftsEndpoint, {
-      method: "POST",
-      body: JSON.stringify(shiftsPayload),
-      headers: header,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShiftStatusList(data.map((item) => item.success));
-      })
-      .then(() => setShowConfirmation(true))
-      .catch((error) => console.log(error));
+  async function submitShifts() {
+    let shifts = [...selectedShifts];
+    const shiftsList = shifts.map((shift) => ({
+      service_shift_id: shift.service_shift_id,
+    }));
+
+    try {
+      const response = await serviceCommitmentAPI.addCommitments(shiftsList);
+      if (response) {
+        setShiftStatusList(response);
+        setShowConfirmation(true);
+        setOnMobileContinueclicked(false);
+      }
+    }
+    catch (error) {
+      console.error("Error submitting shifts:", error);
+    }
   }
 
   function onMobileContinueClick() {

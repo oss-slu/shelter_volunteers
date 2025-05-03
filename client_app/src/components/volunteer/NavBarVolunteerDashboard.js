@@ -1,54 +1,68 @@
-import React, { useState, useEffect } from "react";
+
+import { NavLink } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+
 import "../../styles/NavBar.css";
-import { useLocation } from "react-router-dom";
 
-function CustomNavBar({ auth }) {
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
+function NavBarVolunteerDashboard() {
+  // Build the base path for this specific shelter's dashboard
+  const volunteerBasePath = '/volunteer-dashboard'
   return (
-    <>
-      <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
-        <Navbar.Brand href="/">Volunteer Dashboard</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="justify-content-end" style={{ width: "100%" }}>
-            {isAuthenticated || auth ? (
-              <>
-                <Nav.Link href="/volunteer-dashboard" active={location.pathname === "/volunteer-dashboard"}>
-                  Your Dashboard
-                </Nav.Link>
-                <Nav.Link href="/shelters" active={location.pathname === "/shelters"}>
-                  Sign Up For Shifts
-                </Nav.Link>
-                <Nav.Link href="/upcoming-shifts" active={location.pathname === "/upcoming-shifts"}>
-                  Your Upcoming Shifts
-                </Nav.Link>
-                <Nav.Link href="/past-shifts" active={location.pathname === "/past-shifts"}>
-                  Your Previous Shifts
-                </Nav.Link>
-                <Nav.Link href="/logout">Sign Out</Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link href="/">Sign in</Nav.Link>
-                <Nav.Link href="/signup">Sign up</Nav.Link>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    </>
+    <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
+      <NavLink to={'/home'} className="navbar-brand">
+        <FontAwesomeIcon icon={faHome} className="home-icon" />
+      </NavLink>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="justify-content-end" style={{ width: "100%" }}>
+          <Nav.Item>
+            <NavLink 
+              to={volunteerBasePath}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+              end // Only match this exact path
+            >
+              Volunteer Dashboard
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${volunteerBasePath}/shelters`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Sign Up for Shifts
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${volunteerBasePath}/upcoming-shifts`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Your Upcoming Commitments
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to={`${volunteerBasePath}/past-shifts`}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Your Past Commitments
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item>
+            <NavLink 
+              to="/logout" 
+              className="nav-link"
+            >
+              Sign Out
+            </NavLink>
+          </Nav.Item>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 
-export default CustomNavBar;
+export default NavBarVolunteerDashboard;
+

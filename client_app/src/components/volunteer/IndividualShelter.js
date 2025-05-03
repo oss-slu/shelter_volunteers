@@ -1,5 +1,7 @@
 import "react-datepicker/dist/react-datepicker.css";
 
+import { Address } from "./Address";
+
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
 
@@ -12,10 +14,12 @@ const IndividualShelter = (props) => {
 
       let newShift = {
         code: `${shift.id}-${shelter.shiftCounter}`,
+
+        service_shift_id: shift.id,
         shelter: shelter.name,
         shelter_id: shelter._id,
-        start_time: shift.shift_start,
-        end_time: shift.shift_end,
+        shift_start: shift.shift_start,
+        shift_end: shift.shift_end,
         title: shift.title,
         id: shift.id, // added for tracking selected shift
         key: `${shift.id}-${shift.shift_start}`, // add key
@@ -24,16 +28,6 @@ const IndividualShelter = (props) => {
     }
   }
 
-  const formatAddress = (address) => {
-    return (
-      <>
-        {address.street1}
-        {address.street2 && `, ${address.street2}`}
-        <br />
-        {address.city}, {address.state} {address.postalCode}
-      </>
-    );
-  };
 
   const formatShiftDate = (start, end) => {
     const options = {
@@ -42,9 +36,11 @@ const IndividualShelter = (props) => {
       minute: "2-digit",
       hourCycle: "h12",
     };
+
     if (!start || !end || isNaN(new Date(start)) || isNaN(new Date(end))) {
       return "Invalid shift time";
     }
+
     if (new Date(start).toDateString() === new Date(end).toDateString()) {
       return `${new Date(start).toLocaleString("en-US", {
         ...options,
@@ -75,23 +71,14 @@ const IndividualShelter = (props) => {
             <div className="column1">
               <h2>{shelter.name}</h2>
               <p>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    `${shelter.address.street1}, ${shelter.address.street2 ? 
-                      shelter.address.street2 + ', ' : ''}${shelter.address.city}, 
-                      ${shelter.address.state} ${shelter.address.postalCode}`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {formatAddress(shelter.address)}
-                </a>
+                <Address address={shelter.address} />
               </p>
             </div>
             <div className="column2">
               <div className="available-shifts">
                 <h3>Available Shifts:</h3>
                 {shelter.shifts && shelter.shifts.length > 0 ? (
+
                   shelter.shifts.map((shift) => {
                     const shiftKey = `${shift.id}-${shift.shift_start}`;
                     const isSelected = props.selectedShiftKeys?.includes(shiftKey);
@@ -128,7 +115,9 @@ const IndividualShelter = (props) => {
       {!props.isSignupPage && (
         <div className="shelter text-center" key={shelter._id}>
           <h2>{shelter.name}</h2>
-          <p>{formatAddress(shelter.address)}</p>
+          <p>
+            <Address address={shelter.address} />
+          </p>
         </div>
       )}
     </div>

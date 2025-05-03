@@ -39,7 +39,6 @@ def shelter():
         )
     elif request.method == "POST":
         shelter_data_dict = request.get_json()
-        print(shelter_data_dict)
         # shelter_add_use_case expects a Shelter object
         shelter_obj = Shelter.from_dict(shelter_data_dict)
         add_response = shelter_add_use_case(repo, shelter_obj)
