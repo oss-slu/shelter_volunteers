@@ -213,7 +213,7 @@ const Shelters = (props) => {
                     loadingFunction={setLoading}
                     manageShiftsFunction={manageShifts}
                     isSignupPage={true}
-                    selectedShiftKeys={selectedShifts.map(s => `${s.id}-${s.start_time}`)}
+                    selectedShiftKeys={selectedShifts.map(s => `${s.service_shift_id}`)}
                   />
                   <Pagination
                     currentPage={currentPage}

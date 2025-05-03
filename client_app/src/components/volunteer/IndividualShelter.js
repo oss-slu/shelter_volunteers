@@ -14,15 +14,12 @@ const IndividualShelter = (props) => {
 
       let newShift = {
         code: `${shift.id}-${shelter.shiftCounter}`,
-
         service_shift_id: shift.id,
         shelter: shelter.name,
         shelter_id: shelter._id,
         shift_start: shift.shift_start,
         shift_end: shift.shift_end,
         title: shift.title,
-        id: shift.id, // added for tracking selected shift
-        key: `${shift.id}-${shift.shift_start}`, // add key
       };
       props.addShiftFunction(newShift);
     }
@@ -62,7 +59,6 @@ const IndividualShelter = (props) => {
       })}`;
     }
   };
-
   return (
     <div>
       {props.isSignupPage && (
@@ -80,24 +76,15 @@ const IndividualShelter = (props) => {
                 {shelter.shifts && shelter.shifts.length > 0 ? (
 
                   shelter.shifts.map((shift) => {
-                    const shiftKey = `${shift.id}-${shift.shift_start}`;
-                    const isSelected = props.selectedShiftKeys?.includes(shiftKey);
+                    const shiftKey = shift._id;
+                    const isSelected = props.selectedShiftKeys && props.selectedShiftKeys.includes(shiftKey);
                     return (
-                      <div key={shift.id} style={{ marginBottom: "10px" }}>
+                      <div key={shift.service_shift_id} style={{ marginBottom: "10px" }}>
                         <button
                           className="shift-button"
                           data-testid="add-button"
                           onClick={() => addShift(shift)}
-                          style={
-                            isSelected
-                              ? {
-                                  backgroundColor: "#007bff",
-                                  color: "white",
-                                  fontWeight: "bold",
-                                  border: "2px solid #0056b3",
-                                }
-                              : {}
-                          }
+                          disabled={isSelected}
                         >
                           {formatShiftDate(shift.shift_start, shift.shift_end)}
                         </button>
