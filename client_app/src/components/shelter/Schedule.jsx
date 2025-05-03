@@ -27,22 +27,17 @@ function Schedule() {
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
-  // NEW: Track which days (midnight timestamp) have been opened already
   const [openedDays, setOpenedDays] = useState([]);
-  // NEW: Schedule template data from API
   const [scheduleData, setScheduleData] = useState({ Content: [] });
-  // NEW: Loading state
   const [isLoading, setIsLoading] = useState(true);
-  // NEW: Error state
   const [error, setError] = useState(null);
 
-  // NEW: Fetch schedule data from API on component mount
   useEffect(() => {
     const fetchScheduleData = async () => {
       try {
         setIsLoading(true);
         // Get the shelter ID from URL params or use a default
-        const id = shelterId || localStorage.getItem("shelter_id");
+        const id = shelterId
         
         if (!id) {
           setError("No shelter ID provided");
@@ -96,7 +91,7 @@ function Schedule() {
     setActiveShiftType(null);
   };
 
-  // 3) Clicking "Open Shift" for a particular day => load standard shifts, but only once per day
+  // 3. Clicking "Open Shift" for a particular day => load standard shifts, but only once per day
   const handleOpenDate = (dayDate) => {
     const midnight = new Date(dayDate);
     midnight.setHours(0, 0, 0, 0);
@@ -155,7 +150,7 @@ function Schedule() {
       shift_start: shift.start_time,
       shift_end: shift.end_time,
       required_volunteer_count: shift.people,
-      shelter_id: shelterId || localStorage.getItem("shelter_id")
+      shelter_id: shelterId 
     }));
 
     try {
