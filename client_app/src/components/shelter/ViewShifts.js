@@ -50,25 +50,25 @@ const ViewShifts = ({shiftDetailsData}) => {
   };
 
   const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {
-    const date = formatDate(shift.shift_start);
-    if (!acc[date]) {
-      acc[date] = [];
+    const timestamp = shift.shift_start; // Use original timestamp as key
+    if (!acc[timestamp]) {
+      acc[timestamp] = [];
     }
-    acc[date].push(shift);
+    acc[timestamp].push(shift);
     return acc;
   }, {});
 
   const sortedDates = Object.keys(shiftsGroupedByDate).sort(
-    (a, b) => new Date(a) - new Date(b)
+    (a, b) => new Date(a) - new Date(b) // Sort by original timestamps
   );
 
   return (
     <div className="upcoming-requests">
-      {sortedDates.map((date) => (
-        <div key={date} className="date-section">
-          <div className="date-header">{date}</div>
+      {sortedDates.map((timestamp) => (
+        <div key={timestamp} className="date-section">
+          <div className="date-header">{formatDate(timestamp)}</div> {/* Format timestamp for display */}
           <div>
-            {shiftsGroupedByDate[date].map((shift) => (
+            {shiftsGroupedByDate[timestamp].map((shift) => (
               <ServiceShiftDetails
                 key={shift._id}
                 shift={shift}
