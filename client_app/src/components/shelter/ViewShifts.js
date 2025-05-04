@@ -39,18 +39,16 @@ const ViewShifts = ({shiftDetailsData}) => {
   };
 
   const handleSaveEdit = (updatedShift) => {
-    console.log("Updated Shift:", updatedShift);
     const updatedShifts = shiftsData.map((shift) =>
       shift._id === updatedShift._id ? updatedShift : shift
     );
 
-    console.log("Updated Shifts:", updatedShifts);
     setShiftsData(updatedShifts);
     setIsEditModalOpen(false);
   };
 
   const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {
-    const timestamp = shift.shift_start; // Use original timestamp as key
+    const timestamp = formatDate(shift.shift_start);
     if (!acc[timestamp]) {
       acc[timestamp] = [];
     }
@@ -59,14 +57,14 @@ const ViewShifts = ({shiftDetailsData}) => {
   }, {});
 
   const sortedDates = Object.keys(shiftsGroupedByDate).sort(
-    (a, b) => new Date(a) - new Date(b) // Sort by original timestamps
+    (a, b) => a < b 
   );
 
   return (
     <div className="upcoming-requests">
       {sortedDates.map((timestamp) => (
         <div key={timestamp} className="date-section">
-          <div className="date-header">{formatDate(timestamp)}</div> {/* Format timestamp for display */}
+          <div className="date-header">{timestamp}</div>
           <div>
             {shiftsGroupedByDate[timestamp].map((shift) => (
               <ServiceShiftDetails
