@@ -14,7 +14,10 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedShift((prevShift) => ({ ...prevShift, [name]: value }));
+    setUpdatedShift((prevShift) => ({
+      ...prevShift,
+      [name]: name === "required_volunteer_count" ? parseInt(value, 10) || 0 : value
+    }));
   };
 
   const handleSave = () => {
@@ -29,8 +32,8 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
         From Time:
         <input
           type="text"
-          name="fromTime"
-          value={updatedShift.fromTime}
+          name="shift_start"
+          value={updatedShift.shift_start}
           onChange={handleChange}
           className="shiftTime"
         />
@@ -39,8 +42,8 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
         To Time:
         <input
           type="text"
-          name="toTime"
-          value={updatedShift.toTime}
+          name="shift_end"
+          value={updatedShift.shift_end}
           onChange={handleChange}
         />
       </label>
@@ -48,8 +51,8 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
         Volunteers Requested:
         <input
           type="number"
-          name="volunteersRequested"
-          value={updatedShift.volunteersRequested}
+          name="required_volunteer_count"
+          value={updatedShift.required_volunteer_count}
           onChange={handleChange}
         />
       </label>
