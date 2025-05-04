@@ -12,8 +12,6 @@ from domains.service_shift import ServiceShift
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
 from serializers.service_shift import ServiceShiftJsonEncoder
-from use_cases.get_schedule_shifts_use_case import get_schedule_shifts_use_case
-from repository.mongo.schedule_repo import ScheduleMongoRepo
 
 service_shift_bp = Blueprint("service_shift", __name__)
 
@@ -89,23 +87,3 @@ def handle_service_shift():
             mimetype="application/json",
             status=status_code,
         )
-
-@service_shift_bp.route("/schedule", methods=["GET"])
-@cross_origin()
-def handle_schedule_shift():
-    shelter_id = request.args.get("shelter_id")
-    if not shelter_id:
-        return Response(
-            json.dumps({"error": "shelter_id is required"}),
-            mimetype="application/json",
-            status=400
-        )
-        
-    repo = ScheduleMongoRepo()
-    shifts = get_schedule_shifts_use_case(repo, shelter_id)
-
-    return Response(
-        json.dumps(shifts, cls=ServiceShiftJsonEncoder),
-        mimetype="application/json",
-        status=200
-    )
