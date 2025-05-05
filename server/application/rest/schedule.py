@@ -41,11 +41,11 @@ def create_schedule():
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
-    repo = ServiceShiftsMongoRepo(collection_name='schedule')
+    repo = ServiceShiftsMongoRepo(collection_name="schedule")
     response = shift_add_use_case(repo, shifts_obj)
     status_code = (
         HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-        if response.get('success')
+        if response.get("success")
         else HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
     )
     return Response(
