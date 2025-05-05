@@ -5,7 +5,6 @@ const CurrentSelection = props => {
   const { selectedShifts, removeShift, submitShifts, isButtonDisabled } = props;
   const [overlaps, setOverlaps] = useState(false);
 
-  //new checking overlap function
   const checkForOverallOverlap = () => {
     for (let i = 0; i < selectedShifts.length; i++) {
       for (let j = i + 1; j < selectedShifts.length; j++) {
@@ -28,7 +27,6 @@ const CurrentSelection = props => {
     return false;
   };
 
-  // updates overlapping state when the selected shifts change
   useEffect(() => {
     setOverlaps(checkForOverallOverlap());
   }, [selectedShifts]);
@@ -36,11 +34,14 @@ const CurrentSelection = props => {
   return (
     <div className="current-selection">
       <h2>Current Selection</h2>
+      <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
+        You’ve selected {selectedShifts.length} shift{selectedShifts.length === 1 ? "" : "s"}.
+      </p>
       <ShiftList
         shifts={selectedShifts}
         currentSelectionSection={true}
         onClose={removeShift}
-        setOverlaps={setOverlaps} // passing the removing function here thru shift list
+        setOverlaps={setOverlaps}
       />
       <div id="submit-shifts" data-testid="submit-shifts-button">
         <button onClick={submitShifts} disabled={overlaps || isButtonDisabled}>

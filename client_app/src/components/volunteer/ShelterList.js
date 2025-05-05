@@ -27,6 +27,7 @@ const ShelterList = (props) => {
                     shelter={shelter}
                     isSignupPage={props.isSignupPage}
                     addShiftFunction={addShift}
+                    selectedShiftKeys={props.selectedShiftKeys}
                   />
                 </div>
               );
