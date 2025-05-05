@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
-import { shelterAPI } from "../../api/shelter";
+import { scheduleAPI } from "../../api/schedule";
 import { useParams } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
@@ -45,7 +45,7 @@ function Schedule() {
           return;
         }
         
-        const data = await shelterAPI.getSchedule(id);
+        const data = await scheduleAPI.getShifts(id);
         
         // Transform API data to match the expected format
         const transformedData = {

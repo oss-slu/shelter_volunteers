@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
+import { scheduleAPI } from "../../api/schedule"; // 
 
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -48,14 +49,28 @@ const RepeatableShifts = () => {
 
   const handleSubmitAllShifts = async () => {
     try {
-      // Replace with actual API call when ready
-      console.log("Submitting shifts to backend:", shifts);
+      const transformedShifts = shifts.map((shift) => ({
+        shift_name: shift.shiftName || "Unnamed Shift",
+        start_time_offset: timeStringToMillis(shift.startTime),
+        end_time_offset: timeStringToMillis(shift.endTime),
+        required_volunteer_count: Number(shift.requiredVolunteers),
+        max_volunteer_count: Number(shift.maxVolunteers),
+      }));
+  
+      await scheduleAPI.submitRepeatableShifts(shelterId, { shifts: transformedShifts });
+  
+      const updatedSchedule = await scheduleAPI.getShifts(shelterId);
+      console.log("Updated schedule from backend:", updatedSchedule);
+  
       setSuccessMessage("Schedule submitted successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
+      setShifts([]);
     } catch (error) {
       console.error("Error submitting schedule:", error);
+      alert("There was an error submitting the schedule.");
     }
   };
+  
 
   const updateShift = (index, field, value) => {
     const updatedShifts = [...shifts];
