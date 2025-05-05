@@ -22,6 +22,7 @@ import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import Schedule from "./components/shelter/Schedule"; 
 import RepeatableShifts from "./components/shelter/RepeatableShifts";
+import UpcomingRequests from "./components/shelter/UpcomingRequests";
 
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
