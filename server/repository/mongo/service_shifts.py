@@ -12,12 +12,12 @@ class ServiceShiftsMongoRepo:
     MongoDB repository class for managing service shifts.
     """
 
-    def __init__(self):
+    def __init__(self, collection_name="service_shifts"):
         """
         Initialize the repository with a MongoDB connection.
         """
         self.db = get_db()
-        self.collection = self.db.service_shifts
+        self.collection = self.db[collection_name]
 
     def add_service_shifts(self, shift_data):
         """
