@@ -1,6 +1,7 @@
 """Unit tests for the /schedule GET endpoint using mocked repository."""
 
 import unittest
+from unittest.mock import patch
 from application.app import create_app
 from domains.service_shift import ServiceShift
 
