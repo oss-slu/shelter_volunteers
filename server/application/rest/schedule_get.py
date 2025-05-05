@@ -1,3 +1,5 @@
+"""Module for handling GET requests to the /schedule endpoint."""
+
 import json
 from flask import Blueprint, request, Response
 from flask_cors import cross_origin

@@ -1,8 +1,10 @@
+"""Unit tests for the /schedule GET endpoint using mocked repository."""
+
 import unittest
-from unittest.mock import patch, MagicMock
 from application.app import create_app
 from domains.service_shift import ServiceShift
 
+"""Test case for verifying the /schedule endpoint returns correct JSON."""
 class TestScheduleEndpoint(unittest.TestCase):
 
     def setUp(self):
@@ -22,8 +24,8 @@ class TestScheduleEndpoint(unittest.TestCase):
         ]
 
     @patch("application.rest.schedule_get.ScheduleMongoRepo")
-    def test_get_schedule_returns_expected_data(self, MockRepo):
-        instance = MockRepo.return_value
+    def test_get_schedule_returns_expected_data(self, mock_repo):
+        instance = mock_repo.return_value
         instance.list.return_value = self.fake_shifts
 
         response = self.app.get(f"/schedule?shelter_id={self.shelter_id}")
