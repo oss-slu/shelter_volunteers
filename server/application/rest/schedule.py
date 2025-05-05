@@ -1,39 +1,34 @@
 """
-module for handling the schedule endpoint
+This module handles schedule operations for repeatable shifts.
 """
-from flask import request, jsonify
-from application.rest import app
-from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+import json
+from flask import Blueprint, request, Response
+from flask_cors import cross_origin
+from use_cases.schedule_add_use_case import schedule_add_use_case
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from responses import ResponseTypes
 
-#new instance of the repo with the schedule collection
-schedule_repo = ServiceShiftsMongoRepo(collection_name='schedule')
+schedule_bp = Blueprint("schedule", __name__)
 
-@app.route('/schedule', methods=['POST'])
+@schedule_bp.route("/schedule", methods=["POST"])
+@cross_origin()
 def create_schedule():
     """
-    endpoint to create repeatable schedule templates.
-    wants a JSON array of service shift objects.
+    Endpoint to create repeatable schedule templates.
+    Expects a JSON array of service shift objects.
     """
-    try:
-        #parsing the request body as JSON
-        shifts = request.get_json()
-        if not shifts or not isinstance(shifts, list):
-            return jsonify({'error': 'Expected a list of service shifts'}), 400
-        #going to process every shift
-        inserted_ids = []
-        for shift in shifts:
-            #making sure the shift has required fields
-            if 'timestamp' not in shift or 'service' not in shift:
-                return jsonify({'error'
-                                : 'Shift requires timestamp + service fields'}),
-                400
-            #timestamp here is "milliseconds since midnight" instead of epoch
-            # check this, trying to insert shift into  schedule collection
-            result = schedule_repo.insert(shift)
-            inserted_ids.append(str(result))
-        #return success with the IDs of created schedules
-        return jsonify({'message': 'Schedule created successfully',
-                        'ids': inserted_ids}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    shifts_data = request.get_json()
+    if not shifts_data or not isinstance(shifts_data, list):
+        return Response(
+            json.dumps({"error": "Expected a list of service shifts"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+    response = schedule_add_use_case(shifts_data)
+    
+    return Response(
+        json.dumps(response.value),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[response.response_type],
+    )
     
