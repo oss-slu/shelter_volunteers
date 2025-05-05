@@ -22,7 +22,6 @@ import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import Schedule from "./components/shelter/Schedule"; 
 import RepeatableShifts from "./components/shelter/RepeatableShifts";
-import UpcomingRequests from "./components/shelter/UpcomingRequests";
 
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -44,8 +43,6 @@ function App() {
           <Route path="settings" element={<Settings />} /> 
           <Route path="schedule" element={<Schedule />} />
           <Route path="request-for-help" element={<RequestForHelp />} />
-          <Route path="upcoming-requests" element={<UpcomingRequests />} />
-          <Route path="repeatable-shifts" element={<RepeatableShifts />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
@@ -53,6 +50,7 @@ function App() {
           <Route path="shelters" element={<Shelters />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
+          <Route path="repeatable-shifts" element={<RepeatableShifts />} />
         </Route>
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
       </Route>
