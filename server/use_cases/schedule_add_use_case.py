@@ -7,20 +7,9 @@ def schedule_add_use_case(shifts_data):
     repo = ServiceShiftsMongoRepo(collection_name='schedule')
     
     try:
-        inserted_ids = []
-        for shift in shifts_data:
-            #validate that it has a service field
-            if 'service' not in shift:
-                return Response.failure(
-                    ResponseTypes.PARAMETER_ERROR, 
-                    "Each shift must have a service field"
-                )
-            
-            result = repo.insert(shift)
-            inserted_ids.append(str(result))
+        inserted_ids = repo.add_service_shifts(shifts_data) 
         
         return Response.success({"ids": inserted_ids})
-        
     except Exception as e:
         return Response.failure(ResponseTypes.INTERNAL_ERROR, str(e))
     
