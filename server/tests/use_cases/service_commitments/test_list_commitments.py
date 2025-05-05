@@ -4,6 +4,7 @@ Tests for listing service commitments
 
 from unittest.mock import MagicMock
 from use_cases.list_service_commitments import list_service_commitments
+from request.time_filter import TimeFilter
 
 class FakeCommitment:
     def __init__(self, service_shift_id, user_email):
@@ -19,7 +20,7 @@ def test_list_service_commitments_no_commitments():
 
     user_email = "test@example.com"
     commitments, shifts = list_service_commitments(
-        commitments_repo, shifts_repo, user_email
+        commitments_repo, shifts_repo, TimeFilter(None), user_email
     )
 
     assert commitments == []
@@ -42,7 +43,7 @@ def test_list_service_commitments_with_commitments():
 
     user_email = "test@example.com"
     commitments, shifts = list_service_commitments(
-        commitments_repo, shifts_repo, user_email
+        commitments_repo, shifts_repo, TimeFilter(None), user_email
     )
 
     assert len(commitments) == 2

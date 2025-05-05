@@ -15,9 +15,9 @@ function renderWithRouter(children, routes = []) {
   return render(<RouterProvider router={router} />);
 }
 
-jest.mock("../components/volunteer/Shifts", () => ({
-  UpcomingShifts: () => {
-    return <div>Upcoming Shifts List...</div>;
+jest.mock("../components/volunteer/Commitments", () => ({
+  UpcomingCommitments: () => {
+    return <div>Upcoming Commitments List...</div>;
   },
 }));
 
@@ -34,7 +34,7 @@ describe("tests that do not need shelters rendered", () => {
   beforeEach(async () => {
     renderWithRouter(<VolunteerDashboard />, 
     [{
-      path: "/shelters",
+      path: "/volunteer-dashboard/shelters",
       element: <h2>Shelter List Page</h2>,
     },])
   })
@@ -46,6 +46,8 @@ describe("tests that do not need shelters rendered", () => {
   test("properly renders shelters header", async () => {
     expect(await screen.findByText("Shelters looking for Volunteers")).toBeInTheDocument()
   })
+
+
   
   test("properly renders impact header and cards", async () => {
     expect(await screen.findByText("Impact Created")).toBeInTheDocument()
@@ -78,7 +80,6 @@ describe("tests that do not need shelters rendered", () => {
   })
   
   test("Upcoming shifts gets rendered", async () => {
-    expect(await screen.findByText("Upcoming Shifts"))
-    expect(await screen.findByText("Upcoming Shifts List..."))
+    expect(await screen.findByText("Upcoming Commitments List..."))
   })
 })

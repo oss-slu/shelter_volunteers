@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 
 // Volunteer dashboard components
-import { PastShifts, UpcomingShifts } from "./components/volunteer/Shifts";
+import { PastCommitments, UpcomingCommitments } from "./components/volunteer/Commitments";
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboardLayout from "./components/volunteer/VolunteerDashboardLayout";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
@@ -18,8 +18,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ShelterDashboardLayout from "./components/shelter/ShelterDashboardLayout";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
 import RequestForHelp from "./components/shelter/RequestForHelp";
-import { ShiftDetails } from "./components/shelter/ShiftDetails";
-import UpcomingRequests from "./components/shelter/UpcomingRequests";
+import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import Schedule from "./components/shelter/Schedule"; 
 import RepeatableShifts from "./components/shelter/RepeatableShifts";
@@ -43,16 +42,16 @@ function App() {
           <Route index element={<ShelterDashboard />} />
           <Route path="settings" element={<Settings />} /> 
           <Route path="schedule" element={<Schedule />} />
-          <Route path="shift-details" element={<ShiftDetails />} />
           <Route path="request-for-help" element={<RequestForHelp />} />
           <Route path="upcoming-requests" element={<UpcomingRequests />} />
           <Route path="repeatable-shifts" element={<RepeatableShifts />} />
+          <Route path="upcoming-shifts" element={<UpcomingShifts />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
           <Route index element={<VolunteerDashboard />} />
           <Route path="shelters" element={<Shelters />} />
-          <Route path="past-shifts" element={<PastShifts />} />
-          <Route path="upcoming-shifts" element={<UpcomingShifts />} />
+          <Route path="past-shifts" element={<PastCommitments />} />
+          <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
         </Route>
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
       </Route>

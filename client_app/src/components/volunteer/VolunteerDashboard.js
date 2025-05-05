@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import Shelters from "./Shelters";
-import { UpcomingShifts } from "./Shifts";
+import { UpcomingCommitments } from "./Commitments";
 import Impact from "./Impact";
 
 function VolunteerDashboard() {
   const navigate = useNavigate();
 
   const signupClick = () => {
-    navigate("/shelters");
+    navigate("/volunteer-dashboard/shelters");
   };
 
   return (
     <div className="volunteer-dashboard">
       <div className="column column-1">
-        <h3>Upcoming Shifts</h3><UpcomingShifts />
+        <UpcomingCommitments />
       </div>
       <div className="column column-2">
         <h3>Shelters looking for Volunteers</h3><Shelters condensed={true} />

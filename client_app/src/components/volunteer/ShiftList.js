@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { format } from "date-fns";
-
+import { Address } from "./Address";
 const ShiftList = props => {
 
   useEffect(() => {
@@ -20,12 +20,12 @@ const ShiftList = props => {
   }
 
   function checkForOverlap(shift, otherShifts) {
-    const shiftStartTime = new Date(shift.start_time);
-    const shiftEndTime = new Date(shift.end_time);
+    const shiftStartTime = new Date(shift.shift_start);
+    const shiftEndTime = new Date(shift.shift_end);
 
     return otherShifts.some((otherShift) => {
-      const otherShiftStartTime = new Date(otherShift.start_time);
-      const otherShiftEndTime = new Date(otherShift.end_time);
+      const otherShiftStartTime = new Date(otherShift.shift_start);
+      const otherShiftEndTime = new Date(otherShift.shift_end);
 
       // Check if there is an overlap
       return (
@@ -51,8 +51,8 @@ const ShiftList = props => {
       {/* Display the shift*/}
       {props.shifts &&
         props.shifts.map((shift) => {
-          const startTime = new Date(shift.start_time);
-          const endTime = new Date(shift.end_time);
+          const startTime = new Date(shift.shift_start);
+          const endTime = new Date(shift.shift_end);
 
           // format the start and end time to human-readable strings
           const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
@@ -63,7 +63,7 @@ const ShiftList = props => {
             props.shifts.filter((s) => s !== shift)
           );
           // helps keep track of whether or not the end time of the shift is in the past
-          const isPastShift = endTime.getTime() < Date.now();
+          const isPastShift = startTime.getTime() < Date.now();
           return (
             <div key={shift._id || shift.code}>
               {props.currentSelectionSection === true && (
@@ -101,7 +101,7 @@ const ShiftList = props => {
                 </div>
               )}
               {props.currentSelectionSection !== true && (
-                <div className={endTime.getTime() < Date.now() ? "shift past" : "shift upcoming"}>
+                <div className={isPastShift ? "shift past" : "shift upcoming"}>
                   {props.fromShelter === true && (
                     <div className="text-right">
                       <input
@@ -111,17 +111,10 @@ const ShiftList = props => {
                       />
                     </div>
                   )}
-                  {props.fromShelter !== true && (
+                  {props.fromShelter !== true &&  (
                     <div>
-                      <h2>{shift.facility_info.name}</h2>
-                      <p>
-                        {shift.facility_info.city}, {shift.facility_info.state},
-                        {shift.facility_info.zipCode}
-                      </p>
-                      <p>{shift.facility_info.phone}</p>
-                      <p>
-                        <a href={shift.facility_info.website}>{shift.facility_info.website}</a>
-                      </p>
+                      <h2>{shift.shelter.name}</h2>
+                      <Address address={shift.shelter.address}/>
                     </div>
                   )}
                   <p>

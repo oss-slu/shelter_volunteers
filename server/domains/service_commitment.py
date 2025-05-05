@@ -3,8 +3,8 @@ This module defines the ServiceCommitment
 class, which represents a volunteer's commitment to a ServiceShift.
 """
 
-import uuid
 import dataclasses
+from typing import Optional
 
 @dataclasses.dataclass
 class ServiceCommitment:
@@ -14,8 +14,8 @@ class ServiceCommitment:
     Represents a volunteer signing up for a specific ServiceShift.
     """
     volunteer_id: str  # Typically an email address
-    service_shift_id: uuid.UUID  # The ID of the associated ServiceShift
-    _id: uuid.UUID = None  # Unique ID for this commitment
+    service_shift_id: str  # The ID of the associated ServiceShift
+    _id: Optional[str] = None  # Unique ID for this commitment
 
     def get_id(self):
         """Returns the ID of the service shift."""

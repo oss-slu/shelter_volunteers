@@ -5,14 +5,14 @@ import ShiftList from "../components/volunteer/ShiftList";
 let mockShift = {
   code: 92341,
   shelter: 9321,
-  start_time: 1696255200000,
-  end_time: 1696269600000,
+  shift_start: 1696255200000,
+  shift_end: 1696269600000,
 };
 let mockShift2 = {
   code: 48593,
   shelter: 8323,
-  start_time: 4696255200000,
-  end_time: 5696255200000,
+  shift_start: 4696255200000,
+  shift_end: 5696255200000,
 };
 const onShiftClose = jest.fn(); //mock close function
 const setOverlaps = jest.fn(); //mock set overlaps
@@ -31,14 +31,14 @@ test("shift list properly displays shifts when added", () => {
       setOverlaps={setOverlaps}
     />,
   );
-  const startTime = new Date(mockShift.start_time);
-  const endTime = new Date(mockShift.end_time);
+  const startTime = new Date(mockShift.shift_start);
+  const endTime = new Date(mockShift.shift_end);
   const formattedStartTime = format(startTime, "M/dd/yy HH:mm");
   const formattedEndTime = format(endTime, "M/dd/yy HH:mm");
   expect(screen.getByText(mockShift.shelter)).toBeInTheDocument();
   expect(screen.getByText(formattedStartTime + " to " + formattedEndTime)).toBeInTheDocument();
-  const startTime2 = new Date(mockShift2.start_time);
-  const endTime2 = new Date(mockShift2.end_time);
+  const startTime2 = new Date(mockShift2.shift_start);
+  const endTime2 = new Date(mockShift2.shift_end);
   const formattedStartTime2 = format(startTime2, "M/dd/yy HH:mm");
   const formattedEndTime2 = format(endTime2, "M/dd/yy HH:mm");
   expect(screen.getByText(mockShift2.shelter)).toBeInTheDocument();

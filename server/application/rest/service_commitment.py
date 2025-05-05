@@ -8,17 +8,25 @@ from domains.service_commitment import ServiceCommitment
 
 from authentication.authenticate_user import get_user_from_token
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from application.rest.request_parameters import is_true
+from application.rest.request_parameters import get_time_filters
 from use_cases.add_service_commitments import add_service_commitments
 from use_cases.list_service_commitments import list_service_commitments
+from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
+from use_cases.delete_service_commitment import delete_service_commitment
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from repository.mongo.shelter import ShelterRepo
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
+from serializers.service_shift import ServiceShiftJsonEncoder
+from serializers.shelter import ShelterJsonEncoder
 from responses import ResponseTypes
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
 
 commitments_repo = MongoRepoCommitments()
 shifts_repo = ServiceShiftsMongoRepo()
+shelter_repo = ShelterRepo()
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
 def create_service_commitment():
@@ -51,7 +59,6 @@ def create_service_commitment():
         for commitment in request_data:
             commitment["volunteer_id"] = user_email
             commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
-
         response = add_service_commitments(
             commitments_repo,
             shifts_repo,
@@ -77,12 +84,14 @@ def create_service_commitment():
 def fetch_service_commitments():
     """
     Handle GET request to retrieve service commitments.
-    Can filter by user (from token) and optionally by service_shift_id.
     """
     try:
         # Extract service_shift_id from query parameters if provided
         service_shift_id = request.args.get("service_shift_id")
+        include_shift_details = is_true(request.args, "include_shift_details")
+        time_filter_obj = get_time_filters(request.args)
         user_tuple = get_user_from_token(request.headers)
+
         # get_user_from_token returns a tuple of (email, first_name, last_name)
         if not user_tuple or not isinstance(user_tuple, tuple):
             return (
@@ -101,11 +110,13 @@ def fetch_service_commitments():
         # view all volunteers
         # If service_shift_id is not provided, we filter by user_email as before
         filter_user = None if service_shift_id else user_email
-        commitments, _ = list_service_commitments(
+        commitments, shifts = list_service_commitments(
             commitments_repo,
             shifts_repo,
+            time_filter_obj,
             filter_user,
-            service_shift_id)
+            service_shift_id
+        )
 
         # Convert commitments to JSON
         commitments_list = []
@@ -113,15 +124,101 @@ def fetch_service_commitments():
             commitment_dict = json.loads(json.dumps(
                 commitment, cls=ServiceCommitmentJsonEncoder))
             commitments_list.append(commitment_dict)
+
+        if include_shift_details:
+            shelters = list_shelters_for_shifts(shifts, shelter_repo)
+            # Convert shifts to JSON
+            shifts_list = []
+            for shift in shifts:
+                shift_dict = json.loads(json.dumps(
+                    shift, cls=ServiceShiftJsonEncoder))
+                shifts_list.append(shift_dict)
+            # Convert shelters to JSON
+            shelters_list = []
+            for shelter in shelters:
+                shelter_dict = json.loads(json.dumps(
+                    shelter, cls=ShelterJsonEncoder))
+                shelters_list.append(shelter_dict)
+
+            # first, remove _id field from each object in shifts_list
+            # because we want the _id field from the commitment
+            # and not the shift
+            for shift in shifts_list:
+                if "_id" in shift:
+                    del shift["_id"]
+            # now we can merge the shifts_list into the commitments_list
+            # by copying the fields of each shift into the commitment
+            for i in range(len(commitments_list)):
+                commitments_list[i].update({**shifts_list[i]})
+
+            # merge the shelters data into the commitments_list
+            # shelter_list might not be the same size as commitments_list
+            # because there may be multiple commitments for the same shelter
+            # so we will have to check if the shelter_id is the same
+            # and then merge the data
+            # add a new field: shelter in the commitment data
+            shelters_dict = {
+                shelter["_id"]: shelter for shelter in shelters_list
+            }
+            for commitment in commitments_list:
+                shelter_id = commitment.get("shelter_id")
+                if shelter_id in shelters_dict:
+                    commitment.update({"shelter": shelters_dict[shelter_id]})
         return Response(
             json.dumps(
-                {"success": True, "results": commitments_list}, default=str),
+                commitments_list, default=str
+            ),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS])
     except ValueError as error:
         return (
             jsonify({"error": str(error)}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
+        )
+    except KeyError as error:
+        return (
+            jsonify({"error": f"Missing key: {str(error)}"}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+
+# Add a DELETE /service_commitment/<COMMITMENT_ID>
+@service_commitment_bp.route(
+    "/service_commitment/<commitment_id>", methods=["DELETE"]
+)
+def delete_service_commitment_by_id(commitment_id):
+    """
+    Handle DELETE request to remove a service commitment.
+    """
+    try:
+        user_tuple = get_user_from_token(request.headers)
+        # get_user_from_token returns a tuple of (email, first_name, last_name)
+        if not user_tuple or not isinstance(user_tuple, tuple):
+            return (
+                jsonify({"error": "Invalid token"}),
+                HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
+            )
+        user_email = user_tuple[0]  # First element of tuple is the email
+        if not isinstance(user_email, str):
+            return (
+                jsonify({"error": "Invalid email format"}),
+                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+            )
+        response = delete_service_commitment(
+            commitments_repo,
+            commitment_id,
+            user_email)
+        response_code = response["response_code"]
+        # remove "response_code" from the response
+        del response["response_code"]
+        return Response(
+            json.dumps(response, default=str),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[response_code])
+
+    except ValueError as error:
+        return (
+            jsonify({"error": str(error)}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
     except KeyError as error:
         return (
