@@ -5,8 +5,8 @@ from unittest.mock import patch
 from application.app import create_app
 from domains.service_shift import ServiceShift
 
-"""Test case for verifying the /schedule endpoint returns correct JSON."""
 class TestScheduleEndpoint(unittest.TestCase):
+    """Test case for verifying the /schedule endpoint returns correct JSON."""
 
     def setUp(self):
         self.app = create_app().test_client()
