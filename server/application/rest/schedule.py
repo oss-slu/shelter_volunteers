@@ -25,7 +25,6 @@ def create_schedule():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
     response = schedule_add_use_case(shifts_data)
-    
     return Response(
         json.dumps(response.value),
         mimetype="application/json",
