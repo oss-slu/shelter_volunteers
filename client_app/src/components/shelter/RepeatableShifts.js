@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
+import { scheduleAPI } from "../../api/schedule";
+
 
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -48,14 +50,16 @@ const RepeatableShifts = () => {
 
   const handleSubmitAllShifts = async () => {
     try {
-      // Replace with actual API call when ready
-      console.log("Submitting shifts to backend:", shifts);
+      await scheduleAPI.submitRepeatableShifts(shelterId, shifts);
       setSuccessMessage("Schedule submitted successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error submitting schedule:", error);
+      setSuccessMessage("Failed to submit schedule.");
+      setTimeout(() => setSuccessMessage(""), 3000);
     }
   };
+  
 
   const updateShift = (index, field, value) => {
     const updatedShifts = [...shifts];
