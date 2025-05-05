@@ -4,11 +4,9 @@ from responses import Response, ResponseTypes
 
 def schedule_add_use_case(shifts_data):
     """Add schedule templates to the schedule collection."""
-    repo = ServiceShiftsMongoRepo(collection_name='schedule')
-    
+    repo = ServiceShiftsMongoRepo(collection_name="schedule")
     try:
-        inserted_ids = repo.add_service_shifts(shifts_data) 
-        
+        inserted_ids = repo.add_service_shifts(shifts_data)
         return Response.success({"ids": inserted_ids})
     except Exception as e:
         return Response.failure(ResponseTypes.INTERNAL_ERROR, str(e))
