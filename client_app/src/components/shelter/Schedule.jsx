@@ -147,11 +147,14 @@ function Schedule() {
   const handleConfirmShifts = async () => {
     const payload = scheduledShifts.map(shift => ({
       shift_name: shift.name,
-      shift_start: shift.start_time,
-      shift_end: shift.end_time,
+      start_time_offset: shift.start_time,
+      end_time_offset: shift.end_time,
       required_volunteer_count: shift.people,
       shelter_id: shelterId 
-    }));
+    }));    
+
+ // Log the payload to confirm structure
+ console.log("Sending payload:", JSON.stringify(payload, null, 2));
 
     try {
       await serviceShiftAPI.addShifts(payload);
