@@ -147,8 +147,8 @@ function Schedule() {
   const handleConfirmShifts = async () => {
     const payload = scheduledShifts.map(shift => ({
       shift_name: shift.name,
-      start_time_offset: shift.start_time,
-      end_time_offset: shift.end_time,
+      shift_start: shift.start_time,       //changing back for now
+      shift_end: shift.end_time,           //changing back for now
       required_volunteer_count: shift.people,
       shelter_id: shelterId 
     }));    
