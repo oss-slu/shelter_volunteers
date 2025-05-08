@@ -55,9 +55,10 @@ const RepeatableShifts = () => {
         end_time_offset: timeStringToMillis(shift.endTime),
         required_volunteer_count: Number(shift.requiredVolunteers),
         max_volunteer_count: Number(shift.maxVolunteers),
+        shelter_id: shelterId
       }));
   
-      await scheduleAPI.submitRepeatableShifts(shelterId, { shifts: transformedShifts });
+      await scheduleAPI.submitRepeatableShifts(shelterId, transformedShifts);
   
       const updatedSchedule = await scheduleAPI.getShifts(shelterId);
       console.log("Updated schedule from backend:", updatedSchedule);
