@@ -155,7 +155,6 @@ function Schedule() {
 
  // Log the payload to confirm structure
  console.log("Sending payload:", JSON.stringify(payload, null, 2));
-
     try {
       await serviceShiftAPI.addShifts(payload);
       alert("Shifts successfully created!");
