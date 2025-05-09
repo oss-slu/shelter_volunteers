@@ -21,10 +21,10 @@ import RequestForHelp from "./components/shelter/RequestForHelp";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import Schedule from "./components/shelter/Schedule"; 
+import RepeatableShifts from "./components/shelter/RepeatableShifts";
 
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
-
 import "./styles/App.css";
 
 function App() {
@@ -43,6 +43,7 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="request-for-help" element={<RequestForHelp />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
+          <Route path="repeatable-shifts" element={<RepeatableShifts />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
           <Route index element={<VolunteerDashboard />} />
