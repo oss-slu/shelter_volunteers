@@ -51,8 +51,8 @@ const RepeatableShifts = () => {
     try {
       const transformedShifts = shifts.map((shift) => ({
         shift_name: shift.shiftName || "Unnamed Shift",
-        start_time_offset: timeStringToMillis(shift.startTime),
-        end_time_offset: timeStringToMillis(shift.endTime),
+        shift_start: timeStringToMillis(shift.startTime),
+        shift_end: timeStringToMillis(shift.endTime),
         required_volunteer_count: Number(shift.requiredVolunteers),
         max_volunteer_count: Number(shift.maxVolunteers),
         shelter_id: shelterId
