@@ -8,7 +8,7 @@ from use_cases.add_service_shifts import shift_add_use_case
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
 from authentication.authenticate_user import get_user_from_token
-from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from repository.mongo.schedule_repo import ScheduleMongoRepo
 from domains.service_shift import ServiceShift  # Import the existing ServiceShift class
 schedule_post_bp = Blueprint("schedule_post", __name__)
 @schedule_post_bp.route("/schedule", methods=["POST"])
@@ -41,7 +41,7 @@ def create_schedule():
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
-    repo = ServiceShiftsMongoRepo(collection_name="schedule")
+    repo = ScheduleMongoRepo()
     response = shift_add_use_case(repo, shifts_obj)
     status_code = (
         HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]

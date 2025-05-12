@@ -7,6 +7,4 @@ from repository.mongo.service_shifts import (
 
 class ScheduleMongoRepo(ServiceShiftsMongoRepo):
     def __init__(self):
-        super().__init__()
-        self.collection = self.db.schedules
-        # override to use 'schedules' collection
+        super().__init__("schedule")
