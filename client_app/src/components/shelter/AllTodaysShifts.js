@@ -12,4 +12,4 @@ const AllTodaysShifts = ({shiftDetails}) => {
     );
 }
 
-export default AllTodaysShifts;
+export default AllTodaysShifts;s

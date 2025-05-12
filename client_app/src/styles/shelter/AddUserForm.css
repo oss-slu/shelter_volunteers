@@ -47,7 +47,7 @@
     border-radius: 4px;
   }
   
-  .message.success {
+  .message.error {
     margin-top: 10px;
     color: #721c24; 
     background-color: #f8d7da; 
