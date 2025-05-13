@@ -28,7 +28,7 @@ function Schedule() {
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
   // NEW: Track which days (midnight timestamp) have been opened already
-  const [openedDays, setOpenedDays] = useState([]);
+  const [openedDays, setOpenedDays] = useState(new Set());
 
   // 1) Single shift–click logic (unchanged)
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
@@ -57,17 +57,33 @@ function Schedule() {
     const midnight = new Date(dayDate);
     midnight.setHours(0, 0, 0, 0);
     const dayTimestamp = midnight.getTime();
-    // If this day has already been opened, do nothing.
-    if (openedDays.includes(dayTimestamp)) return;
-    const newShifts = ScheduleData.Content.map(shift => ({
-      name: shift.name,
-      start_time: dayTimestamp + shift.start,
-      end_time: dayTimestamp + shift.end,
-      people: shift.people
-    }));
-    setScheduledShifts(prev => [...prev, ...newShifts]);
-    setOpenedDays(prev => [...prev, dayTimestamp]);
-  };
+  
+    const updatedDays = new Set(openedDays);
+  
+    if (openedDays.has(dayTimestamp)) {
+      // TOGGLE OFF: remove shifts for this day
+      setScheduledShifts(prev =>
+        prev.filter(shift => {
+          const shiftDate = new Date(shift.start_time);
+          shiftDate.setHours(0, 0, 0, 0);
+          return shiftDate.getTime() !== dayTimestamp;
+        })
+      );
+      updatedDays.delete(dayTimestamp);
+    } else {
+      // TOGGLE ON: add shifts for this day
+      const newShifts = ScheduleData.Content.map(shift => ({
+        name: shift.name,
+        start_time: dayTimestamp + shift.start,
+        end_time: dayTimestamp + shift.end,
+        people: shift.people,
+      }));
+      setScheduledShifts(prev => [...prev, ...newShifts]);
+      updatedDays.add(dayTimestamp);
+    }
+  
+    setOpenedDays(updatedDays);
+  };  
 
   // 4) RBC calls this whenever user navigates or changes view
   const handleRangeChange = (range) => {
@@ -92,15 +108,20 @@ function Schedule() {
   }));
 
   // 7) Build "Open Shift" events for each day in currentRange, but filter out days that have already been opened.
-  const openShiftEvents = currentRange
-    .filter(dayDate => !openedDays.includes(new Date(dayDate).setHours(0, 0, 0, 0)))
-    .map(dayDate => ({
-      title: "Open Shift",
+  const openShiftEvents = currentRange.map(dayDate => {
+    const ts = new Date(dayDate).setHours(0, 0, 0, 0);
+    const isOpened = openedDays.has(ts);
+  
+    return {
+      title: isOpened ? "Cancel Shift" : "Open Shift",
       allDay: true,
       start: new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate()),
       end: new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate()),
-      isOpenShift: true
-    }));
+      isOpenShift: true,
+      timestamp: ts, // used for toggling logic
+    };
+  });
+  
 
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
