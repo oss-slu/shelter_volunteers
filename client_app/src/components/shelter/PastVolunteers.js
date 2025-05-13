@@ -26,5 +26,4 @@ const PastVolunteers = ({shiftDetails}) => {
       </div>
     );
 }
-
 export default PastVolunteers;

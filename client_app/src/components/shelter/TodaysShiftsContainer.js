@@ -11,5 +11,4 @@ const TodaysShiftsContainer = ({ shiftDetails }) => {
     </>
   );
 };
-
 export default TodaysShiftsContainer;

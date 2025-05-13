@@ -128,29 +128,26 @@ function Schedule() {
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
 
-  const handleConfirmShifts = async () => {
+  const handleConfirmShifts = async () => {    
     try {
-      for (const shift of scheduledShifts) {
-        const payload = {
-          shift_name: shift.name,
-          shift_start: shift.start_time,
-          shift_end: shift.end_time,
-          required_volunteer_count: shift.people,
-          shelter_id: shelterId,
-        };
-  
-        console.log("Sending shift payload:", payload); // Add this line
-  
-        const response = await serviceShiftAPI.addShifts(payload);
-        console.log("Response:", response); // Add this line
+        for (const shift of scheduledShifts) {
+          const payload = {
+            shift_name: shift.name,
+            shift_start: shift.start_time,
+            shift_end: shift.end_time,
+            required_volunteer_count: shift.people,
+            shelter_id: shelterId,
+          };
+        
+          await serviceShiftAPI.addShifts(payload); // send one shift per request
+        }
+        
+        alert("Shifts successfully created!");
+      } catch (error) {
+        console.error("Error when creating shifts:", error);
+        alert("Issue when creating shifts.");
       }
-  
-      alert("Shifts successfully created!");
-    } catch (error) {
-      console.error("Error when creating shifts:", error); // Shows exact error
-      alert("Issue when creating shifts.");
-    }
-  };
+  };   
   
   return (
     <div className="schedule-container">
