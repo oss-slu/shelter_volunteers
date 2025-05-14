@@ -40,7 +40,7 @@ def test_get_user_permission_system_admin():
                 'street1': '123 Main St',
                 'city': 'CityA',
                 'state': 'StateA',
-                'zip_code': '12345'
+                'postal_code': '12345'
             }
         },
         {
@@ -50,7 +50,7 @@ def test_get_user_permission_system_admin():
                 'street1': '456 Elm St',
                 'city': 'CityB',
                 'state': 'StateB',
-                'zip_code': '67890'
+                'postal_code': '67890'
             }
         },
     ]
