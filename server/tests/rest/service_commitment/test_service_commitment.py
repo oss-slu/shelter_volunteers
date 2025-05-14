@@ -87,6 +87,12 @@ def test_get_commitments_with_augmented_data(
                 "city": "Cityville",
                 "state": "State",
                 "postal_code": "12345",
+                "street2": "",
+                "country": "USA",
+                "coordinates": {
+                    "latitude": None,
+                    "longitude": None
+                }
             },
             # Other shelter details...
         },
@@ -98,6 +104,12 @@ def test_get_commitments_with_augmented_data(
                 "city": "Townsville",
                 "state": "State",
                 "postal_code": "67890",
+                "street2": "",
+                "country": "USA",
+                "coordinates": {
+                    "latitude": None,
+                    "longitude": None
+                }
             },
             # Other shelter details...
         },
