@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
+import { serviceShiftAPI } from "../../api/serviceShift";
+import { useParams } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -20,6 +22,8 @@ function getDefaultWeekRange() {
 }
 
 function Schedule() {
+  const { shelterId } = useParams();
+
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
@@ -101,6 +105,24 @@ function Schedule() {
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
 
+  const handleConfirmShifts = async () => {
+    const payload = scheduledShifts.map(shift => ({
+      shift_name: shift.name,
+      shift_start: shift.start_time,
+      shift_end: shift.end_time,
+      required_volunteer_count: shift.people,
+      shelter_id: shelterId
+    }));
+
+    try {
+      await serviceShiftAPI.addShifts(payload);
+      alert("Shifts successfully created!");
+    } catch (error) {
+      console.log("Error when creating shifts:", error);
+      alert("Issue when creating shifts.");
+    }
+  };
+
   return (
     <div className="schedule-container">
       <h2>Set Repeatable Shifts</h2>
@@ -122,6 +144,25 @@ function Schedule() {
           </div>
         ))}
       </div>
+      <button
+        onClick={handleConfirmShifts}
+        disabled={scheduledShifts.length === 0}
+        style={{
+          backgroundColor: "#007bff",
+          color: "white",
+          fontSize: "17px",
+          padding: "8px 20px",
+          border: "none",
+          borderRadius: "4px",
+          cursor: scheduledShifts.length === 0 ? "not-allowed" : "pointer",
+          opacity: scheduledShifts.length === 0 ? 0.6 : 1,
+          margin: "10px 0",
+          width: "fit-content",
+          maxWidth: "220px",
+        }}
+      >
+        Confirm Shifts
+      </button>
       <div className="calendar-container">
         <Calendar
           localizer={localizer}

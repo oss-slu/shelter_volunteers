@@ -1,9 +1,9 @@
-import React from "react";
-import OpenRequest from "./OpenRequests";
+import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom"; 
+import UnderstaffedShifts from "./UnderstaffedShifts";
 import PastVolunteersContainer from "./PastVolunteersContainer";
 import ShiftContainer from "./ShiftContainer";
 import "../../styles/index.css";
-import { useState, useRef, useEffect } from "react";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import setSeconds from "date-fns/setSeconds";
@@ -12,7 +12,8 @@ import { SERVER } from "../../config";
 import AllVolunteers from "./AllVolunteers";
 import AllTodaysShifts from "./AllTodaysShifts";
 
-function ShelterDashboard({ shelterId }) {
+function ShelterDashboard() {
+  const { shelterId } = useParams(); // Extract from URL param
   const [shiftDetails, setShiftDetails] = useState([]);
   const [showAllPastVolunteers, setShowAllPastVolunteers] = useState(false);
   const [showAllTodaysShifts, setShowAllTodaysShifts] = useState(false);
@@ -53,15 +54,15 @@ function ShelterDashboard({ shelterId }) {
           })
           .catch((error) => console.error(error))
         );
-    }
-    Promise.all(fetchPromises)
-      .then(() => {
-        validResponses.sort((a, b) => a.start_time - b.start_time);
-        setShiftDetails(validResponses);
-      })
-      .catch((error) => {
-        console.error("Error in fetching data:", error);
-      });
+      }
+      Promise.all(fetchPromises)
+        .then(() => {
+          validResponses.sort((a, b) => a.start_time - b.start_time);
+          setShiftDetails(validResponses);
+        })
+        .catch((error) => {
+          console.error("Error in fetching data:", error);
+        });
     }
   }, [shelterId]);
 
@@ -71,10 +72,10 @@ function ShelterDashboard({ shelterId }) {
         <div className="shelter-dashboard">
           <div className="container-large">
             <div className="container-align">
-              <h4>Open requests</h4>
+              <h4>Understaffed Shifts</h4>
               <a href="/shift-details">View all</a>
             </div>
-            <OpenRequest />
+            <UnderstaffedShifts />
           </div>
           <div className="container-medium">
             <div className="container-align">
@@ -114,12 +115,20 @@ function ShelterDashboard({ shelterId }) {
                   marginTop: "-5px"
                 }}
                 onClick={() => setShowAllPastVolunteers(true)}
-                >
+              >
                 View all
               </button>
             </div>
             <PastVolunteersContainer shiftDetails={shiftDetails} />
           </div>
+          {/* Link to new Settings screen */}
+          <div className="container-small">
+            <div className="container-align">
+              <h4>Settings</h4>
+              <a href={`/shelter-dashboard/${shelterId}/settings`}>Add or Remove Users</a>
+            </div>
+          </div>
+
         </div>
       )}
       {showAllTodaysShifts && (
@@ -138,7 +147,6 @@ function ShelterDashboard({ shelterId }) {
             onClick={() => setShowAllTodaysShifts(false)} 
           >
           </button>
-
         </div>
       )}
       {showAllPastVolunteers && (
@@ -147,7 +155,6 @@ function ShelterDashboard({ shelterId }) {
         </div>
       )}
     </div>
-      
   );
 }
 

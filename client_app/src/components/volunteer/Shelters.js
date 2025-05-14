@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import ShelterList from "./ShelterList";
 import ConfirmationPage from "./ConfirmationPage";
 import { Pagination } from "./Pagination";
-import { SERVER } from "../../config";
 import { Link } from "react-router-dom";
-import getAuthHeader from "../../authentication/getAuthHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "./SearchBar";
 import { faCalendarDays, faArrowRight, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +10,7 @@ import { useSpring, animated } from "@react-spring/web";
 import dayjs from 'dayjs';
 import CurrentSelection from "./CurrentSelection";
 import { useShelterData } from "./hooks/useShelterData";
-
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 const Shelters = (props) => {
   let defaultRadius = "5";
   if (props.condensed) defaultRadius = "25";
@@ -24,8 +22,6 @@ const Shelters = (props) => {
     setLoading,
     noSearchDataAvailable,
     setNoSearchDataAvailable,
-    getLocation,
-    setRadiusfromLocation
   } = useShelterData(defaultRadius);
 
   const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -129,26 +125,23 @@ const Shelters = (props) => {
     }
   }
 
-  function submitShifts() {
+  async function submitShifts() {
     let shifts = [...selectedShifts];
-    let shiftsPayload = shifts.map((shift) => ({ ...shift })); // Create new objects
-    shiftsPayload = shiftsPayload.map((shift) => {
-      delete shift.code;
-      return shift;
-    }); 
-    const shiftsEndpoint = SERVER + "/shifts";
-    const header = getAuthHeader();
-    fetch(shiftsEndpoint, {
-      method: "POST",
-      body: JSON.stringify(shiftsPayload),
-      headers: header,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShiftStatusList(data.map((item) => item.success));
-      })
-      .then(() => setShowConfirmation(true))
-      .catch((error) => console.log(error));
+    const shiftsList = shifts.map((shift) => ({
+      service_shift_id: shift.service_shift_id,
+    }));
+
+    try {
+      const response = await serviceCommitmentAPI.addCommitments(shiftsList);
+      if (response) {
+        setShiftStatusList(response);
+        setShowConfirmation(true);
+        setOnMobileContinueclicked(false);
+      }
+    }
+    catch (error) {
+      console.error("Error submitting shifts:", error);
+    }
   }
 
   function onMobileContinueClick() {
@@ -178,7 +171,6 @@ const Shelters = (props) => {
         <div>
           {props.condensed && (
             <div className="text-center">
-              <button onClick={getLocation}>Get Shelters from Current Location</button>
               <ShelterList
                 shelters={Array.isArray(originalData) ? originalData : []} // making sure it's array
                 loadingFunction={setLoading}
@@ -186,7 +178,7 @@ const Shelters = (props) => {
                 isSignupPage={false}
               />
               <div className="text-center">
-                <Link to="/shelters">
+                <Link to="/volunteer-dashboard/shelters">
                   <button>View All Shelters</button>
                 </Link>
               </div>
@@ -198,7 +190,6 @@ const Shelters = (props) => {
                 <div className="column column-1">
                   <div className="text-center">
                     <h1>Volunteering Opportunities</h1>
-                    <button onClick={getLocation}>Show opportunities near me</button>
                     <br />
                     <SearchBar onSearch={handleSearch} />
                     {noSearchDataAvailable && (
@@ -209,14 +200,6 @@ const Shelters = (props) => {
                         </h1>
                       </div>
                     )}
-                    <label htmlFor="radius-select">Radius (miles): </label>
-                    <select id="radius-select" onChange={setRadiusfromLocation}>
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
                   </div>
                   {loading && <div className="loader"></div>}
                   <ShelterList

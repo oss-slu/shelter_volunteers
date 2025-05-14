@@ -3,6 +3,7 @@ Module for handling MongoDB operations related to service commitments.
 Provides methods to insert and fetch service commitments from the database.
 """
 
+from bson.objectid import ObjectId
 from config.mongodb_config import get_db
 from domains.service_commitment import ServiceCommitment
 
@@ -33,7 +34,7 @@ class MongoRepoCommitments:
         for commitment in commitments:
             commitment.pop('_id', None)
         result = self.collection.insert_many(commitments)
-        return result.inserted_ids
+        return [str(inserted_id) for inserted_id in result.inserted_ids]
 
     def fetch_service_commitments(self, user_id=None, shift_id =None):
         """
@@ -58,3 +59,30 @@ class MongoRepoCommitments:
                 filter=db_filter)
         ]
         return commitments
+
+    def get_service_commitment_by_id(self, commitment_id):
+        """
+        Fetches a service commitment by its ID.
+
+        Args:
+            commitment_id (str): The ID of the service commitment.
+
+        Returns:
+            ServiceCommitment: The service commitment object.
+        """
+        commitment_object_id = ObjectId(commitment_id)
+        commitment = self.collection.find_one({'_id': commitment_object_id})
+        if commitment:
+            return ServiceCommitment.from_dict(commitment)
+        return None
+
+    def delete_service_commitment(self, commitment_id):
+        """
+        Deletes a service commitment by its ID.
+
+        Args:
+            commitment_id (str): The ID of the service commitment to delete.
+        """
+        commitment_object_id = ObjectId(commitment_id)
+        result = self.collection.delete_one({'_id': commitment_object_id})
+        return result.deleted_count > 0
