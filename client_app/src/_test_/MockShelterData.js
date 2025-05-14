@@ -9,7 +9,7 @@ export const shelterData =
           "street2": "",
           "city": "St. Louis",
           "state": "MO",
-          "postalCode": "12345",
+          "postal_code": "12345",
           "coordinates": {
               "latitude": 90,
               "longitude": -30
@@ -24,7 +24,7 @@ export const shelterData =
           "street2": "",
           "city": "St. Louis",
           "state": "MO",
-          "postalCode": "12345",
+          "postal_code": "12345",
           "coordinates": {
               "latitude": 90,
               "longitude": -30
