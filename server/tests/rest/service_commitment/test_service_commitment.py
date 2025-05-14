@@ -86,7 +86,7 @@ def test_get_commitments_with_augmented_data(
                 "street1": "123 Main St",
                 "city": "Cityville",
                 "state": "State",
-                "postalCode": "12345",
+                "postal_code": "12345",
             },
             # Other shelter details...
         },
@@ -97,7 +97,7 @@ def test_get_commitments_with_augmented_data(
                 "street1": "456 Elm St",
                 "city": "Townsville",
                 "state": "State",
-                "postalCode": "67890",
+                "postal_code": "67890",
             },
             # Other shelter details...
         },
