@@ -1,6 +1,6 @@
 // client_app/src/components/shelter/Settings.js
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
 
 const Settings = () => {
@@ -10,6 +10,10 @@ const Settings = () => {
     <div className="settings-page">
       <h2>Settings</h2>
       <AddUserForm shelterId={shelterId} />
+      {/* Add link to define repeatable shifts */}
+      <Link to={`/shelter-dashboard/${shelterId}/repeatable-shifts`}>
+        <button>Define Repeatable Shifts</button>
+      </Link>
     </div>
   );
 };

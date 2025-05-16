@@ -53,7 +53,7 @@ shifts = [
 
 ]
 
-@blueprint.route("/getvolunteers/<int:shelter_id>", methods=["GET"])
+@blueprint.route("/getvolunteers/<shelter_id>", methods=["GET"])
 @cross_origin()
 def get_volunteers(shelter_id):
     """

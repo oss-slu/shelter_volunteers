@@ -16,4 +16,13 @@ export const formatDate = (date) => {
       });
 }
 
+export const displayTime = (millisecondsSinceMidnight) => {
+    const today = new Date();
+    // Reset to midnight
+    today.setHours(0, 0, 0, 0);
+    
+    // Add the milliseconds since midnight
+    const dateWithTime = new Date(today.getTime() + millisecondsSinceMidnight);
+    return formatTime(dateWithTime);
+}
 

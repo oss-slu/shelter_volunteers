@@ -16,4 +16,5 @@ export const shelterAPI = {
         });
         return response;
     }
-}
+};
+
