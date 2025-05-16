@@ -72,7 +72,7 @@ function Schedule() {
   // 2. Clicking on a day in the calendar
   const handleSelectDay = (slotInfo) => {
     if (!activeShiftType) return;
-    const standardShift = scheduleData.Content.find(s => s.name === activeShiftType);
+    const standardShift = scheduleData.find(s => s.name === activeShiftType);
     if (!standardShift) return;
     const dropDate = new Date(slotInfo.start);
     dropDate.setHours(0, 0, 0, 0);
