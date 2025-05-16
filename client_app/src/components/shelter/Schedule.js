@@ -1,17 +1,18 @@
 // client_app/src/components/shelter/Schedule.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, Views } from "react-big-calendar";
 import { dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { ScheduleData } from "./ScheduleData.js";
 import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
+import { scheduleAPI } from "../../api/schedule";
 import { useParams } from "react-router-dom";
+import { displayTime } from "../../formatting/FormatDateTime";
 
 const localizer = dayjsLocalizer(dayjs);
 
-// Helper to get the current week's Sunday->Saturday
+// Helper to get the current weeks Sunday->Saturday
 function getDefaultWeekRange() {
   const startOfWeek = dayjs().startOf("week"); // Sunday-based
   const range = [];
@@ -23,20 +24,55 @@ function getDefaultWeekRange() {
 
 function Schedule() {
   const { shelterId } = useParams();
-
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
-  // NEW: Track which days (midnight timestamp) have been opened already
-  const [openedDays, setOpenedDays] = useState([]);
+  const [openedDays, setOpenedDays] = useState(new Set());
+  const [scheduleData, setScheduleData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 1) Single shift–click logic (unchanged)
+  useEffect(() => {
+    const fetchScheduleData = async () => {
+      try {
+        setIsLoading(true);
+        // Get the shelter ID from URL params or use a default
+        const id = shelterId
+        
+        if (!id) {
+          setError("No shelter ID provided");
+          setIsLoading(false);
+          return;
+        }
+        
+        const data = await scheduleAPI.getShifts(id);
+        
+        // Transform API data to match the expected format
+        const transformedData = data.map(shift => ({
+            name: shift.shift_name,
+            start: shift.shift_start,
+            end: shift.shift_end,
+            people: shift.required_volunteer_count
+          }));        
+        setScheduleData(transformedData);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching schedule data:", err);
+        setError("Failed to load schedule data");
+        setIsLoading(false);
+      }
+    };
+
+    fetchScheduleData();
+  }, [shelterId]);
+
+  // 1. Single shift click logic
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
 
-  // 2) Clicking on a day in the calendar (unchanged)
+  // 2. Clicking on a day in the calendar
   const handleSelectDay = (slotInfo) => {
     if (!activeShiftType) return;
-    const standardShift = ScheduleData.Content.find(s => s.name === activeShiftType);
+    const standardShift = scheduleData.find(s => s.name === activeShiftType);
     if (!standardShift) return;
     const dropDate = new Date(slotInfo.start);
     dropDate.setHours(0, 0, 0, 0);
@@ -52,22 +88,37 @@ function Schedule() {
     setActiveShiftType(null);
   };
 
-  // 3) Clicking "Open Shift" for a particular day => load standard shifts, but only once per day
+  // 3. Clicking "Open Shift" for a particular day => load standard shifts, but only once per day
   const handleOpenDate = (dayDate) => {
     const midnight = new Date(dayDate);
     midnight.setHours(0, 0, 0, 0);
     const dayTimestamp = midnight.getTime();
-    // If this day has already been opened, do nothing.
-    if (openedDays.includes(dayTimestamp)) return;
-    const newShifts = ScheduleData.Content.map(shift => ({
-      name: shift.name,
-      start_time: dayTimestamp + shift.start,
-      end_time: dayTimestamp + shift.end,
-      people: shift.people
-    }));
-    setScheduledShifts(prev => [...prev, ...newShifts]);
-    setOpenedDays(prev => [...prev, dayTimestamp]);
-  };
+    const updatedDays = new Set(openedDays);
+  
+    if (openedDays.has(dayTimestamp)) {
+      // TOGGLE OFF: remove shifts for this day
+      setScheduledShifts(prev =>
+        prev.filter(shift => {
+          const shiftDate = new Date(shift.start_time);
+          shiftDate.setHours(0, 0, 0, 0);
+          return shiftDate.getTime() !== dayTimestamp;
+        })
+      );
+      updatedDays.delete(dayTimestamp);
+    } else {
+      // TOGGLE ON: add shifts for this day
+      const newShifts = scheduleData.map(shift => ({
+        name: shift.name,
+        start_time: dayTimestamp + shift.start,
+        end_time: dayTimestamp + shift.end,
+        people: shift.people,
+      }));
+      setScheduledShifts(prev => [...prev, ...newShifts]);
+      updatedDays.add(dayTimestamp);
+    }
+  
+    setOpenedDays(updatedDays);
+  };  
 
   // 4) RBC calls this whenever user navigates or changes view
   const handleRangeChange = (range) => {
@@ -92,15 +143,20 @@ function Schedule() {
   }));
 
   // 7) Build "Open Shift" events for each day in currentRange, but filter out days that have already been opened.
-  const openShiftEvents = currentRange
-    .filter(dayDate => !openedDays.includes(new Date(dayDate).setHours(0, 0, 0, 0)))
-    .map(dayDate => ({
-      title: "Open Shift",
+  const openShiftEvents = currentRange.map(dayDate => {
+    const ts = new Date(dayDate).setHours(0, 0, 0, 0);
+    const isOpened = openedDays.has(ts);
+  
+    return {
+      title: isOpened ? "Cancel Shift" : "Open Shift",
       allDay: true,
       start: new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate()),
       end: new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate()),
-      isOpenShift: true
-    }));
+      isOpenShift: true,
+      timestamp: ts, // used for toggling logic
+    };
+  });
+  
 
   // 8) Combine user events with the "Open Shift" events
   const finalEvents = [...userEvents, ...openShiftEvents];
@@ -111,8 +167,8 @@ function Schedule() {
       shift_start: shift.start_time,
       shift_end: shift.end_time,
       required_volunteer_count: shift.people,
-      shelter_id: shelterId
-    }));
+      shelter_id: shelterId 
+    }));    
 
     try {
       await serviceShiftAPI.addShifts(payload);
@@ -123,11 +179,31 @@ function Schedule() {
     }
   };
 
+  // Show loading indicator
+  if (isLoading) {
+    return (
+      <div className="schedule-container">
+        <h2>Set Repeatable Shifts</h2>
+        <div>Loading schedule data...</div>
+      </div>
+    );
+  }
+
+  // Show error message if there was an error
+  if (error) {
+    return (
+      <div className="schedule-container">
+        <h2>Set Repeatable Shifts</h2>
+        <div>Error: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="schedule-container">
       <h2>Set Repeatable Shifts</h2>
       <div className="shift-cards-container">
-        {ScheduleData.Content.map(shift => (
+        {scheduleData.map(shift => (
           <div
             key={shift.name}
             className={
@@ -138,8 +214,8 @@ function Schedule() {
           >
             <div className="shift-name">{shift.name}</div>
             <div className="shift-time">
-              {new Date(shift.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} -{" "}
-              {new Date(shift.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {displayTime(shift.start)} - {" "}
+              {displayTime(shift.end)}
             </div>
           </div>
         ))}

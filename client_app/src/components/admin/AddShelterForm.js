@@ -8,7 +8,7 @@ const AddShelterForm = () => {
     street2: '',
     city: '',
     state: '',
-    postalCode: '',
+    postal_code: '',
     latitude: '',
     longitude: ''
   });
@@ -25,7 +25,7 @@ const AddShelterForm = () => {
   };
   
   const validateForm = () => {
-    const requiredFields = ['name', 'street1', 'city', 'state', 'postalCode'];
+    const requiredFields = ['name', 'street1', 'city', 'state', 'postal_code'];
     for (const field of requiredFields) {
       if (!formData[field]) {
         setSubmitMessage({
@@ -74,7 +74,7 @@ const AddShelterForm = () => {
           street2: formData.street2,
           city: formData.city,
           state: formData.state,
-          postalCode: formData.postalCode,
+          postal_code: formData.postal_code,
           coordinates: {
             latitude: formData.latitude,
             longitude: formData.longitude
@@ -96,7 +96,7 @@ const AddShelterForm = () => {
         street2: '',
         city: '',
         state: '',
-        postalCode: '',
+        postal_code: '',
         latitude: '',
         longitude: ''
       });
@@ -177,12 +177,12 @@ const AddShelterForm = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="postalCode">Postal Code *</label>
+            <label htmlFor="postal_code">Postal Code *</label>
             <input
               type="text"
-              id="postalCode"
-              name="postalCode"
-              value={formData.postalCode}
+              id="postal_code"
+              name="postal_code"
+              value={formData.postal_code}
               onChange={handleChange}
               required
             />

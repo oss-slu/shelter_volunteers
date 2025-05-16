@@ -23,9 +23,6 @@ def shelter():
     On POST: The function adds a shelter to the system.
     """
     repo = ShelterRepo()
-
-    # add user authentication and authorization logic here
-
     if request.method == "GET":
         # process the GET request parameters
         shelters_as_dict = shelter_list_use_case(repo)
@@ -38,15 +35,30 @@ def shelter():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
     elif request.method == "POST":
-        shelter_data_dict = request.get_json()
-        # shelter_add_use_case expects a Shelter object
-        shelter_obj = Shelter.from_dict(shelter_data_dict)
-        add_response = shelter_add_use_case(repo, shelter_obj)
-        status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
-        if add_response["success"]:
-            status_code = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-        return Response(
-            json.dumps(add_response, default=str),
-            mimetype="application/json",
-            status=status_code
-        )
+        try:
+            shelter_data_dict = request.get_json()
+            # shelter_add_use_case expects a Shelter object
+            shelter_obj = Shelter.from_dict(shelter_data_dict)
+            add_response = shelter_add_use_case(repo, shelter_obj)
+            status_code = HTTP_STATUS_CODES_MAPPING[
+                 ResponseTypes.PARAMETER_ERROR]
+            if add_response["success"]:
+                status_code = HTTP_STATUS_CODES_MAPPING[
+                    ResponseTypes.SUCCESS]
+            return Response(
+                json.dumps(add_response, default=str),
+                mimetype="application/json",
+                status=status_code
+            )
+        except ValueError as e:
+            #for validation errors
+            error_response = {
+                "success": False,
+                "message": str(e)
+            }
+            return Response(
+                json.dumps(error_response),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[
+                    ResponseTypes.PARAMETER_ERROR]
+            )
