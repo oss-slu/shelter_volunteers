@@ -60,7 +60,7 @@ const ShelterList = () => {
                   </td>
                   <td>{shelter.address?.city || shelter.city}</td>
                   <td>{shelter.address?.state || shelter.state}</td>
-                  <td>{shelter.address?.postalCode || shelter.postalCode}</td>
+                  <td>{shelter.address?.postal_code || shelter.postal_code}</td>
                   <td>
                     {(shelter.address?.coordinates &&
                       shelter.address.coordinates.latitude &&
