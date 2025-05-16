@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
 import { scheduleAPI } from "../../api/schedule";
+import { displayTime } from "../../formatting/FormatDateTime";
 
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -28,17 +29,17 @@ const RepeatableShifts = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newShift.startTime && newShift.endTime) {
+    if (newShift.startTime && newShift.duration) {
       const newEntry = {
         ...newShift,
         shift_start: timeStringToMillis(newShift.startTime),
-        shift_end: timeStringToMillis(newShift.endTime),
+        shift_end: timeStringToMillis(newShift.startTime) + newShift.duration * 60 * 60 * 1000,
       };
       setShifts([...shifts, newEntry]);
       setNewShift({
         shiftName: "",
         startTime: "",
-        endTime: "",
+        duration: "",
         requiredVolunteers: 1,
         maxVolunteers: 5,
       });
@@ -50,7 +51,7 @@ const RepeatableShifts = () => {
       const transformedShifts = shifts.map((shift) => ({
         shift_name: shift.shiftName || "Unnamed Shift",
         shift_start: timeStringToMillis(shift.startTime),
-        shift_end: timeStringToMillis(shift.endTime),
+        shift_end: timeStringToMillis(shift.startTime) + shift.duration * 60 * 60 * 1000,
         required_volunteer_count: Number(shift.requiredVolunteers),
         max_volunteer_count: Number(shift.maxVolunteers),
         shelter_id: shelterId
@@ -109,11 +110,11 @@ const RepeatableShifts = () => {
           />
         </label>
         <label>
-          End Time:
+          Duration (in hours):
           <input
-            type="time"
-            name="endTime"
-            value={newShift.endTime}
+            type="number"
+            name="duration"
+            value={newShift.duration}
             onChange={handleInputChange}
           />
         </label>
@@ -150,6 +151,7 @@ const RepeatableShifts = () => {
                 <tr>
                   <th>Shift Name</th>
                   <th>Start Time</th>
+                  <th>Duration (hours)</th>
                   <th>End Time</th>
                   <th>Required Volunteers</th>
                   <th>Max Volunteers</th>
@@ -175,9 +177,16 @@ const RepeatableShifts = () => {
                     </td>
                     <td>
                       <input
-                        type="time"
-                        value={shift.endTime}
-                        onChange={(e) => updateShift(index, "endTime", e.target.value)}
+                        type="number"
+                        value={shift.duration}
+                        onChange={(e) => updateShift(index, "duration", e.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={displayTime((timeStringToMillis(shift.startTime) + shift.duration * 60 * 60 * 1000) % 86400000)}
+                        readOnly
                       />
                     </td>
                     <td>
