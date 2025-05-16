@@ -8,11 +8,11 @@ export const useShelterData = () => {
   const [loading, setLoading] = useState(true);
   const [noSearchDataAvailable, setNoSearchDataAvailable] = useState(false);
 
-  useEffect(() => 
-  {
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
+
           const shelters = await shelterAPI.getShelters();
           const futureShifts = await serviceShiftAPI.getFutureShifts();
 
@@ -24,12 +24,12 @@ export const useShelterData = () => {
               .map((shift) => ({ ...shift, id: shift._id })), // Unique ID for each shift
             }));
 
-          setOriginalData(sheltersWithShifts);
-          setData(sheltersWithShifts);
-          setLoading(false);
+        setOriginalData(sheltersWithShifts);
+        setData(sheltersWithShifts);
+        setLoading(false);
       } catch (error) {
-          console.error("fetch error:", error);
-          setLoading(false);
+        console.error("fetch error:", error);
+        setLoading(false);
       }
     };
 

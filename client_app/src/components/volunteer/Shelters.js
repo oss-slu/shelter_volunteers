@@ -85,29 +85,35 @@ const Shelters = (props) => {
   }, [searchQuery, originalData, currentPage, itemsPerPage]);
 
   function manageShifts(shift) {
+    const startTime = performance.now(); // start timing
+  
     setShaking(true);
     setTimeout(() => setShaking(false), 200);
-    //setSelectedShifts([...selectedShifts, shift]);
-    //setButtonDisabled(selectedShifts.length === 0);
+  
     const shiftStart = dayjs(shift.start);
     const shiftEnd = dayjs(shift.end);
-
+  
     const overlap = selectedShifts.some(selectedShift => {
       const selectedShiftStart = dayjs(selectedShift.start);
       const selectedShiftEnd = dayjs(selectedShift.end);
-
-      // Check for overlap
+  
       return shiftStart.isBefore(selectedShiftEnd) && shiftEnd.isAfter(selectedShiftStart);
     });
-
+  
     if (overlap) {
       alert("The selected shift overlaps with another shift.");
-      setButtonDisabled(true); // Disable submit button
+      setButtonDisabled(true);
     } else {
-      setSelectedShifts([...selectedShifts, shift]);
-      setButtonDisabled(false); // Enable submit button
+      setSelectedShifts(prev => {
+        const updated = [...prev, shift];
+        const endTime = performance.now();
+        console.log(`⏱️ Shift selection response time: ${Math.round(endTime - startTime)}ms`);
+        return updated;
+      });
+      setButtonDisabled(false);
     }
   }
+  
 
   function onShiftClose(event) {
     let id = event.target.id;
@@ -207,6 +213,7 @@ const Shelters = (props) => {
                     loadingFunction={setLoading}
                     manageShiftsFunction={manageShifts}
                     isSignupPage={true}
+                    selectedShiftKeys={selectedShifts.map(s => `${s.service_shift_id}`)}
                   />
                   <Pagination
                     currentPage={currentPage}

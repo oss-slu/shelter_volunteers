@@ -326,6 +326,12 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  background-color: #8a9da1;
+  color: #e0e0e0;      
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 .current-volunteer-count {
   background-color: #ecececfc;
   border: none;

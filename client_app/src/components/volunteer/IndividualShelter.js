@@ -1,5 +1,7 @@
 import "react-datepicker/dist/react-datepicker.css";
+
 import { Address } from "./Address";
+
 const IndividualShelter = (props) => {
   let shelter = props.shelter;
 
@@ -23,6 +25,7 @@ const IndividualShelter = (props) => {
     }
   }
 
+
   const formatShiftDate = (start, end) => {
     const options = {
       timeZone: "America/Chicago",
@@ -30,6 +33,11 @@ const IndividualShelter = (props) => {
       minute: "2-digit",
       hourCycle: "h12",
     };
+
+    if (!start || !end || isNaN(new Date(start)) || isNaN(new Date(end))) {
+      return "Invalid shift time";
+    }
+
     if (new Date(start).toDateString() === new Date(end).toDateString()) {
       return `${new Date(start).toLocaleString("en-US", {
         ...options,
@@ -51,7 +59,6 @@ const IndividualShelter = (props) => {
       })}`;
     }
   };
-
   return (
     <div>
       {props.isSignupPage && (
@@ -67,17 +74,23 @@ const IndividualShelter = (props) => {
               <div className="available-shifts">
                 <h3>Available Shifts:</h3>
                 {shelter.shifts && shelter.shifts.length > 0 ? (
-                  shelter.shifts.map((shift) => (
-                    <div key={shift.id} style={{ marginBottom: "10px" }}>
-                      <button 
-                        className="shift-button" 
-                        data-testid="add-button" 
-                        onClick={() => addShift(shift)}
-                      >
-                        {formatShiftDate(shift.shift_start, shift.shift_end)}
-                      </button>
-                    </div>
-                  ))
+
+                  shelter.shifts.map((shift) => {
+                    const shiftKey = shift._id;
+                    const isSelected = props.selectedShiftKeys && props.selectedShiftKeys.includes(shiftKey);
+                    return (
+                      <div key={shift.service_shift_id} style={{ marginBottom: "10px" }}>
+                        <button
+                          className="shift-button"
+                          data-testid="add-button"
+                          onClick={() => addShift(shift)}
+                          disabled={isSelected}
+                        >
+                          {formatShiftDate(shift.shift_start, shift.shift_end)}
+                        </button>
+                      </div>
+                    );
+                  })
                 ) : (
                   <p>No available shifts.</p>
                 )}
