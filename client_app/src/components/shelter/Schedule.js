@@ -8,6 +8,7 @@ import "../../styles/shelter/Schedule.css";
 import { serviceShiftAPI } from "../../api/serviceShift";
 import { scheduleAPI } from "../../api/schedule";
 import { useParams } from "react-router-dom";
+import { displayTime } from "../../formatting/FormatDateTime";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -27,8 +28,8 @@ function Schedule() {
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
-  const [openedDays, setOpenedDays] = useState([]);
-  const [scheduleData, setScheduleData] = useState({ Content: [] });
+  const [openedDays, setOpenedDays] = useState(new Set());
+  const [scheduleData, setScheduleData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -48,15 +49,12 @@ function Schedule() {
         const data = await scheduleAPI.getShifts(id);
         
         // Transform API data to match the expected format
-        const transformedData = {
-          Content: data.map(shift => ({
+        const transformedData = data.map(shift => ({
             name: shift.shift_name,
-            start: shift.start_time_offset,
-            end: shift.end_time_offset,
+            start: shift.shift_start,
+            end: shift.shift_end,
             people: shift.required_volunteer_count
-          }))
-        };
-        
+          }));        
         setScheduleData(transformedData);
         setIsLoading(false);
       } catch (err) {
@@ -68,9 +66,6 @@ function Schedule() {
 
     fetchScheduleData();
   }, [shelterId]);
-
-  // Track which days (midnight timestamp) have been opened already
-  const [openedDays, setOpenedDays] = useState(new Set());
 
   // 1. Single shift click logic
   const handleSelectStandardShift = (shiftName) => setActiveShiftType(shiftName);
@@ -113,7 +108,7 @@ function Schedule() {
       updatedDays.delete(dayTimestamp);
     } else {
       // TOGGLE ON: add shifts for this day
-      const newShifts = ScheduleData.Content.map(shift => ({
+      const newShifts = scheduleData.map(shift => ({
         name: shift.name,
         start_time: dayTimestamp + shift.start,
         end_time: dayTimestamp + shift.end,
@@ -211,7 +206,7 @@ function Schedule() {
     <div className="schedule-container">
       <h2>Set Repeatable Shifts</h2>
       <div className="shift-cards-container">
-        {scheduleData.Content.map(shift => (
+        {scheduleData.map(shift => (
           <div
             key={shift.name}
             className={
@@ -222,8 +217,8 @@ function Schedule() {
           >
             <div className="shift-name">{shift.name}</div>
             <div className="shift-time">
-              {new Date(shift.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} -{" "}
-              {new Date(shift.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {displayTime(shift.start)} - {" "}
+              {displayTime(shift.end)}
             </div>
           </div>
         ))}
