@@ -1,9 +1,7 @@
-// client_app/src/components/shelter/RepeatableShifts.js
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
-import { scheduleAPI } from "../../api/schedule"; // 
+import { scheduleAPI } from "../../api/schedule";
 
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL

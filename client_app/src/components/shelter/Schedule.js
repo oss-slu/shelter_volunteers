@@ -24,7 +24,6 @@ function getDefaultWeekRange() {
 
 function Schedule() {
   const { shelterId } = useParams();
-  
   const [scheduledShifts, setScheduledShifts] = useState([]);
   const [activeShiftType, setActiveShiftType] = useState(null);
   const [currentRange, setCurrentRange] = useState(getDefaultWeekRange());
@@ -165,14 +164,12 @@ function Schedule() {
   const handleConfirmShifts = async () => {
     const payload = scheduledShifts.map(shift => ({
       shift_name: shift.name,
-      shift_start: shift.start_time,       //changing back for now
-      shift_end: shift.end_time,           //changing back for now
+      shift_start: shift.start_time,
+      shift_end: shift.end_time,
       required_volunteer_count: shift.people,
       shelter_id: shelterId 
     }));    
 
- // Log the payload to confirm structure
- console.log("Sending payload:", JSON.stringify(payload, null, 2));
     try {
       await serviceShiftAPI.addShifts(payload);
       alert("Shifts successfully created!");

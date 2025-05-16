@@ -1,5 +1,3 @@
-// client_app/src/api/schedule.js
-
 import { fetchClient } from "./fetchClient";
 
 export const scheduleAPI = {
