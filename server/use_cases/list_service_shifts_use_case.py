@@ -21,12 +21,15 @@ def service_shifts_list_use_case(
     """
     service_shifts = shifts_repo.list(shelter, filter_start_after)
     time_filter = build_time_filter()
-
-    for shift in service_shifts:
-        commitments = list_service_commitments(
-            commitments_repo,
-            shifts_repo,
-            time_filter,
-            None,
-            shift.get_id()
-        )
+    volunteers = []
+    if commitments_repo:
+        for shift in service_shifts:
+            commitments = list_service_commitments(
+                commitments_repo,
+                shifts_repo,
+                time_filter,
+                None,
+                shift.get_id()
+            )
+            volunteers.append(commitments)
+    return service_shifts, volunteers
