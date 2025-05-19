@@ -23,7 +23,7 @@ def handle_schedule_shift():
         )
 
     repo = ScheduleMongoRepo()
-    shifts = service_shifts_list_use_case(repo, None, shelter_id)
+    shifts = service_shifts_list_use_case(repo, shelter_id)
 
     return Response(
         json.dumps(shifts, cls=ServiceShiftJsonEncoder),

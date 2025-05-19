@@ -11,7 +11,7 @@ from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.request_parameters import is_true
 from application.rest.request_parameters import get_time_filters
 from use_cases.add_service_commitments import add_service_commitments
-from use_cases.list_service_commitments import list_service_commitments
+from use_cases.list_service_commitments import list_service_commitments_with_shifts
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from use_cases.delete_service_commitment import delete_service_commitment
 from repository.mongo.service_commitments import MongoRepoCommitments
@@ -110,7 +110,7 @@ def fetch_service_commitments():
         # view all volunteers
         # If service_shift_id is not provided, we filter by user_email as before
         filter_user = None if service_shift_id else user_email
-        commitments, shifts = list_service_commitments(
+        commitments, shifts = list_service_commitments_with_shifts(
             commitments_repo,
             shifts_repo,
             time_filter_obj,

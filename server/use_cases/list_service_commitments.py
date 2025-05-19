@@ -3,6 +3,15 @@ This module contains the use case for listing service commitments.
 """
 def list_service_commitments(
         commitments_repo,
+        user_email=None,
+        shift_id=None):
+    commitments = commitments_repo.fetch_service_commitments(
+        user_email,
+        shift_id)
+    return commitments
+
+def list_service_commitments_with_shifts(
+        commitments_repo,
         shifts_repo,
         time_filter,
         user_email=None,
@@ -21,8 +30,7 @@ def list_service_commitments(
         tuple: A tuple containing (list of service commitment objects, 
         list of associated service shift objects)
     """
-    commitments = commitments_repo.fetch_service_commitments(
-        user_email, shift_id)
+    commitments = list_service_commitments(commitments_repo, user_email, shift_id)
     shift_ids = [commitment.service_shift_id for commitment in commitments]
     shifts = shifts_repo.get_shifts(shift_ids)
 

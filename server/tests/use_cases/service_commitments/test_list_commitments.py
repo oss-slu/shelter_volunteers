@@ -3,7 +3,7 @@ Tests for listing service commitments
 """
 
 from unittest.mock import MagicMock
-from use_cases.list_service_commitments import list_service_commitments
+from use_cases.list_service_commitments import list_service_commitments_with_shifts
 from request.time_filter import TimeFilter
 
 class FakeCommitment:
@@ -19,7 +19,7 @@ def test_list_service_commitments_no_commitments():
     shifts_repo.get_shifts.return_value = []
 
     user_email = "test@example.com"
-    commitments, shifts = list_service_commitments(
+    commitments, shifts = list_service_commitments_with_shifts(
         commitments_repo, shifts_repo, TimeFilter(None), user_email
     )
 
@@ -42,7 +42,7 @@ def test_list_service_commitments_with_commitments():
     ]
 
     user_email = "test@example.com"
-    commitments, shifts = list_service_commitments(
+    commitments, shifts = list_service_commitments_with_shifts(
         commitments_repo, shifts_repo, TimeFilter(None), user_email
     )
 

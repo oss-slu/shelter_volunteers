@@ -55,7 +55,7 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(data.get("service_shift_ids"), expected_ids)
         mock_shift_add_use_case.assert_called_once()
 
-    @patch("application.rest.service_shifts.service_shifts_list_use_case")
+    @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
     def test_get_service_shift(self, mock_list_use_case):
         # Arrange: Define the expected list of shift objects.
         expected_shifts = [
@@ -80,9 +80,11 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "shift_name": "Default Shift"
             }
         ]
-        mock_list_use_case.return_value = [ServiceShift.from_dict(shift)
-                                           for shift in expected_shifts]
-
+        mock_list_use_case.return_value = ([ServiceShift.from_dict(shift)
+                                           for shift in expected_shifts],
+                                           [[],[]])
+        expected_shifts[0]["volunteers"] = []
+        expected_shifts[1]["volunteers"] = []
         # Act: Send GET request.
         response = self.client.get("/service_shift")
 
@@ -92,7 +94,7 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(data, expected_shifts)
         mock_list_use_case.assert_called_once()
 
-    @patch("application.rest.service_shifts.service_shifts_list_use_case")
+    @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
     def test_get_service_shift_with_shelter_id_filter(self, mock_list_use_case):
         # Arrange: Define the expected shift for a specific shelter
         test_shelter_id = "ID1"
@@ -106,8 +108,8 @@ class TestServiceShiftAPI(unittest.TestCase):
           "can_sign_up": True,
           "shift_name": "Default Shift"
         }
-        mock_list_use_case.return_value = [ServiceShift.from_dict(
-            expected_shift)]
+        mock_list_use_case.return_value = ([ServiceShift.from_dict(
+            expected_shift)], [[]])
 
         # Act: Send GET request with shelter_id filter
         response = self.client.get(

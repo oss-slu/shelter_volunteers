@@ -24,13 +24,13 @@ def client():
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
 
-@patch("application.rest.service_commitment.list_service_commitments")
+@patch("application.rest.service_commitment.list_service_commitments_with_shifts")
 @patch("application.rest.service_commitment.list_shelters_for_shifts")
 @patch("application.rest.service_commitment.get_user_from_token")
 def test_get_commitments_with_augmented_data(
     mock_get_user_from_token,
     mock_list_shelters_for_shifts,
-    mock_list_service_commitments,
+    mock_list_service_commitments_with_shifts,
     client):
     mock_commitments_json = [
         {
@@ -120,11 +120,11 @@ def test_get_commitments_with_augmented_data(
     ]
     mock_user = ("user@user.com", "FirstName", "LastName")
 
-    mock_list_service_commitments.return_value = (mock_commitments, mock_shifts)
+    mock_list_service_commitments_with_shifts.return_value = (mock_commitments, mock_shifts)
     mock_list_shelters_for_shifts.return_value = mock_shelters
     mock_get_user_from_token.return_value = mock_user
 
-    print(mock_list_service_commitments.return_value)
+    print(mock_list_service_commitments_with_shifts.return_value)
     response = client.get("/service_commitment?include_shift_details=true")
     assert mock_get_user_from_token.called
     # remove _id from mock_shifts_json
@@ -136,9 +136,9 @@ def test_get_commitments_with_augmented_data(
         mock_commitments_json[i].update({"shelter": mock_shelters_json[i]})
     assert response.status_code == 200
     assert response.json == mock_commitments_json
-    assert mock_list_service_commitments.called
+    assert mock_list_service_commitments_with_shifts.called
     assert mock_list_shelters_for_shifts.called
-    mock_list_service_commitments.assert_called_once()
+    mock_list_service_commitments_with_shifts.assert_called_once()
     mock_list_shelters_for_shifts.assert_called_once()
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
