@@ -2,7 +2,6 @@
 This module contains the use case for listing shifts.
 """
 from use_cases.list_service_commitments import list_service_commitments
-from request.time_filter import build_time_filter
 
 def service_shifts_list_use_case(
         shifts_repo,
