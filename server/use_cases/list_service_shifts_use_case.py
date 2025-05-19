@@ -43,7 +43,8 @@ def list_service_shifts_with_volunteers_use_case(
         shifts_repo,
         shelter,
         filter_start_after)
-    volunteers = [[] for _ in service_shifts]  # Initialize volunteers as a list of empty sublists
+    # Initialize volunteers as a list of empty sublists
+    volunteers = [[] for _ in service_shifts]
     if commitments_repo:
         for index, shift in enumerate(service_shifts):
             commitments = list_service_commitments(
@@ -51,5 +52,5 @@ def list_service_shifts_with_volunteers_use_case(
                 None, # volunteer_id
                 shift.get_id()
             )
-            volunteers[index] = commitments  # Assign commitments to the corresponding sublist
+            volunteers[index] = commitments
     return service_shifts, volunteers
