@@ -36,9 +36,13 @@ def list_service_shifts_with_volunteers_use_case(
         filter_start_after (int, optional): The minimum start time.
 
     Returns:
-        tuple: A tuple containing a list of service shift records and a list of volunteers.
+        tuple: A tuple containing a list of service shift records 
+        and a list of volunteers.
     """
-    service_shifts = service_shifts_list_use_case(shifts_repo, shelter, filter_start_after)
+    service_shifts = service_shifts_list_use_case(
+        shifts_repo,
+        shelter,
+        filter_start_after)
     volunteers = []
     if commitments_repo:
         for shift in service_shifts:

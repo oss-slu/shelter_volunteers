@@ -8,6 +8,7 @@ from flask import Flask
 from application.rest.service_shifts import service_shift_bp
 from domains.service_shift import ServiceShift
 
+# pylint: disable=line-too-long
 class TestServiceShiftAPI(unittest.TestCase):
     """
     Test cases for the service_shift API.
@@ -124,3 +125,4 @@ class TestServiceShiftAPI(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+# pylint: enable=line-too-long

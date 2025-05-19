@@ -23,7 +23,7 @@ def client():
 
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
-
+# pylint: disable=line-too-long
 @patch("application.rest.service_commitment.list_service_commitments_with_shifts")
 @patch("application.rest.service_commitment.list_shelters_for_shifts")
 @patch("application.rest.service_commitment.get_user_from_token")
@@ -142,3 +142,4 @@ def test_get_commitments_with_augmented_data(
     mock_list_shelters_for_shifts.assert_called_once()
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
+# pylint: enable=line-too-long

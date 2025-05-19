@@ -45,7 +45,9 @@ def handle_service_shift():
         )
 
         shifts_json = json.dumps(shifts, cls=ServiceShiftJsonEncoder)
-        volunteers_json = json.dumps(volunteers, cls=ServiceCommitmentJsonEncoder)
+        volunteers_json = json.dumps(
+            volunteers,
+            cls=ServiceCommitmentJsonEncoder)
 
         shifts_list = json.loads(shifts_json)
         volunteers_list = json.loads(volunteers_json)
