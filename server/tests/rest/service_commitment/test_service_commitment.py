@@ -124,7 +124,6 @@ def test_get_commitments_with_augmented_data(
     mock_list_shelters_for_shifts.return_value = mock_shelters
     mock_get_user_from_token.return_value = mock_user
 
-    print(mock_list_service_commitments_with_shifts.return_value)
     response = client.get("/service_commitment?include_shift_details=true")
     assert mock_get_user_from_token.called
     # remove _id from mock_shifts_json
