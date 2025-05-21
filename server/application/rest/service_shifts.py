@@ -51,17 +51,17 @@ def handle_service_shift():
 
         shifts_list = json.loads(shifts_json)
         volunteers_list = json.loads(volunteers_json)
-        volunteers_email = []
+        volunteers_by_shift = []
         for volunteer_group in volunteers_list:
             email_group = []
             for volunteer in volunteer_group:
                 email_volunteer = {}
                 email_volunteer["email"] = volunteer["volunteer_id"]
                 email_group.append(email_volunteer)
-            volunteers_email.append(email_group)
+            volunteers_by_shift.append(email_group)
 
         for i, shift in enumerate(shifts_list):
-            shift["volunteers"] = volunteers_email[i]
+            shift["volunteers"] = volunteers_by_shift[i]
 
         shifts_json = json.dumps(shifts_list)
         return Response(
