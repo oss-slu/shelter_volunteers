@@ -75,7 +75,7 @@ function ShelterDashboard() {
               <h4>Understaffed Shifts</h4>
               <a href="/shift-details">View all</a>
             </div>
-            <UnderstaffedShifts />
+            <UnderstaffedShifts shelterId={shelterId} />
           </div>
           <div className="container-medium">
             <div className="container-align">
