@@ -33,12 +33,12 @@ const UnderstaffedShifts = ({shelterId}) => {
           <div className="p-4 text-center text-gray-600">
             Loading shifts data...
           </div>
-        ) : understaffedShifts.length > 0 ? (
-          <ViewShifts shiftDetailsData={understaffedShifts} />
         ) : error ? (
           <div className="message error">
             {error}
           </div>
+        ) : understaffedShifts.length > 0 ? (
+          <ViewShifts shiftDetailsData={understaffedShifts} />
         ) : (
           <div className="message success">
             No understaffed shifts found.
