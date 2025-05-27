@@ -57,8 +57,13 @@ const ViewShifts = ({shiftDetailsData}) => {
   }, {});
 
   const sortedDates = Object.keys(shiftsGroupedByDate).sort(
-    (a, b) => a < b 
+    (a, b) => a < b
   );
+
+  // Sort shifts within each date by shift_start in ascending order
+  Object.keys(shiftsGroupedByDate).forEach((date) => {
+    shiftsGroupedByDate[date].sort((a, b) => a.shift_start - b.shift_start);
+  });
 
   return (
     <div className="upcoming-requests">
