@@ -8,6 +8,7 @@ const UpcomingShifts = () => {
   const { shelterId } = useParams();
   const [shiftDetailsData, setShiftDetailsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchShifts = async () => {
@@ -18,7 +19,7 @@ const UpcomingShifts = () => {
       } catch (error) {
         console.error("Error fetching future shifts:", error);
         setLoading(false);
-        //setError("Failed to load future shifts");
+        setError("Failed to load future shifts: " + error.message);
       }
     };
     fetchShifts();
@@ -29,10 +30,20 @@ const UpcomingShifts = () => {
   }
 
   return (
-    <div className="upcoming-shifts">
-      <h2>Upcoming Shifts</h2>
-      <ViewShifts shiftDetailsData={shiftDetailsData} />
-    </div>
+    error ? (
+      <div className="message error">
+        {error}
+      </div>
+    ) : shiftDetailsData.length === 0 ? (
+      <div className="message success">
+        No upcoming shifts found.
+      </div>
+    ) : (
+      <div className="upcoming-shifts">
+        <h2>Upcoming Shifts</h2>
+        <ViewShifts shiftDetailsData={shiftDetailsData} />
+      </div>
+    )
   );
 };
 
