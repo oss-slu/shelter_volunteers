@@ -5,7 +5,7 @@ import { serviceShiftAPI } from "../../api/serviceShift.js";
 const UnderstaffedShifts = ({shelterId}) => {
     const [shiftsData, setShiftsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
+    const [error, setError] = useState(null);
     useEffect(() => {
       const fetchShifts = async () => {
         try {
@@ -15,6 +15,7 @@ const UnderstaffedShifts = ({shelterId}) => {
         }
         catch (error) {
           console.error("Error fetching future shifts:", error);
+          setError("Failed to load future shifts: " + error.message);
           setIsLoading(false);
         }
       }
@@ -34,8 +35,12 @@ const UnderstaffedShifts = ({shelterId}) => {
           </div>
         ) : understaffedShifts.length > 0 ? (
           <ViewShifts shiftDetailsData={understaffedShifts} />
+        ) : error ? (
+          <div className="message error">
+            {error}
+          </div>
         ) : (
-          <div className="p-4 text-center text-gray-600">
+          <div className="message success">
             No understaffed shifts found.
           </div>
         )}
