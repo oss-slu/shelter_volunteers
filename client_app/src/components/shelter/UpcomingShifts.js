@@ -36,7 +36,7 @@ const UpcomingShifts = () => {
       </div>
     ) : shiftDetailsData.length === 0 ? (
       <div className="message success">
-        No upcoming shifts found.
+        No upcoming shifts found. You can create shifts by going to the Schedule Shifts page in the menu.
       </div>
     ) : (
       <div className="upcoming-shifts">
