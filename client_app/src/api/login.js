@@ -1,11 +1,10 @@
 import { fetchClient } from "./fetchClient";
 export const loginAPI = {
-    login: async (username, password) => {
+    login: async (token) => {
         const response = await fetchClient("/login", {
             method: "POST",
             body: JSON.stringify({
-                username: username,
-                password: password,
+                idToken: token
             }),
         });
         return response

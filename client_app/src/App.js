@@ -30,7 +30,6 @@ import "./styles/App.css";
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
   return (<Router>
-
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<HomeDashboard setAuth={setAuth} auth={auth} />} />

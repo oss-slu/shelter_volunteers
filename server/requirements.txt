@@ -4,4 +4,6 @@ pymongo
 requests
 python-dotenv
 pymongo
-
+PyJWT
+google-auth
+google-auth-oauthlib

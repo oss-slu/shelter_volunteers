@@ -1,7 +1,7 @@
 import "./../styles/HomeDashboard.css";
 import {useNavigate} from "react-router-dom"; 
 import { useEffect, useState } from "react";
-import Login from "./authentication/Login";
+import Login from "./authentication/GoogleLogin";
 import { permissionsAPI } from "../api/permission";
 import { shelterAPI } from "../api/shelter";
 
