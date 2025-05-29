@@ -1,7 +1,7 @@
 import { setToken } from "../../authentication/getToken";
-import { jwtDecode } from "jwt-decode";
 import { GoogleLogin } from '@react-oauth/google';
 import { loginAPI } from '../../api/login';
+import "../../styles/Login.css";
 
 function Login({ setAuth }) {
     const onSuccess = (credentialResponse) => {
@@ -24,11 +24,28 @@ function Login({ setAuth }) {
       };
     
       return (
-        <GoogleLogin
-          onSuccess={onSuccess}
-          onError={onError}
-        />
+        <div className="home-container">
+          <div className="content-wrapper">
+            <h2 className="title">
+              Welcome to <span className="app-name">Volunteer Connect</span>
+            </h2>
+            <p className="tagline">
+              Connecting volunteers with emergency shelters to make a difference!
+            </p>
+            <GoogleLogin
+              onSuccess={onSuccess}
+              onError={onError}
+              theme="filled_blue"
+              type="standard"
+              shape="rectangular"
+              size="large"
+            />
+            <p className="login-subtitle">
+              Sign in to get started with your personalized experience
+            </p>
+          </div>
+        </div>        
+
       );
 }
-
 export default Login;

@@ -21,8 +21,12 @@ function HomeDashboard({ setAuth, auth }) {
             console.log(permissions);
             const fullAccess = permissions.full_access || [];
 
-            const systemAccess = fullAccess.find(access => access.resource_type === "system");
-            const shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
+            let systemAccess = false; 
+            let shelterAccess = false;
+            if (fullAccess) {
+              shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
+              systemAccess = fullAccess.find(access => access.resource_type === "system");
+            }
 
             setSystemAdmin(systemAccess);
             if (shelterAccess) {
