@@ -27,6 +27,7 @@ def get_email_from_token(token, jwt_secret):
     Verify JWT token from request headers
     Returns user data if valid, raises exception if invalid
     """
+
     try:
         # Decode the token
         data = decode(

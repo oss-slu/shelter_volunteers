@@ -8,11 +8,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     """Base configuration"""
+    JWT_SECRET=os.getenv("JWT_SECRET")
 
 
 class ProductionConfig(Config):
     """Production configuration"""
-
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -21,6 +21,7 @@ class DevelopmentConfig(Config):
     FIRST_NAME = os.getenv("FIRST_NAME", "SLU")
     LAST_NAME = os.getenv("LAST_NAME", "Developer")
     DEV_TOKEN = "1234567890-developer-token"
+
 
 class TestingConfig(Config):
     """Testing configuration"""

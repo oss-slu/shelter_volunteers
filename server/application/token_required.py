@@ -1,13 +1,13 @@
 import os
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from authentication.token import get_email_from_token
 
-JWT_SECRET = os.environ.get('JWT_SECRET')
 def token_required_with_request(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
+            JWT_SECRET = current_app.config.get('JWT_SECRET')
             # Pass request.headers to verify_token
             token = request.headers.get('Authorization')
             user_email = get_email_from_token(token, JWT_SECRET)
