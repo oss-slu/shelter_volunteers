@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import Login from "./authentication/GoogleLogin";
 import { permissionsAPI } from "../api/permission";
 import { shelterAPI } from "../api/shelter";
+import { set } from "date-fns";
+import DashboardLoading from "./DashboardLoading";
+import DashboardSelection from "./DashboardSelection";
 
 function HomeDashboard({ setAuth, auth }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isSystemAdmin, setSystemAdmin] = useState(false);
   const [shelterInfo, setShelterInfo] = useState([]);
-  
+  const [dashboards, setDashboards] = useState([]);
+
   useEffect(() => {
     const fetchPermissions = async () => {
       if (!auth) {
@@ -32,7 +36,13 @@ function HomeDashboard({ setAuth, auth }) {
             if (shelterAccess) {
               const sheltersInfoAll = await shelterAPI.getShelters();
               setShelterInfo(sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id)));
-            }      
+            }
+            dashboards.push(
+              { type: "volunteer", id: "volunteer-dashboard", name: "Volunteer Dashboard" },
+              ...shelterInfo.map(shelter => ({ type: "shelter", id: shelter._id, name: shelter.name })),
+              ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard" }] : [])
+            );
+            setDashboards(dashboards);
             setLoading(false);
         } catch (error) {
           console.error("Error fetching permissions:", error);
@@ -43,7 +53,7 @@ function HomeDashboard({ setAuth, auth }) {
   }, [auth]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <DashboardLoading />;
   }
 
   if (!auth) {
@@ -51,40 +61,9 @@ function HomeDashboard({ setAuth, auth }) {
   }
 
   return (
-    <div className="home-dashboard">
-      <header className="home-header">
-        <h1>Shelter Volunteer Management System</h1>
-      </header>
-      <div className="select-role">
-        <button
-          onClick={() => navigate("/volunteer-dashboard")}
-          className="volunteer-button"
-        >
-          Your Volunteer Dashboard
-        </button>
-        {shelterInfo.length > 0 && (
-          <>
-            {shelterInfo.map((shelter) => (
-              <button
-                key={shelter._id}
-                onClick={() => navigate(`/shelter-dashboard/${shelter._id}`)}
-                className="shelter-button"
-              >
-                {shelter.name} Dashboard
-              </button>
-            ))}
-          </>
-        )}
-        {isSystemAdmin && (
-          <button
-            onClick={() => navigate("/admin-dashboard")}
-            className="admin-button"
-          >
-            System Admin Dashboard
-          </button>
-        )}
-      </div>
-    </div>
+    <DashboardSelection
+       dashboards={dashboards}
+       user={{name: "kate", email: "kate.holdener@gmail.com"}}/>
   );
 }
 export default HomeDashboard;
