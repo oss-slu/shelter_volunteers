@@ -4,7 +4,6 @@ This module handles the creation of Flask app
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
 
-from application.rest import work_shift
 from application.rest.service_commitment import service_commitment_bp
 from application.rest.shelter import shelter_blueprint
 from application.rest.service_shifts import service_shift_bp
@@ -28,7 +27,6 @@ def create_app(config_name = "development"):
     mongo_config = mongodb_config.get_config()
     app.config.from_object(mongo_config)
 
-    app.register_blueprint(work_shift.blueprint)
     app.register_blueprint(shelter_blueprint)
     app.register_blueprint(service_commitment_bp)
     app.register_blueprint(service_shift_bp)

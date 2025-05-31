@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from domains.service_commitment import ServiceCommitment
 
-from authentication.authenticate_user import get_user_from_token
+from application.token_required import token_required_with_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.request_parameters import is_true
 from application.rest.request_parameters import get_time_filters
@@ -29,25 +29,13 @@ shifts_repo = ServiceShiftsMongoRepo()
 shelter_repo = ShelterRepo()
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
-def create_service_commitment():
+@token_required_with_request
+def create_service_commitment(user_email):
     """
     Handle POST request to create service commitments.
     Extract user info from Authorization token and create commitments.
     """
     try:
-        user_tuple = get_user_from_token(request.headers)
-        # get_user_from_token returns a tuple of (email, first_name, last_name)
-        if not user_tuple or not isinstance(user_tuple, tuple):
-            return (
-                jsonify({"error": "Invalid token"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
-            )
-        user_email = user_tuple[0]  # First element of tuple is the email
-        if not isinstance(user_email, str):
-            return (
-                jsonify({"error": "Invalid email format"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
-            )
         request_data = request.get_json()
         if not isinstance(request_data, list):
             return (
@@ -81,7 +69,8 @@ def create_service_commitment():
         )
 
 @service_commitment_bp.route("/service_commitment", methods=["GET"])
-def fetch_service_commitments():
+@token_required_with_request
+def fetch_service_commitments(user_email):
     """
     Handle GET request to retrieve service commitments.
     """
@@ -90,20 +79,7 @@ def fetch_service_commitments():
         service_shift_id = request.args.get("service_shift_id")
         include_shift_details = is_true(request.args, "include_shift_details")
         time_filter_obj = get_time_filters(request.args)
-        user_tuple = get_user_from_token(request.headers)
 
-        # get_user_from_token returns a tuple of (email, first_name, last_name)
-        if not user_tuple or not isinstance(user_tuple, tuple):
-            return (
-                jsonify({"error": "Invalid token"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
-            )
-        user_email = user_tuple[0]  # First element of tuple is the email
-        if not isinstance(user_email, str):
-            return (
-                jsonify({"error": "Invalid email format"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
-            )
         # If service_shift_id is provided, we want all
         # commitments for that shift
         # regardless of the user, as per requirements for shelters to
@@ -185,24 +161,12 @@ def fetch_service_commitments():
 @service_commitment_bp.route(
     "/service_commitment/<commitment_id>", methods=["DELETE"]
 )
-def delete_service_commitment_by_id(commitment_id):
+@token_required_with_request
+def delete_service_commitment_by_id(user_email, commitment_id):
     """
     Handle DELETE request to remove a service commitment.
     """
     try:
-        user_tuple = get_user_from_token(request.headers)
-        # get_user_from_token returns a tuple of (email, first_name, last_name)
-        if not user_tuple or not isinstance(user_tuple, tuple):
-            return (
-                jsonify({"error": "Invalid token"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR],
-            )
-        user_email = user_tuple[0]  # First element of tuple is the email
-        if not isinstance(user_email, str):
-            return (
-                jsonify({"error": "Invalid email format"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
-            )
         response = delete_service_commitment(
             commitments_repo,
             commitment_id,

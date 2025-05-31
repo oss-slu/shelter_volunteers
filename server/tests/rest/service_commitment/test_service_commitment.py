@@ -9,10 +9,13 @@ from application.rest.service_commitment import service_commitment_bp
 from domains.service_commitment import ServiceCommitment
 from domains.service_shift import ServiceShift
 from domains.shelter.shelter import Shelter
+from authentication.token import create_token
 
+test_secret = "test_secret"
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(service_commitment_bp)
+    app.config["JWT_SECRET"] = test_secret
     return app
 
 @pytest.fixture
@@ -21,17 +24,17 @@ def client():
     app.config["TESTING"] = True
     return app.test_client()
 
+
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
 # pylint: disable=line-too-long
 @patch("application.rest.service_commitment.list_service_commitments_with_shifts")
 @patch("application.rest.service_commitment.list_shelters_for_shifts")
-@patch("application.rest.service_commitment.get_user_from_token")
 def test_get_commitments_with_augmented_data(
-    mock_get_user_from_token,
     mock_list_shelters_for_shifts,
     mock_list_service_commitments_with_shifts,
     client):
+
     mock_commitments_json = [
         {
             "_id": "SOME_ID1",
@@ -118,14 +121,18 @@ def test_get_commitments_with_augmented_data(
         Shelter.from_dict(shelter)
         for shelter in mock_shelters_json
     ]
-    mock_user = ("user@user.com", "FirstName", "LastName")
 
     mock_list_service_commitments_with_shifts.return_value = (mock_commitments, mock_shifts)
     mock_list_shelters_for_shifts.return_value = mock_shelters
-    mock_get_user_from_token.return_value = mock_user
 
-    response = client.get("/service_commitment?include_shift_details=true")
-    assert mock_get_user_from_token.called
+    token = create_token({"email": "user@app.com"}, test_secret)
+    headers = {
+        "Authorization": f"{token}"
+    }
+    response = client.get(
+        "/service_commitment?include_shift_details=true",  
+        headers=headers)
+
     # remove _id from mock_shifts_json
     for shift in mock_shifts_json:
         if "_id" in shift:

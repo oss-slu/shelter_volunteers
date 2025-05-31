@@ -1,7 +1,7 @@
 import "./../styles/HomeDashboard.css";
 import {useNavigate} from "react-router-dom"; 
 import { useEffect, useState } from "react";
-import Login from "./authentication/Login";
+import Login from "./authentication/GoogleLogin";
 import { permissionsAPI } from "../api/permission";
 import { shelterAPI } from "../api/shelter";
 
@@ -21,8 +21,12 @@ function HomeDashboard({ setAuth, auth }) {
             console.log(permissions);
             const fullAccess = permissions.full_access || [];
 
-            const systemAccess = fullAccess.find(access => access.resource_type === "system");
-            const shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
+            let systemAccess = false; 
+            let shelterAccess = false;
+            if (fullAccess) {
+              shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
+              systemAccess = fullAccess.find(access => access.resource_type === "system");
+            }
 
             setSystemAdmin(systemAccess);
             if (shelterAccess) {

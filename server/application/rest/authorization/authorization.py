@@ -7,7 +7,7 @@ from use_cases.authorization.add_shelter_admin import add_shelter_admin
 from use_cases.authorization.add_system_admin import add_system_admin
 from use_cases.authorization.get_user_permission import get_user_permission
 from use_cases.authorization.is_authorized import is_authorized
-from authentication.authenticate_user import get_user_from_token
+from application.token_required import token_required_with_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from repository.mongo.authorization import PermissionsMongoRepo
 from repository.mongo.shelter import ShelterRepo
@@ -20,7 +20,8 @@ repo = PermissionsMongoRepo()
 shelter_repo = ShelterRepo()
 
 @authorization_blueprint.route('/user_permission', methods=['GET', 'POST'])
-def permission():
+@token_required_with_request
+def permission(user_id):
     """
     Endpoint to manage user permissions.
 
@@ -46,14 +47,6 @@ def permission():
             Unauthorized: If the user token is invalid, missing,
             or the user is not authorized to make this request.
     """
-    user = get_user_from_token(request.headers)
-    if user is None:
-        return Response(
-            json.dumps({'message': 'Unauthorized'}),
-            mimetype='application/json',
-            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
-        )
-    user_id = user[0]
     if request.method == 'GET':
         user_permission = get_user_permission(repo, user_id, shelter_repo)
         return Response(
