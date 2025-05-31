@@ -1,3 +1,6 @@
+"""
+Functions to generate and verify JWT tokens for user authentication.
+"""
 from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError
 import time
 
@@ -13,7 +16,7 @@ def create_token(user_data, jwt_secret, expiration=3600):
     """
     if not isinstance(user_data, dict):
         raise ValueError('User data must be a dictionary')
-    
+
     # Add expiration time to payload
     payload = user_data.copy()
     payload['exp'] = int(time.time()) + expiration
@@ -31,14 +34,14 @@ def get_email_from_token(token, jwt_secret):
     try:
         # Decode the token
         data = decode(
-            token, 
-            jwt_secret, 
+            token,
+            jwt_secret,
             algorithms=['HS256'],
-            options={"verify_signature": True}
+            options={'verify_signature': True}
         )
-        return data['email']       
+        return data['email']
     except ExpiredSignatureError:
-        raise ValueError('Token has expired')
+        raise ValueError('Token has expired') from ExpiredSignatureError
     except InvalidTokenError:
-        raise ValueError('Invalid token')
+        raise ValueError('Invalid token') from InvalidTokenError
 

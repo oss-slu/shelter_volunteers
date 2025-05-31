@@ -9,16 +9,13 @@ from application.rest.service_commitment import service_commitment_bp
 from domains.service_commitment import ServiceCommitment
 from domains.service_shift import ServiceShift
 from domains.shelter.shelter import Shelter
-from authentication.token import get_email_from_token
 from authentication.token import create_token
-import os
-
 
 test_secret = "test_secret"
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(service_commitment_bp)
-    app.config['JWT_SECRET'] = test_secret
+    app.config["JWT_SECRET"] = test_secret
     return app
 
 @pytest.fixture
@@ -128,7 +125,7 @@ def test_get_commitments_with_augmented_data(
     mock_list_service_commitments_with_shifts.return_value = (mock_commitments, mock_shifts)
     mock_list_shelters_for_shifts.return_value = mock_shelters
 
-    token = create_token({'email': "user@app.com"}, test_secret)
+    token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
         "Authorization": f"{token}"
     }

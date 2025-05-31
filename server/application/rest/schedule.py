@@ -2,12 +2,10 @@
 This module handles schedule operations for repeatable shifts.
 """
 import json
-from flask import Blueprint, request, Response, jsonify
-from flask_cors import cross_origin
+from flask import Blueprint, request, Response
 from use_cases.add_service_shifts import shift_add_use_case
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
-from application.token_required import token_required_with_request
 from repository.mongo.schedule_repo import ScheduleMongoRepo
 from domains.service_shift import ServiceShift  # Import the existing ServiceShift class
 schedule_post_bp = Blueprint("schedule_post", __name__)

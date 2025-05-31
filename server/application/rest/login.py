@@ -10,14 +10,14 @@ from authentication.google_authentication import verify_google_token
 from authentication.token import create_token
 import json
 
-JWT_SECRET = os.environ.get('JWT_SECRET')
+
 
 login_blueprint = Blueprint("login", __name__)
 @login_blueprint.route("/login", methods=["POST"])
 @cross_origin()
 def login():
     data = request.get_json()
-    id_token_str = data.get('idToken')
+    id_token_str = data.get("idToken")
     if not id_token_str:
         return Response([],
             mimetype="application/json",
@@ -25,8 +25,11 @@ def login():
         )
     try:
         # Verify Google token
-        user_data = verify_google_token(id_token_str)
-        token = create_token(user_data, JWT_SECRET)
+        jwt_secret = current_app.config.get("JWT_SECRET")
+        google_client_id = os.environ.get("GOOGLE_CLIENT_ID")
+
+        user_data = verify_google_token(id_token_str, google_client_id)
+        token = create_token(user_data, jwt_secret)
 
         return Response(json.dumps(
             {"access_token": token}),
