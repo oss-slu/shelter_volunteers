@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 const calculateTotalHours = (shifts) => {
   return shifts.reduce((acc, shift) => {
@@ -13,7 +13,7 @@ const calculateUniqueShelters = (shifts) => {
   return uniqueShelters.size;
 };
 
-const Impact = () => {
+function Impact(){
   const [impactData, setImpactData] = useState({
     totalHours: 0,
     sheltersServed: 0,
@@ -52,6 +52,6 @@ const Impact = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Impact;

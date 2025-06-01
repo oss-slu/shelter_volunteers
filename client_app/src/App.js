@@ -7,6 +7,7 @@ import { PastCommitments, UpcomingCommitments } from "./components/volunteer/Com
 import Shelters from "./components/volunteer/Shelters";
 import VolunteerDashboardLayout from "./components/volunteer/VolunteerDashboardLayout";
 import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
+import Impact from "./components/volunteer/Impact";
 
 // Common components
 import HomeDashboard from "./components/HomeDashboard"
@@ -15,6 +16,7 @@ import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Shelter dashboard components
+import AddUserForm from "./components/shelter/AddUserForm";
 import ShelterDashboardLayout from "./components/shelter/ShelterDashboardLayout";
 import ShelterDashboard from "./components/shelter/ShelterDashboard";
 import RequestForHelp from "./components/shelter/RequestForHelp";
@@ -43,12 +45,14 @@ function App() {
           <Route path="request-for-help" element={<RequestForHelp />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
           <Route path="repeatable-shifts" element={<RepeatableShifts />} />
+          <Route path="users" element={<AddUserForm />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
           <Route index element={<VolunteerDashboard />} />
           <Route path="shelters" element={<Shelters />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
+          <Route path="impact" element={<Impact />} />
         </Route>
         <Route path="/logout" element={<Logout setAuth={setAuth} />} />
       </Route>

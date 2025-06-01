@@ -7,13 +7,13 @@ import { shelterAPI } from "../api/shelter";
 import { set } from "date-fns";
 import DashboardLoading from "./DashboardLoading";
 import DashboardSelection from "./DashboardSelection";
+import DashboardContent from "./DashboardContent";
 
 function HomeDashboard({ setAuth, auth }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [isSystemAdmin, setSystemAdmin] = useState(false);
-  const [shelterInfo, setShelterInfo] = useState([]);
   const [dashboards, setDashboards] = useState([]);
+  const [currentDashboard, setCurrentDashboard] = useState(null);
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -21,9 +21,10 @@ function HomeDashboard({ setAuth, auth }) {
         setLoading(false);
       } else {
         try {
+            setLoading(true);
             const permissions = await permissionsAPI.getPermissions();
             console.log(permissions);
-            const fullAccess = permissions.full_access || [];
+            const fullAccess = permissions ? permissions.full_access: [];
 
             let systemAccess = false; 
             let shelterAccess = false;
@@ -31,18 +32,17 @@ function HomeDashboard({ setAuth, auth }) {
               shelterAccess = fullAccess.find(access => access.resource_type === "shelter");
               systemAccess = fullAccess.find(access => access.resource_type === "system");
             }
-
-            setSystemAdmin(systemAccess);
+            console.log("Shelter Access:", shelterAccess);
+            let filteredShelterInfo = [];
             if (shelterAccess) {
               const sheltersInfoAll = await shelterAPI.getShelters();
-              setShelterInfo(sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id)));
+              filteredShelterInfo = sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id));
             }
-            dashboards.push(
+            setDashboards([
               { type: "volunteer", id: "volunteer-dashboard", name: "Volunteer Dashboard" },
-              ...shelterInfo.map(shelter => ({ type: "shelter", id: shelter._id, name: shelter.name })),
-              ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard" }] : [])
-            );
-            setDashboards(dashboards);
+              ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard" }] : []),
+              ...filteredShelterInfo.map(shelter => ({ type: "shelter", id: shelter._id, name: shelter.name }))
+            ]);
             setLoading(false);
         } catch (error) {
           console.error("Error fetching permissions:", error);
@@ -52,6 +52,10 @@ function HomeDashboard({ setAuth, auth }) {
     fetchPermissions();
   }, [auth]);
 
+  const handleSelectDashboard = (dashboard) => {
+    setCurrentDashboard(dashboard);
+  };
+
   if (loading) {
     return <DashboardLoading />;
   }
@@ -60,10 +64,17 @@ function HomeDashboard({ setAuth, auth }) {
     return <Login setAuth={setAuth}/>;
   }
 
+  if (currentDashboard) {
+    console.log("Current Dashboard:", currentDashboard);
+    return <DashboardContent dashboard={currentDashboard}/>;
+  }
+
   return (
     <DashboardSelection
        dashboards={dashboards}
-       user={{name: "kate", email: "kate.holdener@gmail.com"}}/>
+       user={{name: "kate", email: "kate.holdener@gmail.com"}}
+       onSelectDashboard={handleSelectDashboard}/>
   );
 }
+
 export default HomeDashboard;

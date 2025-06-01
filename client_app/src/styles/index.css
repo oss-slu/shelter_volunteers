@@ -756,3 +756,6 @@ button:disabled {
 }
 
 @import "./message.css";
+@import "./Login.css";
+@import "./Dashboard.css";
+@import "./Navigation.css";

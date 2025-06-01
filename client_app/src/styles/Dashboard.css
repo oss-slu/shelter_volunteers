@@ -1,0 +1,60 @@
+.dashboard-button {
+  padding: 2rem;
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
+
+.dashboard-button:hover {
+  border-color: #2563eb;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-item{
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;    
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.dashboard-user{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.profile-picture {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+}
+
+.user-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.user-email {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}

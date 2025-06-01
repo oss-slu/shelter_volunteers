@@ -1,15 +1,16 @@
 import { faHome, faShield, faGear, faCalendar, faHeart, faClock } from '@fortawesome/free-solid-svg-icons';
 const navigationConfig = {
   volunteer: [
-    { icon: faHome, label: 'Volunteer Dashboard', path: '/volunteer-dashboard' },
-    { icon: faHeart, label: 'Sign Up to Help', path: '/volunteer-dashboard/shelters' },
-    { icon: faCalendar, label: 'Upcoming Shifts', path: '/volunteer-dashboard/upcoming-shifts' },
-    { icon: faShield, label: 'Past Shifts', path: '/volunteer-dashboard/past-shifts' }
+    { icon: faHome, label: 'Your Impact', path: '/volunteer-dashboard/impact', description: 'View the impact you made by volunteering.' },
+    { icon: faHeart, label: 'Sign Up to Help', path: '/volunteer-dashboard/shelters', description: 'Find shelters in need of volunteers and sign up to help.' },
+    { icon: faClock, label: 'Upcoming Commitments', path: '/volunteer-dashboard/upcoming-shifts', description: 'View and manage your upcoming volunteering commitments.' },
+    { icon: faShield, label: 'Past Shifts', path: '/volunteer-dashboard/past-shifts', description: 'Review your past volunteering activities and contributions.' }
   ],
   shelter: [
-    { icon: faHome, label: 'Shelter Dashboard', path: '/shelter-dashboard/:ID' },
-    { icon: faGear, label: 'Settings', path: '/shelter-dashboard/:ID/settings' },
-    { icon: faCalendar, label: 'Schedule Shifts', path: '/shelter-dashboard/:ID/schedule' },
+    { icon: faHome, label: 'Shelter Dashboard', path: '/shelter-dashboard/:ID', description: 'Manage your shelter operations and volunteer shifts.' },
+    { icon: faGear, label: 'Users', path: '/shelter-dashboard/:ID/users', description: 'View, add, or remove other shelter admins.' },
+    { icon: faCalendar, label: 'Repeatable Shifts', path: '/shelter-dashboard/:ID/repeatable-shifts', description: 'Create and manage repeatable volunteer shifts for your shelter.' },
+    { icon: faCalendar, label: 'Manage Shifts', path: '/shelter-dashboard/:ID/schedule', description: 'View and manage the schedule of shifts for your shelter.' },
     { icon: faClock, label: 'Upcoming Shifts', path: '/shelter-dashboard/:ID/upcoming-shifts' }
   ],
   admin: [
