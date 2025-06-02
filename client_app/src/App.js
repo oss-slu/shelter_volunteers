@@ -11,6 +11,7 @@ import Impact from "./components/volunteer/Impact";
 
 // Common components
 import HomeDashboard from "./components/HomeDashboard"
+import DashboardLayout from "./components/DashboardLayout";
 import Logout from "./components/authentication/Logout";
 import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
@@ -31,14 +32,22 @@ import "./styles/App.css";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
+  const [currentDashboard, setCurrentDashboard] = useState(null);
+
   return (<Router>
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/home" element={<HomeDashboard setAuth={setAuth} auth={auth} />} />
+      <Route path="/home" element={
+        <HomeDashboard 
+          setAuth={setAuth}
+          auth={auth}
+          currentDashboard={currentDashboard}
+          setCurrentDashboard={setCurrentDashboard} />} 
+        />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/shelter-dashboard/:shelterId" element={<ShelterDashboardLayout />}>
+        <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout currentDashboard={currentDashboard}/>}>
           <Route index element={<ShelterDashboard />} />
           <Route path="settings" element={<Settings />} /> 
           <Route path="schedule" element={<Schedule />} />
@@ -47,7 +56,7 @@ function App() {
           <Route path="repeatable-shifts" element={<RepeatableShifts />} />
           <Route path="users" element={<AddUserForm />} />
         </Route>
-        <Route path="/volunteer-dashboard" element={<VolunteerDashboardLayout />}>
+        <Route path="/volunteer-dashboard" element={<DashboardLayout currentDashboard={currentDashboard} />}>
           <Route index element={<VolunteerDashboard />} />
           <Route path="shelters" element={<Shelters />} />
           <Route path="past-shifts" element={<PastCommitments />} />

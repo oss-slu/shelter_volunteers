@@ -4,16 +4,15 @@ import { useEffect, useState } from "react";
 import Login from "./authentication/GoogleLogin";
 import { permissionsAPI } from "../api/permission";
 import { shelterAPI } from "../api/shelter";
-import { set } from "date-fns";
 import DashboardLoading from "./DashboardLoading";
 import DashboardSelection from "./DashboardSelection";
 import DashboardContent from "./DashboardContent";
 
-function HomeDashboard({ setAuth, auth }) {
+
+function HomeDashboard({ setAuth, auth, currentDashboard, setCurrentDashboard }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [dashboards, setDashboards] = useState([]);
-  const [currentDashboard, setCurrentDashboard] = useState(null);
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -65,7 +64,6 @@ function HomeDashboard({ setAuth, auth }) {
   }
 
   if (currentDashboard) {
-    console.log("Current Dashboard:", currentDashboard);
     return <DashboardContent dashboard={currentDashboard}/>;
   }
 

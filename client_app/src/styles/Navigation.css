@@ -28,3 +28,32 @@
 .nav-button.active:hover {
   background-color: #eff6ff;
 }
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: -16rem; /* Default closed state */
+  top: 0;
+  height: 100vh;
+  width: 16rem;
+  background-color: white;
+  border-right: 1px solid #e5e7eb;
+  transition: left 0.3s ease-in-out;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar open state */
+.sidebar.open {
+  left: 0;
+}
+
+/* Header */
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import navigationConfig from "./NavigationConfig";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom"; // Adjust import based on your routing library
 
 export const Sidebar = ({ dashboard, isOpen, onClose }) => {
   const [activeItem, setActiveItem] = useState(0);
-  
+  console.log("Sidebar rendered with dashboard:", dashboard);
+
   if (!dashboard) return null;
-  
   const menuItems = navigationConfig[dashboard.type] || [];
+  const navigate = useNavigate(); // Initialize the navigate function
+  useEffect(() => {
+    if (activeItem) {
+      const item = menuItems[activeItem];
+      if (item && item.path) {
+        // Navigate to the path if needed, e.g., using a router
+        navigate(item.path.replace(':ID', dashboard.id || ''));
+      }
+    }
+  }, [activeItem, dashboard.id, menuItems]);
   
   return (
     <>
@@ -26,38 +37,15 @@ export const Sidebar = ({ dashboard, isOpen, onClose }) => {
         />
       )}
       {/* Sidebar */}
-      <div style={{
-        position: 'fixed',
-        left: isOpen ? '0' : '-16rem',
-        top: '0',
-        height: '100vh',
-        width: '16rem',
-        backgroundColor: 'white',
-        borderRight: '1px solid #e5e7eb',
-        transition: 'left 0.3s ease-in-out',
-        zIndex: 50,
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <div className={isOpen ? 'sidebar open' : 'sidebar'}>
         {/* Header */}
-        <div style={{
-          padding: '1rem',
-          borderBottom: '1px solid #e5e7eb',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <h2 style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#1f2937',
-            margin: '0'
-          }}>
+        <div className="sidebar-header">
+          <h2 className="dashboard-item">
             {dashboard.name}
           </h2>
           <button
             onClick={onClose}
-            style={{
+              style={{
               padding: '0.25rem',
               border: 'none',
               backgroundColor: 'transparent',
