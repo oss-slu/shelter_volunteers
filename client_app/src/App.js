@@ -10,6 +10,7 @@ import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
 import Impact from "./components/volunteer/Impact";
 
 // Common components
+import { getUser } from "./authentication/user";
 import { DashboardProvider } from "./contexts/DashboardContext";
 import HomeDashboard from "./components/HomeDashboard"
 import DashboardLayout from "./components/DashboardLayout";
@@ -35,8 +36,7 @@ import "./styles/App.css";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
-  const [currentUser, setCurrentUser] = useState(null);
-
+  const [currentUser, setCurrentUser] = useState(getUser() || null);
 
   return (<Router>
     <DashboardProvider>

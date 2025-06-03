@@ -1,23 +1,20 @@
 import { setToken } from "../../authentication/getToken";
+import { setUser } from "../../authentication/user";
 import { GoogleLogin } from '@react-oauth/google';
 import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
 import { jwtDecode } from "jwt-decode";
 import { set } from "date-fns";
 
-function Login({ setAuth, setCurrentUser }) {
+function Login({ setAuth }) {
     const onSuccess = (credentialResponse) => {
-        // TODO: Use decoded credentials to get user's iname and store
-        // the name in the session storage 
-        //const decoded = jwtDecode(credentialResponse.credential);
         const decoded = jwtDecode(credentialResponse.credential);
-        console.log("Decoded JWT:", decoded);
         const user = {
           name: decoded.name || decoded.given_name || decoded.email,
           email: decoded.email,
           picture: decoded.picture || decoded.profile_picture || "",
         }
-        setCurrentUser(user);
+        setUser(user);
         setToken(credentialResponse.credential);
         loginAPI.login(credentialResponse.credential)
           .then(response => {
