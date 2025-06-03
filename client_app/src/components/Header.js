@@ -1,8 +1,17 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons'; // This is the hamburger menu icon
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { DashboardSelector } from './DashboardSelector';
+import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
 
-export const Header = ({ user, dashboards, currentDashboard, onSelectDashboard, onToggleSidebar, onLogout }) => {
+export const Header = ({user}) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  
+  const {dashboards} = useDashboards();
+  const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
+  const {isSidebarOpen, setIsSidebarOpen} = useSidebar();
+
+  const handleLogout = () => {}
   return (
     <header style={{
       backgroundColor: 'white',
@@ -13,11 +22,13 @@ export const Header = ({ user, dashboards, currentDashboard, onSelectDashboard, 
       justifyContent: 'space-between',
       position: 'sticky',
       top: '0',
-      zIndex: 30
+      left: '0',
+      zIndex: 30, 
+      width: '100%',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button
-          onClick={onToggleSidebar}
+          onClick={() => {setIsSidebarOpen(!isSidebarOpen)}}
           style={{
             padding: '0.5rem',
             border: 'none',
@@ -26,46 +37,26 @@ export const Header = ({ user, dashboards, currentDashboard, onSelectDashboard, 
             color: '#6b7280'
           }}
         >
-          <Menu size={20} />
-        </button>
-        
+          <FontAwesomeIcon icon={faBars} />
+        </button> 
         <DashboardSelector
           dashboards={dashboards}
           currentDashboard={currentDashboard}
           onSelectDashboard={onSelectDashboard}
         />
       </div>
-      
       <div style={{ position: 'relative' }}>
         <button
           onClick={() => setUserMenuOpen(!userMenuOpen)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.5rem',
-            border: 'none',
-            backgroundColor: 'transparent',
-            cursor: 'pointer',
-            color: '#374151',
-            borderRadius: '0.5rem'
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = '#f9fafb'}
-          onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+          className="user-menu-button"
         >
           <img
             src={user.picture}
             alt={user.name}
-            style={{
-              width: '2rem',
-              height: '2rem',
-              borderRadius: '50%',
-              border: '1px solid #e5e7eb'
-            }}
+            className="user-avatar"
           />
-          <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>{user.name}</span>
+          <span className="user-name">{user.name}</span>
         </button>
-        
         {userMenuOpen && (
           <div style={{
             position: 'absolute',
@@ -90,25 +81,11 @@ export const Header = ({ user, dashboards, currentDashboard, onSelectDashboard, 
             <button
               onClick={() => {
                 setUserMenuOpen(false);
-                onLogout();
+                handleLogout(); 
               }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                width: '100%',
-                textAlign: 'left',
-                padding: '0.75rem 1rem',
-                fontSize: '0.875rem',
-                color: '#374151',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-              onMouseOver={(e) => e.target.style.backgroundColor = '#f9fafb'}
-              onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+              className="user-menu-button"
             >
-              <LogOut size={16} />
+              <FontAwesomeIcon icon={faSignOutAlt} />
               Logout
             </button>
           </div>

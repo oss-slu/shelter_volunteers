@@ -1,3 +1,21 @@
+.navigation-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
+  padding: 2rem 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.content-with-header {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  overflow: hidden;
+}
 .nav-button {
   display: flex;
   align-items: center;
@@ -29,13 +47,21 @@
   background-color: #eff6ff;
 }
 
+.sidebar-new {
+  background-color: white;
+  height: 100%;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /* Sidebar */
 .sidebar {
-  position: fixed;
+  /*position: fixed;*/
   left: -16rem; /* Default closed state */
   top: 0;
   height: 100vh;
-  width: 16rem;
+  width: 0;
   background-color: white;
   border-right: 1px solid #e5e7eb;
   transition: left 0.3s ease-in-out;
@@ -45,8 +71,8 @@
 }
 
 /* Sidebar open state */
-.sidebar.open {
-  left: 0;
+.sidebar.open{
+  width: 16rem; /* Width when open */
 }
 
 /* Header */
@@ -56,4 +82,58 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.user-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #374151;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.user-menu-button:hover {
+  background-color: #f9fafb;
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f9fafb;
+}
+
+.dropdown-item.active {
+  background-color: #f3f4f6;
+}
+
+.dropdown-item.active:hover {
+  background-color: #f3f4f6;
 }

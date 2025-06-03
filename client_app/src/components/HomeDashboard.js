@@ -7,13 +7,13 @@ import { shelterAPI } from "../api/shelter";
 import DashboardLoading from "./DashboardLoading";
 import DashboardSelection from "./DashboardSelection";
 import DashboardContent from "./DashboardContent";
-
-
-function HomeDashboard({ setAuth, auth, currentDashboard, setCurrentDashboard }) {
-  const navigate = useNavigate();
+import { Header } from "./Header";
+import { Sidebar } from "./Sidebar.js";
+import { useDashboards, useCurrentDashboard } from "../contexts/DashboardContext.js";
+function HomeDashboard({ setAuth, auth, currentUser, setCurrentUser }) {
   const [loading, setLoading] = useState(true);
-  const [dashboards, setDashboards] = useState([]);
-
+  const {_, onSelectDashboard} = useCurrentDashboard();
+  const {dashboards, setDashboards} = useDashboards();
   useEffect(() => {
     const fetchPermissions = async () => {
       if (!auth) {
@@ -38,9 +38,9 @@ function HomeDashboard({ setAuth, auth, currentDashboard, setCurrentDashboard })
               filteredShelterInfo = sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id));
             }
             setDashboards([
-              { type: "volunteer", id: "volunteer-dashboard", name: "Volunteer Dashboard" },
-              ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard" }] : []),
-              ...filteredShelterInfo.map(shelter => ({ type: "shelter", id: shelter._id, name: shelter.name }))
+              { type: "volunteer", id: "volunteer-dashboard", name: "Volunteer Dashboard", path: "/volunteer-dashboard" },
+              ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard", path: "admin-dashboard" }] : []),
+              ...filteredShelterInfo.map(shelter => ({ type: "shelter", id: shelter._id, name: shelter.name, path: `/shelter-dashboard/${shelter._id}` })),
             ]);
             setLoading(false);
         } catch (error) {
@@ -51,27 +51,19 @@ function HomeDashboard({ setAuth, auth, currentDashboard, setCurrentDashboard })
     fetchPermissions();
   }, [auth]);
 
-  const handleSelectDashboard = (dashboard) => {
-    setCurrentDashboard(dashboard);
-  };
-
   if (loading) {
     return <DashboardLoading />;
   }
 
   if (!auth) {
-    return <Login setAuth={setAuth}/>;
-  }
-
-  if (currentDashboard) {
-    return <DashboardContent dashboard={currentDashboard}/>;
+    return <Login setAuth={setAuth} setCurrentUser={setCurrentUser}/>;
   }
 
   return (
     <DashboardSelection
        dashboards={dashboards}
-       user={{name: "kate", email: "kate.holdener@gmail.com"}}
-       onSelectDashboard={handleSelectDashboard}/>
+       user={currentUser}
+       onSelectDashboard={onSelectDashboard}/>
   );
 }
 
