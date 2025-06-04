@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { permissionsAPI } from "../../api/permission";
+import { useParams } from "react-router-dom";
 
-const AddUserForm = ({ shelterId }) => {
+const AddUserForm = () => {
+  const { shelterId } = useParams(); // grab the shelterId from URL
+  
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(null);
 
