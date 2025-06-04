@@ -1,4 +1,3 @@
-import {faHome} from '@fortawesome/free-solid-svg-icons';
 import { DashboardUser } from './DashboardUser';
 function DashboardSelection({ user, dashboards, onSelectDashboard }){
   return(

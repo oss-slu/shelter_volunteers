@@ -4,28 +4,17 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'; // This is the hambu
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { DashboardSelector } from './DashboardSelector';
 import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = ({user}) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const {dashboards} = useDashboards();
   const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
   const {isSidebarOpen, setIsSidebarOpen} = useSidebar();
+  const {dashboards} = useDashboards();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {}
   return (
-    <header style={{
-      backgroundColor: 'white',
-      borderBottom: '1px solid #e5e7eb',
-      padding: '1rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      position: 'sticky',
-      top: '0',
-      left: '0',
-      zIndex: 30, 
-      width: '100%',
-    }}>
+    <header className="header">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button
           onClick={() => {setIsSidebarOpen(!isSidebarOpen)}}
@@ -58,30 +47,14 @@ export const Header = ({user}) => {
           <span className="user-name">{user.name}</span>
         </button>
         {userMenuOpen && (
-          <div style={{
-            position: 'absolute',
-            top: '100%',
-            right: '0',
-            backgroundColor: 'white',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.5rem',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-            zIndex: 50,
-            marginTop: '0.25rem',
-            minWidth: '12rem'
-          }}>
-            <div style={{
-              padding: '0.75rem 1rem',
-              borderBottom: '1px solid #f3f4f6',
-              fontSize: '0.875rem',
-              color: '#6b7280'
-            }}>
+          <div className="user-menu-item">
+            <div className="sidebar-header">
               {user.email}
             </div>
             <button
               onClick={() => {
                 setUserMenuOpen(false);
-                handleLogout(); 
+                navigate('/logout');
               }}
               className="user-menu-button"
             >

@@ -47,14 +47,6 @@
   background-color: #eff6ff;
 }
 
-.sidebar-new {
-  background-color: white;
-  height: 100%;
-  transition: width 0.3s ease;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
 /* Sidebar */
 .sidebar {
   /*position: fixed;*/
@@ -64,15 +56,20 @@
   width: 0;
   background-color: white;
   border-right: 1px solid #e5e7eb;
-  transition: left 0.3s ease-in-out;
+  transition: width 0.2s ease-in-out;
   z-index: 50;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Sidebar open state */
 .sidebar.open{
   width: 16rem; /* Width when open */
+}
+.sidebar > * {
+  width: 16rem; /* Fixed width for all direct children */
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 /* Header */
@@ -112,6 +109,35 @@
   font-size: 0.875rem;
   font-weight: 500;
 }
+
+.user-menu-item {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  margin-top: 0.25rem;
+  min-width: 12rem;
+  font-size: 0.875rem;
+}
+
+.header {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  width: 100%;
+}
+
 .dropdown-item {
   display: block;
   width: 100%;

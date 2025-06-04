@@ -6,23 +6,30 @@ import { useNavigate } from "react-router-dom";
 import { useCurrentDashboard, useSidebar } from "../contexts/DashboardContext"; 
 
 export const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState(0);
+  const [activeItem, setActiveItem] = useState(null);
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar(); 
   const { currentDashboard } = useCurrentDashboard(); 
-  console.log("Sidebar rendered with dashboard:", currentDashboard);
+  const navigate = useNavigate();
+  const [menuItems, setMenuItems] = useState([]);
 
-  if (!currentDashboard) return null;
-  const menuItems = navigationConfig[currentDashboard.type] || [];
-  const navigate = useNavigate(); // Initialize the navigate function
   useEffect(() => {
-    if (activeItem) {
-      const item = menuItems[activeItem];
-      if (item && item.path) {
-        // Navigate to the path if needed, e.g., using a router
-        navigate(item.path.replace(':ID', currentDashboard.id || ''));
+    if (currentDashboard) {
+      if (activeItem && menuItems.length > 0) {
+        const item = menuItems[activeItem];
+        if (item && item.path) {
+          // Navigate to the path if needed, e.g., using a router
+          navigate(item.path.replace(':ID', currentDashboard.id || ''));
+        }
       }
     }
-  }, [activeItem, currentDashboard.id, menuItems]);
+  }, [activeItem, menuItems, navigate]);
+
+  useEffect(() => {
+    if (currentDashboard) {
+      setMenuItems(navigationConfig[currentDashboard.type]);
+    }
+  }, [currentDashboard]);
+
   console.log("Is sidebar open:", isSidebarOpen);
   return (
     <>

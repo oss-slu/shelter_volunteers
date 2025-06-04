@@ -5,8 +5,6 @@ import { useState } from "react";
 // Volunteer dashboard components
 import { PastCommitments, UpcomingCommitments } from "./components/volunteer/Commitments";
 import Shelters from "./components/volunteer/Shelters";
-import VolunteerDashboardLayout from "./components/volunteer/VolunteerDashboardLayout";
-import VolunteerDashboard from "./components/volunteer/VolunteerDashboard";
 import Impact from "./components/volunteer/Impact";
 
 // Common components
@@ -21,8 +19,6 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Shelter dashboard components
 import AddUserForm from "./components/shelter/AddUserForm";
-import ShelterDashboardLayout from "./components/shelter/ShelterDashboardLayout";
-import ShelterDashboard from "./components/shelter/ShelterDashboard";
 import RequestForHelp from "./components/shelter/RequestForHelp";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
@@ -38,8 +34,8 @@ function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
   const [currentUser, setCurrentUser] = useState(getUser() || null);
 
-  return (<Router>
-    <DashboardProvider>
+  return (<Router >
+    <DashboardProvider auth={auth}>
       <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/home" element={

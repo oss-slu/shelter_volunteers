@@ -4,7 +4,6 @@ import { GoogleLogin } from '@react-oauth/google';
 import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
 import { jwtDecode } from "jwt-decode";
-import { set } from "date-fns";
 
 function Login({ setAuth }) {
     const onSuccess = (credentialResponse) => {
