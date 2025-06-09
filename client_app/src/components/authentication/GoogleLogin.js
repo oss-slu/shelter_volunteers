@@ -5,7 +5,7 @@ import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
 import { jwtDecode } from "jwt-decode";
 
-function Login({ setAuth }) {
+function Login({ setAuth, setCurrentUser }) {
     const onSuccess = (credentialResponse) => {
         const decoded = jwtDecode(credentialResponse.credential);
         const user = {
@@ -13,7 +13,7 @@ function Login({ setAuth }) {
           email: decoded.email,
           picture: decoded.picture || decoded.profile_picture || "",
         }
-        setUser(user);
+        setCurrentUser(user);
         setToken(credentialResponse.credential);
         loginAPI.login(credentialResponse.credential)
           .then(response => {
@@ -38,14 +38,16 @@ function Login({ setAuth }) {
             <p className="tagline">
               Connecting volunteers with emergency shelters to make a difference!
             </p>
-            <GoogleLogin
-              onSuccess={onSuccess}
-              onError={onError}
-              theme="filled_blue"
-              type="standard"
-              shape="rectangular"
-              size="large"
-            />
+            <div className="google-login-wrapper">
+              <GoogleLogin
+                onSuccess={onSuccess}
+                onError={onError}
+                theme="filled_blue"
+                type="standard"
+                shape="rectangular"
+                size="large"
+              />
+            </div>
             <p className="login-subtitle">
               Sign in to get started with your personalized experience
             </p>
