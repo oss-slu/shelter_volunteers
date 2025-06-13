@@ -47,7 +47,10 @@ function App() {
           />
         <Route path="/signup" element={<SignUp />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard" element={<DashboardLayout user={currentUser}/>}>
+            <Route index element={<DashboardContent />} />
+            <Route path="shelters" element={<AdminDashboard />} />
+          </Route>
           <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout user={currentUser}/>}>
             <Route index element={<DashboardContent />} />
             <Route path="settings" element={<Settings />} /> 

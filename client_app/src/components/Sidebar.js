@@ -3,12 +3,14 @@ import navigationConfig from "./NavigationConfig";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom"; 
-import { useCurrentDashboard, useSidebar } from "../contexts/DashboardContext"; 
+import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
+import { DashboardSelector } from './DashboardSelector';
 
 export const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null);
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar(); 
-  const { currentDashboard } = useCurrentDashboard(); 
+  const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
+  const {dashboards} = useDashboards();
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState([]);
 
@@ -55,9 +57,11 @@ export const Sidebar = () => {
         {/* Header */}
         {isSidebarOpen && (
         <div className="sidebar-header">
-          <h2 className="dashboard-item">
-            {currentDashboard.name}
-          </h2>
+          <DashboardSelector
+            dashboards={dashboards}
+            currentDashboard={currentDashboard}
+            onSelectDashboard={onSelectDashboard}
+          />
         </div>)}
         {/* Navigation */}
         {isSidebarOpen && (
