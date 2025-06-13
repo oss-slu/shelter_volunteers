@@ -4,11 +4,13 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'; // This is the hambu
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useSidebar } from '../contexts/DashboardContext';
 import { useNavigate } from 'react-router-dom';
+import {useCurrentDashboard} from '../contexts/DashboardContext';
 
 export const Header = ({user}) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const {isSidebarOpen, setIsSidebarOpen} = useSidebar();
   const navigate = useNavigate();
+  const {currentDashboard} = useCurrentDashboard();
 
   return (
     <header className="header">
@@ -24,7 +26,12 @@ export const Header = ({user}) => {
           }}
         >
           <FontAwesomeIcon icon={faBars} />
-        </button> 
+        </button>
+        <div>
+          <h2>
+            {currentDashboard.name}
+          </h2>
+        </div>
       </div>
       <div style={{ position: 'relative' }}>
         <button
