@@ -764,4 +764,5 @@ button:disabled {
 @import "./Login.css";
 @import "./Dashboard.css";
 @import "./Navigation.css";
-@import "./Menu.css"
+@import "./Menu.css";
+@import "./volunteer/VolunteerShiftSignup.css";

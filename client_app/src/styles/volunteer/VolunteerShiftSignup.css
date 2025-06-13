@@ -1,0 +1,453 @@
+/* Base styles */
+.volunteer-signup-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.main-title {
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+  font-size: 2rem;
+}
+
+/* Controls Section */
+.controls-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: flex-end;
+}
+
+.email-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.sort-section {
+  flex: 0 0 auto;
+}
+
+.email-label, .sort-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.email-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 400px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+/* Selected Shifts Summary */
+.selected-shifts-summary {
+  background-color: #e8f5e8;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #c3e6c3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-title {
+  margin: 0 0 15px 0;
+  color: #2d5a2d;
+  font-size: 1.2rem;
+}
+
+.selected-shifts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-shift-item {
+  font-size: 14px;
+  color: #2d5a2d;
+  padding: 5px 0;
+}
+
+/* Desktop Table Styles */
+.table-container {
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.shifts-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.table-header {
+  background-color: #f5f5f5;
+}
+
+.table-header th {
+  padding: 16px 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.table-row {
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.table-row.selected {
+  background-color: #e3f2fd;
+}
+
+.table-row.conflicted {
+  opacity: 0.6;
+}
+
+.table-row td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.shift-checkbox {
+  transform: scale(1.3);
+  cursor: pointer;
+}
+
+.shift-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.shelter-name {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.shelter-location {
+  font-size: 12px;
+  color: #666;
+}
+
+.max-volunteers {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Need Level Badges */
+.need-badge {
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.need-low {
+  background-color: #4CAF50;
+}
+
+.need-medium {
+  background-color: #FF9800;
+}
+
+.need-high {
+  background-color: #F44336;
+}
+
+/* Mobile Card Styles */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.shift-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.shift-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shift-card.selected {
+  border-color: #4CAF50;
+  background-color: #f0f8f0;
+}
+
+.shift-card.conflicted {
+  opacity: 0.6;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  flex: 1;
+}
+
+.card-title .shelter-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.card-title .shift-name {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+  min-width: 100px;
+}
+
+.detail-row span:last-child {
+  font-size: 14px;
+  color: #333;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+}
+
+/* Sign Up Button */
+.signup-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.signup-button {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.signup-button.enabled {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+.signup-button.enabled:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+}
+
+.signup-button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Responsive Breakpoints */
+
+/* Hide/show based on screen size */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .volunteer-signup-container {
+    padding: 12px;
+  }
+  
+  .main-title {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .email-section,
+  .sort-section {
+    width: 100%;
+  }
+  
+  .email-input {
+    max-width: none;
+  }
+  
+  .sort-select {
+    width: 100%;
+  }
+  
+  .selected-shifts-summary {
+    padding: 16px;
+  }
+  
+  .summary-title {
+    font-size: 1.1rem;
+  }
+  
+  .selected-shift-item {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  /* Switch to card view on mobile */
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+}
+
+/* Small mobile styles */
+@media (max-width: 480px) {
+  .volunteer-signup-container {
+    padding: 8px;
+  }
+  
+  .main-title {
+    font-size: 1.4rem;
+  }
+  
+  .shift-card {
+    padding: 16px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .card-header .shift-checkbox {
+    align-self: flex-start;
+  }
+  
+  .need-badge {
+    align-self: flex-start;
+    min-width: auto;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .detail-row span:last-child {
+    text-align: left;
+    margin-left: 0;
+  }
+  
+  .signup-button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .volunteer-signup-container {
+    padding: 0;
+    background-color: white;
+  }
+  
+  .controls-section,
+  .signup-section {
+    display: none;
+  }
+  
+  .shift-card,
+  .table-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
