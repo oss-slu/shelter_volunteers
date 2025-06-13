@@ -1,32 +1,32 @@
 import { useState, useMemo, useEffect } from 'react';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
+import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
+import { getUser } from '../../authentication/user';
 
 const VolunteerShiftSignup = () => {
-
   const [loading, setLoading] = useState(false);
   const [shelters, setShelters] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
   const [volunteerEmail, setVolunteerEmail] = useState('');
-
+  const user = getUser();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const sheltersData = await shelterAPI.getShelters();
         const futureShifts = await serviceShiftAPI.getFutureShifts();
         setShelters(sheltersData);
-        setShifts(futureShifts)
+        setShifts(futureShifts);
         setLoading(false);
-      }
-      catch (error) {
+      } catch (error) {
         console.error("fetch error:", error);
         setLoading(false);
       }
-    }
+    };
     fetchData();
   }, []);
   
@@ -38,7 +38,6 @@ const VolunteerShiftSignup = () => {
     }, {});
   }, [shelters]);
 
-  console.log("shelterMap:", shelterMap);
   // Format date and time
   const formatDateTime = (timestamp) => {
     const date = new Date(timestamp);
@@ -64,6 +63,37 @@ const VolunteerShiftSignup = () => {
       const shift = shifts.find(s => s._id === shiftId);
       return shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift);
     });
+  };
+
+  // Process shift data for rendering (eliminates duplication)
+  const processShiftData = (shift) => {
+    const shelter = shelterMap[shift.shelter_id];
+    const startDate = formatDate(shift.shift_start);
+    const startTime = formatTime(shift.shift_start);
+    const endTime = formatTime(shift.shift_end);
+    const needLevel = calculateNeed(shift);
+    const isSelected = selectedShifts.has(shift._id);
+    const conflicts = getConflictingShifts(shift);
+    const hasConflict = conflicts.length > 0;
+    const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
+
+    let needClass = 'need-low';
+    if (needLevel > 0.6) needClass = 'need-high';
+    else if (needLevel > 0.3) needClass = 'need-medium';
+
+    return {
+      shift,
+      shelter,
+      startDate,
+      startTime,
+      endTime,
+      needLevel,
+      needClass,
+      isSelected,
+      hasConflict,
+      duration,
+      canInteract: shift.can_sign_up && (!hasConflict || isSelected)
+    };
   };
 
   // Sort shifts based on selected criteria
@@ -111,30 +141,129 @@ const VolunteerShiftSignup = () => {
   };
 
   // Handle sign up
-  const handleSignUp = () => {
-    if (!volunteerEmail.trim()) {
-      alert('Please enter your email address.');
-      return;
+  const handleSignUp = async () => {
+    try {
+      const shiftsList = Array.from(selectedShifts).map(shiftId => ({
+        volunteer_id: user.email,
+        service_shift_id: shiftId
+      }));
+      const response = await serviceCommitmentAPI.addCommitments(shiftsList);
+      console.log(response)
+      // Reset form
+      setSelectedShifts(new Set());
     }
-    
-    if (selectedShifts.size === 0) {
-      alert('Please select at least one shift.');
-      return;
-    }
-    
-    const selectedShiftDetails = Array.from(selectedShifts).map(shiftId => {
-      const shift = shifts.find(s => s._id === shiftId);
-      const shelter = shelterMap[shift.shelter_id];
-      const startTime = formatDateTime(shift.shift_start);
-      return `${shelter.name} - ${shift.shift_name} on ${startTime.date} at ${startTime.time}`;
-    });
-    
-    alert(`Sign-up request submitted for:\n${selectedShiftDetails.join('\n')}\n\nEmail: ${volunteerEmail}`);
-    
-    // Reset form
-    setSelectedShifts(new Set());
-    setVolunteerEmail('');
+    catch (error) {
+      console.error("Error submitting shifts:", error);
+    } 
   };
+
+  // Component for rendering shift checkbox (desktop only)
+  const ShiftCheckbox = ({ shiftData }) => (
+    <input
+      type="checkbox"
+      checked={shiftData.isSelected}
+      onChange={() => handleShiftToggle(shiftData.shift)}
+      disabled={!shiftData.canInteract}
+      className="shift-checkbox"
+    />
+  );
+
+  // Component for rendering need badge (shared between desktop and mobile)
+  const NeedBadge = ({ needLevel, needClass }) => (
+    <div className={`need-badge ${needClass}`}>
+      {Math.round(needLevel * 100)}% need
+    </div>
+  );
+
+  // Component for rendering shelter info (shared between desktop and mobile)
+  const ShelterInfo = ({ shelter, showLocation = true }) => (
+    <>
+      <div className="shelter-name">{shelter?.name}</div>
+      {showLocation && (
+        <div className="shelter-location">
+          {shelter?.address.city}, {shelter?.address.state}
+        </div>
+      )}
+    </>
+  );
+
+  // Component for rendering volunteer count info (shared between desktop and mobile)
+  const VolunteerCount = ({ shift, inline = false }) => {
+    const content = (
+      <>
+        {shift.volunteers.length} / {shift.required_volunteer_count} required
+        {inline ? ' ' : <br />}
+        <span className="max-volunteers">
+          (max {shift.max_volunteer_count})
+        </span>
+      </>
+    );
+    return inline ? <span>{content}</span> : <div>{content}</div>;
+  };
+
+  // Desktop table row component
+  const DesktopShiftRow = ({ shiftData }) => (
+    <tr 
+      key={shiftData.shift._id} 
+      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''}`}
+    >
+      <td>
+        <ShiftCheckbox shiftData={shiftData} />
+      </td>
+      <td>
+        <ShelterInfo shelter={shiftData.shelter} />
+      </td>
+      <td>{shiftData.startDate}</td>
+      <td>{shiftData.startTime}</td>
+      <td>{shiftData.duration}h</td>
+      <td>
+        <VolunteerCount shift={shiftData.shift} />
+      </td>
+      <td>
+        <NeedBadge needLevel={shiftData.needLevel} needClass={shiftData.needClass} />
+      </td>
+    </tr>
+  );
+
+  // Mobile card component
+  const MobileShiftCard = ({ shiftData }) => (
+    <div 
+      key={shiftData.shift._id} 
+      className={`shift-card ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+      onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
+    >
+      <div className="card-header">
+        <div className="card-title">
+          <ShelterInfo shelter={shiftData.shelter} showLocation={false} />
+          <div className="shift-name">{shiftData.shift.shift_name}</div>
+        </div>
+        <NeedBadge needLevel={shiftData.needLevel} needClass={shiftData.needClass} />
+      </div>       
+      <div className="card-details">
+        <div className="detail-row">
+          <span className="detail-label">Location:</span>
+          <span>{shiftData.shelter?.address.city}, {shiftData.shelter?.address.state}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Date:</span>
+          <span>{shiftData.startDate}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Time:</span>
+          <span>{shiftData.startTime} - {shiftData.endTime} ({shiftData.duration}h)</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Volunteers:</span>
+          <VolunteerCount shift={shiftData.shift} inline={true} />
+        </div>
+      </div>
+      {shiftData.isSelected && (
+        <div className="selected-indicator">
+          <span className="checkmark">✓</span>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div>
@@ -189,127 +318,23 @@ const VolunteerShiftSignup = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedShifts.map((shift) => {
-              const shelter = shelterMap[shift.shelter_id];
-              const startDate = formatDate(shift.shift_start);
-              const startTime = formatTime(shift.shift_start);
-              const needLevel = calculateNeed(shift);
-              const isSelected = selectedShifts.has(shift._id);
-              const conflicts = getConflictingShifts(shift);
-              const hasConflict = conflicts.length > 0;
-              const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60 ));
-
-              let needClass = 'need-low';
-              if (needLevel > 0.6) needClass = 'need-high';
-              else if (needLevel > 0.3) needClass = 'need-medium';
-
-              return (
-                <tr 
-                  key={shift._id} 
-                  className={`table-row ${isSelected ? 'selected' : ''} ${hasConflict && !isSelected ? 'conflicted' : ''}`}
-                >
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => handleShiftToggle(shift)}
-                      disabled={!shift.can_sign_up || (hasConflict && !isSelected)}
-                      className="shift-checkbox"
-                    />
-                  </td>
-                  <td>
-                    <div className="shelter-name">{shelter?.name}</div>
-                    <div className="shelter-location">
-                      {shelter?.address.city}, {shelter?.address.state}
-                    </div>
-                  </td>
-                  <td>{startDate}</td>
-                  <td>
-                    {startTime}
-                  </td>
-                  <td>{duration}h</td>
-                  <td>
-                    {shift.volunteers.length} / {shift.required_volunteer_count} required
-                    <br />
-                    <span className="max-volunteers">
-                      (max {shift.max_volunteer_count})
-                    </span>
-                  </td>
-                  <td>
-                    <div className={`need-badge ${needClass}`}>
-                      {Math.round(needLevel * 100)}% need
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+            {sortedShifts.map((shift) => (
+              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} />
+            ))}
           </tbody>
         </table>
       </div>
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
-        {sortedShifts.map((shift) => {
-          const shelter = shelterMap[shift.shelter_id];
-          const startTime = formatDateTime(shift.shift_start);
-          const endTime = formatDateTime(shift.shift_end);
-          const needLevel = calculateNeed(shift);
-          const isSelected = selectedShifts.has(shift._id);
-          const conflicts = getConflictingShifts(shift);
-          const hasConflict = conflicts.length > 0;
-          const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60 * 100)) / 10;
-
-          let needClass = 'need-low';
-          if (needLevel > 0.6) needClass = 'need-high';
-          else if (needLevel > 0.3) needClass = 'need-medium';
-
-          return (
-            <div 
-              key={shift._id} 
-              className={`shift-card ${isSelected ? 'selected' : ''} ${hasConflict && !isSelected ? 'conflicted' : ''}`}
-            >
-              <div className="card-header">
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  onChange={() => handleShiftToggle(shift)}
-                  disabled={!shift.can_sign_up || (hasConflict && !isSelected)}
-                  className="shift-checkbox"
-                />
-                <div className="card-title">
-                  <div className="shelter-name">{shelter?.name}</div>
-                  <div className="shift-name">{shift.shift_name}</div>
-                </div>
-                <div className={`need-badge ${needClass}`}>
-                  {Math.round(needLevel * 100)}% need
-                </div>
-              </div>       
-              <div className="card-details">
-                <div className="detail-row">
-                  <span className="detail-label">Location:</span>
-                  <span>{shelter?.address.city}, {shelter?.address.state}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Date:</span>
-                  <span>{startTime.date}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Time:</span>
-                  <span>{startTime.time} - {endTime.time} ({duration}h)</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Volunteers:</span>
-                  <span>{shift.volunteers.length} / {shift.required_volunteer_count} required (max {shift.max_volunteer_count})</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {sortedShifts.map((shift) => (
+          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} />
+        ))}
       </div>
       {/* Sign Up Button */}
       <div className="signup-section">
         <button
           onClick={handleSignUp}
-          disabled={selectedShifts.size === 0 || !volunteerEmail.trim()}
+          disabled={selectedShifts.size === 0}
           className={`signup-button ${selectedShifts.size > 0 && volunteerEmail.trim() ? 'enabled' : 'disabled'}`}
         >
           Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
