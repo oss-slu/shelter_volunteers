@@ -75,28 +75,11 @@
 /* Header */
 .sidebar-header {
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.user-menu-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  color: #374151;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease;
-}
-
-.user-menu-button:hover {
-  background-color: #f9fafb;
-}
 
 .user-avatar {
   width: 2rem;
@@ -105,24 +88,6 @@
   border: 1px solid #e5e7eb;
 }
 
-.user-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.user-menu-item {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  z-index: 50;
-  margin-top: 0.25rem;
-  min-width: 12rem;
-  font-size: 0.875rem;
-}
 
 .header {
   background-color: white;

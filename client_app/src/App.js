@@ -32,8 +32,8 @@ import "./styles/App.css";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
-  const [currentUser, setCurrentUser] = useState(getUser() || null);
-
+  const [currentUser, setCurrentUser] = useState(getUser());
+  console.log("Current user:", currentUser);
   return (<Router >
     <DashboardProvider auth={auth}>
       <Routes>

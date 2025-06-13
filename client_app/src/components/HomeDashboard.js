@@ -4,12 +4,11 @@ import DashboardLoading from "./DashboardLoading";
 import DashboardSelection from "./DashboardSelection";
 import { useDashboards, useCurrentDashboard } from "../contexts/DashboardContext.js";
 
-function HomeDashboard({ setAuth, auth, currentUser, setCurrentUser }) {
+function HomeDashboard({ setAuth, auth, currentUser }) {
   const {onSelectDashboard} = useCurrentDashboard();
   const {dashboards, loadingDashboards} = useDashboards();
-
   if (!auth) {
-    return <Login setAuth={setAuth} setCurrentUser={setCurrentUser}/>;
+    return <Login setAuth={setAuth}/>;
   }
 
   if (loadingDashboards) {

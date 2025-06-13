@@ -192,8 +192,8 @@ const Shelters = (props) => {
           )}
           {!props.condensed && (
             <div>
-              <div className="signup-page">
-                <div className="column column-1">
+              <div>
+                <div>
                   <div className="text-center">
                     <h1>Volunteering Opportunities</h1>
                     <br />

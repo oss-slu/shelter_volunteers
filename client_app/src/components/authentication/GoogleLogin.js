@@ -1,10 +1,11 @@
 import { setToken } from "../../authentication/getToken";
+import { setUser } from "../../authentication/user";
 import { GoogleLogin } from '@react-oauth/google';
 import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
 import { jwtDecode } from "jwt-decode";
 
-function Login({ setAuth, setCurrentUser }) {
+function Login({ setAuth }) {
     const onSuccess = (credentialResponse) => {
         const decoded = jwtDecode(credentialResponse.credential);
         const user = {
@@ -12,8 +13,7 @@ function Login({ setAuth, setCurrentUser }) {
           email: decoded.email,
           picture: decoded.picture || decoded.profile_picture || "",
         }
-        setCurrentUser(user);
-        setToken(credentialResponse.credential);
+        setUser(user);
         loginAPI.login(credentialResponse.credential)
           .then(response => {
             setToken(response.access_token);

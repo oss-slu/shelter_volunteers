@@ -318,11 +318,10 @@ p {
 }
 
 button {
-  background-color: #193b45;
-  border-radius: 5px;
-  color: #fdfaf6;
+  background-color: #6b7280;
+  color: white;
   border: none;
-  padding: 0.7em;
+  padding: 0.5rem;
   cursor: pointer;
 }
 
@@ -332,6 +331,12 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+.button-transparent {
+  background-color: transparent;
+  color: #6b7280;
+}
+
 .current-volunteer-count {
   background-color: #ecececfc;
   border: none;
@@ -759,3 +764,4 @@ button:disabled {
 @import "./Login.css";
 @import "./Dashboard.css";
 @import "./Navigation.css";
+@import "./Menu.css"

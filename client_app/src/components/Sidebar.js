@@ -5,7 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom"; 
 import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
 import { DashboardSelector } from './DashboardSelector';
-
+import { SidebarButton } from "./SidebarButton";
 export const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null);
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar(); 
@@ -62,6 +62,7 @@ export const Sidebar = () => {
             currentDashboard={currentDashboard}
             onSelectDashboard={onSelectDashboard}
           />
+          <SidebarButton />
         </div>)}
         {/* Navigation */}
         {isSidebarOpen && (
