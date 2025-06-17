@@ -760,6 +760,7 @@ button:disabled {
   flex: 1;
 }
 
+@import "./BaseStyles.css";
 @import "./message.css";
 @import "./Login.css";
 @import "./Dashboard.css";

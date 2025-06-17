@@ -1,22 +1,31 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-
-export const DashboardSelector = ({ dashboards, currentDashboard, onSelectDashboard }) => {
+import { useDashboards, useCurrentDashboard } from '../contexts/DashboardContext';
+export const DashboardSelector = () => {
+  const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
+  const {dashboards} = useDashboards();
   const [isOpen, setIsOpen] = useState(false);
   console.log("DashboardSelector rendered with dashboards:", dashboards);
-  if (dashboards.length <= 1) return null;
+  if (dashboards.length < 1) return null;
   
   return (
     <div style={{ position: 'relative' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className='dropdown-menu-button dropdown-name'
-      >
-        {currentDashboard ? currentDashboard.name : 'Select Dashboard'}
-        <FontAwesomeIcon icon={faChevronDown} />
-      </button>
-      {isOpen && (
+      {dashboards.length > 1 && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className='dropdown-menu-button dropdown-name'
+        >
+          {currentDashboard ? currentDashboard.name : 'Select Dashboard'}
+          {dashboards.length > 1 ? <FontAwesomeIcon icon={faChevronDown}/> : null}
+        </button>
+      )}
+      {dashboards.length === 1 && (
+        <span className='dropdown-name'>
+          {dashboards[0].name}
+        </span>
+      )}
+      {isOpen && dashboards.length > 1 && (
         <div className="dropdown-menu-item left">
           {dashboards.map((dashboard) => (
             <button

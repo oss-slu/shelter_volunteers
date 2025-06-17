@@ -56,13 +56,15 @@ export const Sidebar = () => {
       <div className={isSidebarOpen ? 'sidebar open' : 'sidebar'}>
         {/* Header */}
         {isSidebarOpen && (
-        <div className="sidebar-header">
-          <DashboardSelector
-            dashboards={dashboards}
-            currentDashboard={currentDashboard}
-            onSelectDashboard={onSelectDashboard}
-          />
-          <SidebarButton />
+        <div className="header no-border">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <SidebarButton />
+            <DashboardSelector
+              dashboards={dashboards}
+              currentDashboard={currentDashboard}
+              onSelectDashboard={onSelectDashboard}
+            />
+          </div>
         </div>)}
         {/* Navigation */}
         {isSidebarOpen && (

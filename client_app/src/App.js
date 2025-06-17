@@ -4,11 +4,10 @@ import { useState } from "react";
 
 // Volunteer dashboard components
 import { PastCommitments, UpcomingCommitments } from "./components/volunteer/Commitments";
-import Shelters from "./components/volunteer/Shelters";
 import Impact from "./components/volunteer/Impact";
+import VolunteerShiftSignup from "./components/volunteer/ShiftSignUp";
 
 // Common components
-import { getUser } from "./authentication/user";
 import { DashboardProvider } from "./contexts/DashboardContext";
 import HomeDashboard from "./components/HomeDashboard"
 import DashboardLayout from "./components/DashboardLayout";
@@ -32,46 +31,44 @@ import "./styles/App.css";
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem("token"));
-  const [currentUser, setCurrentUser] = useState(getUser());
-  console.log("Current user:", currentUser);
-  return (<Router >
-    <DashboardProvider auth={auth}>
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home" element={
-          <HomeDashboard 
-            setAuth={setAuth}
-            auth={auth}
-            currentUser={currentUser}
-            setCurrentUser={setCurrentUser}/>} 
-          />
-        <Route path="/signup" element={<SignUp />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/admin-dashboard" element={<DashboardLayout user={currentUser}/>}>
-            <Route index element={<DashboardContent />} />
-            <Route path="shelters" element={<AdminDashboard />} />
+  return (<div key={auth}>
+    <Router >
+      <DashboardProvider auth={auth}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/home" element={
+            <HomeDashboard 
+              setAuth={setAuth}
+              auth={auth}/>} 
+            />
+          <Route path="/signup" element={<SignUp />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin-dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardContent />} />
+              <Route path="shelters" element={<AdminDashboard />} />
+            </Route>
+            <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
+              <Route index element={<DashboardContent />} />
+              <Route path="settings" element={<Settings />} /> 
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="request-for-help" element={<RequestForHelp />} />
+              <Route path="upcoming-shifts" element={<UpcomingShifts />} />
+              <Route path="repeatable-shifts" element={<RepeatableShifts />} />
+              <Route path="users" element={<AddUserForm />} />
+            </Route>
+            <Route path="/volunteer-dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardContent/>} />
+              <Route path="shelters" element={<VolunteerShiftSignup />} />
+              <Route path="past-shifts" element={<PastCommitments />} />
+              <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
+              <Route path="impact" element={<Impact />} />
+            </Route>
+            <Route path="/logout" element={<Logout setAuth={setAuth} />} />
           </Route>
-          <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout user={currentUser}/>}>
-            <Route index element={<DashboardContent />} />
-            <Route path="settings" element={<Settings />} /> 
-            <Route path="schedule" element={<Schedule />} />
-            <Route path="request-for-help" element={<RequestForHelp />} />
-            <Route path="upcoming-shifts" element={<UpcomingShifts />} />
-            <Route path="repeatable-shifts" element={<RepeatableShifts />} />
-            <Route path="users" element={<AddUserForm />} />
-          </Route>
-          <Route path="/volunteer-dashboard" element={<DashboardLayout user={currentUser} />}>
-            <Route index element={<DashboardContent/>} />
-            <Route path="shelters" element={<Shelters />} />
-            <Route path="past-shifts" element={<PastCommitments />} />
-            <Route path="upcoming-shifts" element={<UpcomingCommitments />} />
-            <Route path="impact" element={<Impact />} />
-          </Route>
-          <Route path="/logout" element={<Logout setAuth={setAuth} />} />
-        </Route>
-      </Routes>
-    </DashboardProvider>
-  </Router>);
+        </Routes>
+      </DashboardProvider>
+    </Router>
+  </div>);
 }
 
 export default App;

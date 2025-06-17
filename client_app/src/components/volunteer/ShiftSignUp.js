@@ -5,6 +5,7 @@ import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
+import { Address } from './Address';
 
 const VolunteerShiftSignup = () => {
   const [loading, setLoading] = useState(false);
@@ -157,17 +158,6 @@ const VolunteerShiftSignup = () => {
     } 
   };
 
-  // Component for rendering shift checkbox (desktop only)
-  const ShiftCheckbox = ({ shiftData }) => (
-    <input
-      type="checkbox"
-      checked={shiftData.isSelected}
-      onChange={() => handleShiftToggle(shiftData.shift)}
-      disabled={!shiftData.canInteract}
-      className="shift-checkbox"
-    />
-  );
-
   // Component for rendering need badge (shared between desktop and mobile)
   const NeedBadge = ({ needLevel, needClass }) => (
     <div className={`need-badge ${needClass}`}>
@@ -181,7 +171,7 @@ const VolunteerShiftSignup = () => {
       <div className="shelter-name">{shelter?.name}</div>
       {showLocation && (
         <div className="shelter-location">
-          {shelter?.address.city}, {shelter?.address.state}
+          <Address address={shelter.address}/>
         </div>
       )}
     </>
@@ -205,13 +195,16 @@ const VolunteerShiftSignup = () => {
   const DesktopShiftRow = ({ shiftData }) => (
     <tr 
       key={shiftData.shift._id} 
-      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''}`}
+      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+      onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
     >
       <td>
-        <ShiftCheckbox shiftData={shiftData} />
-      </td>
-      <td>
         <ShelterInfo shelter={shiftData.shelter} />
+        {shiftData.isSelected && (
+          <div className="selected-indicator-desktop">
+            <span className="checkmark">✓ Selected</span>
+          </div>
+        )}
       </td>
       <td>{shiftData.startDate}</td>
       <td>{shiftData.startTime}</td>
@@ -224,26 +217,20 @@ const VolunteerShiftSignup = () => {
       </td>
     </tr>
   );
-
   // Mobile card component
   const MobileShiftCard = ({ shiftData }) => (
     <div 
       key={shiftData.shift._id} 
-      className={`shift-card ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+      className={`dashboard-button ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
       onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
     >
       <div className="card-header">
         <div className="card-title">
-          <ShelterInfo shelter={shiftData.shelter} showLocation={false} />
-          <div className="shift-name">{shiftData.shift.shift_name}</div>
+          <ShelterInfo shelter={shiftData.shelter} showLocation={true} />
         </div>
         <NeedBadge needLevel={shiftData.needLevel} needClass={shiftData.needClass} />
       </div>       
       <div className="card-details">
-        <div className="detail-row">
-          <span className="detail-label">Location:</span>
-          <span>{shiftData.shelter?.address.city}, {shiftData.shelter?.address.state}</span>
-        </div>
         <div className="detail-row">
           <span className="detail-label">Date:</span>
           <span>{shiftData.startDate}</span>
@@ -267,11 +254,11 @@ const VolunteerShiftSignup = () => {
 
   return (
     <div>
-      <h1 className="main-title">Volunteer Shift Sign-up</h1>
+      <h1 className="title-small">Volunteer Shift Sign-up</h1>
       <div className="controls-section">
         {/* Sort Controls */}
         <div className="sort-section">
-          <label className="sort-label">Sort by:</label>
+          <label className="tagline-small">Sort by:</label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -308,7 +295,6 @@ const VolunteerShiftSignup = () => {
         <table className="shifts-table">
           <thead>
             <tr className="table-header">
-              <th>Select</th>
               <th>Shelter</th>
               <th>Date</th>
               <th>Time</th>
@@ -335,7 +321,7 @@ const VolunteerShiftSignup = () => {
         <button
           onClick={handleSignUp}
           disabled={selectedShifts.size === 0}
-          className={`signup-button ${selectedShifts.size > 0 && volunteerEmail.trim() ? 'enabled' : 'disabled'}`}
+          className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
         >
           Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
         </button>

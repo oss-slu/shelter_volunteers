@@ -101,6 +101,10 @@
   width: 100%;
 }
 
+.no-border {
+  border: none;
+}
+
 .dropdown-item {
   display: block;
   width: 100%;

@@ -1,8 +1,10 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { getUser } from '../authentication/user';
 
-function DashboardLayout({user}) {
+function DashboardLayout() {
+  const user = getUser();
   return (
     <>
       <div className="app">

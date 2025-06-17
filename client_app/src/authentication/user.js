@@ -9,3 +9,8 @@ export function getUser() {
     return JSON.parse(userString);
   }
 }
+
+export function removeUser() {
+  console.log("removing user from localStorage");
+  localStorage.removeItem("user");
+}

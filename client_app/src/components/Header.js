@@ -5,7 +5,7 @@ import { useSidebar } from '../contexts/DashboardContext';
 import { useNavigate } from 'react-router-dom';
 import {useCurrentDashboard} from '../contexts/DashboardContext';
 import { SidebarButton } from "./SidebarButton";
-
+import { DashboardSelector } from './DashboardSelector';
 export const Header = ({user}) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const {isSidebarOpen} = useSidebar();
@@ -19,11 +19,7 @@ export const Header = ({user}) => {
           <SidebarButton />
         )}
         {currentDashboard && !isSidebarOpen && (
-          <div>
-            <h2>
-              {currentDashboard.name}
-            </h2>
-          </div>
+          <DashboardSelector />
         )}
       </div>
       <div style={{ position: 'relative' }}>
