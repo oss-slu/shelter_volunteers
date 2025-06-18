@@ -276,13 +276,13 @@ const VolunteerShiftSignup = () => {
           <h3 className="summary-title">
             Selected Shifts ({selectedShifts.size})
           </h3>
-          <div className="selected-shifts-list">
+          <div className="list">
             {Array.from(selectedShifts).map(shiftId => {
               const shift = shifts.find(s => s._id === shiftId);
               const shelter = shelterMap[shift.shelter_id];
               const startTime = formatDateTime(shift.shift_start);
               return (
-                <div key={shiftId} className="selected-shift-item">
+                <div key={shiftId} className="tagline-small">
                   • {shelter.name} - {shift.shift_name} on {startTime.date} at {startTime.time}
                 </div>
               );

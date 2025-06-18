@@ -13,99 +13,74 @@
   flex: 0 0 auto;
 }
 
-.sort-label {
-  display: flex;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
-
 .sort-select {
   display: flex;
   flex-direction: row ;
   align-items: justify-center;
   padding: 0.5rem 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  border: var(--border-color);
+  font-size: 0.85rem;;
   background-color: white;
   cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.sort-select:focus {
   outline: none;
-  border-color: #4CAF50;
 }
 
 /* Selected Shifts Summary */
 .selected-shifts-summary {
-  background-color: #e8f5e8;
+  background-color: var(--background-color-success);
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;
-  border: 1px solid #c3e6c3;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: var(--border-color);
+  box-shadow: var(--box-shadow-color);
 }
 
 .summary-title {
-  margin: 0 0 15px 0;
-  color: #2d5a2d;
+  margin: 0 0 1rem 0;
+  color: var(--secondary-color);
   font-size: 1.2rem;
-}
-
-.selected-shifts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  text-align: left;
 }
 
 .selected-shift-item {
   font-size: 14px;
-  color: #2d5a2d;
+  color: var(--accent-color);
   padding: 5px 0;
 }
 
 /* Desktop Table Styles */
 .table-container {
   overflow-x: auto;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  background-color: var(--background-color);
+  box-shadow: var(--box-shadow-color);
+  margin-bottom: 1rem;;
+  border: var(--border-color)
 }
 
 .shifts-table {
   width: 100%;
-  border-collapse: collapse;
   min-width: 800px;
+  border-color: transparent;
 }
 
 .table-header {
-  background-color: #f5f5f5;
+  background-color: white;
 }
 
 .table-header th {
   padding: 16px 12px;
   text-align: left;
-  border: 1px solid #ddd;
   font-weight: bold;
-  color: #333;
-  font-size: 14px;
+  color: var(--secondary-color);;
+  font-size: 0.85rem;
+  background-color: var(--background-color-accent);
 }
 
 .table-row {
-  background-color: white;
+  background-color: var(--background-color);
   transition: all 0.3s ease;
 }
 
-.table-row:hover {
-  background-color: #f8f9fa;
-}
-
-.table-row.selected {
-  background-color: #e3f2fd;
-}
 
 .table-row.conflicted {
   opacity: 0.6;
@@ -113,7 +88,7 @@
 
 .table-row td {
   padding: 12px;
-  border: 1px solid #ddd;
+  border: none;
   vertical-align: top;
   font-size: 14px;
 }
@@ -285,11 +260,6 @@
     padding: 12px;
   }
   
-  .main-title {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-  }
-  
   .controls-section {
     flex-direction: column;
     gap: 16px;
@@ -335,10 +305,6 @@
 @media (max-width: 480px) {
   .volunteer-signup-container {
     padding: 8px;
-  }
-  
-  .main-title {
-    font-size: 1.4rem;
   }
   
   .shift-card {
@@ -440,12 +406,11 @@
 }
 
 .table-row.clickable:hover {
-  background-color: #f5f5f5;
+  background-color: var(--active-color-hover);
 }
 
 .table-row.selected {
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196F3;
+  background-color: var(--active-color);
 }
 
 .table-row.disabled {

@@ -47,7 +47,7 @@ function Login({ setAuth }) {
                 size="large"
               />
             </div>
-            <p className="login-subtitle">
+            <p className="tagline-small">
               Sign in to get started with your personalized experience
             </p>
           </div>

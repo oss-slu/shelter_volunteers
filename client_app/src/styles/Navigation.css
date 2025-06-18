@@ -105,28 +105,3 @@
   border: none;
 }
 
-.dropdown-item {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s ease;
-}
-
-.dropdown-item:hover {
-  background-color: #f9fafb;
-}
-
-.dropdown-item.active {
-  background-color: #f3f4f6;
-}
-
-.dropdown-item.active:hover {
-  background-color: #f3f4f6;
-}
