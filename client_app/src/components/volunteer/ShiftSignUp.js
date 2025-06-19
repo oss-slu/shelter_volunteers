@@ -221,7 +221,7 @@ const VolunteerShiftSignup = () => {
   const MobileShiftCard = ({ shiftData }) => (
     <div 
       key={shiftData.shift._id} 
-      className={`dashboard-button ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+      className={`dashboard-button table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
       onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
     >
       <div className="card-header">
@@ -245,8 +245,8 @@ const VolunteerShiftSignup = () => {
         </div>
       </div>
       {shiftData.isSelected && (
-        <div className="selected-indicator">
-          <span className="checkmark">✓</span>
+        <div className="detail-row  selected-indicator-desktop">
+          <span className="checkmark">✓ Selected</span>
         </div>
       )}
     </div>
@@ -270,26 +270,6 @@ const VolunteerShiftSignup = () => {
           </select>
         </div>
       </div>
-      {/* Selected Shifts Summary */}
-      {selectedShifts.size > 0 && (
-        <div className="selected-shifts-summary">
-          <h3 className="summary-title">
-            Selected Shifts ({selectedShifts.size})
-          </h3>
-          <div className="list">
-            {Array.from(selectedShifts).map(shiftId => {
-              const shift = shifts.find(s => s._id === shiftId);
-              const shelter = shelterMap[shift.shelter_id];
-              const startTime = formatDateTime(shift.shift_start);
-              return (
-                <div key={shiftId} className="tagline-small">
-                  • {shelter.name} - {shift.shift_name} on {startTime.date} at {startTime.time}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
       {/* Desktop Table View */}
       <div className="table-container desktop-only">
         <table className="shifts-table">
@@ -316,6 +296,26 @@ const VolunteerShiftSignup = () => {
           <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} />
         ))}
       </div>
+      {/* Selected Shifts Summary */}
+      {selectedShifts.size > 0 && (
+        <div className="selected-shifts-summary">
+          <h3 className="summary-title">
+            Selected Shifts ({selectedShifts.size})
+          </h3>
+          <div className="list">
+            {Array.from(selectedShifts).map(shiftId => {
+              const shift = shifts.find(s => s._id === shiftId);
+              const shelter = shelterMap[shift.shelter_id];
+              const startTime = formatDateTime(shift.shift_start);
+              return (
+                <div key={shiftId} className="tagline-small">
+                  • {shelter.name} - {shift.shift_name} on {startTime.date} at {startTime.time}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {/* Sign Up Button */}
       <div className="signup-section">
         <button
