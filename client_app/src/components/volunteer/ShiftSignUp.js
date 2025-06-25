@@ -19,6 +19,7 @@ const VolunteerShiftSignup = () => {
   const [resultShifts, setResultShifts] = useState([]);
   const [shelters, setShelters] = useState([]);
   const [shifts, setShifts] = useState([]);
+  const [commitments, setCommitments] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
   const user = getUser();
@@ -27,8 +28,11 @@ const VolunteerShiftSignup = () => {
       try {
         const sheltersData = await shelterAPI.getShelters();
         const futureShifts = await serviceShiftAPI.getFutureShifts();
+        const commitments = await serviceCommitmentAPI.getFutureCommitments();
+
         setShelters(sheltersData);
         setShifts(futureShifts);
+        setCommitments(commitments);
         setLoading(false);
       } catch (error) {
         console.error("fetch error:", error);
@@ -36,7 +40,7 @@ const VolunteerShiftSignup = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [results]);
   
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
@@ -67,10 +71,20 @@ const VolunteerShiftSignup = () => {
 
   // Get conflicting shifts for a given shift
   const getConflictingShifts = (targetShift) => {
-    return Array.from(selectedShifts).filter(shiftId => {
+    // Check conflicts with selected shifts
+    const selectedConflicts = Array.from(selectedShifts).filter(shiftId => {
       const shift = shifts.find(s => s._id === shiftId);
       return shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift);
     });
+
+    // Check conflicts with already committed shifts
+    const committedConflicts = commitments
+      .map(commitment => shifts.find(s => s._id === commitment.service_shift_id))
+      .filter(shift => shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift))
+      .map(shift => shift._id);
+
+    // Combine and deduplicate
+    return Array.from(new Set([...selectedConflicts, ...committedConflicts]));
   };
 
   // Process shift data for rendering (eliminates duplication)
@@ -84,7 +98,7 @@ const VolunteerShiftSignup = () => {
     const conflicts = getConflictingShifts(shift);
     const hasConflict = conflicts.length > 0;
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
-
+    let signedUp = commitments.some(commitment => commitment.service_shift_id === shift._id);
     let needClass = 'need-low';
     let priority = 'Low';
     if (needLevel > 0.6) {
@@ -101,13 +115,14 @@ const VolunteerShiftSignup = () => {
       startDate,
       startTime,
       endTime,
+      signedUp,
       needLevel,
       needClass,
       priority,
       isSelected,
       hasConflict,
       duration,
-      canInteract: shift.can_sign_up && (!hasConflict || isSelected)
+      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp
     };
   };
 
@@ -175,19 +190,6 @@ const VolunteerShiftSignup = () => {
       console.error("Error submitting shifts:", error);
     } 
   };
-
-  // Component for rendering need badge (shared between desktop and mobile)
-
-
-  // Component for rendering shelter info (shared between desktop and mobile)
-
-
-
-
-  // Desktop table row component
-  
-  // Mobile card component
-
 
   // Modal for sign up results
   const closeModal = () => {

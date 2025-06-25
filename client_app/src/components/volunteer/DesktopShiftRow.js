@@ -16,6 +16,11 @@ export const DesktopShiftRow = ({ shiftData, handleShiftToggle }) => {
             <span className="checkmark">✓ Selected</span>
           </div>
         )}
+        {shiftData.signedUp && (
+          <div className="selected-indicator-desktop">
+            <span className="checkmark signedup"> Signed Up</span>
+          </div>
+        )}
       </td>
       <td>{shiftData.startDate}</td>
       <td>{shiftData.startTime}</td>

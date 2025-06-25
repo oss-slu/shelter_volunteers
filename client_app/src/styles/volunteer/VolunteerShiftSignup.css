@@ -407,6 +407,9 @@
 }
 
 
+.signedup {
+  background: #818381 !important;
+}
 
 .selected-indicator-desktop .checkmark {
   background: #4CAF50;

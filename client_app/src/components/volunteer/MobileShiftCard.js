@@ -33,5 +33,10 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
       <span className="checkmark">✓ Selected</span>
     </div>
     )}
+    {shiftData.signedUp && (
+    <div className="detail-row  selected-indicator-desktop">
+      <span className="checkmark signedup"> Signed Up</span>
+    </div>
+    )}
   </div>
 );
