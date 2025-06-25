@@ -1,6 +1,6 @@
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
-import { Address } from './Address';
+import { ShelterInfo } from './ShelterInfo';
 
 const SignUpResults = ({ results, shifts, shelterMap }) => {
   console.log('SignUpResults:', results, shifts, shelterMap);
@@ -25,19 +25,6 @@ const SignUpResults = ({ results, shifts, shelterMap }) => {
       success
     };
   };
-
-  // Component for rendering shelter info (shared between desktop and mobile)
-  const ShelterInfo = ({ shelter, showLocation = true }) => (
-    <>
-      <div className="shelter-name">{shelter?.name}</div>
-      {showLocation && (
-        <div className="shelter-location">
-          <Address address={shelter.address}/>
-        </div>
-      )}
-    </>
-  );
-
 
   // Desktop table row component
   const DesktopShiftRow = ({ resultData }) => (

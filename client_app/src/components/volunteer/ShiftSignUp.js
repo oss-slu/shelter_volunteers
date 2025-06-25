@@ -7,6 +7,8 @@ import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
 import { Address } from './Address';
 import SignUpResults from './SignUpResults';
+import { MobileShiftCard } from './MobileShiftCard';
+import { DesktopShiftRow } from './DesktopShiftRow';
 import { set } from 'date-fns';
 
 
@@ -84,9 +86,15 @@ const VolunteerShiftSignup = () => {
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
 
     let needClass = 'need-low';
-    if (needLevel > 0.6) needClass = 'need-high';
-    else if (needLevel > 0.3) needClass = 'need-medium';
-
+    let priority = 'Low';
+    if (needLevel > 0.6) {
+      priority = 'High';
+      needClass = 'need-high';
+    }
+    else if (needLevel > 0.3) {
+      priority = 'Medium';
+      needClass = 'need-medium';
+    }
     return {
       shift,
       shelter,
@@ -95,6 +103,7 @@ const VolunteerShiftSignup = () => {
       endTime,
       needLevel,
       needClass,
+      priority,
       isSelected,
       hasConflict,
       duration,
@@ -168,105 +177,22 @@ const VolunteerShiftSignup = () => {
   };
 
   // Component for rendering need badge (shared between desktop and mobile)
-  const NeedBadge = ({ needLevel, needClass }) => (
-    <div className={`need-badge ${needClass}`}>
-      {Math.round(needLevel * 100)}% need
-    </div>
-  );
+
 
   // Component for rendering shelter info (shared between desktop and mobile)
-  const ShelterInfo = ({ shelter, showLocation = true }) => (
-    <>
-      <div className="shelter-name">{shelter?.name}</div>
-      {showLocation && (
-        <div className="shelter-location">
-          <Address address={shelter.address}/>
-        </div>
-      )}
-    </>
-  );
 
-  // Component for rendering volunteer count info (shared between desktop and mobile)
-  const VolunteerCount = ({ shift, inline = false }) => {
-    const content = (
-      <>
-        {shift.volunteers.length} / {shift.required_volunteer_count} required
-        {inline ? ' ' : <br />}
-        <span className="max-volunteers">
-          (max {shift.max_volunteer_count})
-        </span>
-      </>
-    );
-    return inline ? <span>{content}</span> : <div>{content}</div>;
-  };
+
+
 
   // Desktop table row component
-  const DesktopShiftRow = ({ shiftData }) => (
-    <tr 
-      key={shiftData.shift._id} 
-      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
-      onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
-    >
-      <td>
-        <ShelterInfo shelter={shiftData.shelter} />
-        {shiftData.isSelected && (
-          <div className="selected-indicator-desktop">
-            <span className="checkmark">✓ Selected</span>
-          </div>
-        )}
-      </td>
-      <td>{shiftData.startDate}</td>
-      <td>{shiftData.startTime}</td>
-      <td>{shiftData.duration}h</td>
-      <td>
-        <VolunteerCount shift={shiftData.shift} />
-      </td>
-      <td>
-        <NeedBadge needLevel={shiftData.needLevel} needClass={shiftData.needClass} />
-      </td>
-    </tr>
-  );
+  
   // Mobile card component
-  const MobileShiftCard = ({ shiftData }) => (
-    <div 
-      key={shiftData.shift._id} 
-      className={`dashboard-button table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
-      onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
-    >
-      <div className="card-header">
-        <div className="card-title">
-          <ShelterInfo shelter={shiftData.shelter} showLocation={true} />
-        </div>
-        <NeedBadge needLevel={shiftData.needLevel} needClass={shiftData.needClass} />
-      </div>       
-      <div className="card-details">
-        <div className="detail-row">
-          <span className="detail-label">Date:</span>
-          <span>{shiftData.startDate}</span>
-        </div>
-        <div className="detail-row">
-          <span className="detail-label">Time:</span>
-          <span>{shiftData.startTime} - {shiftData.endTime} ({shiftData.duration}h)</span>
-        </div>
-        <div className="detail-row">
-          <span className="detail-label">Volunteers:</span>
-          <VolunteerCount shift={shiftData.shift} inline={true} />
-        </div>
-      </div>
-      {shiftData.isSelected && (
-        <div className="detail-row  selected-indicator-desktop">
-          <span className="checkmark">✓ Selected</span>
-        </div>
-      )}
-    </div>
-  );
+
 
   // Modal for sign up results
   const closeModal = () => {
     setShowResults(false);
   };
-
-  
 
   return (
     <div>
@@ -282,7 +208,7 @@ const VolunteerShiftSignup = () => {
           >
             <option value="date">Date & Time</option>
             <option value="shelter">Shelter Name</option>
-            <option value="need">Need Level (High to Low)</option>
+            <option value="need">Priority</option>
           </select>
         </div>
       </div>
@@ -296,12 +222,12 @@ const VolunteerShiftSignup = () => {
               <th>Time</th>
               <th>Duration</th>
               <th>Volunteers</th>
-              <th>Need Level</th>
+              <th>Priority</th>
             </tr>
           </thead>
           <tbody>
             {sortedShifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} />
+              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
             ))}
           </tbody>
         </table>
@@ -309,7 +235,7 @@ const VolunteerShiftSignup = () => {
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
         {sortedShifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} />
+          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
         ))}
       </div>
       {/* Selected Shifts Summary */}
