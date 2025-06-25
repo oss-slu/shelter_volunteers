@@ -6,14 +6,19 @@ import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
 import { Address } from './Address';
+import SignUpResults from './SignUpResults';
+import { set } from 'date-fns';
+
 
 const VolunteerShiftSignup = () => {
   const [loading, setLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [results, setResults] = useState([]);
+  const [resultShifts, setResultShifts] = useState([]);
   const [shelters, setShelters] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
-  const [volunteerEmail, setVolunteerEmail] = useState('');
   const user = getUser();
   useEffect(() => {
     const fetchData = async () => {
@@ -144,12 +149,16 @@ const VolunteerShiftSignup = () => {
   // Handle sign up
   const handleSignUp = async () => {
     try {
+      console.log("Submitting shifts:", selectedShifts);
       const shiftsList = Array.from(selectedShifts).map(shiftId => ({
         volunteer_id: user.email,
         service_shift_id: shiftId
       }));
       const response = await serviceCommitmentAPI.addCommitments(shiftsList);
       console.log(response)
+      setResults(response);
+      setResultShifts(sortedShifts.filter(shift => selectedShifts.has(shift._id)));
+      setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
     }
@@ -252,6 +261,13 @@ const VolunteerShiftSignup = () => {
     </div>
   );
 
+  // Modal for sign up results
+  const closeModal = () => {
+    setShowResults(false);
+  };
+
+  
+
   return (
     <div>
       <h1 className="title-small">Volunteer Shift Sign-up</h1>
@@ -326,6 +342,19 @@ const VolunteerShiftSignup = () => {
           Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
         </button>
       </div>
+      {/* Modal markup */}
+      {showResults && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close" onClick={closeModal}>×</button>
+            <SignUpResults 
+              results={results}
+              shifts={resultShifts}
+              shelterMap={shelterMap}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

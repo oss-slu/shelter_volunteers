@@ -785,3 +785,4 @@ button:disabled {
 @import "./Navigation.css";
 @import "./Menu.css";
 @import "./volunteer/VolunteerShiftSignup.css";
+@import "./Modal.css";
