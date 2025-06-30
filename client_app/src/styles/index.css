@@ -2,6 +2,7 @@
   --main-background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
   --background-color: white;
   --background-color-success: #f1f8f1;
+  --background-color-failure: #f8d7da;
   --background-color-accent: #f3f5f9;
   --success-color: #4cbb17; 
   --failure-color: #ff0000; 

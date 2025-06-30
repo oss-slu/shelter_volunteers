@@ -1,6 +1,6 @@
 import "./../styles/HomeDashboard.css";
 import Login from "./authentication/GoogleLogin";
-import DashboardLoading from "./DashboardLoading";
+import Loading from "./Loading";
 import DashboardSelection from "./DashboardSelection";
 import { useDashboards, useCurrentDashboard } from "../contexts/DashboardContext.js";
 
@@ -12,7 +12,7 @@ function HomeDashboard({ setAuth, auth }) {
   }
 
   if (loadingDashboards) {
-    return <DashboardLoading />;
+    return <Loading />;
   }
 
   return (

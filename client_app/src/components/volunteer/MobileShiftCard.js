@@ -23,10 +23,12 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
         <span className="detail-label">Time:</span>
         <span>{shiftData.startTime} - {shiftData.endTime} ({shiftData.duration}h)</span>
       </div>
-      <div className="detail-row">
-        <span className="detail-label">Volunteers:</span>
-        <VolunteerCount shift={shiftData.shift} inline={true} />
-      </div>
+      {shiftData.volunteers && (
+        <div className="detail-row">
+          <span className="detail-label">Volunteers:</span>
+          <VolunteerCount shift={shiftData.shift} />
+        </div>
+      )}
     </div>
     {shiftData.isSelected && (
     <div className="detail-row  selected-indicator-desktop">
