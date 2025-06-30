@@ -1,4 +1,3 @@
-import { setUser } from "../../authentication/user";
 import { GoogleLogin } from '@react-oauth/google';
 import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";

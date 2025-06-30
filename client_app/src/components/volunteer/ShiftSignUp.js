@@ -224,7 +224,7 @@ function VolunteerShiftSignup(){
               <th>Date</th>
               <th>Time</th>
               <th>Duration</th>
-              <th>Volunteers</th>
+              <th>Volunteers Available</th>
               <th>Priority</th>
             </tr>
           </thead>
