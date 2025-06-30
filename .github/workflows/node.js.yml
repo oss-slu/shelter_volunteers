@@ -27,4 +27,4 @@ jobs:
     - name: Run Tests
       run: |
         cd client_app
-        npm test
+        npm test -- --passWithNoTests

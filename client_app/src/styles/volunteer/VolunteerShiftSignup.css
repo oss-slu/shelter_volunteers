@@ -1,0 +1,423 @@
+/* Base styles */
+
+/* Controls Section */
+.controls-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem ;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+}
+
+.sort-section {
+  flex: 0 0 auto;
+}
+
+.sort-select {
+  display: flex;
+  flex-direction: row ;
+  align-items: justify-center;
+  padding: 0.5rem 0.5rem;
+  border: var(--border-color);
+  font-size: 0.85rem;;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Selected Shifts Summary */
+.selected-shifts-summary {
+  background-color: var(--background-color-success);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: var(--border-color);
+  box-shadow: var(--box-shadow-color);
+}
+
+.summary-title {
+  margin: 0 0 1rem 0;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.selected-shift-item {
+  font-size: 14px;
+  color: var(--accent-color);
+  padding: 5px 0;
+}
+
+/* Desktop Table Styles */
+.table-container {
+  overflow-x: auto;
+  background-color: var(--background-color);
+  box-shadow: var(--box-shadow-color);
+  margin-bottom: 1rem;;
+  border: var(--border-color)
+}
+
+.shifts-table {
+  width: 100%;
+  min-width: 800px;
+  border-color: transparent;
+}
+
+.table-header {
+  background-color: white;
+}
+
+.table-header th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: bold;
+  color: var(--secondary-color);;
+  font-size: 0.85rem;
+  background-color: var(--background-color-accent);
+}
+
+.table-row {
+  background-color: var(--background-color);
+  transition: all 0.3s ease;
+}
+
+
+.table-row.conflicted {
+  opacity: 0.6;
+}
+
+.table-row td {
+  padding: 12px;
+  border: none;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.shift-checkbox {
+  transform: scale(1.3);
+  cursor: pointer;
+}
+
+.shift-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.shelter-name {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.shelter-location {
+  font-size: 12px;
+  color: #666;
+}
+
+.max-volunteers {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Need Level Badges */
+.need-badge {
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.need-low {
+  background-color: #4CAF50;
+}
+
+.need-medium {
+  background-color: #FF9800;
+}
+
+.need-high {
+  background-color: #F44336;
+}
+
+/* Mobile Card Styles */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  flex: 1;
+}
+
+.card-title .shelter-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.card-title .shift-name {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+  min-width: 100px;
+}
+
+.detail-row span:last-child {
+  font-size: 14px;
+  color: #333;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+}
+
+/* Sign Up Button */
+.signup-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.signup-button {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.signup-button.enabled {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+.signup-button.enabled:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+}
+
+.signup-button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Responsive Breakpoints */
+
+/* Hide/show based on screen size */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .volunteer-signup-container {
+    padding: 12px;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .email-section,
+  .sort-section {
+    width: 100%;
+  }
+  
+  .email-input {
+    max-width: none;
+  }
+  
+  .sort-select {
+    width: 100%;
+  }
+  
+  .selected-shifts-summary {
+    padding: 16px;
+  }
+  
+  .summary-title {
+    font-size: 1.1rem;
+  }
+  
+  .selected-shift-item {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  /* Switch to card view on mobile */
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: flex;
+  }
+}
+
+/* Small mobile styles */
+@media (max-width: 480px) {
+  .volunteer-signup-container {
+    padding: 8px;
+  }
+  
+  .shift-card {
+    padding: 16px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .card-header .shift-checkbox {
+    align-self: flex-start;
+  }
+  
+  .need-badge {
+    align-self: flex-start;
+    min-width: auto;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .detail-row span:last-child {
+    text-align: left;
+    margin-left: 0;
+  }
+  
+  .signup-button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .volunteer-signup-container {
+    padding: 0;
+    background-color: white;
+  }
+  
+  .controls-section,
+  .signup-section {
+    display: none;
+  }
+  
+  .shift-card,
+  .table-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Mobile card styling */
+.shift-card.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shift-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.shift-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shift-card {
+  position: relative; /* For positioning the selected indicator */
+}
+
+/* Desktop table row styling */
+.table-row.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.table-row.clickable:hover {
+  background-color: var(--active-color-hover);
+}
+
+.table-row.selected {
+  background-color: var(--background-color-success);
+}
+
+.table-row.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.table-row.conflicted {
+  background-color: #ffebee;
+}
+
+
+.signedup {
+  background: #818381 !important;
+}
+
+.selected-indicator-desktop .checkmark {
+  background: #4CAF50;
+  color: white !important;
+  text-align: center !important;
+  margin-top: 1rem !important;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}

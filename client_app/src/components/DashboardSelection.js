@@ -1,5 +1,7 @@
 import { DashboardUser } from './DashboardUser';
-function DashboardSelection({ user, dashboards, onSelectDashboard }){
+import { getUser } from '../authentication/user';
+function DashboardSelection({ dashboards, onSelectDashboard }){
+  const user = getUser();
   return(
     <div className="home-container">
       <div className="content-wrapper">
