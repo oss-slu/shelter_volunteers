@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 const DashboardContext = createContext();
 import { permissionsAPI } from '../api/permission';
 import { shelterAPI } from '../api/shelter';
-
-export const DashboardProvider = ({ auth, children }) => {
+import { useAuth } from './AuthContext';
+export const DashboardProvider = ({ children }) => {
   const [dashboards, setDashboards] = useState([]);
   const [currentDashboard, setCurrentDashboard] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loadingDashboards, setLoadingDashboards] = useState(true);
-
+  const {isAuthenticated} = useAuth();
   const navigate = useNavigate();
   const value = {
     currentDashboard,
@@ -70,7 +70,7 @@ export const DashboardProvider = ({ auth, children }) => {
       }
     };
     fetchPermissions();
-  }, [auth]);
+  }, [isAuthenticated]);
 
   return (
     <DashboardContext.Provider value={value}>

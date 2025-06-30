@@ -5,15 +5,14 @@ import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
-import { Address } from './Address';
 import SignUpResults from './SignUpResults';
 import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
-import { set } from 'date-fns';
+import Loading from '../Loading';
 
 
-const VolunteerShiftSignup = () => {
-  const [loading, setLoading] = useState(false);
+function VolunteerShiftSignup(){
+  const [loading, setLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState([]);
   const [resultShifts, setResultShifts] = useState([]);
@@ -52,10 +51,9 @@ const VolunteerShiftSignup = () => {
 
   // Format date and time
   const formatDateTime = (timestamp) => {
-    const date = new Date(timestamp);
     return {
-      date: date.toLocaleDateString(),
-      time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      date: formatDate(timestamp),
+      time: formatTime(timestamp)
     };
   };
 
@@ -196,6 +194,9 @@ const VolunteerShiftSignup = () => {
     setShowResults(false);
   };
 
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div>
       <h1 className="title-small">Volunteer Shift Sign-up</h1>
@@ -285,6 +286,6 @@ const VolunteerShiftSignup = () => {
       )}
     </div>
   );
-};
+}
 
 export default VolunteerShiftSignup;

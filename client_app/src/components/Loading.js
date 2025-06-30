@@ -1,4 +1,4 @@
-function DashboardLoading(){
+function Loading(){
   return (
     <div style={{
         minHeight: '100vh',
@@ -23,10 +23,10 @@ function DashboardLoading(){
           fontWeight: '600',
           color: '#1f2937',
           marginBottom: '0.5rem'}}>
-          Loading your dashboards...
+          Loading ...
         </h2>
         <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-          Please wait while we set up your workspace
+          Please wait while we fetch your data. This may take a moment.
         </p>
         <style>{`
             @keyframes spin {
@@ -39,4 +39,4 @@ function DashboardLoading(){
   );
 }
 
-export default DashboardLoading;
+export default Loading;

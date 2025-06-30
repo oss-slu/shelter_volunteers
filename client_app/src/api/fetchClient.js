@@ -1,7 +1,16 @@
 // fetchClient.js
 import { SERVER } from "../config";
-import { getToken, removeToken } from "../authentication/getToken";
-import { removeUser } from "../authentication/user";
+import { getToken } from "../authentication/getToken";
+import { getGlobalLogout } from "../contexts/AuthContext";
+
+// Create a navigation function that will be set by the App component
+let navigate = null;
+
+// Function to set the navigate function from your App component
+export const setNavigate = (navigateFunction) => {
+  navigate = navigateFunction;
+};
+
 // Central fetch wrapper function
 export const fetchClient = async (endpoint, options = {}) => {
   // Get the token from storage
@@ -28,10 +37,17 @@ export const fetchClient = async (endpoint, options = {}) => {
     
     // Check if the response indicates authentication failure
     if (response.status === 401) {
-      // Clear authentication data
-      removeToken();
-      removeUser();
-      // TODO: somehow redirect the application back to login 
+      // Use the global logout function to clear auth state and update React state
+      const logout = getGlobalLogout();
+      if (logout) {
+        logout();
+      }
+      
+      // Navigate to home
+      if (navigate) {
+        navigate('/home');
+      }
+      
       return Promise.reject(new Error('Authentication failed'));
     }
     

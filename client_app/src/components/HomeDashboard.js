@@ -3,12 +3,15 @@ import Login from "./authentication/GoogleLogin";
 import Loading from "./Loading";
 import DashboardSelection from "./DashboardSelection";
 import { useDashboards, useCurrentDashboard } from "../contexts/DashboardContext.js";
+import {useAuth} from "../contexts/AuthContext.js";
 
-function HomeDashboard({ setAuth, auth }) {
+function HomeDashboard() {
   const {onSelectDashboard} = useCurrentDashboard();
   const {dashboards, loadingDashboards} = useDashboards();
-  if (!auth) {
-    return <Login setAuth={setAuth}/>;
+  const {isAuthenticated} = useAuth();
+
+  if (!isAuthenticated) {
+    return <Login />;
   }
 
   if (loadingDashboards) {

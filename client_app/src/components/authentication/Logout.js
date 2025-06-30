@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { removeToken } from "../../authentication/getToken";
-import { removeUser } from "../../authentication/user";
-export default function Logout({setAuth}) {
+import { getGlobalLogout } from "../../contexts/AuthContext";
+
+export default function Logout() {
   const navigate = useNavigate();
+  const logout = getGlobalLogout();
   useEffect(() => {
-    removeToken();
-    removeUser();
-    setAuth(false);
+    logout();
     navigate("/");
   }, []);
 }
