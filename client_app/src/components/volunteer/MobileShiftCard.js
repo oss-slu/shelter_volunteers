@@ -12,7 +12,11 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
       <div className="card-title">
         <ShelterInfo shelter={shiftData.shelter} showLocation={true} />
       </div>
-      Priority: <PriorityBadge priority={shiftData.priority}/>
+      {shiftData.priority && (
+      <div>
+        Priority: <PriorityBadge priority={shiftData.priority}/>
+      </div>
+      )}
     </div>       
     <div className="card-details">
       <div className="detail-row">
@@ -23,9 +27,9 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
         <span className="detail-label">Time:</span>
         <span>{shiftData.startTime} - {shiftData.endTime} ({shiftData.duration}h)</span>
       </div>
-      {shiftData.volunteers && (
+      {shiftData.shift.volunteers && (
         <div className="detail-row">
-          <span className="detail-label">Volunteers:</span>
+          <span className="detail-label">Volunteers Available:</span>
           <VolunteerCount shift={shiftData.shift} />
         </div>
       )}

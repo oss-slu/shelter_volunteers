@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 export const DashboardProvider = ({ children }) => {
   const [dashboards, setDashboards] = useState([]);
   const [currentDashboard, setCurrentDashboard] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [loadingDashboards, setLoadingDashboards] = useState(true);
   const {isAuthenticated} = useAuth();
   const navigate = useNavigate();

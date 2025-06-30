@@ -25,14 +25,14 @@ export const DesktopShiftRow = ({ shiftData, handleShiftToggle }) => {
       <td>{shiftData.startDate}</td>
       <td>{shiftData.startTime}</td>
       <td>{shiftData.duration}h</td>
-      {shiftData.volunteers && (
+      {shiftData.shift.volunteers && (
         <td>
           <VolunteerCount shift={shiftData.shift} />
         </td>
       )}
       {shiftData.priority && (
         <td>
-          <PriorityBadge priority={shiftData.priority}/>
+          <PriorityBadge priority={shiftData.priority} />
         </td>
       )}
     </tr>
