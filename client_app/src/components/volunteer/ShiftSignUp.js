@@ -255,7 +255,7 @@ function VolunteerShiftSignup(){
               const startTime = formatDateTime(shift.shift_start);
               return (
                 <div key={shiftId} className="tagline-small">
-                  • {shelter.name} - {shift.shift_name} on {startTime.date} at {startTime.time}
+                  • {startTime.date} at {startTime.time} - {shelter.name}
                 </div>
               );
             })}

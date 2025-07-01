@@ -242,6 +242,16 @@
   cursor: not-allowed;
 }
 
+.cancel {
+  background-color: var(--background-color-failure) !important;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 /* Responsive Breakpoints */
 
 /* Hide/show based on screen size */
@@ -356,32 +366,12 @@
     display: none;
   }
   
-  .shift-card,
   .table-container {
     box-shadow: none;
-    border: 1px solid #ccc;
+    border: var(--border-color);
   }
 }
 
-/* Mobile card styling */
-.shift-card.clickable {
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.shift-card.clickable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.shift-card.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.shift-card {
-  position: relative; /* For positioning the selected indicator */
-}
 
 /* Desktop table row styling */
 .table-row.clickable {
@@ -400,10 +390,7 @@
 .table-row.disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.table-row.conflicted {
-  background-color: #ffebee;
+  background-color: #ecebeb;
 }
 
 
@@ -411,8 +398,12 @@
   background: #818381 !important;
 }
 
+.conflict {
+  background: var(--failure-color) !important;
+}
+
 .selected-indicator-desktop .checkmark {
-  background: #4CAF50;
+  background: var(--success-color);
   color: white !important;
   text-align: center !important;
   margin-top: 1rem !important;
@@ -433,8 +424,8 @@
   left: 0;
   right: 0;
   background: white;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
-  border-top: 1px solid #e0e0e0;
+  box-shadow: var(--box-shadow-color);
+  border-top: var(--border-color);
   padding: 16px 20px;
   z-index: 1000;
   max-height: 50vh;
@@ -484,6 +475,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: var(--box-shadow-color);
 }
 
 
@@ -491,10 +483,6 @@
 body {
   padding-bottom: 0;
   transition: padding-bottom 0.3s ease;
-}
-
-body.has-sticky-signup {
-  padding-bottom: 200px; /* Adjust based on your sticky container height */
 }
 
 /* Responsive adjustments */
