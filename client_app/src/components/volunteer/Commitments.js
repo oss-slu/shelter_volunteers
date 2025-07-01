@@ -110,7 +110,7 @@ function Commitments(){
   }
 
   return (
-    <div>
+    <div className="has-sticky-bottom">
       <h1 className="title-small">Your Upcoming Shifts</h1>
       <SubmitResultsMessage
         resultMessage={resultMessage}
@@ -145,11 +145,11 @@ function Commitments(){
           <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
         ))}
       </div>
-      {/* Selected Shifts Summary */}
-      {selectedShifts.size > 0 && (
+      <div className="sticky-signup-container">
+        {selectedShifts.size > 0 && (
         <div className="selected-shifts-summary">
           <h3 className="summary-title">
-            Selected Shifts ({selectedShifts.size})
+            Shifts Selected to Cancel ({selectedShifts.size})
           </h3>
           <div className="list">
             {Array.from(selectedShifts).map(shiftId => {
@@ -164,16 +164,21 @@ function Commitments(){
             })}
           </div>
         </div>
-      )}
-      {/* Sign Up Button */}
-      <div className="signup-section">
-        <button
-          onClick={handleCancel}
-          disabled={selectedShifts.size === 0}
-          className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
-        >
-          Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
-        </button>
+        )}
+        {selectedShifts.size === 0 && (
+          <div>
+            <p className="tagline-small">You can select shifts you want to cancel.</p>
+          </div>
+        )}
+        <div className="signup-section">
+          <button
+            onClick={handleCancel}
+            disabled={selectedShifts.size === 0}
+            className={`signup-button ${selectedShifts.size > 0 ? 'enabled signedup' : 'disabled'}`}
+          >
+            Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
+          </button>
+        </div>
       </div>
     </div>
   );

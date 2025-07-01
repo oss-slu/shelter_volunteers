@@ -6,7 +6,7 @@ export const DesktopShiftRow = ({ shiftData, handleShiftToggle }) => {
   return(
     <tr 
       key={shiftData.shift._id} 
-      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+      className={`table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
       onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
     >
       <td>
@@ -19,6 +19,11 @@ export const DesktopShiftRow = ({ shiftData, handleShiftToggle }) => {
         {shiftData.signedUp && (
           <div className="selected-indicator-desktop">
             <span className="checkmark signedup"> Signed Up</span>
+          </div>
+        )}
+        {shiftData.hasConflict && (
+          <div className="selected-indicator-desktop">
+            <span className="checkmark conflict"> Time Conflict</span>
           </div>
         )}
       </td>

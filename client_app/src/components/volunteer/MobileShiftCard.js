@@ -5,7 +5,7 @@ import { VolunteerCount } from './VolunteerCount';
 export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
   <div 
     key={shiftData.shift._id} 
-    className={`dashboard-button table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.hasConflict && !shiftData.isSelected ? 'conflicted' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
+    className={`dashboard-button table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
     onClick={() => shiftData.canInteract && handleShiftToggle(shiftData.shift)}
 >
     <div className="card-header">
@@ -42,6 +42,11 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
     {shiftData.signedUp && (
     <div className="detail-row  selected-indicator-desktop">
       <span className="checkmark signedup"> Signed Up</span>
+    </div>
+    )}
+    {shiftData.hasConflict && (
+    <div className="detail-row  selected-indicator-desktop">
+      <span className="checkmark conflict"> Time Conflict</span>
     </div>
     )}
   </div>
