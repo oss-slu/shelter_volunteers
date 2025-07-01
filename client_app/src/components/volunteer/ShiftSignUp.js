@@ -198,7 +198,7 @@ function VolunteerShiftSignup(){
     return <Loading />;
   }
   return (
-    <div>
+    <div className="has-sticky-bottom">
       <h1 className="title-small">Volunteer Shift Sign-up</h1>
       <div className="controls-section">
         {/* Sort Controls */}
@@ -242,7 +242,8 @@ function VolunteerShiftSignup(){
         ))}
       </div>
       {/* Selected Shifts Summary */}
-      {selectedShifts.size > 0 && (
+      <div className="sticky-signup-container">
+        {selectedShifts.size > 0 && (
         <div className="selected-shifts-summary">
           <h3 className="summary-title">
             Selected Shifts ({selectedShifts.size})
@@ -260,16 +261,21 @@ function VolunteerShiftSignup(){
             })}
           </div>
         </div>
-      )}
-      {/* Sign Up Button */}
-      <div className="signup-section">
-        <button
-          onClick={handleSignUp}
-          disabled={selectedShifts.size === 0}
-          className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
-        >
-          Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
-        </button>
+        )}
+        {selectedShifts.size === 0 && (
+          <div>
+            <p className="tagline-small">Select some shifts to sign up.</p>
+          </div>
+        )}
+        <div className="signup-section">
+          <button
+            onClick={handleSignUp}
+            disabled={selectedShifts.size === 0}
+            className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
+          >
+            Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
+          </button>
+        </div>
       </div>
       {/* Modal markup */}
       {showResults && (
