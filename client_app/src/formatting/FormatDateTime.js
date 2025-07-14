@@ -26,3 +26,8 @@ export const displayTime = (millisecondsSinceMidnight) => {
     return formatTime(dateWithTime);
 }
 
+export const timeStringToMillis = (timeStr) => {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return (hours * 60 + minutes) * 60 * 1000;
+};
+

@@ -53,7 +53,8 @@ export const DashboardProvider = ({ children }) => {
             type: "shelter", 
             id: shelter._id, 
             name: shelter.name, 
-            path: `/shelter-dashboard/${shelter._id}` 
+            path: `/shelter-dashboard/${shelter._id}`,
+            details: shelter,
           })),
         ];
         setDashboards(newDashboards);
