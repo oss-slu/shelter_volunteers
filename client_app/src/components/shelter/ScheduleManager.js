@@ -119,60 +119,60 @@ function ShelterScheduleManager(){
     console.log('Tentative schedule length ', tentativeSchedule);
   }, [selectedDates]);
 
-const handleSubmit = async () => {
-  setIsLoading(true);
-  const shiftsToCreate = [];
-  
-  Object.entries(tentativeSchedule).forEach(([dateStr, { shifts }]) => {
-    shifts.forEach(shift => {
-      // Combine date and startTime to get shift_start in ms since epoch
-      const [startHour, startMinute] = shift.startTime.split(':').map(Number);
-      const shiftDate = new Date(dateStr);
-      shiftDate.setHours(startHour, startMinute, 0, 0);
-      const shift_start = shiftDate.getTime();
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const shiftsToCreate = [];
+    
+    Object.entries(tentativeSchedule).forEach(([dateStr, { shifts }]) => {
+      shifts.forEach(shift => {
+        // Combine date and startTime to get shift_start in ms since epoch
+        const [startHour, startMinute] = shift.startTime.split(':').map(Number);
+        const shiftDate = new Date(dateStr);
+        shiftDate.setHours(startHour, startMinute, 0, 0);
+        const shift_start = shiftDate.getTime();
 
-      // Duration is in hours, convert to ms and add to shift_start
-      const shift_end = shift_start + shift.duration * 60 * 60 * 1000;
+        // Duration is in hours, convert to ms and add to shift_start
+        const shift_end = shift_start + shift.duration * 60 * 60 * 1000;
 
-      shiftsToCreate.push({
-        shift_start,
-        shift_end,
-        shelter_id: shelterId,
-        required_volunteer_count: shift.requiredVolunteers,
-        max_volunteer_count: shift.maxVolunteers
+        shiftsToCreate.push({
+          shift_start,
+          shift_end,
+          shelter_id: shelterId,
+          required_volunteer_count: shift.requiredVolunteers,
+          max_volunteer_count: shift.maxVolunteers
+        });
       });
     });
-  });
 
-  try {
-    await serviceShiftAPI.addShifts(shiftsToCreate);
-    
-    setSubmitMessage({
-      type: 'success',
-      text: `shifts created successfully`
-    });
-    
-    setOpenDates(prev => {
-      const newDates = new Set(prev);
-      selectedDates.forEach(dateObj => {
-        const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
-        date.setHours(0, 0, 0, 0);
-        newDates.add(date.toISOString().split('T')[0]);
+    try {
+      await serviceShiftAPI.addShifts(shiftsToCreate);
+      
+      setSubmitMessage({
+        type: 'success',
+        text: `shifts created successfully`
       });
-      return newDates;
-    });
-    
-    setSelectedDates([]);
-  } catch (error) {
-    console.error('Error creating shifts:', error);
-    setSubmitMessage({
-      type: 'error',
-      text: `Failed to create shifts: ${error.message}`
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+      
+      setOpenDates(prev => {
+        const newDates = new Set(prev);
+        selectedDates.forEach(dateObj => {
+          const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+          date.setHours(0, 0, 0, 0);
+          newDates.add(date.toISOString().split('T')[0]);
+        });
+        return newDates;
+      });
+      
+      setSelectedDates([]);
+    } catch (error) {
+      console.error('Error creating shifts:', error);
+      setSubmitMessage({
+        type: 'error',
+        text: `Failed to create shifts: ${error.message}`
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Get today's date to disable past dates
   const today = new Date();
@@ -203,11 +203,10 @@ const handleSubmit = async () => {
               if (openDates.size > 0 && openDates.has(dateStr)) {
                 return {
                   disabled: true,
-                  style: { backgroundColor: "green", color: "#bbb", cursor: "not-allowed" },
-                  title: "Shelter is already open on this date"
+                  style: { backgroundColor: "green", color: "#bbb"},
+                  title: "Shelter is already open on this date",
                 };
               }
-              return {};
             }}
           />
         </div>              
@@ -241,8 +240,8 @@ const handleSubmit = async () => {
           <div className="signup-section">
             <button
               onClick={handleSubmit}
-              disabled={selectedDates.length === 0}
-              className={`signup-button ${tentativeSchedule.size > 0 ? 'enabled' : 'disabled'}`}
+              disabled={Object.keys(tentativeSchedule).length === 0}
+              className={`signup-button ${Object.keys(tentativeSchedule).length > 0 ? 'enabled' : 'disabled'}`}
             >
               Create Shifts
             </button>
