@@ -53,9 +53,12 @@ export const fetchClient = async (endpoint, options = {}) => {
     
     // If the response is not OK and not a 401, handle other errors
     if (!response.ok) {
-      const error = `HTTP error! Status: ${response.status}`;
-      console.error(error);
-      throw new Error(error);
+      const errorData = await response.json();
+      if (errorData.message) {
+        throw new Error(errorData.message);
+      }
+      const responseText = await response.text();
+      throw new Error(responseText || 'An error occurred while processing your request');
     }
     
     // Parse and return the response data

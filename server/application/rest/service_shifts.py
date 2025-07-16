@@ -87,9 +87,9 @@ def handle_service_shift():
             ]
         except (KeyError, TypeError, ValueError) as err:
             return Response(
-                json.dumps({"error": f"Invalid data format: {str(err)}"}),
+                json.dumps({"message": f"Invalid data format: {str(err)}"}),
                 mimetype="application/json",
-                status=400,
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
 
         add_response = shift_add_use_case(repo, shifts_obj)

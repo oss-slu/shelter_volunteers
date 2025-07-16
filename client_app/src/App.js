@@ -26,7 +26,6 @@ import RepeatableShifts from "./components/shelter/RepeatableShifts";
 import ShelterScheduleManager from "./components/shelter/ScheduleManager";
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
-import "./styles/App.css";
 
 import { setNavigate } from "./api/fetchClient";
 import { useAuth, setGlobalLogout } from "./contexts/AuthContext";

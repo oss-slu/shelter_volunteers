@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom"; 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faClock, faUsers, faCheck, faPlus, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { Calendar } from 'react-multi-date-picker';
-import { DesktopShiftRow } from '../volunteer/DesktopShiftRow';
-import { formatDate, formatTime } from '../../formatting/FormatDateTime';
+import { DesktopShiftRow } from './DesktopShiftRow';
+import { formatDate, displayTime } from '../../formatting/FormatDateTime';
 import { scheduleAPI } from '../../api/schedule';
-import { useCurrentDashboard } from '../../contexts/DashboardContext';
-import {EditShift } from './EditShift'; 
-import { use } from 'react';
+import { serviceShiftAPI } from '../../api/serviceShift';
+import Loading from "../Loading";
+
 function ShelterScheduleManager(){
   const { shelterId } = useParams(); // Extract from URL param
   const [selectedDates, setSelectedDates] = useState([]);
   const [tentativeSchedule, setTentativeSchedule] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDates, setOpenDates] = useState([]);
   const [ shiftTemplates, setShiftTemplates] = useState([]);
-  const { currentDashboard } = useCurrentDashboard();
-  const [ editingShift, setEditingShift ] = useState(null);
+  const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
     // Fetch existing shifts when the component mounts
@@ -25,30 +22,57 @@ function ShelterScheduleManager(){
       const shifts = await scheduleAPI.getShifts(shelterId);
       setShiftTemplates(shifts);
       console.log('Fetched shifts:', shifts);
+      const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
+      const openDatesSet = new Set(
+        existingShifts.map(shift => {
+          const date = new Date(shift.shift_start);
+          date.setHours(0, 0, 0, 0);
+          return date.toISOString().split('T')[0];
+        })
+      );
+      setOpenDates(openDatesSet);
+      setIsLoading(false);
+      console.log('Shelter already open on these dates:', openDatesSet);
     };
     fetchShifts();
   }, []);
 
   const processShiftData = (shiftDate, shift) => {
-    const shelter = currentDashboard.details;
-    const startDate = formatDate(shiftDate);
-    const startTime = formatTime(shift.shift_start);
-    const endTime = formatTime(shift.shift_end);
-    const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
-    const canInteract = true; 
+    const date = formatDate(shiftDate);
     return {
-      shift,
-      shelter,
-      startDate,
-      startTime,
-      endTime,
-      duration,
-      canInteract
+      ...shift,
+      date,
     };
   };
 
-  const handleShiftToggle = (shift) => {
-    setEditingShift(shift);
+  const updateShift = (id, field, value) => {
+    const dateStr = id.split('|')[0];
+    const index = id.split('|')[1];
+    
+    // Create a deep copy of the tentative schedule
+    const updatedSchedule = { ...tentativeSchedule };
+    updatedSchedule[dateStr] = {
+      ...updatedSchedule[dateStr],
+      shifts: updatedSchedule[dateStr].shifts.map((shift, i) => 
+        i === parseInt(index) 
+          ? { ...shift, [field]: value }
+          : shift
+      )
+    };
+    setTentativeSchedule(updatedSchedule);
+  };
+
+  const deleteShift = (id) => {
+    const dateStr = id.split('|')[0];
+    const index = id.split('|')[1];
+    const updatedSchedule = { ...tentativeSchedule };
+    if (updatedSchedule[dateStr]) {
+      updatedSchedule[dateStr].shifts = updatedSchedule[dateStr].shifts.filter((_, i) => i !== index);
+      if (updatedSchedule[dateStr].shifts.length === 0) {
+        delete updatedSchedule[dateStr];
+      }
+    }
+    setTentativeSchedule(updatedSchedule);
   };
 
   const generateTentativeSchedule = (dates) => {
@@ -65,20 +89,28 @@ function ShelterScheduleManager(){
         date: dateStr,
         dayName: date.toLocaleDateString('en-US', { weekday: 'long' }),
         shifts: shiftTemplates.map((shift, index) => ({
-          ...shift,
+          requiredVolunteers: shift.required_volunteer_count,
+          maxVolunteers: shift.max_volunteer_count,
+          startTime: displayTime(shift.shift_start, true),
+          endTime: displayTime(shift.shift_end, true),
+          duration: (shift.shift_end - shift.shift_start) / (1000 * 60 * 60), // Convert milliseconds to hours
+          shiftName: shift.shift_name,
           id: `${index}`,
           date: dateStr,
           assignedVolunteers: 0
         }))
       };
     });
-    
+  // Ensure schedule keys are sorted by date string (ascending)
+    // This does not mutate the object, but you can use this pattern when mapping:
     return schedule;
   };
 
   const handleDateChange = (dates) => {
     setSelectedDates(dates || []);
   };
+
+
 
   useEffect(() => {
     console.log('Selected Dates:', selectedDates);
@@ -87,213 +119,136 @@ function ShelterScheduleManager(){
     console.log('Tentative schedule length ', tentativeSchedule);
   }, [selectedDates]);
 
-  const handleSubmit = async () => {
-    if (selectedDates.length === 0) {
-      alert('Please select at least one date');
-      return;
-    }
-    
-    setShowConfirmation(true);
-  };
+const handleSubmit = async () => {
+  setIsLoading(true);
+  const shiftsToCreate = [];
+  
+  Object.entries(tentativeSchedule).forEach(([dateStr, { shifts }]) => {
+    shifts.forEach(shift => {
+      // Combine date and startTime to get shift_start in ms since epoch
+      const [startHour, startMinute] = shift.startTime.split(':').map(Number);
+      const shiftDate = new Date(dateStr);
+      shiftDate.setHours(startHour, startMinute, 0, 0);
+      const shift_start = shiftDate.getTime();
 
-  const confirmSchedule = async () => {
-    setIsLoading(true);
+      // Duration is in hours, convert to ms and add to shift_start
+      const shift_end = shift_start + shift.duration * 60 * 60 * 1000;
+
+      shiftsToCreate.push({
+        shift_start,
+        shift_end,
+        shelter_id: shelterId,
+        required_volunteer_count: shift.requiredVolunteers,
+        max_volunteer_count: shift.maxVolunteers
+      });
+    });
+  });
+
+  try {
+    await serviceShiftAPI.addShifts(shiftsToCreate);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    setSubmitMessage({
+      type: 'success',
+      text: `shifts created successfully`
+    });
     
-    console.log('Creating shifts for schedule:', tentativeSchedule);
+    setOpenDates(prev => {
+      const newDates = new Set(prev);
+      selectedDates.forEach(dateObj => {
+        const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+        date.setHours(0, 0, 0, 0);
+        newDates.add(date.toISOString().split('T')[0]);
+      });
+      return newDates;
+    });
     
+    setSelectedDates([]);
+  } catch (error) {
+    console.error('Error creating shifts:', error);
+    setSubmitMessage({
+      type: 'error',
+      text: `Failed to create shifts: ${error.message}`
+    });
+  } finally {
     setIsLoading(false);
-    setShowConfirmation(false);
-    setSelectedDates([]);
-    setTentativeSchedule({});
-    
-    alert('Shifts created successfully!');
-  };
-
-  const clearSelection = () => {
-    setSelectedDates([]);
-  };
+  }
+};
 
   // Get today's date to disable past dates
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const closeModal = () => {
-    setEditingShift(null);
-  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="has-sticky-bottom">
       <h1 className="title-small">Select Dates To Open Shelter</h1>
       <div>
-        <div>
+        {submitMessage.text && (
+        <div className={`message ${submitMessage.type}`}>
+          {submitMessage.text}
+        </div>
+      )}
+        <div className="calendar-container">
           <Calendar
             multiple
             onlyShowInRangeDates={true}
             minDate={today}
             value={selectedDates}
             onChange={handleDateChange}
+            mapDays={({ date }) => {
+              const dateStr = date.format("YYYY-MM-DD");
+              if (openDates.size > 0 && openDates.has(dateStr)) {
+                return {
+                  disabled: true,
+                  style: { backgroundColor: "green", color: "#bbb", cursor: "not-allowed" },
+                  title: "Shelter is already open on this date"
+                };
+              }
+              return {};
+            }}
           />
         </div>              
-        {selectedDates.length > 0 && (
-          <div>
-            <div>
-              <span className="font-semibold text-blue-800">
-                {selectedDates.length} day{selectedDates.length !== 1 ? 's' : ''} selected
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {selectedDates.slice(0, 5).map((dateObj, index) => {
-                const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
-                return (
-                  <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-                    {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </span>
-                );
-              })}
-              {selectedDates.length > 5 && (
-                <span className="text-blue-600 text-sm">+{selectedDates.length - 5} more</span>
-              )}
-            </div>
-          </div>
-        )}
         {/* Schedule Preview Section */}
         {Object.keys(tentativeSchedule).length > 0 && (
-        <div>
-          <h2> Selected Shifts </h2>
+        <div className="table-container desktop-only">
           <table className="shifts-table">
             <thead>
               <tr className="table-header">
-                <th>Shelter</th>
                 <th>Date</th>
-                <th>Time</th>
+                <th>Shift Name</th>
+                <th>Start Time</th>
                 <th>Duration</th>
-                <th>Volunteers Available</th>
-                <th>Priority</th>
+                <th>End Time</th>
+                <th>Required Volunteers</th>
+                <th>Max Volunteers</th>
               </tr>
             </thead>
             <tbody>
-              {Object.entries(tentativeSchedule).map(([shiftDate, shifts]) => (
-                shifts.shifts.map(shift => (
-                  <DesktopShiftRow key={shift.id} shiftData={processShiftData(shiftDate, shift)} handleShiftToggle={handleShiftToggle} />
+              {Object.entries(tentativeSchedule).sort(([a], [b]) => a.localeCompare(b)).map(([shiftDate, shifts]) => (
+                shifts.shifts.map((shift, index) => (
+                  <DesktopShiftRow key={shift.id} index={shiftDate+"|"+index} shift={processShiftData(shiftDate, shift)} updateShift={updateShift} deleteShift={deleteShift} />
                 ))
               ))}
             </tbody>
           </table>
         </div>
-        )}
-        {editingShift && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
-            <EditShift
-              shift={editingShift}
-              onUpdate={close}
-            />
-          </div>
-        </div>
       )}
         {/* Summary and Actions */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          {selectedDates.length > 0 && (
-            <div className="bg-blue-50 rounded-lg p-4 mb-4">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-4">
-                  <span className="text-blue-800">
-                    <strong>{selectedDates.length}</strong> days selected
-                  </span>
-                  <span className="text-blue-600">
-                    <strong>
-                      {Object.values(tentativeSchedule).reduce((total, day) => total + day.shifts.length, 0)}
-                    </strong> shifts to be created
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={clearSelection}
-              disabled={selectedDates.length === 0}
-              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Clear Selection
-            </button>
+        <div className="sticky-signup-container">
+          <div className="signup-section">
             <button
               onClick={handleSubmit}
               disabled={selectedDates.length === 0}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 font-medium"
+              className={`signup-button ${tentativeSchedule.size > 0 ? 'enabled' : 'disabled'}`}
             >
-              <FontAwesomeIcon icon={faPlus} />
               Create Shifts
             </button>
           </div>
         </div>
       </div>
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-yellow-100 p-3 rounded-full">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-600 text-lg" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800">Confirm Schedule Creation</h3>
-            </div>
-            <div className="mb-6">
-              <p className="text-gray-600 mb-4">
-                You are about to create shifts for <strong>{selectedDates.length}</strong> day
-                {selectedDates.length !== 1 ? 's' : ''}. This will generate{' '}
-                <strong>
-                  {Object.values(tentativeSchedule).reduce((total, day) => total + day.shifts.length, 0)}
-                </strong> total shifts.
-              </p>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <h4 className="font-medium text-gray-800 mb-2">Selected Dates:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedDates.slice(0, 6).map((dateObj, index) => {
-                    const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
-                    return (
-                      <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-                        {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </span>
-                    );
-                  })}
-                  {selectedDates.length > 6 && (
-                    <span className="text-gray-600 text-sm">+{selectedDates.length - 6} more</span>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowConfirmation(false)}
-                disabled={isLoading}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmSchedule}
-                disabled={isLoading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2 font-medium"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <FontAwesomeIcon icon={faCheck} />
-                    Confirm
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
