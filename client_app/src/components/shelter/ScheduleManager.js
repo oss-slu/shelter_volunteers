@@ -9,6 +9,7 @@ import Loading from "../Loading";
 
 function ShelterScheduleManager(){
   const { shelterId } = useParams(); // Extract from URL param
+  const [noSchedule, setNoSchedule] = useState(false);
   const [selectedDates, setSelectedDates] = useState([]);
   const [tentativeSchedule, setTentativeSchedule] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -20,16 +21,21 @@ function ShelterScheduleManager(){
     // Fetch existing shifts when the component mounts
     const fetchShifts = async () => {
       const shifts = await scheduleAPI.getShifts(shelterId);
-      setShiftTemplates(shifts);
-      const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
-      const openDatesSet = new Set(
-        existingShifts.map(shift => {
-          const date = new Date(shift.shift_start);
-          date.setHours(0, 0, 0, 0);
-          return date.toISOString().split('T')[0];
-        })
-      );
-      setOpenDates(openDatesSet);
+      if (!shifts || shifts.length === 0) {
+        setNoSchedule(true);
+      }
+      else {
+        setShiftTemplates(shifts);
+        const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
+        const openDatesSet = new Set(
+          existingShifts.map(shift => {
+            const date = new Date(shift.shift_start);
+            date.setHours(0, 0, 0, 0);
+            return date.toISOString().split('T')[0];
+          })
+        );
+        setOpenDates(openDatesSet);
+      }
       setIsLoading(false);
     };
     fetchShifts();
@@ -181,6 +187,13 @@ function ShelterScheduleManager(){
     return <Loading />;
   }
 
+  if (noSchedule) {
+    return (
+      <div className="title-small">
+        Please define a <a href={`/shelter-dashboard/${shelterId}/repeatable-shifts`} className="link">daily schedule</a> first.
+      </div>
+    )
+  }
   return (
     <div className="has-sticky-bottom">
       <h1 className="title-small">Select Dates To Open Shelter</h1>
