@@ -11,13 +11,8 @@ export const scheduleAPI = {
   },
 
   // GET to retrieve shifts
-  getShifts: async (shelterId, params = {}) => {
-    const queryParams = new URLSearchParams();
-    queryParams.append("shelter_id", shelterId);
-    Object.entries(params).forEach(([key, value]) =>
-      queryParams.append(key, value)
-    );
-    const response = await fetchClient(`/schedule?${queryParams.toString()}`);
+  getShifts: async (shelterId) => {
+    const response = await fetchClient(`/schedule?shelter_id=${shelterId}`);
     return response;
   }
 };
