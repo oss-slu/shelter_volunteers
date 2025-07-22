@@ -21,7 +21,6 @@ function ShelterScheduleManager(){
     const fetchShifts = async () => {
       const shifts = await scheduleAPI.getShifts(shelterId);
       setShiftTemplates(shifts);
-      console.log('Fetched shifts:', shifts);
       const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
       const openDatesSet = new Set(
         existingShifts.map(shift => {
@@ -32,7 +31,6 @@ function ShelterScheduleManager(){
       );
       setOpenDates(openDatesSet);
       setIsLoading(false);
-      console.log('Shelter already open on these dates:', openDatesSet);
     };
     fetchShifts();
   }, []);
@@ -64,11 +62,16 @@ function ShelterScheduleManager(){
 
   const deleteShift = (id) => {
     const dateStr = id.split('|')[0];
-    const index = id.split('|')[1];
+    const index = parseInt(id.split('|')[1], 10);
     const updatedSchedule = { ...tentativeSchedule };
     if (updatedSchedule[dateStr]) {
       updatedSchedule[dateStr].shifts = updatedSchedule[dateStr].shifts.filter((_, i) => i !== index);
       if (updatedSchedule[dateStr].shifts.length === 0) {
+        setSelectedDates(selectedDates.filter(dateObj => {
+          const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+          const formatted = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          return formatted !== dateStr;
+        }));
         delete updatedSchedule[dateStr];
       }
     }
@@ -82,7 +85,6 @@ function ShelterScheduleManager(){
     
     dates.forEach(dateObj => {
       const dateStr = formatDate(dateObj);
-      console.log('Processing date:', dateStr);
       const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
       
       schedule[dateStr] = {
@@ -113,10 +115,7 @@ function ShelterScheduleManager(){
 
 
   useEffect(() => {
-    console.log('Selected Dates:', selectedDates);
     setTentativeSchedule(generateTentativeSchedule(selectedDates));
-    console.log('Tentative Schedule:', tentativeSchedule);
-    console.log('Tentative schedule length ', tentativeSchedule);
   }, [selectedDates]);
 
   const handleSubmit = async () => {
