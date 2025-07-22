@@ -55,6 +55,7 @@ function AppContent() {
         <Route path="/admin-dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
           <Route path="shelters" element={<AdminDashboard />} />
+          <Route path="users" element={<AddUserForm resourceType="system" />} />
         </Route>
         <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
