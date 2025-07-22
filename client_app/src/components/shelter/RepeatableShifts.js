@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
 import { scheduleAPI } from "../../api/schedule";
-import { displayTime } from "../../formatting/FormatDateTime";
-
+import { DesktopShiftRow } from "./DesktopShiftRow";
+import { timeStringToMillis } from "../../formatting/FormatDateTime";
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
 
@@ -16,11 +16,6 @@ const RepeatableShifts = () => {
     maxVolunteers: 5,
   });
   const [successMessage, setSuccessMessage] = useState("");
-
-  const timeStringToMillis = (timeStr) => {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    return (hours * 60 + minutes) * 60 * 1000;
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -160,55 +155,13 @@ const RepeatableShifts = () => {
               </thead>
               <tbody>
                 {shifts.map((shift, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="text"
-                        value={shift.shiftName}
-                        onChange={(e) => updateShift(index, "shiftName", e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="time"
-                        value={shift.startTime}
-                        onChange={(e) => updateShift(index, "startTime", e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={shift.duration}
-                        onChange={(e) => updateShift(index, "duration", e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={displayTime((timeStringToMillis(shift.startTime) + shift.duration * 60 * 60 * 1000) % 86400000)}
-                        readOnly
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        min="1"
-                        value={shift.requiredVolunteers}
-                        onChange={(e) => updateShift(index, "requiredVolunteers", e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        min="1"
-                        value={shift.maxVolunteers}
-                        onChange={(e) => updateShift(index, "maxVolunteers", e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <button onClick={() => deleteShift(index)}>Delete</button>
-                    </td>
-                  </tr>
+                  <DesktopShiftRow
+                    key={index}
+                    index={index}
+                    shift={shift}
+                    updateShift={updateShift}
+                    deleteShift={deleteShift}
+                    />
                 ))}
               </tbody>
             </table>

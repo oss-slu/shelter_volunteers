@@ -8,8 +8,8 @@ const navigationConfig = {
   ],
   shelter: [
     { icon: faGear, label: 'Users', path: '/shelter-dashboard/:ID/users', description: 'View, add, or remove other shelter admins.' },
-    { icon: faCalendar, label: 'Repeatable Shifts', path: '/shelter-dashboard/:ID/repeatable-shifts', description: 'Create and manage repeatable volunteer shifts for your shelter.' },
-    { icon: faCalendar, label: 'Manage Shifts', path: '/shelter-dashboard/:ID/schedule', description: 'View and manage the schedule of shifts for your shelter.' },
+    { icon: faCalendar, label: 'Daily Schedule', path: '/shelter-dashboard/:ID/repeatable-shifts', description: 'Create and manage a schedule that will be used when you open a shelter.' },
+    { icon: faCalendar, label: 'Open Shelter', path: '/shelter-dashboard/:ID/schedule', description: 'Select days when the shelter will be open and define volunteering shifts.' },
     { icon: faClock, label: 'Upcoming Shifts', path: '/shelter-dashboard/:ID/upcoming-shifts' }
   ],
   admin: [

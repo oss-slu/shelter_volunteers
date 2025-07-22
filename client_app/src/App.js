@@ -20,15 +20,12 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Shelter dashboard components
 import AddUserForm from "./components/shelter/AddUserForm";
-import RequestForHelp from "./components/shelter/RequestForHelp";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
-import Schedule from "./components/shelter/Schedule"; 
 import RepeatableShifts from "./components/shelter/RepeatableShifts";
-
+import ShelterScheduleManager from "./components/shelter/ScheduleManager";
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
-import "./styles/App.css";
 
 import { setNavigate } from "./api/fetchClient";
 import { useAuth, setGlobalLogout } from "./contexts/AuthContext";
@@ -62,8 +59,7 @@ function AppContent() {
         <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
           <Route path="settings" element={<Settings />} /> 
-          <Route path="schedule" element={<Schedule />} />
-          <Route path="request-for-help" element={<RequestForHelp />} />
+          <Route path="schedule" element={<ShelterScheduleManager />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
           <Route path="repeatable-shifts" element={<RepeatableShifts />} />
           <Route path="users" element={<AddUserForm />} />

@@ -57,10 +57,25 @@
   border: var(--border-color)
 }
 
+.shift-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.shift-table th,
+.shift-table td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+
+
 .shifts-table {
   width: 100%;
   min-width: 800px;
-  border-color: transparent;
+  border-collapse: collapse;
 }
 
 .table-header {
@@ -68,7 +83,7 @@
 }
 
 .table-header th {
-  padding: 16px 12px;
+  padding: 8px;
   text-align: left;
   font-weight: bold;
   color: var(--secondary-color);;
@@ -87,12 +102,21 @@
 }
 
 .table-row td {
-  padding: 12px;
+  padding: 8px;
   border: none;
   vertical-align: top;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
+.shifts-table input[type="text"],
+.shifts-table input[type="time"],
+.shifts-table input[type="number"] {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 .shift-checkbox {
   transform: scale(1.3);
   cursor: pointer;
