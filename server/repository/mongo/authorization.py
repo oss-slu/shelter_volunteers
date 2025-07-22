@@ -51,15 +51,26 @@ class PermissionsMongoRepo:
 
     def get_system_admins(self):
         """
-        retrieves all system administrators from the database
+        Retrieves all system administrators from the database.
         """
-        system_admins = self.collection.find({'resources': {'$in': ['system']}})
-        return [UserPermission.from_dict(admin) for admin in system_admins]
-    
+        system_admins = self.collection.find({
+            'full_access': {
+            '$elemMatch': {
+                'resource_type': 'system'
+            }
+            }
+        })
+        return [admin['email'] for admin in system_admins]
     def get_shelter_admins(self, shelter_id):
         """
-        retrieves all shelter administrators for a specific shelter from the database
+        Retrieves all shelter administrators for a specific shelter from the database.
         """
-        shelter_admins = self.collection.find({'resources': {'$in': ['SHELTER']}, 'shelter_id': shelter_id})
-        return [UserPermission.from_dict(admin) for admin in shelter_admins]
-    
+        shelter_admins = self.collection.find({
+            'full_access': {
+                '$elemMatch': {
+                    'resource_type': 'shelter',
+                    'resource_ids': {'$in': [shelter_id]}
+                }
+            }
+        })
+        return [admin['email'] for admin in shelter_admins] if shelter_admins else []

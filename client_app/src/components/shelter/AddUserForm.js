@@ -8,7 +8,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
   const [admins, setadmins] = useState([]);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(null);
-
+  const adminType = resourceType === "shelter" ? "Shelter Admin" : "System Admin";
   useEffect(() => {
     const retrievedAdmins = resourceType === "shelter" ? permissionsAPI.getShelterAdmins(shelterId) : permissionsAPI.getSystemAdmins();
     retrievedAdmins.then((admins) => {
@@ -27,10 +27,10 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
         resource_id: resourceType === "shelter" ? shelterId : undefined,
         user_email: email,
       });
-      console.log('result', result); // Log the result for debugging
       if (result?.success) {
         setStatus({ type: "success", message: result.message || "User added successfully." });
         setEmail("");
+        setadmins(prev => [...prev, email]); // Update the admins list with the new email
       } else {
         throw new Error(result?.message || "Unknown error");
       }
@@ -44,22 +44,8 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
 
   return (
     <div>
-      <div>
-        {admins.length === 0 ? (
-          <li>No admin users found.</li>
-        ) : (
-          <div>
-            <h2>Current admin users:</h2>
-            <ul>
-              {admins.map((admin) => (
-                <li key={admin.id || admin.email}>{admin.email}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
       <div className="add-user-form">
-        <h2>Add {resourceType === "shelter" ? "Shelter" : "System"} Admin</h2>
+        <h2>Add {adminType}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">User Email</label>
@@ -76,6 +62,26 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
         </form>
         {status && (
           <div className={`message ${status.type}`}>{status.message}</div>
+        )}
+      </div>
+      <div>
+        {admins.length === 0 ? (
+          <li>No {adminType} users found.</li>
+        ) : (
+          <div>
+            <h3 className="summary-title">
+              Current {adminType} Users
+            </h3>
+            <div className="list">
+              {admins.map((email) => {
+                  return (
+                    <div key={email}className="tagline-small">
+                      {email}
+                    </div>
+                  );
+              })}
+            </div>
+          </div>
         )}
       </div>
     </div>

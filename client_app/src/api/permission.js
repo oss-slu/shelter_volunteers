@@ -23,7 +23,7 @@ export const permissionsAPI = {
     return response;
   },
   getShelterAdmins: async (shelterId) => {
-    const response = await fetchClient(`/shelter_admins/${shelterId}`);
+    const response = await fetchClient(`/shelter_admin?shelter_id=${shelterId}`);
     return response;
   }
 };
