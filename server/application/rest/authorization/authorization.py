@@ -6,6 +6,8 @@ from flask import Blueprint, request, Response
 from use_cases.authorization.add_shelter_admin import add_shelter_admin
 from use_cases.authorization.add_system_admin import add_system_admin
 from use_cases.authorization.get_user_permission import get_user_permission
+from use_cases.authorization.get_system_admins import get_system_admins
+from use_cases.authorization.get_shelter_admins import get_shelter_admins
 from use_cases.authorization.is_authorized import is_authorized
 from application.token_required import token_required_with_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
@@ -18,6 +20,54 @@ from responses import ResponseTypes
 authorization_blueprint = Blueprint('authorization', __name__)
 repo = PermissionsMongoRepo()
 shelter_repo = ShelterRepo()
+
+@authorization_blueprint.route('/system_admin', methods=['GET'])
+@token_required_with_request
+def system_admin(user_id):
+    """
+    Endpoint to retrieve all system administrators.
+    This endpoint allows users with the appropriate permissions
+    to fetch a list of all system administrators.
+    Returns:
+        Response: A Flask Response object containing the JSON data and HTTP status code.
+    """
+    if not is_authorized(repo, user_id, Resources.SYSTEM):
+        return Response(
+            json.dumps({'message': 'Unauthorized'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+
+    system_admins = get_system_admins(repo)
+    return Response(
+        json.dumps(system_admins, cls=UserPermissionJsonEncoder),
+        mimetype='application/json',
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    )
+
+@authorization_blueprint.route('/shelter_admin', methods=['GET'])
+@token_required_with_request
+def shelter_admin(user_id):
+    if not is_authorized(repo, user_id, Resources.SYSTEM):
+        return Response(
+            json.dumps({'message': 'Unauthorized'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+
+    shelter_id = request.args.get('shelter_id')
+    if not shelter_id:
+        return Response(
+            json.dumps({'error': 'shelter_id is required'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        )
+    shelter_admins = get_shelter_admins(repo, shelter_id)
+    return Response(
+        json.dumps(shelter_admins, cls=UserPermissionJsonEncoder),
+        mimetype='application/json',
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    )
 
 @authorization_blueprint.route('/user_permission', methods=['GET', 'POST'])
 @token_required_with_request

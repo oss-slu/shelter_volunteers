@@ -48,3 +48,29 @@ class PermissionsMongoRepo:
         deletes user permission from the database
         """
         self.collection.delete_one({'_id': user_permission.get_id()})
+
+    def get_system_admins(self):
+        """
+        Retrieves all system administrators from the database.
+        """
+        system_admins = self.collection.find({
+            'full_access': {
+            '$elemMatch': {
+                'resource_type': 'system'
+            }
+            }
+        })
+        return [admin['email'] for admin in system_admins]
+    def get_shelter_admins(self, shelter_id):
+        """
+        Retrieves all shelter administrators for a specific shelter from the database.
+        """
+        shelter_admins = self.collection.find({
+            'full_access': {
+                '$elemMatch': {
+                    'resource_type': 'shelter',
+                    'resource_ids': {'$in': [shelter_id]}
+                }
+            }
+        })
+        return [admin['email'] for admin in shelter_admins] if shelter_admins else []

@@ -22,9 +22,13 @@ def add_shelter_admin(repo, shelter_id: str,  admin_email: str):
         repo.add(user_permission)
     elif user_permission.has_access(Resources.SHELTER, shelter_id):
         return ResponseSuccess(
-            {'message': 'This user is already an admin for this shelter'}
+            {'message': 'This user is already an admin for this shelter',
+             'success': False
+            }
         )
 
     user_permission.add_access(Resources.SHELTER, shelter_id)
     repo.update(user_permission)
-    return ResponseSuccess({'message': 'User added as admin for this shelter'})
+    return ResponseSuccess({'message': 'User added as admin for this shelter',
+                            'success': True
+                           })

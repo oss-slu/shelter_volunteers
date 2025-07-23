@@ -32,7 +32,9 @@ class TestAddShelterAdmin(unittest.TestCase):
         self.assertIsInstance(response, ResponseSuccess)
         self.assertEqual(
             response.value,
-            {'message': 'User added as admin for this shelter'}
+            {'message': 'User added as admin for this shelter',
+             'success': True
+            }
         )
 
     def test_add_shelter_admin_existing_user_no_access(self):
@@ -49,7 +51,9 @@ class TestAddShelterAdmin(unittest.TestCase):
         self.assertIsInstance(response, ResponseSuccess)
         self.assertEqual(
             response.value,
-            {'message': 'User added as admin for this shelter'}
+            {'message': 'User added as admin for this shelter',
+             'success': True
+            }
         )
 
     def test_add_shelter_admin_existing_user_with_access(self):
@@ -67,7 +71,9 @@ class TestAddShelterAdmin(unittest.TestCase):
         self.assertIsInstance(response, ResponseSuccess)
         self.assertEqual(
             response.value,
-            {'message': 'This user is already an admin for this shelter'}
+            {'message': 'This user is already an admin for this shelter',
+             'success': False
+            }
         )
 
     def test_add_shelter_admin_existing_user_admin_for_another_shelter(self):
@@ -86,7 +92,9 @@ class TestAddShelterAdmin(unittest.TestCase):
         self.assertIsInstance(response, ResponseSuccess)
         self.assertEqual(
             response.value,
-            {'message': 'User added as admin for this shelter'}
+            {'message': 'User added as admin for this shelter',
+             'success': True
+            }
         )
 
     def test_add_shelter_admin_existing_system_admin(self):
@@ -104,7 +112,9 @@ class TestAddShelterAdmin(unittest.TestCase):
         self.assertIsInstance(response, ResponseSuccess)
         self.assertEqual(
             response.value,
-            {'message': 'User added as admin for this shelter'}
+            {'message': 'User added as admin for this shelter',
+             'success': True
+            }
         )
 
     def test_add_shelter_admin_without_shelter_id(self):

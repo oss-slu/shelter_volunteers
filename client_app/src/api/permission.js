@@ -18,4 +18,12 @@ export const permissionsAPI = {
     });
     return response;
   },
+  getSystemAdmins: async () => {
+    const response = await fetchClient("/system_admin");
+    return response;
+  },
+  getShelterAdmins: async (shelterId) => {
+    const response = await fetchClient(`/shelter_admin?shelter_id=${shelterId}`);
+    return response;
+  }
 };

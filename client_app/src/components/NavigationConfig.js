@@ -14,6 +14,7 @@ const navigationConfig = {
   ],
   admin: [
     { icon: faHome, label: 'Shelters', path: '/admin-dashboard/shelters' },
+    { icon: faGear, label: 'Users', path: '/admin-dashboard/users', description: 'View, add, or remove other shelter admins.' },
   ]
 };
 

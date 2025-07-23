@@ -16,9 +16,13 @@ def add_system_admin(repo, user_email: str):
         repo.add(user_permission)
     elif user_permission.has_access(Resources.SYSTEM):
         return ResponseSuccess(
-            {'message': 'This user is already a system admin'}
+            {'message': 'This user is already a system admin',
+             'success': False
+            }
         )
 
     user_permission.add_access(Resources.SYSTEM)
     repo.update(user_permission)
-    return ResponseSuccess({'message': 'User added as system admin'})
+    return ResponseSuccess({'message': 'User added as system admin',
+                            'success': True
+                           })
