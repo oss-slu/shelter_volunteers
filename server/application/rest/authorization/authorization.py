@@ -54,12 +54,12 @@ def shelter_admin(user_id):
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
         )
-    
+
     shelter_id = request.args.get('shelter_id')
     if not shelter_id:
         return Response(
             json.dumps({'error': 'shelter_id is required'}),
-            mimetype="application/json",
+            mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
     shelter_admins = get_shelter_admins(repo, shelter_id)
