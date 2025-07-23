@@ -26,12 +26,19 @@ shelter_repo = ShelterRepo()
 def system_admin(user_id):
     """
     Endpoint to retrieve all system administrators.
-    This endpoint allows users with the appropriate permissions to fetch a list of all system administrators.
+    This endpoint allows users with the appropriate permissions
+    to fetch a list of all system administrators.
     Returns:
         Response: A Flask Response object containing the JSON data and HTTP status code.
     """
+    if not is_authorized(repo, user_id, Resources.SYSTEM):
+        return Response(
+            json.dumps({'message': 'Unauthorized'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+
     system_admins = get_system_admins(repo)
-    print(f"Retrieved {len(system_admins)} system administrators.")
     return Response(
         json.dumps(system_admins, cls=UserPermissionJsonEncoder),
         mimetype='application/json',
@@ -41,10 +48,17 @@ def system_admin(user_id):
 @authorization_blueprint.route('/shelter_admin', methods=['GET'])
 @token_required_with_request
 def shelter_admin(user_id):
-    shelter_id = request.args.get("shelter_id")
+    if not is_authorized(repo, user_id, Resources.SYSTEM):
+        return Response(
+            json.dumps({'message': 'Unauthorized'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+        )
+    
+    shelter_id = request.args.get('shelter_id')
     if not shelter_id:
         return Response(
-            json.dumps({"error": "shelter_id is required"}),
+            json.dumps({'error': 'shelter_id is required'}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
