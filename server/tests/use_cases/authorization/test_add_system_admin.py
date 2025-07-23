@@ -16,7 +16,10 @@ def test_add_system_admin_new_user():
     response = add_system_admin(repo, user_email)
 
     assert isinstance(response, ResponseSuccess)
-    assert response.value == {'message': 'User added as system admin'}
+    assert response.value == {
+        'message': 'User added as system admin',
+        'success': True
+    }
     repo.add.assert_called_once()
     repo.update.assert_called_once()
 
@@ -31,7 +34,10 @@ def test_add_system_admin_existing_user_without_access():
     response = add_system_admin(repo, user_email)
 
     assert isinstance(response, ResponseSuccess)
-    assert response.value == {'message': 'User added as system admin'}
+    assert response.value == {
+        'message': 'User added as system admin',
+        'success': True
+    }
     repo.update.assert_called_once()
 
 def test_add_system_admin_existing_user_with_access():
@@ -46,7 +52,10 @@ def test_add_system_admin_existing_user_with_access():
     response = add_system_admin(repo, user_email)
 
     assert isinstance(response, ResponseSuccess)
-    assert response.value == {'message': 'This user is already a system admin'}
+    assert response.value == {
+        'message': 'This user is already a system admin',
+        'success': False
+    }
     repo.update.assert_not_called()
 
 def test_add_system_admin_existing_shelter_admin():
@@ -61,5 +70,8 @@ def test_add_system_admin_existing_shelter_admin():
     response = add_system_admin(repo, user_email)
 
     assert isinstance(response, ResponseSuccess)
-    assert response.value == {'message': 'User added as system admin'}
+    assert response.value == {
+        'message': 'User added as system admin',
+        'success': True
+    }
     repo.update.assert_called_once()
