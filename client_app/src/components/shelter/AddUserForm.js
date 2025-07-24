@@ -22,11 +22,9 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await permissionsAPI.addPermission({
-        resource_type: resourceType, // use the parameter here
-        resource_id: resourceType === "shelter" ? shelterId : undefined,
-        user_email: email,
-      });
+      const result = resourceType === "shelter"
+        ? await permissionsAPI.addShelterAdmin(shelterId, email)
+        : await permissionsAPI.addSystemAdmin(email);
       if (result?.success) {
         setStatus({ type: "success", message: result.message || "User added successfully." });
         setEmail("");

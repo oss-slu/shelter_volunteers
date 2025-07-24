@@ -150,7 +150,7 @@ function ShelterScheduleManager(){
     });
 
     try {
-      await serviceShiftAPI.addShifts(shiftsToCreate);
+      await serviceShiftAPI.addShifts(shelterId, shiftsToCreate);
       
       setSubmitMessage({
         type: 'success',

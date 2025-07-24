@@ -6,7 +6,9 @@ import json
 from unittest.mock import patch
 from flask import Flask
 from application.rest.service_shifts import service_shift_bp
+from authentication.token import create_token
 from domains.service_shift import ServiceShift
+
 
 # pylint: disable=line-too-long
 class TestServiceShiftAPI(unittest.TestCase):
@@ -19,9 +21,18 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.app.register_blueprint(service_shift_bp)
         self.app.testing = True
         self.client = self.app.test_client()
+        self.test_secret = "test_secret"
+        self.app.config["JWT_SECRET"] = self.test_secret
+        token = create_token({"email": "user@app.com"}, self.test_secret)
+        self.headers = {
+            "Authorization": f"{token}",
+            "Content-Type": "application/json"
+        }
 
     @patch("application.rest.service_shifts.shift_add_use_case")
-    def test_post_service_shift(self, mock_shift_add_use_case):
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_post_service_shift(self, mock_is_authorized, mock_shift_add_use_case):
+        mock_is_authorized.return_value = True
         # Arrange: Set up the expected response from the use case.
         expected_ids = [101, 102]
         # The production code expects a dict with keys 'success'
@@ -36,17 +47,13 @@ class TestServiceShiftAPI(unittest.TestCase):
             {"shelter_id": "12345", "shift_start": 10, "shift_end": 20},
             {"shelter_id": "12345", "shift_start": 100, "shift_end": 200}
         ]
-        headers = {
-            "Authorization": "1234567890-developer-token",
-            "Content-Type": "application/json"  
-        }
 
         # Act: Send POST request.
         response = self.client.post(
-            "/service_shift",
+            "/shelters/12345/service_shifts",
             data=json.dumps(payload),
-            headers=headers
-            )
+            headers=self.headers
+        )
 
         # Assert: Verify that the response status is 200 and
         # the JSON payload is correct.
@@ -78,16 +85,16 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "required_volunteer_count": 1,
                 "max_volunteer_count": 5,
                 "can_sign_up": True,
-                "shift_name": "Default Shift"
+                "shift_name": "Default Shift"            
             }
         ]
         mock_list_use_case.return_value = ([ServiceShift.from_dict(shift)
                                            for shift in expected_shifts],
                                            [[],[]])
-        expected_shifts[0]["volunteers"] = []
-        expected_shifts[1]["volunteers"] = []
+        expected_shifts[0]["volunteer_count"] = 0
+        expected_shifts[1]["volunteer_count"] = 0
         # Act: Send GET request.
-        response = self.client.get("/service_shift")
+        response = self.client.get("/service_shifts")
 
         data = json.loads(response.data.decode("utf-8"))
         # Assert: Verify that the parsed objects match the expected shifts.
@@ -96,7 +103,9 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_list_use_case.assert_called_once()
 
     @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
-    def test_get_service_shift_with_shelter_id_filter(self, mock_list_use_case):
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_get_service_shift_with_shelter_id_filter(self, mock_is_authorized, mock_list_use_case):
+        mock_is_authorized.return_value = True
         # Arrange: Define the expected shift for a specific shelter
         test_shelter_id = "ID1"
         expected_shift = {
@@ -114,7 +123,8 @@ class TestServiceShiftAPI(unittest.TestCase):
 
         # Act: Send GET request with shelter_id filter
         response = self.client.get(
-            f"/service_shift?shelter_id={test_shelter_id}")
+            f"/shelters/{test_shelter_id}/service_shifts",
+            headers=self.headers)
 
         # Parse response data
         data = json.loads(response.data.decode("utf-8"))

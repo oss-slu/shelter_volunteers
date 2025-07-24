@@ -1,9 +1,12 @@
 """
 Wrapper for token verification that passes the user email to the route function.
 """
+import json
 from functools import wraps
-from flask import request, jsonify, current_app
+from flask import request, Response, current_app
 from authentication.token import get_email_from_token
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from responses import ResponseTypes
 
 def token_required_with_request(f):
     @wraps(f)
@@ -15,6 +18,10 @@ def token_required_with_request(f):
             user_email = get_email_from_token(token, jwt_secret)
             # Pass user_data to the route function
             return f(user_email, *args, **kwargs)
-        except ValueError as e:
-            return jsonify({'error': str(e)}), 401
+        except ValueError:
+            return Response(
+                json.dumps({'message': 'Unauthorized'}),
+                mimetype='application/json',
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+            )
     return decorated

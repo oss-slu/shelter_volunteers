@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from domains.service_commitment import ServiceCommitment
 
-from application.token_required import token_required_with_request
+from application.rest.token_required import token_required_with_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.request_parameters import is_true
 from application.rest.request_parameters import get_time_filters

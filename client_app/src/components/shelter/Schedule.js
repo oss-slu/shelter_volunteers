@@ -171,7 +171,7 @@ function Schedule() {
     }));    
 
     try {
-      await serviceShiftAPI.addShifts(payload);
+      await serviceShiftAPI.addShifts(shelterId, payload);
       alert("Shifts successfully created!");
     } catch (error) {
       console.log("Error when creating shifts:", error);
