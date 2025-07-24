@@ -16,7 +16,7 @@ export const Sidebar = () => {
 
   useEffect(() => {
     if (currentDashboard) {
-      if (activeItem && menuItems.length > 0) {
+      if (activeItem != null && menuItems.length > 0) {
         const item = menuItems[activeItem];
         if (item && item.path) {
           // Navigate to the path if needed, e.g., using a router
