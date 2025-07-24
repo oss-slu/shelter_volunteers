@@ -59,7 +59,7 @@ function VolunteerShiftSignup(){
 
   // Calculate need percentage (1 - current_volunteers/required_volunteers)
   const calculateNeed = (shift) => {
-    return 1 - (shift.volunteers.length / shift.required_volunteer_count);
+    return 1 - (shift.volunteer_count / shift.required_volunteer_count);
   };
 
   // Check if shifts overlap

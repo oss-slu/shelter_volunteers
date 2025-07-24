@@ -2,21 +2,21 @@ import { fetchClient } from "./fetchClient";
 
 export const serviceShiftAPI = {
     getShiftsForShelter: async(shelterId) => {
-        const response = await fetchClient(`/service_shift?shelter_id=${shelterId}`);
+        const response = await fetchClient(`/shelters/${shelterId}/service_shifts`);
         return response;
     },
     getFutureShifts: async() => {
         const timeNow = Date.now();
-        const response = await fetchClient(`/service_shift?filter_start_after=${timeNow}`);
+        const response = await fetchClient(`/service_shifts?filter_start_after=${timeNow}`);
         return response;
     },
     getFutureShiftsForShelter: async(shelterId) => {
         const timeNow = Date.now();
-        const response = await fetchClient(`/service_shift?shelter_id=${shelterId}&filter_start_after=${timeNow}`);
+        const response = await fetchClient(`/shelters/${shelterId}/service_shifts?filter_start_after=${timeNow}`);
         return response;
     },
-    addShifts: async(data) => {
-        const response = await fetchClient("/service_shift", {
+    addShifts: async(shelterId, data) => {
+        const response = await fetchClient(`/shelters/${shelterId}/service_shifts`, {
             method: "POST",
             body: JSON.stringify(data),
         });

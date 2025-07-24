@@ -8,10 +8,13 @@ from unittest.mock import patch
 from flask import Flask
 from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
+from authentication.token import create_token
 
+test_secret = "test_secret"
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(shelter_blueprint)
+    app.config["JWT_SECRET"] = test_secret
     return app
 
 @pytest.fixture
@@ -23,7 +26,13 @@ def client():
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
 @patch("application.rest.shelter.shelter_add_use_case")
-def test_post_shelter(mock_shelter_add_use_case, client):
+@patch("application.rest.system_admin_permission_required.is_authorized")
+def test_post_shelter(
+    mock_is_authorized, 
+    mock_shelter_add_use_case, 
+    client
+    ):
+    mock_is_authorized.return_value = True
     mock_response = {
         "id": "SOME_ID",
         "success": True,
@@ -44,25 +53,37 @@ def test_post_shelter(mock_shelter_add_use_case, client):
         },
     }
 
+    token = create_token({"email": "user@app.com"}, test_secret)
+    headers = {
+        "Authorization": f"{token}"
+    }
+
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
-        content_type="application/json"
+        content_type="application/json",
+        headers=headers
     )
 
     assert response.status_code == 200
     assert response.json == mock_response
 
-@patch("application.rest.shelter.shelter_add_use_case")
+@patch("application.rest.system_admin_permission_required.is_authorized")
 def test_post_shelter_missing_required_fields(
-    mock_shelter_add_use_case, client):
+    mock_is_authorized, client):
+    mock_is_authorized.return_value = True
     request_data = {
         "name": "Test shelter" #missing address field
+    }
+    token = create_token({"email": "user@app.com"}, test_secret)
+    headers = {
+        "Authorization": f"{token}"
     }
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
-        content_type="application/json"
+        content_type="application/json",
+        headers=headers
     )
     assert response.status_code == 400 #bad request
     assert not response.json["success"]
@@ -74,10 +95,12 @@ def test_post_shelter_missing_required_fields(
             "state": "MO", #missing street1
         }
     }
+
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
-        content_type="application/json"
+        content_type="application/json",
+        headers=headers
     )
     assert response.status_code == 400 #bad request
     assert not response.json["success"]
@@ -92,7 +115,8 @@ def test_post_shelter_missing_required_fields(
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
-        content_type="application/json"
+        content_type="application/json",
+        headers=headers
     )
     assert response.status_code == 400  #bad request
     assert not response.json["success"]
@@ -107,7 +131,8 @@ def test_post_shelter_missing_required_fields(
     response = client.post(
         "/shelter",
         data=json.dumps(request_data),
-        content_type="application/json"
+        content_type="application/json",
+        headers=headers
     )
     assert response.status_code == 400  #bad request
     assert not response.json["success"]

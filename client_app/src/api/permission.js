@@ -5,13 +5,29 @@ export const permissionsAPI = {
     const response = await fetchClient("/user_permission");
     return response;
   },
+  addShelterAdmin: async (shelterId, userEmail) => {
+    const response = await fetchClient(`/shelters/${shelterId}/admin`, {
+      method: "POST",
+      body: JSON.stringify({ user_email: userEmail }),
+    });
+    return response;
+  },
+  addSystemAdmin: async (userEmail) => {
+    const response = await fetchClient("/system_admin", {
+      method: "POST",
+      body: JSON.stringify({ user_email: userEmail }),
+    });
+    return response;
+  },
+  /*
   addPermission: async (data) => {
-    const response = await fetchClient("/user_permission", { // <-- changed here
+    const response = await fetchClient("/user_permission", {
       method: "POST",
       body: JSON.stringify(data),
     });
     return response;
   },
+  */
   deletePermission: async (permissionId) => {
     const response = await fetchClient(`/user_permissions/${permissionId}`, {
       method: "DELETE",
@@ -23,7 +39,7 @@ export const permissionsAPI = {
     return response;
   },
   getShelterAdmins: async (shelterId) => {
-    const response = await fetchClient(`/shelter_admin?shelter_id=${shelterId}`);
+    const response = await fetchClient(`/shelters/${shelterId}/admin`);
     return response;
   }
 };

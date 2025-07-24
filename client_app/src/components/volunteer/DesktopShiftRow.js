@@ -30,7 +30,7 @@ export const DesktopShiftRow = ({ shiftData, handleShiftToggle }) => {
       <td>{shiftData.startDate}</td>
       <td>{shiftData.startTime}</td>
       <td>{shiftData.duration}h</td>
-      {shiftData.shift.volunteers && (
+      {'volunteer_count' in shiftData.shift && (
         <td>
           <VolunteerCount shift={shiftData.shift} />
         </td>
