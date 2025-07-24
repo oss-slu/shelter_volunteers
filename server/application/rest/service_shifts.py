@@ -17,11 +17,11 @@ from serializers.service_commitment import ServiceCommitmentJsonEncoder
 
 service_shift_bp = Blueprint("service_shift", __name__)
 
-def retrieve_service_shifts(request, shelter_id=None):
+def retrieve_service_shifts(http_request, shelter_id=None):
     repo = ServiceShiftsMongoRepo()
     commitments_repo = MongoRepoCommitments()
 
-    filter_start_after_str = request.args.get("filter_start_after")
+    filter_start_after_str = http_request.args.get("filter_start_after")
 
     filter_start_after = (
         int(filter_start_after_str)
