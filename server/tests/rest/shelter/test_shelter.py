@@ -28,8 +28,8 @@ def client():
 @patch("application.rest.shelter.shelter_add_use_case")
 @patch("application.rest.system_admin_permission_required.is_authorized")
 def test_post_shelter(
-    mock_is_authorized, 
-    mock_shelter_add_use_case, 
+    mock_is_authorized,
+    mock_shelter_add_use_case,
     client
     ):
     mock_is_authorized.return_value = True

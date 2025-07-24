@@ -16,7 +16,7 @@ def shelter_admin_permission_required(f):
     @wraps(f)
     @token_required_with_request
     def decorated(user_email, *args, **kwargs):
-        shelter_id = kwargs.get("shelter_id")
+        shelter_id = kwargs.get('shelter_id')
         # Check if the user has admin permissions
         if not is_authorized(repo, user_email, Resources.SHELTER, shelter_id):
             return Response(

@@ -4,7 +4,6 @@ This module handles service shift operations.
 
 import json
 from flask import Blueprint, request, Response
-from flask_cors import cross_origin
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import list_service_shifts_with_volunteers_use_case
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo

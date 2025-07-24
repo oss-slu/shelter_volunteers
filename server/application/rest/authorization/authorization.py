@@ -8,7 +8,6 @@ from use_cases.authorization.add_system_admin import add_system_admin
 from use_cases.authorization.get_user_permission import get_user_permission
 from use_cases.authorization.get_system_admins import get_system_admins
 from use_cases.authorization.get_shelter_admins import get_shelter_admins
-from use_cases.authorization.is_authorized import is_authorized
 from application.rest.system_admin_permission_required import system_admin_permission_required
 from application.rest.shelter_admin_permission_required import shelter_admin_permission_required
 from application.rest.token_required import token_required_with_request
@@ -16,7 +15,6 @@ from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from repository.mongo.authorization import PermissionsMongoRepo
 from repository.mongo.shelter import ShelterRepo
 from serializers.user_permission import UserPermissionJsonEncoder
-from domains.resources import Resources
 from responses import ResponseTypes
 
 authorization_blueprint = Blueprint('authorization', __name__)
@@ -93,7 +91,7 @@ def post_system_admin():
     """
     data = request.get_json()
     user_email = data.get('user_email')
-    
+
     if not user_email:
         return Response(
             json.dumps({'message': 'User email is required'}),
@@ -119,7 +117,7 @@ def post_shelter_admin(shelter_id):
     """
     data = request.get_json()
     user_email = data.get('user_email')
-    
+
     if not user_email:
         return Response(
             json.dumps({'message': 'User email is required'}),
