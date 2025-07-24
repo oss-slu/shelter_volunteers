@@ -59,7 +59,7 @@ def test_post_shelter(
     }
 
     response = client.post(
-        "/shelter",
+        "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
         headers=headers
@@ -80,7 +80,7 @@ def test_post_shelter_missing_required_fields(
         "Authorization": f"{token}"
     }
     response = client.post(
-        "/shelter",
+        "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
         headers=headers
@@ -97,7 +97,7 @@ def test_post_shelter_missing_required_fields(
     }
 
     response = client.post(
-        "/shelter",
+        "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
         headers=headers
@@ -113,7 +113,7 @@ def test_post_shelter_missing_required_fields(
         }
     }
     response = client.post(
-        "/shelter",
+        "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
         headers=headers
@@ -129,7 +129,7 @@ def test_post_shelter_missing_required_fields(
         }
     }
     response = client.post(
-        "/shelter",
+        "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
         headers=headers
@@ -174,7 +174,7 @@ def test_get_shelter(mock_shelter_list_use_case, client):
     ]
 
     mock_shelter_list_use_case.return_value = mock_shelters
-    response = client.get("/shelter")
+    response = client.get("/shelters")
     raw_data = response.data.decode()
     parsed_response = json.loads(raw_data)
     assert response.status_code == 200
