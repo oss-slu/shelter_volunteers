@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUsers, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import "../../styles/shelter/RequestItem.css";
 import { formatTime } from "../../formatting/FormatDateTime";
 
 const ServiceShiftDetails = ({shift, view, edit}) => {
@@ -9,7 +8,7 @@ const ServiceShiftDetails = ({shift, view, edit}) => {
   const endTime = formatTime(shift.shift_end)
 
   return (
-    <div className="request-item-container">
+    <div className="dashboard-item">
       <div className="calendar">
         <div className="date-time">
           <div className="request-details">

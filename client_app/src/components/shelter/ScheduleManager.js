@@ -142,6 +142,7 @@ function ShelterScheduleManager(){
         shiftsToCreate.push({
           shift_start,
           shift_end,
+          shift_name: shift.shiftName,
           shelter_id: shelterId,
           required_volunteer_count: shift.requiredVolunteers,
           max_volunteer_count: shift.maxVolunteers

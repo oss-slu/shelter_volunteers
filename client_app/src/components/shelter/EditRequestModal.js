@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ModalComponent } from './ModalComponent';
-import "../../styles/shelter/EditRequestModal.css";
-
+import { formatDate, formatTime } from '../../formatting/FormatDateTime';
 
 export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   const [updatedShift, setUpdatedShift] = useState(shift || { fromTime: "", toTime: "", volunteersRequested: 0 });
-
+  const start_date = formatDate(updatedShift.shift_start);
+  const start_time = formatTime(updatedShift.shift_start);
+  const duration = (updatedShift.shift_end - updatedShift.shift_start) / (1000 * 60 * 60); // Convert milliseconds to hours
   useEffect(() => {
     if (shift) {
       setUpdatedShift(shift);
@@ -26,27 +27,10 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   };
 
   const renderData = () => (
-    <div className="modalEditRequest">
-      <h3 className="editShiftHeader">Edit Shift</h3>
-      <label className="fromLabel">
-        From Time:
-        <input
-          type="text"
-          name="shift_start"
-          value={updatedShift.shift_start}
-          onChange={handleChange}
-          className="shiftTime"
-        />
-      </label>
-      <label className="toLabel">
-        To Time:
-        <input
-          type="text"
-          name="shift_end"
-          value={updatedShift.shift_end}
-          onChange={handleChange}
-        />
-      </label>
+    <div>
+      <div className="title">
+        <p>{start_date} {start_time} ({duration} hours)</p>
+      </div>
       <label className="volunteersRequestedLabel">
         Volunteers Requested:
         <input

@@ -48,66 +48,6 @@
   padding: 5px 0;
 }
 
-/* Desktop Table Styles */
-.table-container {
-  overflow-x: auto;
-  background-color: var(--background-color);
-  box-shadow: var(--box-shadow-color);
-  margin-bottom: 1rem;;
-  border: var(--border-color)
-}
-
-.shift-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.shift-table th,
-.shift-table td {
-  padding: 8px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-
-
-
-.shifts-table {
-  width: 100%;
-  min-width: 800px;
-  border-collapse: collapse;
-}
-
-.table-header {
-  background-color: white;
-}
-
-.table-header th {
-  padding: 8px;
-  text-align: left;
-  font-weight: bold;
-  color: var(--secondary-color);;
-  font-size: 0.85rem;
-  background-color: var(--background-color-accent);
-}
-
-.table-row {
-  background-color: var(--background-color);
-  transition: all 0.3s ease;
-}
-
-
-.table-row.conflicted {
-  opacity: 0.6;
-}
-
-.table-row td {
-  padding: 8px;
-  border: none;
-  vertical-align: top;
-  font-size: 1rem;
-}
-
 .shifts-table input[type="text"],
 .shifts-table input[type="time"],
 .shifts-table input[type="number"] {

@@ -55,14 +55,3 @@
     height: 100%; /* The Calendar will fill the .calendar-container */
   }
   
-  /* Styling for the custom "Open" button */
-  .open-button {
-    margin-top: 12px; /* Adjust this value to lower or raise the button */
-    background-color: #1f3b52;
-    color: #fff;
-    border: none;
-    padding: 4px 8px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
