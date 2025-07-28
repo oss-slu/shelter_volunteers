@@ -36,7 +36,7 @@ export const fetchClient = async (endpoint, options = {}) => {
     const response = await fetch(`${SERVER}${endpoint}`, config);
     
     // Check if the response indicates authentication failure
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       // Use the global logout function to clear auth state and update React state
       const logout = getGlobalLogout();
       if (logout) {
