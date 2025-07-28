@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/shelter/RequestItem.css";
 import { formatTime } from "../../formatting/FormatDateTime";
 
-const ServiceShiftDetails = ({shift, view, cancel, edit}) => {
+const ServiceShiftDetails = ({shift, view, edit}) => {
 
   const startTime = formatTime(shift.shift_start);
   const endTime = formatTime(shift.shift_end)
@@ -26,11 +26,6 @@ const ServiceShiftDetails = ({shift, view, cancel, edit}) => {
       <div className="edit">
         <button onClick={() => edit(shift)}>
           <FontAwesomeIcon icon={faPenToSquare} />
-        </button>
-      </div>
-      <div className="delete">
-        <button onClick={() => cancel(shift)}>
-          <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </div>
     </div>

@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../../styles/shelter/UpcomingShifts.css";
 import ServiceShiftDetails from "./ServiceShiftDetails.js";
 import { EditRequestModal } from "./EditRequestModal.js";
-import { CancelRequestModal } from "./CancelRequestModal.js";
 import { ShiftsModal } from "./ShiftsModal.js";
 import { formatDate } from "../../formatting/FormatDateTime.js"; 
 
 const ViewShifts = ({shiftDetailsData}) => {
   const [shiftsData, setShiftsData] = useState(shiftDetailsData || []);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState(null);
 
@@ -25,17 +23,6 @@ const ViewShifts = ({shiftDetailsData}) => {
   const handleEditRequestClick = (shift) => {
     setSelectedShift(shift);
     setIsEditModalOpen(true);
-  };
-
-  const handleCancelRequestClick = (shift) => {
-    setSelectedShift(shift);
-    setIsCancelModalOpen(true);
-  };
-
-  const handleConfirmCancel = (shiftToCancel) => {
-    // Add API call to cancel the shift
-    setShiftsData((prevData) => prevData.filter((shift) => shift._id !== shiftToCancel._id));
-    setIsCancelModalOpen(false);
   };
 
   const handleSaveEdit = (updatedShift) => {
@@ -77,7 +64,6 @@ const ViewShifts = ({shiftDetailsData}) => {
                 shift={shift}
                 view={handleRosterClick}
                 edit={handleEditRequestClick}
-                cancel={handleCancelRequestClick} 
               />
             ))}
           </div>
@@ -93,12 +79,6 @@ const ViewShifts = ({shiftDetailsData}) => {
         onClose={() => setIsEditModalOpen(false)}
         shift={selectedShift}
         onSave={handleSaveEdit}
-      />
-      <CancelRequestModal
-        isOpen={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
-        shift={selectedShift}
-        onConfirmCancel={handleConfirmCancel}
       />
     </div>
   );
