@@ -40,6 +40,20 @@ This will open up another page, showing the string you will need for your cluste
 
 Save this string somewhere, you will need it when you configure the server side application.
 
+#### Configure and run the server side
+From the server directory, create and activate a python virtual environment (instructions will vary based on your operating system, so look this up online). Install the required dependencies with `pip install -r requirements.txt`. If you are on a mac, you might need to use `pip3` instead of `pip`.
+
+Create a .env.pre-production file in the server directory. In this file, add the following configuration strings (remove the angle brackets):
+```
+MONGODB_HOST=<The string you saved from your mongodb atlas connection configuration.>
+MONGODB_USERNAME=<The username you created when configuring mongodb cluster>
+MONGODB_PASSWORD=<The password associated with the username>
+GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
+JWT_SECRET=<make up sone fairly long alphanumeric string>
+```
+Do NOT commit this file to the repository, because it contains your private information.
+
+Start the server with: bash run_dev_server.sh
 ### Docker option
 To run the code using one command with Docker Compose, please follow the below instructions:
 
