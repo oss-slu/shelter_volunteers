@@ -10,7 +10,7 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 
 ### Preferred option
 To run this application, you will need to:
-1. [Configure a database connection through MongoDB Atlas](configure-a-database-connection-through-MongoDB atlas)
+1. [Configure a database connection through MongoDB Atlas](#configure-a-database-connection-through-MongoDB atlas)
 1. Configure and run the server side
 1. Configure and run the client side
 
