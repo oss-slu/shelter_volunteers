@@ -13,7 +13,7 @@ To run this application, you will need to:
 1. [Configure a database connection through MongoDB Atlas](#configure-a-dababase-connection-through-mongodb-atlas)
 1. [Configure and run the server side](#configure-and-run-the-server-side)
 1. [Configure and run the client side](#configure-and-run-the-client-side)
-1. Give yourself system admin access.
+1. [Give yourself system admin access](#give-yourself-system-admin-access)
 
 #### Configure a dababase connection through MongoDB Atlas
 Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
@@ -67,7 +67,7 @@ To do this:
 1. Navigate to the server directory using a terminal
 1. Activate your python virtual environment (if it's not already activated)
 1. Set your PYTHONPATH envirnment variable to the current directory: `export PYTHONPATH=$(pwd)`
-1. Set your FLASK_ENV environment variable to pre-production: `expoert FLASK_ENV="pre-production"`
+1. Set your FLASK_ENV environment variable to pre-production: `export FLASK_ENV="pre-production"`
 1. Run: `python cli/admin_cli.py system <YOUR_GOOGLE_EMAIL_ADDRESS>
 Remove the angle brackes in <YOUR_GOOGLE_EMAIL_ADDRESS>. 
 
