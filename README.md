@@ -13,6 +13,7 @@ To run this application, you will need to:
 1. [Configure a database connection through MongoDB Atlas](#configure-a-dababase-connection-through-mongodb-atlas)
 1. [Configure and run the server side](#configure-and-run-the-server-side)
 1. [Configure and run the client side](#configure-and-run-the-client-side)
+1. Give yourself system admin access.
 
 #### Configure a dababase connection through MongoDB Atlas
 Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
@@ -58,6 +59,21 @@ Start the server with: bash run_dev_server.sh
 #### Configure and run the client side
 Navigate to the client_app directory and install dependencies with `npm install`
 . Once the dependencies are installed, you can start the client-side application with `npm run start`.
+
+#### Give yourself system admin access
+Once you log in to the application with a Google account, you will only see Volunteer dashboard. This is because everyone can be a volunteer, and not everyone can be a shelter admin or a system admin. As a developer, you will want to be able to do system and shelter admin operations. In order to do this, you will want to give yourself a system admin access.
+
+To do this:
+1. Navigate to the server directory using a terminal
+1. Activate your python virtual environment (if it's not already activated)
+1. Set your PYTHONPATH envirnment variable to the current directory: `export PYTHONPATH=$(pwd)`
+1. Set your FLASK_ENV environment variable to pre-production: `expoert FLASK_ENV="pre-production"`
+1. Run: `python cli/admin_cli.py system <YOUR_GOOGLE_EMAIL_ADDRESS>
+Remove the angle brackes in <YOUR_GOOGLE_EMAIL_ADDRESS>. 
+
+Now, when you sign out and sign back in, you should see admin dashboard. You might need to sign out a few times or clear your browser cashe to see the change.
+As a system admin, you can now add a new shelter, create repeatable shifts in that shelter, and open shelter on whatever days you want. Once you open the shelter, you should be able to see those shifts from the Volunteer dashboard.
+
 ### Docker option
 To run the code using one command with Docker Compose, please follow the below instructions:
 
