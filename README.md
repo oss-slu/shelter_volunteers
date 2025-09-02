@@ -10,7 +10,7 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 
 ### Preferred option
 To run this application, you will need to:
-1. Configure a database connection through MongoDB Atlas
+1. [Configure a database connection through MongoDB Atlas](configure-a-database-connection-through-MongoDB atlas)
 1. Configure and run the server side
 1. Configure and run the client side
 
@@ -49,11 +49,15 @@ MONGODB_HOST=<The string you saved from your mongodb atlas connection configurat
 MONGODB_USERNAME=<The username you created when configuring mongodb cluster>
 MONGODB_PASSWORD=<The password associated with the username>
 GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
-JWT_SECRET=<make up sone fairly long alphanumeric string>
+JWT_SECRET=<make up some fairly long alphanumeric string>
 ```
 Do NOT commit this file to the repository, because it contains your private information.
 
 Start the server with: bash run_dev_server.sh
+
+#### Configure and run the client side
+Navigate to the client_app directory and install dependencies with `npm install`
+. Once the dependencies are installed, you can start the client-side application with `npm run start`.
 ### Docker option
 To run the code using one command with Docker Compose, please follow the below instructions:
 
