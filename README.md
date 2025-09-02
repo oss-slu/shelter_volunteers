@@ -11,8 +11,8 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 ### Preferred option
 To run this application, you will need to:
 1. [Configure a database connection through MongoDB Atlas](#configure-a-dababase-connection-through-mongodb-atlas)
-1. Configure and run the server side
-1. Configure and run the client side
+1. [Configure and run the server side](#configure-and-run-the-server-side)
+1. [Configure and run the client side](#configure-and-run-the-client-side)
 
 #### Configure a dababase connection through MongoDB Atlas
 Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
