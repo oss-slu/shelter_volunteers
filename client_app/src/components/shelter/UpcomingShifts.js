@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ViewShifts from "./ViewShifts.js";
+import ViewShifts from "./ViewShifts2.js";
 import "../../styles/shelter/UpcomingShifts.css";
 import { serviceShiftAPI } from "../../api/serviceShift.js";
 
@@ -39,7 +39,7 @@ const UpcomingShifts = () => {
         No upcoming shifts found. You can create shifts by going to the Schedule Shifts page in the menu.
       </div>
     ) : (
-      <div className="upcoming-shifts">
+      <div>
         <h2>Upcoming Shifts</h2>
         <ViewShifts shiftDetailsData={shiftDetailsData} />
       </div>
