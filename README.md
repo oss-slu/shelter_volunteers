@@ -8,6 +8,39 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 
 ## Getting Started
 
+### Preferred option
+To run this application, you will need to:
+1. Configure a database connection through MongoDB Atlas
+1. Configure and run the server side
+1. Configure and run the client side
+
+#### Configure a dababase connection through MongoDB Atlas
+Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
+
+Once you are signed in, click on create new cluster. 
+
+![cluster](docs/1create_cluster.png)
+Select the free tier and click on Create Deployment.
+![free](docs/2free_tier.png)
+In the Connection security screen, pick a username and password you will use to connect to the database. You'll be able to change these later, if needed. Click "Close".
+![security](docs/3connection_security.png)
+
+From the left side menu select Network Access.
+![network access](docs/network_access.png)
+This will open another page, allowing you to edit the IP addresses of incoming connections. To allow connections from anywhere, select "Allow access from anywhere"
+![access_from_anywhere](docs/access_from_anywhere.png)
+Click on "Confirm" to save your changes.
+
+Now, get the information you will need for configuring the server connection to the database. From the Clusters menu on the left side, click on Connect button next to your cluster name.
+![connect](docs/connect.png)
+Select the "Drivers" option
+![drivers](docs/drivers.png)
+This will open up another page, showing the string you will need for your cluster connection. Copy this string, excluding the username and password, as shown in the screenshot below.
+![name](docs/cluster_name.png)
+
+Save this string somewhere, you will need it when you configure the server side application.
+
+### Docker option
 To run the code using one command with Docker Compose, please follow the below instructions:
 
 1. Install Docker on your computer if you do not have one (https://www.docker.com/get-started/)
