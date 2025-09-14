@@ -1,6 +1,9 @@
 """
 This module contains the use case for listing service commitments.
 """
+from datetime import datetime
+
+
 def list_service_commitments(
         commitments_repo,
         user_email=None,
@@ -9,6 +12,7 @@ def list_service_commitments(
         user_email,
         shift_id)
     return commitments
+
 
 def list_service_commitments_with_shifts(
         commitments_repo,
@@ -23,6 +27,7 @@ def list_service_commitments_with_shifts(
         commitments_repo: A repository object that 
         contains all service commitments
         shifts_repo: A repository object that contains all service shifts
+        time_filter: object exposing get_filter('start_after'|'start_before')
         user_email (str, optional): The user's email.
         shift_id (str, optional): The ID of the service shift to filter by.
 
@@ -37,19 +42,31 @@ def list_service_commitments_with_shifts(
     shift_ids = [commitment.service_shift_id for commitment in commitments]
     shifts = shifts_repo.get_shifts(shift_ids)
 
-    # additional filtering by time
+    now = datetime.utcnow()
+    completed_shift_ids = {
+        s.get_id() for s in shifts
+        if getattr(s, "shift_end", None) is not None and s.shift_end <= now
+    }
+
+    if completed_shift_ids:
+        commitments = [c for c in commitments if c.service_shift_id in completed_shift_ids]
+        shifts = [s for s in shifts if s.get_id() in completed_shift_ids]
+    else:
+        # Nothing completed -> return empty aligned lists
+        return ([], [])
+
     for filter_key, comparison in [
-        ("start_after", lambda shift, value: shift.shift_start >= value),
+        ("start_after",  lambda shift, value: shift.shift_start >= value),
         ("start_before", lambda shift, value: shift.shift_start < value)
     ]:
         filter_value = time_filter.get_filter(filter_key)
         if filter_value:
-            shift_ids = {
+            filtered_ids = {
                 s.get_id() for s in shifts if comparison(s, filter_value)
             }
             commitments = [
-                c for c in commitments if c.service_shift_id in shift_ids
+                c for c in commitments if c.service_shift_id in filtered_ids
             ]
-            shifts = [shift for shift in shifts if shift.get_id() in shift_ids]
+            shifts = [shift for shift in shifts if shift.get_id() in filtered_ids]
 
     return (commitments, shifts)
