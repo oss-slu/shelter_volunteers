@@ -59,18 +59,25 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
               />
               {
                 email.length > 0 &&
-                  <button type="button"
-                          onClick={() => setEmail("")}
-                          className="btn btn-warning m-0 w-auto px-3">Clear</button>
+                <button type="button"
+                  onClick={() => setEmail("")}
+                  className="btn m-0 w-auto px-3"
+                  style={{
+                    "background-color": "#2c3e50",
+                    "color": "white"
+                  }}
+                >Clear</button>
               }
             </div>
           </div>
           <button type="submit" className="submit-button">Add User</button>
         </form>
-        {status && (
-          <div className={`message ${status.type}`}>{status.message}</div>
-        )}
-      </div>
+        {
+          status && (
+            <div className={`message ${status.type}`}>{status.message}</div>
+          )
+        }
+      </div >
       <div>
         {admins.length === 0 ? (
           <li>No {adminType} users found.</li>
@@ -81,17 +88,17 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
             </h3>
             <div className="list">
               {admins.map((email) => {
-                  return (
-                    <div key={email}className="tagline-small">
-                      {email}
-                    </div>
-                  );
+                return (
+                  <div key={email} className="tagline-small">
+                    {email}
+                  </div>
+                );
               })}
             </div>
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
