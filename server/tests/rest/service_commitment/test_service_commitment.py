@@ -67,7 +67,7 @@ def test_get_commitments_with_augmented_data(
         {
             "_id": "SHIFT_ID2",
             "shelter_id": "SHELTER_ID2",
-            "shift_start": "50000",
+            "shift_start": "50010",
             "shift_end": "60000",
             "required_volunteer_count": 1,
             "max_volunteer_count": 5,
