@@ -3,7 +3,6 @@ Removes system admin role from user
 """
 from use_cases.authorization.get_user_permission import get_user_permission
 from domains.resources import Resources
-from domains.authorization.user_permission import UserPermission
 from responses import ResponseSuccess
 
 def remove_system_admin(repo, user_email: str):
