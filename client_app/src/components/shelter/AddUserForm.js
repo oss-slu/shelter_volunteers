@@ -62,8 +62,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
                 email.length > 0 &&
                 <button type="button"
                   onClick={() => setEmail("")}
-                  id="cancel-button"
-                  className="btn m-0 w-auto px-3"
+                  className="cancel-button m-0 w-auto px-3"
                 >Clear</button>
               }
             </div>
