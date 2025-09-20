@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { permissionsAPI } from "../../api/permission";
 import { useParams } from "react-router-dom";
+import ConfirmButton from "./ConfirmButton";
 
 const AddUserForm = ({ resourceType = "shelter" }) => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -40,6 +41,22 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
     }
   };
 
+  const deleteUser = async (email) => {
+    try {
+      const result = resourceType === "shelter"
+        ? await permissionsAPI.deleteShelterAdmin(shelterId, email)
+        : await permissionsAPI.deleteSystemAdmin(email);
+      if (result?.success) {
+        setStatus({ type: "success", message: result.message || "User removed successfully." });
+        setadmins(prev => prev.filter(x => x !== email));
+      } else {
+        throw new Error(result?.message || "Unknown error");
+      }
+    } catch (err) {
+      setStatus({ type: "error", message: "Failed to delete user." });
+    }
+  }
+
   return (
     <div>
       <div className="add-user-form">
@@ -70,15 +87,27 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
             <h3 className="summary-title">
               Current {adminType} Users
             </h3>
-            <div className="list">
-              {admins.map((email) => {
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {admins.map((email) => {
                   return (
-                    <div key={email}className="tagline-small">
-                      {email}
-                    </div>
+                    <tr key={email}>
+                      <td className="tagline-small">
+                        {email}
+                      </td>
+                      <td>
+                        <ConfirmButton initialText="Remove" onConfirm={() => {deleteUser(email)}} />
+                      </td>
+                    </tr>
                   );
-              })}
-            </div>
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
