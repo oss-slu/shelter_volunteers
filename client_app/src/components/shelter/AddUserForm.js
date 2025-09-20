@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { permissionsAPI } from "../../api/permission";
 import { useParams } from "react-router-dom";
+import "../../styles/shelter/AddUserForm.css";
 
 const AddUserForm = ({ resourceType = "shelter" }) => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -61,11 +62,8 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
                 email.length > 0 &&
                 <button type="button"
                   onClick={() => setEmail("")}
+                  id="cancel-button"
                   className="btn m-0 w-auto px-3"
-                  style={{
-                    "background-color": "#2c3e50",
-                    "color": "white"
-                  }}
                 >Clear</button>
               }
             </div>
