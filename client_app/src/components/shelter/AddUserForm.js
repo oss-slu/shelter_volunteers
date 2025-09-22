@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { permissionsAPI } from "../../api/permission";
 import { useParams } from "react-router-dom";
 import ConfirmButton from "./ConfirmButton";
+import "../../styles/shelter/AddUserForm.css"
 
 const AddUserForm = ({ resourceType = "shelter" }) => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -87,7 +88,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
             <h3 className="summary-title">
               Current {adminType} Users
             </h3>
-            <table className="table table-hover">
+            <table className="table table-hover no-vertical-lines">
               <thead>
                 <tr>
                   <th>Email</th>
@@ -101,7 +102,10 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
                         {email}
                       </td>
                       <td>
-                        <ConfirmButton initialText="Remove" onConfirm={() => {deleteUser(email)}} />
+                        <ConfirmButton
+                          expirationTimeMillis={7000}
+                          initialText="Remove"
+                          onConfirm={() => { deleteUser(email) }} />
                       </td>
                     </tr>
                   );

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { delay } from "msw";
 
-const ConfirmButton = ({expirationTimeMillis = 3000, onConfirm, initialText, confirmationText = "Confirm?"}) => {
+const ConfirmButton = ({ expirationTimeMillis = 3000, onConfirm, initialText, confirmationText = "Confirm?" }) => {
 
   const [isAwaitingConfirmation, setIsAwaitingConfirmation] = useState(false);
   const displayText = (isAwaitingConfirmation ? confirmationText : initialText);
@@ -25,7 +25,9 @@ const ConfirmButton = ({expirationTimeMillis = 3000, onConfirm, initialText, con
   }
 
   return (
-    <button className="btn btn-danger" onClick={onClick}>{displayText}</button>
+    <button
+      className={"btn " + (isAwaitingConfirmation ? "btn-warning" : "btn-danger")}
+      onClick={onClick} > {displayText}</button >
   )
 };
 
