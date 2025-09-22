@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { permissionsAPI } from "../../api/permission";
 import { useParams } from "react-router-dom";
+import "../../styles/shelter/AddUserForm.css";
 
 const AddUserForm = ({ resourceType = "shelter" }) => {
   const { shelterId } = useParams(); // grab the shelterId from URL
@@ -46,22 +47,34 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
         <h2>Add {adminType}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">User Email</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter user email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <label htmlFor="email" className="form-label">User Email</label>
+            <div className="input-group">
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter user email"
+                value={email}
+                className="form-control"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              {
+                email.length > 0 &&
+                <button type="button"
+                  onClick={() => setEmail("")}
+                  className="cancel-button m-0 w-auto px-3"
+                >Clear</button>
+              }
+            </div>
           </div>
           <button type="submit" className="submit-button">Add User</button>
         </form>
-        {status && (
-          <div className={`message ${status.type}`}>{status.message}</div>
-        )}
-      </div>
+        {
+          status && (
+            <div className={`message ${status.type}`}>{status.message}</div>
+          )
+        }
+      </div >
       <div>
         {admins.length === 0 ? (
           <li>No {adminType} users found.</li>
@@ -72,17 +85,17 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
             </h3>
             <div className="list">
               {admins.map((email) => {
-                  return (
-                    <div key={email}className="tagline-small">
-                      {email}
-                    </div>
-                  );
+                return (
+                  <div key={email} className="tagline-small">
+                    {email}
+                  </div>
+                );
               })}
             </div>
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
