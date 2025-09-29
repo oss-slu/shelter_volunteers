@@ -16,8 +16,6 @@ class ServiceCommitment:
     volunteer_id: str  # Typically an email address
     service_shift_id: str  # The ID of the associated ServiceShift
     _id: Optional[str] = None  # Unique ID for this commitment
-    volunteer_name: str | None = None
-    volunteer_phone_number: str | None = None
 
     def get_id(self):
         """Returns the ID of the service shift."""
