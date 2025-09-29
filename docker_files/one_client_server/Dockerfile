@@ -20,7 +20,7 @@ ENV FLASK_ENV=pre-production
 ENV FLASK_CONFIG=development
 
 
-EXPOSE 5000
+EXPOSE 5001
 WORKDIR /app/server
-#CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]
-CMD ["flask", "run", "--debug", "-h", "0.0.0.0", "-p", "5000"]
+#CMD ["gunicorn", "-b", "0.0.0.0:5001", "wsgi:app"]
+CMD ["flask", "run", "--debug", "-h", "0.0.0.0", "-p", "5001"]
