@@ -1,17 +1,17 @@
-import { useState, useMemo, useEffect } from 'react';
-import { shelterAPI } from '../../api/shelter';
-import { serviceShiftAPI } from '../../api/serviceShift';
-import { serviceCommitmentAPI } from '../../api/serviceCommitment';
-import { formatDate } from '../../formatting/FormatDateTime';
-import { formatTime } from '../../formatting/FormatDateTime';
-import { getUser } from '../../authentication/user';
-import SignUpResults from './SignUpResults';
-import { MobileShiftCard } from './MobileShiftCard';
-import { DesktopShiftRow } from './DesktopShiftRow';
-import Loading from '../Loading';
+import { useState, useMemo, useEffect } from "react";
+import { shelterAPI } from "../../api/shelter";
+import { serviceShiftAPI } from "../../api/serviceShift";
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
+import { formatDate } from "../../formatting/FormatDateTime";
+import { formatTime } from "../../formatting/FormatDateTime";
+import { getUser } from "../../authentication/user";
+import SignUpResults from "./SignUpResults";
+import { MobileShiftCard } from "./MobileShiftCard";
+import { DesktopShiftRow } from "./DesktopShiftRow";
+import Loading from "../Loading";
+import ShiftSignUpDialog from "./ShiftSignUpDialog";
 
-
-function VolunteerShiftSignup(){
+function VolunteerShiftSignup() {
   const [loading, setLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState([]);
@@ -20,7 +20,7 @@ function VolunteerShiftSignup(){
   const [shifts, setShifts] = useState([]);
   const [commitments, setCommitments] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
-  const [sortBy, setSortBy] = useState('date');
+  const [sortBy, setSortBy] = useState("date");
   const user = getUser();
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +40,7 @@ function VolunteerShiftSignup(){
     };
     fetchData();
   }, [results]);
-  
+
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
     return shelters.reduce((acc, shelter) => {
@@ -53,33 +53,35 @@ function VolunteerShiftSignup(){
   const formatDateTime = (timestamp) => {
     return {
       date: formatDate(timestamp),
-      time: formatTime(timestamp)
+      time: formatTime(timestamp),
     };
   };
 
   // Calculate need percentage (1 - current_volunteers/required_volunteers)
   const calculateNeed = (shift) => {
-    return 1 - (shift.volunteer_count / shift.required_volunteer_count);
+    return 1 - shift.volunteer_count / shift.required_volunteer_count;
   };
 
   // Check if shifts overlap
   const shiftsOverlap = (shift1, shift2) => {
-    return (shift1.shift_start < shift2.shift_end && shift2.shift_start < shift1.shift_end);
+    return shift1.shift_start < shift2.shift_end && shift2.shift_start < shift1.shift_end;
   };
 
   // Get conflicting shifts for a given shift
   const getConflictingShifts = (targetShift) => {
     // Check conflicts with selected shifts
-    const selectedConflicts = Array.from(selectedShifts).filter(shiftId => {
-      const shift = shifts.find(s => s._id === shiftId);
+    const selectedConflicts = Array.from(selectedShifts).filter((shiftId) => {
+      const shift = shifts.find((s) => s._id === shiftId);
       return shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift);
     });
 
     // Check conflicts with already committed shifts
     const committedConflicts = commitments
-      .map(commitment => shifts.find(s => s._id === commitment.service_shift_id))
-      .filter(shift => shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift))
-      .map(shift => shift._id);
+      .map((commitment) => shifts.find((s) => s._id === commitment.service_shift_id))
+      .filter(
+        (shift) => shift && shift._id !== targetShift._id && shiftsOverlap(shift, targetShift),
+      )
+      .map((shift) => shift._id);
 
     // Combine and deduplicate
     return Array.from(new Set([...selectedConflicts, ...committedConflicts]));
@@ -96,16 +98,15 @@ function VolunteerShiftSignup(){
     const conflicts = getConflictingShifts(shift);
     const hasConflict = conflicts.length > 0;
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
-    let signedUp = commitments.some(commitment => commitment.service_shift_id === shift._id);
-    let needClass = 'need-low';
-    let priority = 'Low';
+    let signedUp = commitments.some((commitment) => commitment.service_shift_id === shift._id);
+    let needClass = "need-low";
+    let priority = "Low";
     if (needLevel > 0.6) {
-      priority = 'High';
-      needClass = 'need-high';
-    }
-    else if (needLevel > 0.3) {
-      priority = 'Medium';
-      needClass = 'need-medium';
+      priority = "High";
+      needClass = "need-high";
+    } else if (needLevel > 0.3) {
+      priority = "Medium";
+      needClass = "need-medium";
     }
     return {
       shift,
@@ -120,73 +121,78 @@ function VolunteerShiftSignup(){
       isSelected,
       hasConflict,
       duration,
-      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp
+      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp,
     };
   };
 
   // Sort shifts based on selected criteria
   const sortedShifts = useMemo(() => {
     const sortedArray = [...shifts];
-    
+
     switch (sortBy) {
-      case 'shelter':
+      case "shelter":
         sortedArray.sort((a, b) => {
-          const shelterA = shelterMap[a.shelter_id]?.name || '';
-          const shelterB = shelterMap[b.shelter_id]?.name || '';
+          const shelterA = shelterMap[a.shelter_id]?.name || "";
+          const shelterB = shelterMap[b.shelter_id]?.name || "";
           return shelterA.localeCompare(shelterB);
         });
         break;
-      case 'date':
+      case "date":
         sortedArray.sort((a, b) => a.shift_start - b.shift_start);
         break;
-      case 'need':
+      case "need":
         sortedArray.sort((a, b) => calculateNeed(b) - calculateNeed(a));
         break;
       default:
         break;
     }
-    
+
     return sortedArray;
   }, [shifts, sortBy, shelterMap]);
 
   // Handle shift selection
   const handleShiftToggle = (shift) => {
     const newSelectedShifts = new Set(selectedShifts);
-    
+
     if (selectedShifts.has(shift._id)) {
       newSelectedShifts.delete(shift._id);
     } else {
       // Check for conflicts
       const conflicts = getConflictingShifts(shift);
       if (conflicts.length > 0) {
-        alert(`This shift conflicts with ${conflicts.length} already selected shift(s). Please deselect conflicting shifts first.`);
+        alert(
+          `This shift conflicts with ${conflicts.length} already selected shift(s). Please deselect conflicting shifts first.`,
+        );
         return;
       }
       newSelectedShifts.add(shift._id);
     }
-    
+
     setSelectedShifts(newSelectedShifts);
   };
 
+  const [showUserInfoDialog, setShowUserInfoDialog] = useState(false);
+
   // Handle sign up
-  const handleSignUp = async () => {
+  const handleSignUp = async (name, phoneNumber) => {
     try {
       console.log("Submitting shifts:", selectedShifts);
-      const shiftsList = Array.from(selectedShifts).map(shiftId => ({
+      const shiftsList = Array.from(selectedShifts).map((shiftId) => ({
         volunteer_id: user.email,
-        service_shift_id: shiftId
+        volunteer_name: name,
+        volunteer_phone_number: phoneNumber,
+        service_shift_id: shiftId,
       }));
       const response = await serviceCommitmentAPI.addCommitments(shiftsList);
-      console.log(response)
+      console.log(response);
       setResults(response);
-      setResultShifts(sortedShifts.filter(shift => selectedShifts.has(shift._id)));
+      setResultShifts(sortedShifts.filter((shift) => selectedShifts.has(shift._id)));
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error submitting shifts:", error);
-    } 
+    }
   };
 
   // Modal for sign up results
@@ -207,8 +213,7 @@ function VolunteerShiftSignup(){
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="sort-select"
-          >
+            className="sort-select">
             <option value="date">Date & Time</option>
             <option value="shelter">Shelter Name</option>
             <option value="need">Priority</option>
@@ -230,7 +235,11 @@ function VolunteerShiftSignup(){
           </thead>
           <tbody>
             {sortedShifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+              <DesktopShiftRow
+                key={shift._id}
+                shiftData={processShiftData(shift)}
+                handleShiftToggle={handleShiftToggle}
+              />
             ))}
           </tbody>
         </table>
@@ -238,29 +247,31 @@ function VolunteerShiftSignup(){
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
         {sortedShifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+          <MobileShiftCard
+            key={shift._id}
+            shiftData={processShiftData(shift)}
+            handleShiftToggle={handleShiftToggle}
+          />
         ))}
       </div>
       {/* Selected Shifts Summary */}
       <div className="sticky-signup-container">
         {selectedShifts.size > 0 && (
-        <div className="selected-shifts-summary">
-          <h3 className="summary-title">
-            Selected Shifts ({selectedShifts.size})
-          </h3>
-          <div className="list">
-            {Array.from(selectedShifts).map(shiftId => {
-              const shift = shifts.find(s => s._id === shiftId);
-              const shelter = shelterMap[shift.shelter_id];
-              const startTime = formatDateTime(shift.shift_start);
-              return (
-                <div key={shiftId} className="tagline-small">
-                  • {startTime.date} at {startTime.time} - {shelter.name}
-                </div>
-              );
-            })}
+          <div className="selected-shifts-summary">
+            <h3 className="summary-title">Selected Shifts ({selectedShifts.size})</h3>
+            <div className="list">
+              {Array.from(selectedShifts).map((shiftId) => {
+                const shift = shifts.find((s) => s._id === shiftId);
+                const shelter = shelterMap[shift.shelter_id];
+                const startTime = formatDateTime(shift.shift_start);
+                return (
+                  <div key={shiftId} className="tagline-small">
+                    • {startTime.date} at {startTime.time} - {shelter.name}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
         )}
         {selectedShifts.size === 0 && (
           <div>
@@ -269,11 +280,10 @@ function VolunteerShiftSignup(){
         )}
         <div className="signup-section">
           <button
-            onClick={handleSignUp}
+            onClick={() => setShowUserInfoDialog(true)}
             disabled={selectedShifts.size === 0}
-            className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
-          >
-            Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
+            className={`signup-button ${selectedShifts.size > 0 ? "enabled" : "disabled"}`}>
+            Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? "s" : ""}
           </button>
         </div>
       </div>
@@ -281,14 +291,21 @@ function VolunteerShiftSignup(){
       {showResults && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
-            <SignUpResults 
-              results={results}
-              shifts={resultShifts}
-              shelterMap={shelterMap}
-            />
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
+            <SignUpResults results={results} shifts={resultShifts} shelterMap={shelterMap} />
           </div>
         </div>
+      )}
+      {showUserInfoDialog && (
+        <ShiftSignUpDialog
+          onDismiss={() => setShowUserInfoDialog(false)}
+          onConfirm={({ name, phoneNumber }) => {
+            setShowUserInfoDialog(false);
+            handleSignUp(name, phoneNumber);
+          }}
+        />
       )}
     </div>
   );
