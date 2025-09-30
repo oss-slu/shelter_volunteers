@@ -1,8 +1,11 @@
 """
 This module contains the use case for listing service commitments.
 """
+from repository.mongo.service_commitments import MongoRepoCommitments
+
+
 def list_service_commitments(
-        commitments_repo,
+        commitments_repo: MongoRepoCommitments,
         user_email=None,
         shift_id=None):
     commitments = commitments_repo.fetch_service_commitments(

@@ -36,7 +36,7 @@ class MongoRepoCommitments:
         result = self.collection.insert_many(commitments)
         return [str(inserted_id) for inserted_id in result.inserted_ids]
 
-    def fetch_service_commitments(self, user_id=None, shift_id =None):
+    def fetch_service_commitments(self, user_id=None, shift_id =None) -> list[ServiceCommitment]:
         """
         Fetches service commitments based on provided filters.
 
