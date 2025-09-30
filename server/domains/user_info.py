@@ -5,15 +5,17 @@ from typing import List
 @dataclasses.dataclass
 class UserInfo:
     email: str
-    first_name: str
-    last_name: str
-    phone_number: str
+    first_name: str | None
+    last_name: str | None
+    phone_number: str | None
     skills: set[str]
 
     def set_first_name(self, first_name: str):
         self.first_name = first_name
+
     def set_last_name(self, last_name: str):
         self.last_name = last_name
+
     def set_phone_number(self, phone_number: str):
         self.phone_number = phone_number
 
