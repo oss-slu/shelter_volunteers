@@ -1,3 +1,9 @@
+"""
+REST API endpoints for volunteer profile management.
+
+This module provides endpoints for volunteers to view and update their profile information,
+including name, email, and contact number.
+"""
 from flask import Blueprint, request, jsonify
 from config.mongodb_config import get_db
 import re
@@ -5,7 +11,8 @@ import re
 volunteer_profile_bp = Blueprint("volunteer_profile", __name__, url_prefix="/volunteer")
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-PHONE_RE = re.compile(r"^[0-9\-\+\(\)\s]{0,20}$")
+# Simple phone validation - just check for digits and common phone characters
+PHONE_RE = re.compile(r"^[\+]?[0-9\s\-\(\)]+$")
 
 def _current_email():
     # If your auth middleware sets request.user_email, prefer that:
@@ -46,7 +53,8 @@ def update_profile():
         return jsonify({"message": "Name is required."}), 400
     if not EMAIL_RE.match(new_email):
         return jsonify({"message": "Invalid email."}), 400
-    if not PHONE_RE.match(phone):
+    # Validate phone number with length check to prevent ReDoS
+    if phone and (len(phone) < 7 or len(phone) > 20 or not PHONE_RE.match(phone)):
         return jsonify({"message": "Invalid phone number."}), 400
 
     db = get_db()
