@@ -6,14 +6,16 @@ including validation of email and phone number formats.
 """
 import re
 
-EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+# More secure email validation that avoids ReDoS vulnerability
+EMAIL_RE = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 # Simple phone validation - just check for digits and common phone characters
 PHONE_RE = re.compile(r"^[\+]?[0-9\s\-\(\)]+$")
 
 def update_volunteer_profile(repo, current_email: str, name: str, email: str, phone: str):
     if not name:
         raise ValueError("Name is required.")
-    if not EMAIL_RE.match(email or ""):
+    # Validate email with length check to prevent ReDoS
+    if len(email or "") > 254 or not EMAIL_RE.match(email or ""):
         raise ValueError("Invalid email format.")
     # Validate phone number with length check to prevent ReDoS
     if phone and (len(phone) < 7 or len(phone) > 20 or not PHONE_RE.match(phone)):

@@ -10,7 +10,8 @@ import re
 
 volunteer_profile_bp = Blueprint("volunteer_profile", __name__, url_prefix="/volunteer")
 
-EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+# More secure email validation that avoids ReDoS vulnerability
+EMAIL_RE = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 # Simple phone validation - just check for digits and common phone characters
 PHONE_RE = re.compile(r"^[\+]?[0-9\s\-\(\)]+$")
 
@@ -51,7 +52,8 @@ def update_profile():
 
     if not name:
         return jsonify({"message": "Name is required."}), 400
-    if not EMAIL_RE.match(new_email):
+    # Validate email with length check to prevent ReDoS
+    if len(new_email) > 254 or not EMAIL_RE.match(new_email):
         return jsonify({"message": "Invalid email."}), 400
     # Validate phone number with length check to prevent ReDoS
     if phone and (len(phone) < 7 or len(phone) > 20 or not PHONE_RE.match(phone)):
