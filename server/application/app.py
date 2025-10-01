@@ -10,11 +10,13 @@ from application.rest.service_shifts import service_shift_bp
 from application.rest.authorization.authorization import authorization_blueprint
 from application.rest.login import login_blueprint
 from application.rest.schedule import schedule_bp
+from application.rest.user_info import user_info_repo, user_info_bp
 
 from config import mongodb_config
 import os
 
-def create_app(config_name = "development"):
+
+def create_app(config_name="development"):
     """
     The function  creates the Flask application.
     """
@@ -32,11 +34,13 @@ def create_app(config_name = "development"):
     app.register_blueprint(authorization_blueprint)
     app.register_blueprint(login_blueprint)
     app.register_blueprint(schedule_bp)
+    app.register_blueprint(user_info_bp)
 
     load_dotenv()  # Load environment variables from the .env file
 
     # Serve static files
     react_build_dir = os.path.abspath("../build/")
+
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
@@ -45,4 +49,5 @@ def create_app(config_name = "development"):
         # If no static file is found, return index.html
         # to let React handle routing
         return send_from_directory(react_build_dir, "index.html")
+
     return app

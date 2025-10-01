@@ -2,5 +2,18 @@ from domains.user_info import UserInfo
 from repository.mongo.user_info_repository import UserInfoRepository
 
 
-def save_user_info(user_info: UserInfo, repo: UserInfoRepository):
-    repo.save(user_info)
+def save_user_info(
+        email: str,
+        first_name: str,
+        last_name: str,
+        phone_number: str,
+        skills: list[str],
+        repo: UserInfoRepository):
+    result = UserInfo.create(
+        email=email, first_name=first_name, last_name=last_name,
+        phone_number=phone_number, skills=set(skills))
+
+    if result.status == "success":
+        repo.save(result.data)
+
+    return result
