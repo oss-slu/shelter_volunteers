@@ -1,0 +1,122 @@
+:root {
+  --main-background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
+  --background-color: white;
+  --background-color-success: #f1f8f1;
+  --background-color-failure: #f5c8cb;
+  --background-color-accent: #f3f5f9;
+  --success-color: #45a049; 
+  --failure-color: #be0c0c; 
+  --primary-color: #0066b2; /* Font color */
+  --secondary-color: #374151;
+  --accent-color: #6b7280; /* Font color */
+  --active-color: #dbe5fa;
+  --active-color-hover: #eff6ff;
+  --border-color: 2px solid #e5e7eb;
+  --box-shadow-color: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --box-shadow-active-color: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+th {
+  background-color: #f2f2f2;
+}
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.success {
+  color: var(--success-color);
+}
+
+.failure {
+  color: var(--failure-color) !important;
+}
+
+.info-icon {
+  color: #0066b2;
+}
+
+.check-icon {
+  color: #4cbb17;
+}
+
+h1 {
+  margin: 0.5rem;
+  padding: 0;
+  font-size: 1.5rem;
+}
+h2 {
+  font-size: 1rem;
+}
+p {
+  font-size: 0.8rem;
+}
+.closebtn {
+  background-color: #193b45;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  color: #fdfaf6;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  font-size: 0.5em;
+}
+
+p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+button {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #8a9da1;
+  color: #e0e0e0;      
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.button-transparent {
+  background-color: transparent;
+  color: #6b7280;
+}
+
+
+@import "./BaseStyles.css";
+@import "./message.css";
+@import "./Login.css";
+@import "./Dashboard.css";
+@import "./Navigation.css";
+@import "./Menu.css";
+@import "./volunteer/VolunteerShiftSignup.css";
+@import "./Modal.css";
+@import "./Calendar.css";

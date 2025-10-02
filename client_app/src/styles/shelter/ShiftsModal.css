@@ -1,0 +1,45 @@
+.emailIcon {
+  color: #1f5156;
+}
+
+.emailButton {
+  background-color: transparent;
+}
+
+.shiftsTableHeader {
+  font-weight: bold;
+}
+
+.shiftsTableHeader {
+  background-color: #EEEEEE;
+}
+
+.shiftsTable {
+  background-color: white;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th, tr{
+  border: 2px solid lightgray !important;
+  text-align: center;
+}
+
+.modalHeading {
+  display: inline-block;
+}
+
+.shiftsTableContainer {
+  overflow-x: auto;
+}
+
+.overallShiftDetails {
+  margin-bottom: 2%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.volunteerCountInfo {
+  justify-self: end;
+}

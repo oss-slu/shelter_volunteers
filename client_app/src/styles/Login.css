@@ -1,0 +1,12 @@
+/* Login.css */
+
+.login-section {
+  margin-bottom: 1rem;
+}
+
+.google-login-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}

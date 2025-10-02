@@ -1,0 +1,138 @@
+"""
+This module contains unit tests for the service_shift API.
+"""
+import unittest
+import json
+from unittest.mock import patch
+from flask import Flask
+from application.rest.service_shifts import service_shift_bp
+from authentication.token import create_token
+from domains.service_shift import ServiceShift
+
+
+# pylint: disable=line-too-long
+class TestServiceShiftAPI(unittest.TestCase):
+    """
+    Test cases for the service_shift API.
+    """
+    def setUp(self):
+        # Create a test Flask app and register the service_shift blueprint.
+        self.app = Flask(__name__)
+        self.app.register_blueprint(service_shift_bp)
+        self.app.testing = True
+        self.client = self.app.test_client()
+        self.test_secret = "test_secret"
+        self.app.config["JWT_SECRET"] = self.test_secret
+        token = create_token({"email": "user@app.com"}, self.test_secret)
+        self.headers = {
+            "Authorization": f"{token}",
+            "Content-Type": "application/json"
+        }
+
+    @patch("application.rest.service_shifts.shift_add_use_case")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_post_service_shift(self, mock_is_authorized, mock_shift_add_use_case):
+        mock_is_authorized.return_value = True
+        # Arrange: Set up the expected response from the use case.
+        expected_ids = [101, 102]
+        # The production code expects a dict with keys 'success'
+        # and 'service_shift_ids'
+        mock_shift_add_use_case.return_value = {
+            "success": True,
+            "service_shift_ids": expected_ids
+        }
+
+        # Define the POST request payload.
+        payload = [
+            {"shelter_id": "12345", "shift_start": 10, "shift_end": 20},
+            {"shelter_id": "12345", "shift_start": 100, "shift_end": 200}
+        ]
+
+        # Act: Send POST request.
+        response = self.client.post(
+            "/shelters/12345/service_shifts",
+            data=json.dumps(payload),
+            headers=self.headers
+        )
+
+        # Assert: Verify that the response status is 200 and
+        # the JSON payload is correct.
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertTrue(data.get("success"))
+        self.assertEqual(data.get("service_shift_ids"), expected_ids)
+        mock_shift_add_use_case.assert_called_once()
+
+    @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
+    def test_get_service_shift(self, mock_list_use_case):
+        # Arrange: Define the expected list of shift objects.
+        expected_shifts = [
+            {
+                "_id": "201",
+                "shelter_id": "1111",
+                "shift_start": 10,
+                "shift_end": 20,
+                "required_volunteer_count": 1,
+                "max_volunteer_count": 5,
+                "can_sign_up": True,
+                "shift_name": "Default Shift"
+            },
+            {
+                "_id": "202",
+                "shelter_id": "2222",
+                "shift_start": 10,
+                "shift_end": 20,
+                "required_volunteer_count": 1,
+                "max_volunteer_count": 5,
+                "can_sign_up": True,
+                "shift_name": "Default Shift"            
+            }
+        ]
+        mock_list_use_case.return_value = ([ServiceShift.from_dict(shift)
+                                           for shift in expected_shifts],
+                                           [[],[]])
+        expected_shifts[0]["volunteer_count"] = 0
+        expected_shifts[1]["volunteer_count"] = 0
+        # Act: Send GET request.
+        response = self.client.get("/service_shifts")
+
+        data = json.loads(response.data.decode("utf-8"))
+        # Assert: Verify that the parsed objects match the expected shifts.
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, expected_shifts)
+        mock_list_use_case.assert_called_once()
+
+    @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_get_service_shift_with_shelter_id_filter(self, mock_is_authorized, mock_list_use_case):
+        mock_is_authorized.return_value = True
+        # Arrange: Define the expected shift for a specific shelter
+        test_shelter_id = "ID1"
+        expected_shift = {
+          "_id": 301,
+          "shelter_id": test_shelter_id,
+          "shift_start": 10,
+          "shift_end": 20,
+          "required_volunteer_count": 1,
+          "max_volunteer_count": 5,
+          "can_sign_up": True,
+          "shift_name": "Default Shift"
+        }
+        mock_list_use_case.return_value = ([ServiceShift.from_dict(
+            expected_shift)], [[]])
+
+        # Act: Send GET request with shelter_id filter
+        response = self.client.get(
+            f"/shelters/{test_shelter_id}/service_shifts",
+            headers=self.headers)
+
+        # Parse response data
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["shelter_id"], test_shelter_id)
+        mock_list_use_case.assert_called_once()
+
+if __name__ == "__main__":
+    unittest.main()
+# pylint: enable=line-too-long

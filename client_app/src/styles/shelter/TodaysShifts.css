@@ -1,0 +1,21 @@
+.todays-shifts-container {
+    padding: 10px;
+  }
+  
+  .shift-item-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .shift-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .volunteers-list {
+    margin-left: 20px;
+    color: #666;
+  }
+  

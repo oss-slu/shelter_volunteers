@@ -1,0 +1,18 @@
+.message {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  
+  .message.success {
+    background-color: var(--background-color-success);
+    color: var(--secondary-color);
+    border: var(--border-color);
+  }
+  
+  .message.error {
+    background-color: var(--background-color-failure);;
+    color: var(--secondary-color);
+    border: var(--failure-color);
+    box-shadow: var(--box-shadow-color);
+  }
