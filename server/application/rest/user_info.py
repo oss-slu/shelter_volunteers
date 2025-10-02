@@ -54,10 +54,6 @@ def patch_user_info(user_email: str):
 @user_info_bp.route('/volunteer/profile', methods=["POST"])
 @token_required_with_request
 def post_user_info(user_email: str):
-    user_info = get_user_info_by_email(user_email, user_info_repo)
-    if user_info is not None:
-        return Response(status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT])
-
     data = request.get_json()
 
     # Ensure all fields.
