@@ -17,8 +17,12 @@ class UserInfoRepository:
         self.collection = self.db[collection_name]
 
     def save(self, user_info: UserInfo):
-        self.collection.insert_one(user_info.to_dict())
-
+        self.collection.update_one(
+            filter={"email": user_info.email},
+            update={"$set": user_info.to_dict()},
+            upsert=True
+        )
+        
     def get_by_email(self, email: str):
         doc = self.collection.find_one({"email": email})
         if doc is None: return None
