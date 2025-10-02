@@ -3,19 +3,20 @@ This module handles service shift operations.
 """
 
 import json
+
 from flask import Blueprint, request, Response
 
+from application.rest.shelter_admin_permission_required import shelter_admin_permission_required
+from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
+from domains.service_shift import ServiceShift
+from repository.mongo.service_commitments import MongoRepoCommitments
+from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.user_info_repository import UserInfoRepository
+from responses import ResponseTypes
+from serializers.service_commitment import ServiceCommitmentJsonEncoder
+from serializers.service_shift import ServiceShiftJsonEncoder
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import list_service_shifts_with_volunteers_use_case
-from repository.mongo.service_shifts import ServiceShiftsMongoRepo
-from repository.mongo.service_commitments import MongoRepoCommitments
-from domains.service_shift import ServiceShift
-from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
-from application.rest.shelter_admin_permission_required import shelter_admin_permission_required
-from responses import ResponseTypes
-from serializers.service_shift import ServiceShiftJsonEncoder
-from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from use_cases.service_commitments.list_user_infos_in_shift import list_user_infos_in_shift
 
 service_shift_bp = Blueprint("service_shift", __name__)

@@ -3,14 +3,19 @@ Module for handling MongoDB operations related to service commitments.
 Provides methods to insert and fetch service commitments from the database.
 """
 
+from typing import List
+
 from bson.objectid import ObjectId
+
 from config.mongodb_config import get_db
 from domains.service_commitment import ServiceCommitment
+
 
 class MongoRepoCommitments:
     """
     A MongoDB repository for managing service commitments.
     """
+
     def __init__(self):
         """
         Initialize the repository by setting up the database and collection.
@@ -36,7 +41,7 @@ class MongoRepoCommitments:
         result = self.collection.insert_many(commitments)
         return [str(inserted_id) for inserted_id in result.inserted_ids]
 
-    def fetch_service_commitments(self, user_id=None, shift_id =None) -> list[ServiceCommitment]:
+    def fetch_service_commitments(self, user_id=None, shift_id=None) -> List[ServiceCommitment]:
         """
         Fetches service commitments based on provided filters.
 
