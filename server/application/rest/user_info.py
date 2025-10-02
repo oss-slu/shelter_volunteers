@@ -1,17 +1,17 @@
+"""
+This module contains the RESTful route handlers
+for user_info in the server application.
+"""
 import json
 
 from flask import Blueprint, Response, request
 
-from application.rest.shelter_admin_permission_required import shelter_admin_permission_required
-from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.token_required import token_required_with_request
-from domains.user_info import UserInfo
 from repository.mongo.user_info_repository import UserInfoRepository
-from responses import ResponseTypes
 from use_cases.user_info.get_user_info_by_email import get_user_info_by_email
 from use_cases.user_info.save_user_info import save_user_info
 
-user_info_bp = Blueprint('user_info', __name__)
+user_info_bp = Blueprint("user_info", __name__)
 user_info_repo = UserInfoRepository()
 
 
@@ -21,7 +21,7 @@ def is_skills_proper_type(skills):
     return True
 
 
-@user_info_bp.route('/volunteer/profile', methods=["PATCH"])
+@user_info_bp.route("/volunteer/profile", methods=["PATCH"])
 @token_required_with_request
 def patch_user_info(user_email: str):
     user_info = get_user_info_by_email(user_email, user_info_repo)
@@ -47,11 +47,11 @@ def patch_user_info(user_email: str):
         body = json.dumps(result.data.to_dict())
         return Response(body, status=200)
     else:
-        body = json.dumps({'errors': result.errors})
+        body = json.dumps({"errors": result.errors})
         return Response(body, status=400)
 
 
-@user_info_bp.route('/volunteer/profile', methods=["POST"])
+@user_info_bp.route("/volunteer/profile", methods=["POST"])
 @token_required_with_request
 def post_user_info(user_email: str):
     data = request.get_json()
@@ -79,11 +79,11 @@ def post_user_info(user_email: str):
         body = json.dumps(result.data.to_dict())
         return Response(body, status=201)
     else:
-        body = json.dumps({'errors': result.errors})
+        body = json.dumps({"errors": result.errors})
         return Response(body, status=400)
 
 
-@user_info_bp.route('/volunteer/profile', methods=["GET"])
+@user_info_bp.route("/volunteer/profile", methods=["GET"])
 @token_required_with_request
 def get_user_info(user_email: str):
     user_info = get_user_info_by_email(user_email, user_info_repo)

@@ -1,6 +1,10 @@
+"""
+This module contains the use case for creating and saving user_info.
+"""
+from typing import List
+
 from domains.user_info import UserInfo
 from repository.mongo.user_info_repository import UserInfoRepository
-from typing import List
 
 
 def save_user_info(

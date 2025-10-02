@@ -1,15 +1,27 @@
+"""
+This module contains data for
+shelter volunteer contact info
+and validation.
+"""
 from __future__ import annotations
 
 import dataclasses
 import re
-from typing import List, Literal, Union
+from typing import Literal, Union
 
-email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-phone_number_pattern = re.compile(r'^\d{10}$')
+email_pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+phone_number_pattern = re.compile(r"^\d{10}$")
 
 
 @dataclasses.dataclass
 class UserInfo:
+    """
+    Data class for volunteer contact info. For a new
+    user, only `create` should be used. Constructor
+    should only be used when populating with info
+    already known to be acceptable such as after
+    being stored and read back from a database. 
+    """
     email: str
     first_name: str
     last_name: str
@@ -49,21 +61,21 @@ class UserInfo:
 
     def to_dict(self):
         return {
-            'email': self.email,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'phone_number': self.phone_number,
-            'skills': list(self.skills),
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "phone_number": self.phone_number,
+            "skills": list(self.skills),
         }
 
     @staticmethod
     def from_dict(d: dict):
         return UserInfo(
-            d['email'],
-            d['first_name'],
-            d['last_name'],
-            d['phone_number'],
-            d['skills'],
+            d["email"],
+            d["first_name"],
+            d["last_name"],
+            d["phone_number"],
+            d["skills"],
         )
 
 
