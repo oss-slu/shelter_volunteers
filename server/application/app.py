@@ -10,7 +10,7 @@ from application.rest.service_shifts import service_shift_bp
 from application.rest.authorization.authorization import authorization_blueprint
 from application.rest.login import login_blueprint
 from application.rest.schedule import schedule_bp
-from application.rest.user_info import user_info_repo, user_info_bp
+from application.rest.user_info import user_info_bp
 
 from config import mongodb_config
 import os

@@ -1,5 +1,6 @@
 from domains.user_info import UserInfo
 from repository.mongo.user_info_repository import UserInfoRepository
+from typing import List
 
 
 def save_user_info(
@@ -7,7 +8,7 @@ def save_user_info(
         first_name: str,
         last_name: str,
         phone_number: str,
-        skills: list[str],
+        skills: List[str],
         repo: UserInfoRepository):
     result = UserInfo.create(
         email=email, first_name=first_name, last_name=last_name,
