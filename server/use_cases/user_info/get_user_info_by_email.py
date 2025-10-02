@@ -1,3 +1,7 @@
+"""
+This module contains the use case for getting
+user_info from its email field.
+"""
 from repository.mongo.user_info_repository import UserInfoRepository
 
 
