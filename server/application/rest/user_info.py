@@ -51,7 +51,7 @@ def patch_user_info(user_email: str):
         return Response(body, status=400)
 
 
-@user_info_bp.post('/volunteer/profile', methods=["POST"])
+@user_info_bp.route('/volunteer/profile', methods=["POST"])
 @token_required_with_request
 def post_user_info(user_email: str):
     user_info = get_user_info_by_email(user_email, user_info_repo)
@@ -87,24 +87,10 @@ def post_user_info(user_email: str):
         return Response(body, status=400)
 
 
-@user_info_bp.get('/volunteer/profile')
+@user_info_bp.route('/volunteer/profile', methods=["GET"])
 @token_required_with_request
 def get_user_info(user_email: str):
     user_info = get_user_info_by_email(user_email, user_info_repo)
-    if user_info is None:
-        return Response(status=404)
-
-    response = json.dumps(user_info.to_dict())
-    return Response(response, status=200)
-
-
-@user_info_bp.get('/volunteer/<email>/profile')
-@token_required_with_request
-@shelter_admin_permission_required
-def get_user_info(email: str):
-    # Here we give user info access to all shelter admins.
-    # May want to limit this to only admins of users working for them.
-    user_info = get_user_info_by_email(email, user_info_repo)
     if user_info is None:
         return Response(status=404)
 
