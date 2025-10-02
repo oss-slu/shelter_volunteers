@@ -57,7 +57,6 @@ const validate = (data) => {
         errors.email = 'Invalid characters/structure in domain. Email must be a valid @gmail.com or @googlemail.com address.';
         return errors;
     }
-
     // 5. Max Local Part Length Check
     if (localPart.length > 64) {
         errors.email = 'The part before the @ symbol (username) cannot exceed 64 characters.';
@@ -206,7 +205,7 @@ const ProfileSettings = () => {
     <div className="profile-container">
       
       <h1 className="profile-title">
-        User Information
+        Contact Information
       </h1>
       {/* Message Box for success/error alerts */}
       {message && (

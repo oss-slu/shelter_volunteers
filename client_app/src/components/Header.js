@@ -58,7 +58,6 @@ export const Header = ({user}) => {
             <div className="sidebar-header">
               {user.email}
             </div>
-            
             {/* NEW: Profile Link */}
             <button
               onClick={handleProfileClick}
@@ -66,8 +65,7 @@ export const Header = ({user}) => {
             >
               <FontAwesomeIcon icon={faUserCircle} />
               View Profile
-            </button>
-            
+            </button>    
             {/* Existing Logout Button */}
             <button
               onClick={() => {
