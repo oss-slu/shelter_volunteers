@@ -92,7 +92,7 @@ export const ShiftDetailsTable = props => {
             arrow
             followCursor
             enterTouchDelay={0}
-            leaveTouchDelay={5000}>
+            leaveTouchDelay={5001}>
             <IconButton>
               <FontAwesomeIcon icon={faTriangleExclamation} className="warningIcon" />
             </IconButton>

@@ -18,7 +18,7 @@ export const fetchClient = async (endpoint, options = {}) => {
   
   // Prepare headers with authentication
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
   
   // Add auth token if available
@@ -29,7 +29,7 @@ export const fetchClient = async (endpoint, options = {}) => {
   // Prepare the complete request config
   const config = {
     ...options,
-    headers
+    headers,
   };
   
   try {
@@ -37,34 +37,52 @@ export const fetchClient = async (endpoint, options = {}) => {
     
     // Check if the response indicates authentication failure
     if (response.status === 401 || response.status === 403) {
-      // Use the global logout function to clear auth state and update React state
       const logout = getGlobalLogout();
       if (logout) {
         logout();
       }
-      
-      // Navigate to home
       if (navigate) {
-        navigate('/home');
+        navigate("/home");
       }
-      
-      return Promise.reject(new Error('Authentication failed'));
+      return Promise.reject(new Error("Authentication failed"));
     }
     
     // If the response is not OK and not a 401, handle other errors
     if (!response.ok) {
-      const errorData = await response.json();
-      if (errorData.message) {
-        throw new Error(errorData.message);
+      let errorMessage = "An error occurred while processing your request";
+      try {
+        const errorData = await response.json();
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch {
+        const responseText = await response.text();
+        if (responseText) errorMessage = responseText;
       }
-      const responseText = await response.text();
-      throw new Error(responseText || 'An error occurred while processing your request');
+      throw new Error(errorMessage);
     }
     
     // Parse and return the response data
     return await response.json();
   } catch (error) {
-    console.log('Fetch error:');
+    console.log("Fetch error:", error.message);
     throw error;
   }
 };
+
+// ✅ Helper functions for common request types
+export const getRequest = (endpoint) =>
+  fetchClient(endpoint, { method: "GET" });
+
+export const postRequest = (endpoint, data) =>
+  fetchClient(endpoint, { method: "POST", body: JSON.stringify(data) });
+
+export const putRequest = (endpoint, data) =>
+  fetchClient(endpoint, { method: "PUT", body: JSON.stringify(data) });
+
+// Patch request MUST be exported to be used by the new feature
+export const patchRequest = (endpoint, data) => // <-- EXPORT ADDED HERE
+  fetchClient(endpoint, { method: "PATCH", body: JSON.stringify(data) });
+
+export const deleteRequest = (endpoint) =>
+  fetchClient(endpoint, { method: "DELETE" });
