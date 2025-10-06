@@ -16,16 +16,12 @@ def list_service_commitments(
         commitments_repo: MongoRepoCommitments,
         user_email=None,
         shift_id=None):
+    """Return raw commitments from the repository."""
     commitments = commitments_repo.fetch_service_commitments(
         user_email,
         shift_id)
     return commitments
 
-
-def list_service_commitments(commitments_repo, user_email=None, shift_id=None):
-    """Return raw commitments from the repository."""
-    commitments = commitments_repo.fetch_service_commitments(user_email, shift_id)
-    return commitments
 
 def _shift_id(shift):
     """Return a shift id from either an object or a dict."""
