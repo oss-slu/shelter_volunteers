@@ -23,9 +23,9 @@ class UserInfo:
     being stored and read back from a database. 
     """
     email: str
-    first_name: str
-    last_name: str
-    phone_number: str
+    first_name: str | None
+    last_name: str | None
+    phone_number: str | None
     skills: set[str]
 
     @staticmethod

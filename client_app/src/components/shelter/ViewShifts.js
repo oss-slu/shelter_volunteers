@@ -4,9 +4,10 @@ import ServiceShiftDetails from "./ServiceShiftDetails.js";
 import { EditRequestModal } from "./EditRequestModal.js";
 import { CancelRequestModal } from "./CancelRequestModal.js";
 import { ShiftsModal } from "./ShiftsModal.js";
-import { formatDate } from "../../formatting/FormatDateTime.js"; 
+import { formatDate } from "../../formatting/FormatDateTime.js";
+import ShiftUserInfoDisplay from "./ShiftUserInfoDisplay";
 
-const ViewShifts = ({shiftDetailsData}) => {
+const ViewShifts = ({ shiftDetailsData }) => {
   const [shiftsData, setShiftsData] = useState(shiftDetailsData || []);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -20,8 +21,8 @@ const ViewShifts = ({shiftDetailsData}) => {
   const handleRosterClick = (shift) => {
     setSelectedShift(shift);
     setIsRosterModalOpen(true);
-  }
-  
+  };
+
   const handleEditRequestClick = (shift) => {
     setSelectedShift(shift);
     setIsEditModalOpen(true);
@@ -40,7 +41,7 @@ const ViewShifts = ({shiftDetailsData}) => {
 
   const handleSaveEdit = (updatedShift) => {
     const updatedShifts = shiftsData.map((shift) =>
-      shift._id === updatedShift._id ? updatedShift : shift
+      shift._id === updatedShift._id ? updatedShift : shift,
     );
 
     setShiftsData(updatedShifts);
@@ -56,9 +57,7 @@ const ViewShifts = ({shiftDetailsData}) => {
     return acc;
   }, {});
 
-  const sortedDates = Object.keys(shiftsGroupedByDate).sort(
-    (a, b) => a < b
-  );
+  const sortedDates = Object.keys(shiftsGroupedByDate).sort((a, b) => a < b);
 
   // Sort shifts within each date by shift_start in ascending order
   Object.keys(shiftsGroupedByDate).forEach((date) => {
@@ -77,15 +76,15 @@ const ViewShifts = ({shiftDetailsData}) => {
                 shift={shift}
                 view={handleRosterClick}
                 edit={handleEditRequestClick}
-                cancel={handleCancelRequestClick} 
+                cancel={handleCancelRequestClick}
               />
             ))}
           </div>
         </div>
       ))}
-      <ShiftsModal
+      <ShiftUserInfoDisplay
         isOpen={isRosterModalOpen}
-        onClose={() => setIsRosterModalOpen(false)}
+        onDismiss={() => setIsRosterModalOpen(false)}
         shift={selectedShift}
       />
       <EditRequestModal

@@ -2,6 +2,8 @@
 This module contains the repository
 class for user_info collection.
 """
+from typing import List
+
 from config.mongodb_config import get_db
 from domains.user_info import UserInfo
 
@@ -27,3 +29,8 @@ class UserInfoRepository:
         doc = self.collection.find_one({"email": email})
         if doc is None: return None
         return UserInfo.from_dict(doc)
+
+    def get_multiple_by_emails(self, emails: List[str]):
+        doc = self.collection.find({"email": {"$in": emails}})
+        if doc is None: return []
+        return [UserInfo.from_dict(doc) for doc in doc]
