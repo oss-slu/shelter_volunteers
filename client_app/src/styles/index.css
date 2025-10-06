@@ -1,5 +1,5 @@
 :root {
-  --main-background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
+  --main-background: #ffffff;
   --background-color: white;
   --background-color-success: #f1f8f1;
   --background-color-failure: #f5c8cb;
@@ -118,5 +118,6 @@ button:disabled {
 @import "./Navigation.css";
 @import "./Menu.css";
 @import "./volunteer/VolunteerShiftSignup.css";
+@import "./volunteer/Impact.css";
 @import "./Modal.css";
 @import "./Calendar.css";

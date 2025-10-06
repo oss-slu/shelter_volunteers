@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { serviceCommitmentAPI } from "../../api/serviceCommitment";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 const calculateTotalHours = (shifts) => {
   return shifts.reduce((acc, shift) => {
     const start = new Date(shift.shift_start);
@@ -36,19 +38,27 @@ function Impact(){
   }, []);
 
   return (
-    <div>
-      <h3>Impact Created</h3>
-      <div className="card">
-        <h4>Total hours served</h4>
-        <p>{impactData.totalHours}</p>
-      </div>
-      <div className="card">
-        <h4>Lives Touched</h4>
-        <p>Too many to count</p>
-      </div>
-      <div className="card">
-        <h4>Shelters served</h4>
-        <p>{impactData.sheltersServed}</p>
+    <div className="impact-container">
+      <h1 className="impact-title">Your Impact</h1>
+      <div className="impact-metrics">
+        <div className="metric-card">
+          <div className="metric-icon">
+            <FontAwesomeIcon icon={faClock} />
+          </div>
+          <div className="metric-content">
+            <h4 className="metric-label">Total hours served</h4>
+            <p className="metric-value">{impactData.totalHours}</p>
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-icon">
+            <FontAwesomeIcon icon={faSearch} />
+          </div>
+          <div className="metric-content">
+            <h4 className="metric-label">Shelters served</h4>
+            <p className="metric-value">{impactData.sheltersServed}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
