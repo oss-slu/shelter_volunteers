@@ -1,0 +1,24 @@
+
+.impact { max-width: 900px; margin: 0 auto; padding: 1rem; }
+.impact__heading { text-align: center; margin-bottom: 18px; }
+
+.impact__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.impact__card {
+  display: flex; align-items: center;
+  background: #fff; border-radius: 16px; padding: 16px 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.impact__icon { width: 36px; height: 36px; border-radius: 10px;
+  display: grid; place-items: center; margin-right: 12px; color: inherit;
+}
+.impact__icon--indigo { background: rgba(99,102,241,0.12); }
+.impact__icon--green  { background: rgba(16,185,129,0.12); }
+
+.impact__title { margin: 0; font-size: 14px; opacity: .75; }
+.impact__value { margin: 0; font-size: 26px; font-weight: 700; }

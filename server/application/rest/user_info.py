@@ -39,7 +39,7 @@ def patch_user_info(user_email: str):
         first_name=data.get("first_name") or user_info.first_name,
         last_name=data.get("last_name") or user_info.last_name,
         phone_number=data.get("phone_number") or user_info.phone_number,
-        skills=data.get("skills") or user_info.skills,
+        skills=data["skills"] if "skills" in data else user_info.skills,
         repo=user_info_repo
     )
 

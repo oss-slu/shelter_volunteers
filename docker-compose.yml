@@ -17,7 +17,7 @@ services:
       context: ./server
       dockerfile: ../docker_files/server/Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - mongodb
 
