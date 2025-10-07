@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import { serviceCommitmentAPI } from "../../api/serviceCommitment";
-import "../../styles/volunteer/Impact.css";
-
-const onlyCompleted = (s) => {
-  if (!s?.shift_end || !s?.shift_start) return false;
-  const end = new Date(s.shift_end);
-  return !Number.isNaN(end.getTime()) && end <= new Date();
-};
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 const calculateTotalHours = (shifts) => {
   const total = shifts.reduce((acc, s) => {
     const start = new Date(s.shift_start);
@@ -39,30 +33,25 @@ function Impact() {
   }, []);
 
   return (
-    <div className="impact">
-      <h3 className="impact__heading">Your Impact</h3>
-      <div className="impact__grid">
-        <div className="impact__card">
-          <div className="impact__icon impact__icon--indigo" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" />
-              <path d="M12 7v5l4 2" stroke="currentColor" strokeLinecap="round" />
-            </svg>
+    <div className="impact-container">
+      <h1 className="impact-title">Your Impact</h1>
+      <div className="impact-metrics">
+        <div className="metric-card">
+          <div className="metric-icon">
+            <FontAwesomeIcon icon={faClock} />
           </div>
-          <div>
-            <p className="impact__title">Total hours served</p>
-            <p className="impact__value">{impactData.totalHours}</p>
+          <div className="metric-content">
+            <h4 className="metric-label">Total hours served</h4>
+            <p className="metric-value">{impactData.totalHours}</p>
           </div>
-        </div><div className="impact__card">
-          <div className="impact__icon impact__icon--green" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M3 11l9-7 9 7" stroke="currentColor" strokeLinecap="round" />
-              <path d="M5 10v10h14V10" stroke="currentColor" />
-            </svg>
+        </div>
+        <div className="metric-card">
+          <div className="metric-icon">
+            <FontAwesomeIcon icon={faSearch} />
           </div>
-          <div>
-            <p className="impact__title">Shelters served</p>
-            <p className="impact__value">{impactData.sheltersServed}</p>
+          <div className="metric-content">
+            <h4 className="metric-label">Shelters served</h4>
+            <p className="metric-value">{impactData.sheltersServed}</p>
           </div>
         </div>
       </div>
