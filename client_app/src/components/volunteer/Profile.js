@@ -2,10 +2,6 @@ import React, { useState, useContext } from 'react';
 import { Pencil, Save, X, Lock } from 'lucide-react';
 import "../../styles/volunteer/Profile.css";
 
-// --- START: Mock/Placeholder for Context/Auth Data ---
-// In a real application, you would import and use:
-// import { useAuth } from "../contexts/AuthContext";
-// and the 'user' object would come from there.
 const mockAuthUser = {
   email: 'volunteer.volunteer@gmail.com',
   id: 'user-123',
@@ -15,7 +11,6 @@ const mockAuthUser = {
 const AuthContext = React.createContext({ user: mockAuthUser });
 const useAuth = () => useContext(AuthContext);
 
-// --- END: Mock/Placeholder for Context/Auth Data ---
 
 // Helper function to perform client-side validation based on specific requirements
 const validate = (data) => {
