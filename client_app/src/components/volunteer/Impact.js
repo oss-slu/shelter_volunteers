@@ -3,38 +3,33 @@ import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 const calculateTotalHours = (shifts) => {
-  return shifts.reduce((acc, shift) => {
-    const start = new Date(shift.shift_start);
-    const end = new Date(shift.shift_end);
-    return acc + Math.round((end - start) / (1000 * 60 * 60)); // Convert milliseconds to hours
+  const total = shifts.reduce((acc, s) => {
+    const start = new Date(s.shift_start);
+    const end = new Date(s.shift_end);
+    if (Number.isNaN(start) || Number.isNaN(end)) return acc;
+    return acc + Math.max(0, end - start) / (1000 * 60 * 60);
   }, 0);
+  return Number(total.toFixed(1));
 };
 
 const calculateUniqueShelters = (shifts) => {
-  const uniqueShelters = new Set(shifts.map((shift) => shift.shelter));
-  return uniqueShelters.size;
+  const ids = shifts.map((s) => (s?.shelter?._id ?? s?.shelter ?? null)).filter(Boolean);
+  return new Set(ids).size;
 };
 
-function Impact(){
-  const [impactData, setImpactData] = useState({
-    totalHours: 0,
-    sheltersServed: 0,
-  });
+function Impact() {
+  const [impactData, setImpactData] = useState({ totalHours: 0, sheltersServed: 0 });
 
   useEffect(() => {
     serviceCommitmentAPI.getPastCommitments()
-      .then((shifts) => {
-        if (shifts && shifts.length > 0) {
-          const totalHours = calculateTotalHours(shifts);
-          const uniqueShelters = calculateUniqueShelters(shifts);
-
-          setImpactData({
-            totalHours,
-            sheltersServed: uniqueShelters,
-          });
-        }
+      .then((shifts = []) => {
+        const completed = shifts.filter(onlyCompleted);
+        setImpactData({
+          totalHours: calculateTotalHours(completed),
+          sheltersServed: calculateUniqueShelters(completed),
+        });
       })
-      .catch((error) => console.error("Error fetching past shifts:", error));
+      .catch((e) => console.error("Error fetching past shifts:", e));
   }, []);
 
   return (
