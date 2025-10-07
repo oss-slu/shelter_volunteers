@@ -98,6 +98,38 @@
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); 
 }
 
+/* Input Error State */
+.profile-input.input-error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Readonly Input Group */
+.profile-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-input-group.readonly-group {
+    background-color: #f9fafb;
+}
+
+.profile-input-group .lock-icon {
+    position: absolute;
+    right: 0.75rem;
+    color: #6b7280;
+    pointer-events: none;
+}
+
+/* Error Text */
+.error-text {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
 /* Messages */
 .profile-message {
     padding: 0.75rem;

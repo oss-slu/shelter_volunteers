@@ -1,93 +1,48 @@
-import React, { useState } from 'react';
-import { Pencil, Save, X } from 'lucide-react'; 
+import React, { useState, useContext } from 'react';
+import { Pencil, Save, X, Lock } from 'lucide-react';
 import "../../styles/volunteer/Profile.css";
+
+const mockAuthUser = {
+  email: 'volunteer.volunteer@gmail.com',
+  id: 'user-123',
+};
+
+// Placeholder for useAuth hook based on file analysis
+const AuthContext = React.createContext({ user: mockAuthUser });
+const useAuth = () => useContext(AuthContext);
 
 
 // Helper function to perform client-side validation based on specific requirements
 const validate = (data) => {
   const errors = {};
-  
-  // Regex for Phone number: standard phone formats. 
-  const phoneRegex = /^(?:\+?\d{1,3}[- .]?)?\(?\d{3}\)?[- .]?\d{3}[- .]?\d{4}$/; 
-  
-  // Regex for allowed characters in the local part (username)
-  // Allows letters, numbers, dot, plus, hyphen, underscore
-  const allowedLocalPartRegex = /^[a-zA-Z0-9. +_-]+$/;
-  
-  // Regex for required Gmail/Googlemail domains (case-insensitive)
-  const validDomainsRegex = /^(gmail\.com|googlemail\.com)$/i; 
 
-  // --- Name Validation ---
-  if (!data.name.trim()) {
-    errors.name = 'Full Name is required.';
-  } else if (data.name.trim().length < 3) {
-    errors.name = 'Full Name must be at least 3 characters long.';
+  // Regex for Phone number: standard phone formats.
+  const phoneRegex = /^(?:\+?\d{1,3}[- .]?)?\(?\d{3}\)?[- .]?\d{3}[- .]?\d{4}$/;
+
+  // --- First Name Validation (Required) ---
+  if (!data.firstName.trim()) {
+    errors.firstName = 'First Name is required.';
+  } else if (data.firstName.trim().length < 3) {
+    errors.firstName = 'First Name must be at least 3 characters long.';
   }
 
-  // --- Email Validation: Detailed, prioritized checks ---
-  if (!data.email.trim()) {
-    errors.email = 'Email Address is required.';
-  } else {
-    const emailValue = data.email.trim();
-    
-    // 1. Maximum Length Check (Total address)
-    if (emailValue.length > 254) {
-        errors.email = 'Maximum length exceeded. The email address cannot exceed 254 characters.';
-        return errors;
-    }
-    
-    // 2. Whitespace Check (Should ideally be done before splitting)
-    if (/\s/.test(emailValue)) {
-        errors.email = 'Email address cannot contain spaces or tabs.';
-        return errors;
-    }
-    
-    const parts = emailValue.split('@');
-    const localPart = parts[0];
-    const domainPart = parts[1];
-    
-    // 3. Missing required components / Structure Check (Must have exactly one '@' and non-empty parts)
-    if (parts.length !== 2 || !localPart || !domainPart) {
-        errors.email = 'Missing required components. Address must contain a username, an "@" symbol, and a domain name (e.g., username@gmail.com).';
-        return errors;
-    }
-    
-    // 4. Domain Check (Invalid characters/structure in domain and restricted domain)
-    if (!validDomainsRegex.test(domainPart)) {
-        errors.email = 'Invalid characters/structure in domain. Email must be a valid @gmail.com or @googlemail.com address.';
-        return errors;
-    }
-    // 5. Max Local Part Length Check
-    if (localPart.length > 64) {
-        errors.email = 'The part before the @ symbol (username) cannot exceed 64 characters.';
-        return errors;
-    }
-    
-    // 6. Invalid Characters in Username (Strict check)
-    if (!allowedLocalPartRegex.test(localPart)) {
-        errors.email = 'Invalid characters in username. The username can only contain letters, numbers, periods (.), hyphens (-), underscores (_), and plus signs (+).';
-        return errors;
-    }
-    
-    // 7. Consecutive Periods in Username
-    if (localPart.includes('..')) {
-        errors.email = 'Consecutive periods (..) are not allowed in the username.';
-        return errors;
-    }
-
-    // 8. Leading or Trailing Period
-    if (localPart.startsWith('.') || localPart.endsWith('.')) {
-        errors.email = 'Leading or trailing period/hyphen. The username cannot begin or end with a period (.).';
-        return errors;
-    }
+  // --- Last Name Validation (Required) ---
+  if (!data.lastName.trim()) {
+    errors.lastName = 'Last Name is required.';
+  } else if (data.lastName.trim().length < 3) {
+    errors.lastName = 'Last Name must be at least 3 characters long.';
   }
-  // --- End Email Validation ---
 
-  // --- Phone Validation ---
+  // --- Phone Validation (Required) ---
   if (!data.phone.trim()) {
     errors.phone = 'Phone Number is required.';
   } else if (!phoneRegex.test(data.phone.trim())) {
     errors.phone = 'Invalid phone format. Use a standard format (e.g., 555-555-5555).';
+  }
+
+  // --- Skills Validation (Non-Compulsory, but check max length) ---
+  if (data.skills.trim().length > 250) {
+    errors.skills = 'Skills list cannot exceed 250 characters.';
   }
 
   return errors;
@@ -96,19 +51,25 @@ const validate = (data) => {
 
 // This component allows the user to view and edit their profile information.
 const ProfileSettings = () => {
+  const { user: authUser } = useAuth(); // Use the mock/real auth user
+
   const initialData = {
-    name: '',
-    email: '',
+    firstName: '',
+    lastName: '',
+    email: authUser.email || '', // Sourced from OAuth
     phone: '',
+    skills: '',
   };
-  
+
   const [profileData, setProfileData] = useState(initialData);
   const [formData, setFormData] = useState(initialData);
-  
-  // Start in editing mode immediately if the profile is uninitialized.
-  const [isEditing, setIsEditing] = useState(initialData.name === ''); 
+
+  // Start in editing mode immediately if any REQUIRED fields are uninitialized.
+  const [isEditing, setIsEditing] = useState(
+    profileData.firstName === '' || profileData.lastName === '' || profileData.phone === ''
+  );
   const [message, setMessage] = useState('');
-  const [validationErrors, setValidationErrors] = useState({}); // New state for field-specific errors
+  const [validationErrors, setValidationErrors] = useState({});
 
   // Function to handle changes in form inputs
   const handleChange = (e) => {
@@ -118,17 +79,17 @@ const ProfileSettings = () => {
     });
     // Clear the specific error for the field being edited
     if (validationErrors[e.target.name]) {
-        setValidationErrors(prev => ({ ...prev, [e.target.name]: undefined }));
+      setValidationErrors(prev => ({ ...prev, [e.target.name]: undefined }));
     }
     // Clear general message if the user is typing
     if (message) {
-        setMessage('');
+      setMessage('');
     }
   };
 
   // Function to switch to edit mode
   const handleEdit = () => {
-    setFormData(profileData); 
+    setFormData(profileData);
     setIsEditing(true);
     setMessage('');
     setValidationErrors({}); // Clear any prior errors
@@ -141,53 +102,57 @@ const ProfileSettings = () => {
     setValidationErrors(errors);
 
     if (Object.keys(errors).length > 0) {
-      // If there are validation errors, display a general error message and stop.
       setMessage('Please correct the highlighted errors before saving.');
       return;
     }
 
     // 2. Clear general message and proceed with simulation
-    setMessage(''); 
+    setMessage('');
     console.log('Simulating save of new profile data:', formData);
-    
+
     // 3. Simulate API Call
     setTimeout(() => {
-        setProfileData(formData); 
-        setIsEditing(false); 
-        setMessage('Profile updated successfully!');
-        setValidationErrors({}); // Clear errors on successful save
+      setProfileData(formData);
+      setIsEditing(false);
+      setMessage('Profile updated successfully!');
+      setValidationErrors({}); // Clear errors on successful save
     }, 500);
   };
 
   // Function to handle canceling edits
   const handleCancel = () => {
-    const resetData = profileData.name === '' ? initialData : profileData;
+    // Check if all required fields are missing
+    const requiredFieldsEmpty = profileData.firstName === '' && profileData.lastName === '' && profileData.phone === '';
+    const resetData = requiredFieldsEmpty ? initialData : profileData;
     setFormData(resetData);
-    
-    if (profileData.name !== '') {
-        setIsEditing(false);
+
+    // Only exit editing mode if all required data has been previously saved
+    if (profileData.firstName !== '' && profileData.lastName !== '' && profileData.phone !== '') {
+      setIsEditing(false);
     }
     setMessage('');
     setValidationErrors({}); // Clear errors on cancel
   };
 
   // Helper function to render fields conditionally (display or input)
-  const renderField = (label, name, value, type = 'text', error = null) => (
+  const renderField = (label, name, value, type = 'text', error = null, isReadOnly = false) => (
     <div className="profile-field-row">
       <label className="profile-label">{label}</label>
       <div className="profile-value-wrapper">
         {isEditing ? (
           <>
-            <input
-              type={type}
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-              // Add 'input-error' class when an error exists
-              className={`profile-input ${error ? 'input-error' : ''}`}
-              placeholder={label}
-            />
-            {/* Display error message */}
+            <div className={`profile-input-group ${isReadOnly ? 'readonly-group' : ''}`}>
+              <input
+                type={type}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                readOnly={isReadOnly}
+                className={`profile-input ${error ? 'input-error' : ''} ${isReadOnly ? 'bg-gray-100' : ''}`}
+                placeholder={label}
+              />
+              {isReadOnly && <Lock size={18} className="lock-icon" />}
+            </div>
             {error && (
               <p className="error-text">{error}</p>
             )}
@@ -199,17 +164,25 @@ const ProfileSettings = () => {
     </div>
   );
 
-  const primaryButtonText = profileData.name === '' ? 'Enter Profile Details' : 'Edit Profile';
+  // Primary button text logic based on required fields only
+  const primaryButtonText = (
+    profileData.firstName === '' ||
+    profileData.lastName === '' ||
+    profileData.phone === ''
+  ) ? 'Enter Profile Details' : 'Edit Profile';
+
+  // --- UPDATED SKILLS EXAMPLE STRING ---
+  const skillsExamples = "First aid/CPR, Narcan (naloxone), De-escalation/conflict resolution, Trauma-informed care, Mental health first aid";
 
   return (
     <div className="profile-container">
-      
+
       <h1 className="profile-title">
-        Contact Information
+        Volunteer Profile Settings
       </h1>
       {/* Message Box for success/error alerts */}
       {message && (
-        <div 
+        <div
           className={`profile-message ${
             message.includes('successfully') ? 'success' : 'error'
           }`}
@@ -219,15 +192,29 @@ const ProfileSettings = () => {
         </div>
       )}
       <div className="profile-card">
-        {/* Profile Fields - passing validationErrors[name] to renderField */}
-        {renderField('Full Name', 'name', profileData.name, 'text', validationErrors.name)}
-        {renderField('Email Address', 'email', profileData.email, 'email', validationErrors.email)}
+        {/* Profile Fields */}
+        {/* First Name - Editable & Required */}
+        {renderField('First Name', 'firstName', profileData.firstName, 'text', validationErrors.firstName)}
+        {/* Last Name - Editable & Required */}
+        {renderField('Last Name', 'lastName', profileData.lastName, 'text', validationErrors.lastName)}
+        {/* Email - Read Only from OAuth (Locked) */}
+        {renderField('Email Address ', 'email', profileData.email, 'email', null, true)}
+        {/* Phone - Editable & Required */}
         {renderField('Phone Number', 'phone', profileData.phone, 'tel', validationErrors.phone)}
+        {/* Skills - Optional (UPDATED) */}
+        {renderField(
+          `Skills (Optional - e.g., ${skillsExamples})`, // The full label
+          'skills',
+          profileData.skills,
+          'text',
+          validationErrors.skills
+        )}
         {/* Action Buttons */}
         <div className="profile-actions">
           {isEditing ? (
             <>
-              {profileData.name !== '' && (
+              {/* Only show cancel if all required profile data has been previously saved */}
+              {(profileData.firstName !== '' && profileData.lastName !== '' && profileData.phone !== '') && (
                 <button
                   onClick={handleCancel}
                   className="profile-button-secondary"
