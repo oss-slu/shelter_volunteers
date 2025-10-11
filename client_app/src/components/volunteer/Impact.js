@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import { serviceCommitmentAPI } from "../../api/serviceCommitment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
+import "../../styles/volunteer/Impact.css";
+
+const onlyCompleted = (s) => {
+  if (!s?.shift_end || !s?.shift_start) return false;
+  const end = new Date(s.shift_end);
+  return !Number.isNaN(end.getTime()) && end <= new Date();
+};
+
 const calculateTotalHours = (shifts) => {
   const total = shifts.reduce((acc, s) => {
     const start = new Date(s.shift_start);
