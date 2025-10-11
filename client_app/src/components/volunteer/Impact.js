@@ -25,8 +25,6 @@ const calculateUniqueShelters = (shifts) => {
   return new Set(ids).size;
 };
 
-const onlyCompleted = (shift) => !!shift.shift_end;
-
 function Impact() {
   const [impactData, setImpactData] = useState({ totalHours: 0, sheltersServed: 0 });
 
