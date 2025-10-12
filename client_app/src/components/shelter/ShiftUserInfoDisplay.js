@@ -18,6 +18,8 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
     return null;
   }
 
+  const allEmailsJoined = userInfos.map((x) => x.email).join(",");
+
   return (
     isOpen &&
     shift?._id !== null && (
@@ -28,9 +30,20 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
             onClick={(e) => e.stopPropagation()}>
             <div className={"d-flex justify-content-between w-100 mx-5"}>
               <h1>Volunteer Info</h1>
-              <p>
-                Volunteers: {shift.volunteers.length}/{shift.required_volunteer_count}
-              </p>
+              <div className={"d-flex align-items-end justify-content-start flex-column"}>
+                <p>
+                  Volunteers: {shift.volunteers.length}/{shift.required_volunteer_count}
+                </p>
+                {!isLoading && (
+                  <a
+                    className="btn btn-primary"
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${allEmailsJoined}`}
+                    target="_blank"
+                    rel="noreferrer">
+                    Send Email to All
+                  </a>
+                )}
+              </div>
             </div>
             {isLoading ? (
               <p>Loading...</p>
@@ -52,7 +65,18 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
                           : userInfo.first_name + " " + userInfo.last_name}
                       </td>
                       <td>{userInfo.phone_number ?? "EMPTY"}</td>
-                      <td>{userInfo.email}</td>
+                      <td>
+                        <div className="d-flex justify-content-between">
+                          {userInfo.email}
+                          <a
+                            className="btn btn-primary"
+                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${userInfo.email}`}
+                            target="_blank"
+                            rel="noreferrer">
+                            Send Email
+                          </a>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
