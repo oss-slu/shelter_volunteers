@@ -169,7 +169,7 @@ const ProfileSettings = () => {
 
   return (
     <div className="profile-container">
-      <h1 className="profile-title">Volunteer Profile Settings</h1>
+      <h1 className="profile-title">Contact Information</h1>
       {/* Message Box for success/error alerts */}
       {message && (
         <div
