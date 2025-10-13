@@ -1,6 +1,13 @@
 import { Suspense, useEffect, useState } from "react";
 import { serviceShiftAPI } from "../../api/serviceShift";
 
+function getMassEmailSubject(shift) {
+  const start = new Date(shift.shift_start);
+  const end = new Date(shift.shift_end);
+
+  return `Volunteer Shift on ${start.getMonth() + 1}/${start.getDate()} ${start.getHours()}:${start.getMinutes()}-${end.getHours()}:${end.getMinutes()}`;
+}
+
 const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userInfos, setUserInfos] = useState([]);
@@ -19,6 +26,7 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
   }
 
   const allEmailsJoined = userInfos.map((x) => x.email).join(",");
+  const massEmailSubject = getMassEmailSubject(shift);
 
   return (
     isOpen &&
@@ -36,11 +44,13 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
                 </p>
                 {!isLoading && (
                   <a
-                    className="btn btn-primary"
-                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${allEmailsJoined}`}
+                    className="btn btn-info d-flex align-items-center"
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&bcc=${allEmailsJoined}&su=${massEmailSubject}`}
                     target="_blank"
+                    title="Email all volunteers via Gmail"
                     rel="noreferrer">
                     Send Email to All
+                    <span className="material-symbols-outlined ms-2">mail</span>
                   </a>
                 )}
               </div>
@@ -66,14 +76,15 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
                       </td>
                       <td>{userInfo.phone_number ?? "EMPTY"}</td>
                       <td>
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex">
                           {userInfo.email}
                           <a
-                            className="btn btn-primary"
+                            className="btn btn-info ms-3"
                             href={`https://mail.google.com/mail/?view=cm&fs=1&to=${userInfo.email}`}
                             target="_blank"
+                            title="Send Email via Gmail"
                             rel="noreferrer">
-                            Send Email
+                            <span className="material-symbols-outlined">mail</span>
                           </a>
                         </div>
                       </td>
