@@ -8,13 +8,14 @@ from typing import List
 
 from domains.authorization.access import Access
 
+
 @dataclasses.dataclass
 class UserPermission:
     """
     Data class for user permissions.
     """
     email: str
-    full_access: List[Access] = dataclasses.field(default_factory=list) # Roles
+    full_access: List[Access] = dataclasses.field(default_factory=list)  # Roles
     _id: uuid.UUID = None
 
     def get_id(self):
@@ -68,7 +69,7 @@ class UserPermission:
                 # no duplicated access is allowed: if a user already has access,
                 # we don't add it again
                 if resource_id is not None and \
-                   resource_id not in access.resource_ids:
+                        resource_id not in access.resource_ids:
                     access.resource_ids.append(resource_id)
                 return
         self.full_access.append(
@@ -83,7 +84,7 @@ class UserPermission:
             # Remove resource_id from access over resource_type
             for access in self.full_access:
                 if access.resource_type == resource_type and \
-                   resource_id in access.resource_ids:
+                        resource_id in access.resource_ids:
                     access.resource_ids.remove(resource_id)
                     return
         else:
@@ -92,8 +93,7 @@ class UserPermission:
                 if access.resource_type == resource_type:
                     self.full_access.remove(access)
                     return
-    
-    
+
     def is_system_admin(self):
         """
         Check if the user has system admin access.
