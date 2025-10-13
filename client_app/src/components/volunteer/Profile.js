@@ -1,16 +1,15 @@
-import React, { useState, useContext } from 'react';
-import { Pencil, Save, X, Lock } from 'lucide-react';
+import React, { useState, useContext } from "react";
+import { Pencil, Save, X, Lock } from "lucide-react";
 import "../../styles/volunteer/Profile.css";
 
 const mockAuthUser = {
-  email: 'volunteer.volunteer@gmail.com',
-  id: 'user-123',
+  email: "volunteer.volunteer@gmail.com",
+  id: "user-123",
 };
 
 // Placeholder for useAuth hook based on file analysis
 const AuthContext = React.createContext({ user: mockAuthUser });
 const useAuth = () => useContext(AuthContext);
-
 
 // Helper function to perform client-side validation based on specific requirements
 const validate = (data) => {
@@ -21,44 +20,39 @@ const validate = (data) => {
 
   // --- First Name Validation (Required) ---
   if (!data.firstName.trim()) {
-    errors.firstName = 'First Name is required.';
-  } else if (data.firstName.trim().length < 3) {
-    errors.firstName = 'First Name must be at least 3 characters long.';
+    errors.firstName = "First Name is required.";
   }
 
   // --- Last Name Validation (Required) ---
   if (!data.lastName.trim()) {
-    errors.lastName = 'Last Name is required.';
-  } else if (data.lastName.trim().length < 3) {
-    errors.lastName = 'Last Name must be at least 3 characters long.';
+    errors.lastName = "Last Name is required.";
   }
 
   // --- Phone Validation (Required) ---
   if (!data.phone.trim()) {
-    errors.phone = 'Phone Number is required.';
+    errors.phone = "Phone Number is required.";
   } else if (!phoneRegex.test(data.phone.trim())) {
-    errors.phone = 'Invalid phone format. Use a standard format (e.g., 555-555-5555).';
+    errors.phone = "Invalid phone format. Use a standard format (e.g., 555-555-5555).";
   }
 
   // --- Skills Validation (Non-Compulsory, but check max length) ---
   if (data.skills.trim().length > 250) {
-    errors.skills = 'Skills list cannot exceed 250 characters.';
+    errors.skills = "Skills list cannot exceed 250 characters.";
   }
 
   return errors;
 };
-
 
 // This component allows the user to view and edit their profile information.
 const ProfileSettings = () => {
   const { user: authUser } = useAuth(); // Use the mock/real auth user
 
   const initialData = {
-    firstName: '',
-    lastName: '',
-    email: authUser.email || '', // Sourced from OAuth
-    phone: '',
-    skills: '',
+    firstName: "",
+    lastName: "",
+    email: authUser.email || "", // Sourced from OAuth
+    phone: "",
+    skills: "",
   };
 
   const [profileData, setProfileData] = useState(initialData);
@@ -66,9 +60,9 @@ const ProfileSettings = () => {
 
   // Start in editing mode immediately if any REQUIRED fields are uninitialized.
   const [isEditing, setIsEditing] = useState(
-    profileData.firstName === '' || profileData.lastName === '' || profileData.phone === ''
+    profileData.firstName === "" || profileData.lastName === "" || profileData.phone === "",
   );
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
 
   // Function to handle changes in form inputs
@@ -79,11 +73,11 @@ const ProfileSettings = () => {
     });
     // Clear the specific error for the field being edited
     if (validationErrors[e.target.name]) {
-      setValidationErrors(prev => ({ ...prev, [e.target.name]: undefined }));
+      setValidationErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
     }
     // Clear general message if the user is typing
     if (message) {
-      setMessage('');
+      setMessage("");
     }
   };
 
@@ -91,7 +85,7 @@ const ProfileSettings = () => {
   const handleEdit = () => {
     setFormData(profileData);
     setIsEditing(true);
-    setMessage('');
+    setMessage("");
     setValidationErrors({}); // Clear any prior errors
   };
 
@@ -102,19 +96,19 @@ const ProfileSettings = () => {
     setValidationErrors(errors);
 
     if (Object.keys(errors).length > 0) {
-      setMessage('Please correct the highlighted errors before saving.');
+      setMessage("Please correct the highlighted errors before saving.");
       return;
     }
 
     // 2. Clear general message and proceed with simulation
-    setMessage('');
-    console.log('Simulating save of new profile data:', formData);
+    setMessage("");
+    console.log("Simulating save of new profile data:", formData);
 
     // 3. Simulate API Call
     setTimeout(() => {
       setProfileData(formData);
       setIsEditing(false);
-      setMessage('Profile updated successfully!');
+      setMessage("Profile updated successfully!");
       setValidationErrors({}); // Clear errors on successful save
     }, 500);
   };
@@ -122,40 +116,39 @@ const ProfileSettings = () => {
   // Function to handle canceling edits
   const handleCancel = () => {
     // Check if all required fields are missing
-    const requiredFieldsEmpty = profileData.firstName === '' && profileData.lastName === '' && profileData.phone === '';
+    const requiredFieldsEmpty =
+      profileData.firstName === "" && profileData.lastName === "" && profileData.phone === "";
     const resetData = requiredFieldsEmpty ? initialData : profileData;
     setFormData(resetData);
 
     // Only exit editing mode if all required data has been previously saved
-    if (profileData.firstName !== '' && profileData.lastName !== '' && profileData.phone !== '') {
+    if (profileData.firstName !== "" && profileData.lastName !== "" && profileData.phone !== "") {
       setIsEditing(false);
     }
-    setMessage('');
+    setMessage("");
     setValidationErrors({}); // Clear errors on cancel
   };
 
   // Helper function to render fields conditionally (display or input)
-  const renderField = (label, name, value, type = 'text', error = null, isReadOnly = false) => (
+  const renderField = (label, name, value, type = "text", error = null, isReadOnly = false) => (
     <div className="profile-field-row">
       <label className="profile-label">{label}</label>
       <div className="profile-value-wrapper">
         {isEditing ? (
           <>
-            <div className={`profile-input-group ${isReadOnly ? 'readonly-group' : ''}`}>
+            <div className={`profile-input-group ${isReadOnly ? "readonly-group" : ""}`}>
               <input
                 type={type}
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
                 readOnly={isReadOnly}
-                className={`profile-input ${error ? 'input-error' : ''} ${isReadOnly ? 'bg-gray-100' : ''}`}
+                className={`profile-input ${error ? "input-error" : ""} ${isReadOnly ? "bg-gray-100" : ""}`}
                 placeholder={label}
               />
               {isReadOnly && <Lock size={18} className="lock-icon" />}
             </div>
-            {error && (
-              <p className="error-text">{error}</p>
-            )}
+            {error && <p className="error-text">{error}</p>}
           </>
         ) : (
           <p className="profile-value">{value || `No ${label.toLowerCase()} provided.`}</p>
@@ -165,77 +158,76 @@ const ProfileSettings = () => {
   );
 
   // Primary button text logic based on required fields only
-  const primaryButtonText = (
-    profileData.firstName === '' ||
-    profileData.lastName === '' ||
-    profileData.phone === ''
-  ) ? 'Enter Profile Details' : 'Edit Profile';
+  const primaryButtonText =
+    profileData.firstName === "" || profileData.lastName === "" || profileData.phone === ""
+      ? "Enter Profile Details"
+      : "Edit Profile";
 
   // --- UPDATED SKILLS EXAMPLE STRING ---
-  const skillsExamples = "First aid/CPR, Narcan (naloxone), De-escalation/conflict resolution, Trauma-informed care, Mental health first aid";
+  const skillsExamples =
+    "First aid/CPR, Narcan (naloxone), De-escalation/conflict resolution, Trauma-informed care, Mental health first aid";
 
   return (
     <div className="profile-container">
-
-      <h1 className="profile-title">
-        Volunteer Profile Settings
-      </h1>
+      <h1 className="profile-title">Volunteer Profile Settings</h1>
       {/* Message Box for success/error alerts */}
       {message && (
         <div
-          className={`profile-message ${
-            message.includes('successfully') ? 'success' : 'error'
-          }`}
-          role="alert"
-        >
+          className={`profile-message ${message.includes("successfully") ? "success" : "error"}`}
+          role="alert">
           {message}
         </div>
       )}
       <div className="profile-card">
         {/* Profile Fields */}
         {/* First Name - Editable & Required */}
-        {renderField('First Name', 'firstName', profileData.firstName, 'text', validationErrors.firstName)}
+        {renderField(
+          "First Name",
+          "firstName",
+          profileData.firstName,
+          "text",
+          validationErrors.firstName,
+        )}
         {/* Last Name - Editable & Required */}
-        {renderField('Last Name', 'lastName', profileData.lastName, 'text', validationErrors.lastName)}
+        {renderField(
+          "Last Name",
+          "lastName",
+          profileData.lastName,
+          "text",
+          validationErrors.lastName,
+        )}
         {/* Email - Read Only from OAuth (Locked) */}
-        {renderField('Email Address ', 'email', profileData.email, 'email', null, true)}
+        {renderField("Email Address ", "email", profileData.email, "email", null, true)}
         {/* Phone - Editable & Required */}
-        {renderField('Phone Number', 'phone', profileData.phone, 'tel', validationErrors.phone)}
+        {renderField("Phone Number", "phone", profileData.phone, "tel", validationErrors.phone)}
         {/* Skills - Optional (UPDATED) */}
         {renderField(
           `Skills (Optional - e.g., ${skillsExamples})`, // The full label
-          'skills',
+          "skills",
           profileData.skills,
-          'text',
-          validationErrors.skills
+          "text",
+          validationErrors.skills,
         )}
         {/* Action Buttons */}
         <div className="profile-actions">
           {isEditing ? (
             <>
               {/* Only show cancel if all required profile data has been previously saved */}
-              {(profileData.firstName !== '' && profileData.lastName !== '' && profileData.phone !== '') && (
-                <button
-                  onClick={handleCancel}
-                  className="profile-button-secondary"
-                >
-                  <X size={18} />
-                  <span>Cancel</span>
-                </button>
-              )}
-              <button
-                onClick={handleSave}
-                className="profile-button-primary"
-              >
+              {profileData.firstName !== "" &&
+                profileData.lastName !== "" &&
+                profileData.phone !== "" && (
+                  <button onClick={handleCancel} className="profile-button-secondary">
+                    <X size={18} />
+                    <span>Cancel</span>
+                  </button>
+                )}
+              <button onClick={handleSave} className="profile-button-primary">
                 <Save size={18} />
                 <span>Save Changes</span>
               </button>
             </>
           ) : (
-            <button
-              onClick={handleEdit}
-              className="profile-button-edit"
-            >
+            <button onClick={handleEdit} className="profile-button-edit">
               <Pencil size={18} />
               <span>{primaryButtonText}</span>
             </button>
