@@ -77,16 +77,16 @@ def test_fetch_workshifts_start_before_time():
 def test_fetch_workshifts_end_after_time():
     repo = mock.Mock()
     shifts_after_time = [WorkShift.from_dict(s) for s in domain_shifts_data
-                         if s["end_time"] > 1696269500000
+                         if s["end_time"] > 1696269500100
                          and s["worker"] == "volunteer2@slu.edu"]
     repo.list.return_value = shifts_after_time
-    request = Object(filters={"end_after": 1696269500000})
+    request = Object(filters={"end_after": 1696269500100})
     response = workshift_list_use_case(repo, request,
                                        "volunteer2@slu.edu")
 
     assert isinstance(response, ResponseSuccess)
     assert len(response.value) == 1
-    assert response.value[0].end_time > 1696269500000
+    assert response.value[0].end_time > 1696269500100
 
 def test_combined_filters():
     repo = mock.Mock()
