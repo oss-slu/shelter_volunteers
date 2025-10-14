@@ -76,7 +76,6 @@ export const Sidebar = () => {
                   onClick={() => setActiveItem(index)}
                   className={`nav-button ${activeItem === index ? 'active' : ''}`}
                 >
-                  <FontAwesomeIcon icon={item.icon} />
                   {item.label}
                 </button>
               );
