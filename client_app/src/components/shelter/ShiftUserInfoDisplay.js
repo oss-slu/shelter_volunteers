@@ -25,8 +25,9 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
     return null;
   }
 
-  const allEmailsJoined = userInfos.map((x) => x.email).join(",");
-  const massEmailSubject = getMassEmailSubject(shift);
+  const massEmailBccEncoded = encodeURIComponent(userInfos.map((x) => x.email).join(","));
+  const massEmailSubjectEncoded = encodeURIComponent(getMassEmailSubject(shift));
+  const massEmailHref = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${massEmailBccEncoded}&su=${massEmailSubjectEncoded}`;
 
   return (
     isOpen &&
@@ -45,7 +46,7 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
                 {!isLoading && (
                   <a
                     className="btn btn-info d-flex align-items-center"
-                    href={`https://mail.google.com/mail/?view=cm&fs=1&bcc=${allEmailsJoined}&su=${massEmailSubject}`}
+                    href={massEmailHref}
                     target="_blank"
                     title="Email all volunteers via Gmail"
                     rel="noreferrer">
