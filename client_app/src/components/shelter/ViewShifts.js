@@ -3,7 +3,6 @@ import "../../styles/shelter/UpcomingShifts.css";
 import ServiceShiftDetails from "./ServiceShiftDetails.js";
 import { EditRequestModal } from "./EditRequestModal.js";
 import { CancelRequestModal } from "./CancelRequestModal.js";
-import { ShiftsModal } from "./ShiftsModal.js";
 import { formatDate } from "../../formatting/FormatDateTime.js";
 import ShiftUserInfoDisplay from "./ShiftUserInfoDisplay";
 
