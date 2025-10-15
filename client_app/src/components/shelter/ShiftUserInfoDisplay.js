@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { serviceShiftAPI } from "../../api/serviceShift";
 
 function getMassEmailSubject(shift) {
