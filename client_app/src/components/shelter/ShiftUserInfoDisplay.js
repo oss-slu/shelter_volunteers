@@ -81,7 +81,7 @@ const ShiftUserInfoDisplay = ({ shift, onDismiss, isOpen }) => {
                           {userInfo.email}
                           <a
                             className="btn btn-info ms-3"
-                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${userInfo.email}`}
+                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(userInfo.email)}`}
                             target="_blank"
                             title="Send Email via Gmail"
                             rel="noreferrer">
