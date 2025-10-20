@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Pencil, Save, X, Lock } from "lucide-react";
 import "../../styles/volunteer/Profile.css";
+import { getUserProfile, postUserProfile } from "../../api/volunteerApi";
 
 const mockAuthUser = {
   email: "volunteer.volunteer@gmail.com",
@@ -55,15 +56,39 @@ const ProfileSettings = () => {
     skills: "",
   };
 
+  // Pre-populate fields
+  useEffect(() => {
+    let cancelled = false;
+
+    getUserProfile().then((response) => {
+      if (cancelled) return;
+      const data =
+        response !== null
+          ? {
+              firstName: response.first_name ?? "",
+              lastName: response.last_name ?? "",
+              email: response.email ?? authUser.email ?? "",
+              phone: response.phone_number?.toString() ?? "",
+              skills: response.skills?.join(", ") ?? "",
+            }
+          : initialData;
+      setProfileData(data);
+      setIsEditing(data.firstName === "" || data.lastName === "" || data.phone === "");
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const [profileData, setProfileData] = useState(initialData);
   const [formData, setFormData] = useState(initialData);
 
   // Start in editing mode immediately if any REQUIRED fields are uninitialized.
-  const [isEditing, setIsEditing] = useState(
-    profileData.firstName === "" || profileData.lastName === "" || profileData.phone === "",
-  );
+  const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
+  const [isPosting, setIsPosting] = useState(false);
 
   // Function to handle changes in form inputs
   const handleChange = (e) => {
@@ -100,17 +125,32 @@ const ProfileSettings = () => {
       return;
     }
 
-    // 2. Clear general message and proceed with simulation
+    // Send POST.
     setMessage("");
-    console.log("Simulating save of new profile data:", formData);
-
-    // 3. Simulate API Call
-    setTimeout(() => {
-      setProfileData(formData);
-      setIsEditing(false);
-      setMessage("Profile updated successfully!");
-      setValidationErrors({}); // Clear errors on successful save
-    }, 500);
+    setIsPosting(true);
+    postUserProfile({
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      phone_number: formData.phone,
+      skills: formData.skills.split(",").map((x) => x.trim()),
+    })
+      .then((response) => {
+        setProfileData({
+          firstName: response.first_name ?? "",
+          lastName: response.last_name ?? "",
+          email: response.email ?? authUser.email ?? "",
+          phone: response.phone_number?.toString() ?? "",
+          skills: response.skills?.join(", ") ?? "",
+        });
+        setIsEditing(false);
+        setMessage("Profile updated.");
+      })
+      .catch(() => {
+        // Here we would display errors.
+      })
+      .finally(() => {
+        setIsPosting(false);
+      });
   };
 
   // Function to handle canceling edits
@@ -151,7 +191,9 @@ const ProfileSettings = () => {
             {error && <p className="error-text">{error}</p>}
           </>
         ) : (
-          <p className="profile-value">{value || `No ${label.toLowerCase()} provided.`}</p>
+          <p className="profile-value text-start">
+            {value || `No ${label.toLowerCase()} provided.`}
+          </p>
         )}
       </div>
     </div>
@@ -216,14 +258,17 @@ const ProfileSettings = () => {
               {profileData.firstName !== "" &&
                 profileData.lastName !== "" &&
                 profileData.phone !== "" && (
-                  <button onClick={handleCancel} className="profile-button-secondary">
+                  <button
+                    disabled={isPosting}
+                    onClick={handleCancel}
+                    className="profile-button-secondary">
                     <X size={18} />
                     <span>Cancel</span>
                   </button>
                 )}
-              <button onClick={handleSave} className="profile-button-primary">
+              <button disabled={isPosting} onClick={handleSave} className="profile-button-primary">
                 <Save size={18} />
-                <span>Save Changes</span>
+                <span>{isPosting ? "Saving Changes..." : "Save Changes"}</span>
               </button>
             </>
           ) : (
