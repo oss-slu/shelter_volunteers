@@ -59,7 +59,7 @@ const ProfileSettings = () => {
   // Pre-populate fields
   useEffect(() => {
     let cancelled = false;
-
+    setIsLoadingInitialData(true);
     getUserProfile().then((response) => {
       if (cancelled) return;
       const data =
@@ -73,11 +73,13 @@ const ProfileSettings = () => {
             }
           : initialData;
       setProfileData(data);
+      setIsLoadingInitialData(false);
       setIsEditing(data.firstName === "" || data.lastName === "" || data.phone === "");
     });
 
     return () => {
       cancelled = true;
+      setIsLoadingInitialData(false);
     };
   }, []);
 
@@ -85,6 +87,7 @@ const ProfileSettings = () => {
   const [formData, setFormData] = useState(initialData);
 
   // Start in editing mode immediately if any REQUIRED fields are uninitialized.
+  const [isLoadingInitialData, setIsLoadingInitialData] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
@@ -192,7 +195,10 @@ const ProfileSettings = () => {
           </>
         ) : (
           <p className="profile-value text-start">
-            {value || `No ${label.toLowerCase()} provided.`}
+            {value ||
+              (isLoadingInitialData
+                ? "Loading information"
+                : `No ${label.toLowerCase()} provided.`)}
           </p>
         )}
       </div>
