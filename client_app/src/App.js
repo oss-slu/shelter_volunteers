@@ -12,7 +12,7 @@ import VolunteerProfile from "./components/volunteer/Profile"; // <-- NEW IMPORT
 
 // Common components
 import { DashboardProvider } from "./contexts/DashboardContext";
-import HomeDashboard from "./components/HomeDashboard"
+import HomeDashboard from "./components/HomeDashboard";
 import DashboardLayout from "./components/DashboardLayout";
 import DashboardContent from "./components/DashboardContent";
 import Logout from "./components/authentication/Logout";
@@ -30,27 +30,25 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 
 import { setNavigate } from "./api/fetchClient";
 import { useAuth, setGlobalLogout } from "./contexts/AuthContext";
+import { setNavigateHttpClient } from "./api/httpClient";
 
 function AppContent() {
-
   const navigate = useNavigate();
   const { logout } = useAuth();
-  
+
   useEffect(() => {
     // Set the navigate function in fetchClient
     setNavigate(navigate);
-    
+    setNavigateHttpClient(navigate);
+
     // Set the global logout function for fetchClient
     setGlobalLogout(logout);
   }, [navigate, logout]);
 
-
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/home" element={
-        <HomeDashboard />} 
-        />
+      <Route path="/home" element={<HomeDashboard />} />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/admin-dashboard" element={<DashboardLayout />}>
@@ -60,14 +58,14 @@ function AppContent() {
         </Route>
         <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
-          <Route path="settings" element={<Settings />} /> 
+          <Route path="settings" element={<Settings />} />
           <Route path="schedule" element={<ShelterScheduleManager />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
           <Route path="repeatable-shifts" element={<RepeatableShifts />} />
           <Route path="users" element={<AddUserForm />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardContent/>} />
+          <Route index element={<DashboardContent />} />
           <Route path="shelters" element={<VolunteerShiftSignup />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<Commitments />} />
@@ -80,15 +78,17 @@ function AppContent() {
   );
 }
 function App() {
-  return (<div>
-    <Router >
-      <AuthProvider>
-        <DashboardProvider>
-          <AppContent />
-        </DashboardProvider>
-      </AuthProvider>
-    </Router>
-  </div>);
+  return (
+    <div>
+      <Router>
+        <AuthProvider>
+          <DashboardProvider>
+            <AppContent />
+          </DashboardProvider>
+        </AuthProvider>
+      </Router>
+    </div>
+  );
 }
 
 export default App;

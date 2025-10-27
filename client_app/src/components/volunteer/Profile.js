@@ -145,8 +145,8 @@ const ProfileSettings = () => {
         setIsEditing(false);
         setMessage("Profile updated.");
       })
-      .catch(() => {
-        // Here we would display errors.
+      .catch((errors) => {
+        setValidationErrors(errors);
       })
       .finally(() => {
         setIsPosting(false);

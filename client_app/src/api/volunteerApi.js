@@ -1,4 +1,5 @@
 import { fetchClient, patchRequest } from "./fetchClient";
+import httpClient from "./httpClient";
 
 /**
  * Fetches the current volunteer's profile data (Name, Email, Contact Number).
@@ -25,9 +26,8 @@ export const updateUserProfile = async (profileData) => {
 };
 
 export const postUserProfile = async (profileData) => {
-  const response = await fetchClient("/volunteer/profile", {
-    method: "POST",
-    body: JSON.stringify(profileData),
-  });
-  return response;
+  return httpClient
+    .post("/volunteer/profile", profileData)
+    .then((response) => response.data)
+    .catch((error) => Promise.reject(error.response.data.errors));
 };
