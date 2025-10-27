@@ -33,14 +33,14 @@ class UserInfo:
                skills: set[str]) -> CreateUserInfoResult:
         errors = {}
         if len(email) == 0:
-            errors['email'] = "Email is empty."
+            errors["email"] = "Email is empty."
         elif not email_pattern.match(email):
-            errors['email'] = "Email is empty."
+            errors["email"] = "Email is empty."
 
         if len(phone_number) == 0:
-            errors['phoneNumber'] = "Phone number is empty."
+            errors["phoneNumber"] = "Phone number is empty."
         elif not phone_number_pattern.match(phone_number):
-            errors['phoneNumber'] = "Malformed phone number. Numbers only, no dashes."
+            errors["phoneNumber"] = "Malformed phone number. Numbers only, no dashes."
 
         if len(first_name) == 0:
             errors["firstName"] = "First name is empty."
