@@ -152,16 +152,23 @@ function Commitments(){
             Shifts Selected to Cancel ({selectedShifts.size})
           </h3>
           <div className="list">
-            {Array.from(selectedShifts).map(shiftId => {
-              const shift = shifts.find(s => s._id === shiftId);
-              const shelter = shift.shelter;
-              const startTime = formatDateTime(shift.shift_start);
-              return (
-                <div key={shiftId} className="tagline-small">
-                  • {shelter.name} - on {startTime.date} at {startTime.time}
-                </div>
-              );
-            })}
+            {Array.from(selectedShifts)
+              .map(shiftId => {
+                const shift = shifts.find(s => s._id === shiftId);
+                return shift;
+              })
+              .filter(shift => shift) // Remove any undefined shifts
+              .sort((a, b) => new Date(a.shift_start) - new Date(b.shift_start)) // Sort chronologically
+              .map(shift => {
+                const shelter = shift.shelter;
+                const startTime = formatDateTime(shift.shift_start);
+                const endTime = formatDateTime(shift.shift_end);
+                return (
+                  <div key={shift._id} className="tagline-small">
+                    • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
+                  </div>
+                );
+              })}
           </div>
         </div>
         )}

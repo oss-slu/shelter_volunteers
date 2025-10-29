@@ -249,16 +249,23 @@ function VolunteerShiftSignup(){
             Selected Shifts ({selectedShifts.size})
           </h3>
           <div className="list">
-            {Array.from(selectedShifts).map(shiftId => {
-              const shift = shifts.find(s => s._id === shiftId);
-              const shelter = shelterMap[shift.shelter_id];
-              const startTime = formatDateTime(shift.shift_start);
-              return (
-                <div key={shiftId} className="tagline-small">
-                  • {startTime.date} at {startTime.time} - {shelter.name}
-                </div>
-              );
-            })}
+            {Array.from(selectedShifts)
+              .map(shiftId => {
+                const shift = shifts.find(s => s._id === shiftId);
+                return shift;
+              })
+              .filter(shift => shift) // Remove any undefined shifts
+              .sort((a, b) => new Date(a.shift_start) - new Date(b.shift_start)) // Sort chronologically
+              .map(shift => {
+                const shelter = shelterMap[shift.shelter_id];
+                const startTime = formatDateTime(shift.shift_start);
+                const endTime = formatDateTime(shift.shift_end);
+                return (
+                  <div key={shift._id} className="tagline-small">
+                    • {startTime.date} at {startTime.time} - {endTime.time} - {shelter.name}
+                  </div>
+                );
+              })}
           </div>
         </div>
         )}
