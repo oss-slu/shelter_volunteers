@@ -45,8 +45,8 @@ def get_shelter(shelter_id: str):
     shelter = get_shelter_by_id(shelter_id, repo)
     if not shelter:
         return Response(
-            json.dumps({'error': 'shelter_id is not found'}),
-            mimetype='application/json',
+            json.dumps({"error": "shelter_id is not found"}),
+            mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND]
         )
     return Response(
