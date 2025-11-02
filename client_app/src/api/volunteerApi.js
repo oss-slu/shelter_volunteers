@@ -6,13 +6,17 @@ import httpClient from "./httpClient";
  * @returns {Promise<Object>} The volunteer profile data.
  */
 export const getUserProfile = async () => {
-  try {
-    return await fetchClient("/volunteer/profile", {
-      method: "GET",
-    });
-  } catch (error) {
-    return null;
-  }
+  return httpClient
+    .get("/volunteer/profile")
+    .then((response) => response.data)
+    .then((data) => ({
+      firstName: data.first_name ?? "",
+      lastName: data.last_name ?? "",
+      email: data.email ?? "",
+      phone: data.phone_number?.toString() ?? "",
+      skills: data.skills?.join(", ") ?? "",
+    }))
+    .catch(() => null);
 };
 
 /**
@@ -26,8 +30,23 @@ export const updateUserProfile = async (profileData) => {
 };
 
 export const postUserProfile = async (profileData) => {
+  const data = {
+    first_name: profileData.firstName,
+    last_name: profileData.lastName,
+    email: profileData.email,
+    phone_number: profileData.phone,
+    skills: profileData.skills.split(",").map((skill) => skill.trim()),
+  };
+
   return httpClient
-    .post("/volunteer/profile", profileData)
+    .post("/volunteer/profile", data)
     .then((response) => response.data)
+    .then((data) => ({
+      firstName: data.first_name ?? "",
+      lastName: data.last_name ?? "",
+      email: data.email ?? "",
+      phone: data.phone_number?.toString() ?? "",
+      skills: data.skills?.join(", ") ?? "",
+    }))
     .catch((error) => Promise.reject(error.response.data.errors));
 };

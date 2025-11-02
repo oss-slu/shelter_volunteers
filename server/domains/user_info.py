@@ -40,7 +40,7 @@ class UserInfo:
         if len(phone_number) == 0:
             errors["phoneNumber"] = "Phone number is empty."
         elif not phone_number_pattern.match(phone_number):
-            errors["phoneNumber"] = "Malformed phone number. Numbers only, no dashes."
+            errors["phoneNumber"] = "Malformed phone number. 10 digits only, no dashes or spaces."
 
         if len(first_name) == 0:
             errors["firstName"] = "First name is empty."

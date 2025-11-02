@@ -31,9 +31,9 @@ const validate = (data) => {
 
   // --- Phone Validation (Required) ---
   if (!data.phone.trim()) {
-    errors.phone = "Phone Number is required.";
+    errors.phoneNumber = "Phone Number is required.";
   } else if (!phoneRegex.test(data.phone.trim())) {
-    errors.phone = "Invalid phone format. Use a standard format (e.g., 555-555-5555).";
+    errors.phoneNumber = "Invalid phone format. Use a standard format (e.g., 555-555-5555).";
   }
 
   // --- Skills Validation (Non-Compulsory, but check max length) ---
@@ -72,16 +72,7 @@ const ProfileSettings = () => {
     setIsLoadingInitialData(true);
     getUserProfile().then((response) => {
       if (cancelled) return;
-      const data =
-        response !== null
-          ? {
-              firstName: response.first_name ?? "",
-              lastName: response.last_name ?? "",
-              email: response.email ?? authUser.email ?? "",
-              phone: response.phone_number?.toString() ?? "",
-              skills: response.skills?.join(", ") ?? "",
-            }
-          : initialData;
+      const data = response ?? initialData;
       setProfileData(data);
       setIsLoadingInitialData(false);
       setIsEditing(data.firstName === "" || data.lastName === "" || data.phone === "");
@@ -131,24 +122,14 @@ const ProfileSettings = () => {
     // Send POST.
     setMessage("");
     setIsPosting(true);
-    postUserProfile({
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      phone_number: formData.phone,
-      skills: formData.skills.split(",").map((x) => x.trim()),
-    })
+    postUserProfile(formData)
       .then((response) => {
-        setProfileData({
-          firstName: response.first_name ?? "",
-          lastName: response.last_name ?? "",
-          email: response.email ?? authUser.email ?? "",
-          phone: response.phone_number?.toString() ?? "",
-          skills: response.skills?.join(", ") ?? "",
-        });
+        setProfileData(response);
         setIsEditing(false);
         setMessage("Profile updated.");
       })
       .catch((errors) => {
+        console.log(errors);
         setValidationErrors(errors);
       })
       .finally(() => {
@@ -247,7 +228,13 @@ const ProfileSettings = () => {
         {/* Email - Read Only from OAuth (Locked) */}
         {renderField("Email Address ", "email", profileData.email, "email", null, true)}
         {/* Phone - Editable & Required */}
-        {renderField("Phone Number", "phone", profileData.phone, "tel", validationErrors.phone)}
+        {renderField(
+          "Phone Number",
+          "phone",
+          profileData.phone,
+          "tel",
+          validationErrors.phoneNumber,
+        )}
         {/* Skills - Optional (UPDATED) */}
         {renderField(
           `Skills (Optional - e.g., ${skillsExamples})`, // The full label
