@@ -56,6 +56,16 @@ const ProfileSettings = () => {
     skills: "",
   };
 
+  const [profileData, setProfileData] = useState(initialData);
+  const [formData, setFormData] = useState(initialData);
+
+  // Start in editing mode immediately if any REQUIRED fields are uninitialized.
+  const [isLoadingInitialData, setIsLoadingInitialData] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [message, setMessage] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isPosting, setIsPosting] = useState(false);
+
   // Pre-populate fields
   useEffect(() => {
     let cancelled = false;
@@ -82,16 +92,6 @@ const ProfileSettings = () => {
       setIsLoadingInitialData(false);
     };
   }, []);
-
-  const [profileData, setProfileData] = useState(initialData);
-  const [formData, setFormData] = useState(initialData);
-
-  // Start in editing mode immediately if any REQUIRED fields are uninitialized.
-  const [isLoadingInitialData, setIsLoadingInitialData] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [message, setMessage] = useState("");
-  const [validationErrors, setValidationErrors] = useState({});
-  const [isPosting, setIsPosting] = useState(false);
 
   // Function to handle changes in form inputs
   const handleChange = (e) => {
