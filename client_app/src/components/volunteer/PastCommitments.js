@@ -1,12 +1,24 @@
-import { useState, useEffect } from 'react';
-import { serviceCommitmentAPI } from '../../api/serviceCommitment';
-import { formatDate } from '../../formatting/FormatDateTime';
-import { formatTime } from '../../formatting/FormatDateTime';
-import { MobileShiftCard } from './MobileShiftCard';
-import { DesktopShiftRow } from './DesktopShiftRow';
-import Loading from '../Loading';
+import { useState, useEffect } from "react";
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
+import { formatDate } from "../../formatting/FormatDateTime";
+import { formatTime } from "../../formatting/FormatDateTime";
+import { MobileShiftCard } from "./MobileShiftCard";
+import { DesktopShiftRow } from "./DesktopShiftRow";
+import Loading from "../Loading";
 
-function PastCommitments(){
+function compareDates(timestamp1, timestamp2) {
+  const dateA = new Date(timestamp1).setHours(0, 0, 0, 0);
+  const dateB = new Date(timestamp2).setHours(0, 0, 0, 0);
+
+  if (dateA === dateB) {
+    // Same day: ascending order by time
+    return timestamp1 - timestamp2;
+  }
+  // Different days: most recent first
+  return dateB - dateA;
+}
+
+function PastCommitments() {
   const [loading, setLoading] = useState(true);
   const [shifts, setShifts] = useState([]);
 
@@ -14,18 +26,19 @@ function PastCommitments(){
     const fetchData = async () => {
       try {
         const commitments = await serviceCommitmentAPI.getPastCommitments();
-        setShifts(commitments);
+        const sortedCommitments = commitments.sort((a, b) =>
+          compareDates(a.shift_start, b.shift_start),
+        );
+        setShifts(sortedCommitments);
         setLoading(false);
       } catch (error) {
-        console.error("fetch error:", error);
         setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-
-// Process shift data for rendering (eliminates duplication)
+  // Process shift data for rendering (eliminates duplication)
   const processShiftData = (shift) => {
     const shelter = shift.shelter;
     const startDate = formatDate(shift.shift_start);
@@ -42,10 +55,9 @@ function PastCommitments(){
       endTime,
       isSelected,
       duration,
-      canInteract
+      canInteract,
     };
-  };  
-
+  };
 
   if (loading) {
     return <Loading />;
@@ -54,9 +66,7 @@ function PastCommitments(){
     <div>
       <h1 className="title-small">Your Past Shifts</h1>
       <div className="description">
-        <p className="tagline-small">
-          Here are the shifts you have completed in the past.
-        </p>
+        <p className="tagline-small">Here are the shifts you have completed in the past.</p>
       </div>
       {/* Desktop Table View */}
       <div className="table-container desktop-only">
@@ -79,7 +89,7 @@ function PastCommitments(){
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
         {shifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)}/>
+          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} />
         ))}
       </div>
     </div>
