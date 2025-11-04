@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
@@ -152,23 +152,25 @@ function Commitments(){
             Shifts Selected to Cancel ({selectedShifts.size})
           </h3>
           <div className="list">
-            {Array.from(selectedShifts)
-              .map(shiftId => {
-                const shift = shifts.find(s => s._id === shiftId);
-                return shift;
-              })
-              .filter(shift => shift) // Remove any undefined shifts
-              .sort((a, b) => new Date(a.shift_start) - new Date(b.shift_start)) // Sort chronologically
-              .map(shift => {
-                const shelter = shift.shelter;
-                const startTime = formatDateTime(shift.shift_start);
-                const endTime = formatDateTime(shift.shift_end);
-                return (
-                  <div key={shift._id} className="tagline-small">
-                    • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
-                  </div>
-                );
-              })}
+            {useMemo(() => {
+              return Array.from(selectedShifts)
+                .map(shiftId => {
+                  const shift = shifts.find(s => s._id === shiftId);
+                  return shift;
+                })
+                .filter(shift => shift) // Remove any undefined shifts
+                .sort((a, b) => new Date(a.shift_start).getTime() - new Date(b.shift_start).getTime()) // Sort chronologically
+                .map(shift => {
+                  const shelter = shift.shelter;
+                  const startTime = formatDateTime(shift.shift_start);
+                  const endTime = formatDateTime(shift.shift_end);
+                  return (
+                    <div key={shift._id} className="tagline-small">
+                      • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
+                    </div>
+                  );
+                });
+            }, [selectedShifts, shifts])}
           </div>
         </div>
         )}
