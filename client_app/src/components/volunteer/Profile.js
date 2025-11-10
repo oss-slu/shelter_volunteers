@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Pencil, Save, X, Lock } from "lucide-react";
 import "../../styles/volunteer/Profile.css";
+import { getUserProfile, postUserProfile } from "../../api/volunteerApi";
 
 const mockAuthUser = {
   email: "volunteer.volunteer@gmail.com",
@@ -30,9 +31,9 @@ const validate = (data) => {
 
   // --- Phone Validation (Required) ---
   if (!data.phone.trim()) {
-    errors.phone = "Phone Number is required.";
+    errors.phoneNumber = "Phone Number is required.";
   } else if (!phoneRegex.test(data.phone.trim())) {
-    errors.phone = "Invalid phone format. Use a standard format (e.g., 555-555-5555).";
+    errors.phoneNumber = "Invalid phone format. Use a standard format (e.g., 555-555-5555).";
   }
 
   // --- Skills Validation (Non-Compulsory, but check max length) ---
@@ -59,11 +60,29 @@ const ProfileSettings = () => {
   const [formData, setFormData] = useState(initialData);
 
   // Start in editing mode immediately if any REQUIRED fields are uninitialized.
-  const [isEditing, setIsEditing] = useState(
-    profileData.firstName === "" || profileData.lastName === "" || profileData.phone === "",
-  );
+  const [isLoadingInitialData, setIsLoadingInitialData] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
+  const [isPosting, setIsPosting] = useState(false);
+
+  // Pre-populate fields
+  useEffect(() => {
+    let cancelled = false;
+    setIsLoadingInitialData(true);
+    getUserProfile().then((response) => {
+      if (cancelled) return;
+      const data = response ?? initialData;
+      setProfileData(data);
+      setIsLoadingInitialData(false);
+      setIsEditing(data.firstName === "" || data.lastName === "" || data.phone === "");
+    });
+
+    return () => {
+      cancelled = true;
+      setIsLoadingInitialData(false);
+    };
+  }, []);
 
   // Function to handle changes in form inputs
   const handleChange = (e) => {
@@ -100,17 +119,22 @@ const ProfileSettings = () => {
       return;
     }
 
-    // 2. Clear general message and proceed with simulation
+    // Send POST.
     setMessage("");
-    console.log("Simulating save of new profile data:", formData);
-
-    // 3. Simulate API Call
-    setTimeout(() => {
-      setProfileData(formData);
-      setIsEditing(false);
-      setMessage("Profile updated successfully!");
-      setValidationErrors({}); // Clear errors on successful save
-    }, 500);
+    setIsPosting(true);
+    postUserProfile(formData)
+      .then((response) => {
+        setProfileData(response);
+        setIsEditing(false);
+        setMessage("Profile updated.");
+      })
+      .catch((errors) => {
+        console.log(errors);
+        setValidationErrors(errors);
+      })
+      .finally(() => {
+        setIsPosting(false);
+      });
   };
 
   // Function to handle canceling edits
@@ -151,7 +175,12 @@ const ProfileSettings = () => {
             {error && <p className="error-text">{error}</p>}
           </>
         ) : (
-          <p className="profile-value">{value || `No ${label.toLowerCase()} provided.`}</p>
+          <p className="profile-value text-start">
+            {value ||
+              (isLoadingInitialData
+                ? "Loading information"
+                : `No ${label.toLowerCase()} provided.`)}
+          </p>
         )}
       </div>
     </div>
@@ -199,7 +228,13 @@ const ProfileSettings = () => {
         {/* Email - Read Only from OAuth (Locked) */}
         {renderField("Email Address ", "email", profileData.email, "email", null, true)}
         {/* Phone - Editable & Required */}
-        {renderField("Phone Number", "phone", profileData.phone, "tel", validationErrors.phone)}
+        {renderField(
+          "Phone Number",
+          "phone",
+          profileData.phone,
+          "tel",
+          validationErrors.phoneNumber,
+        )}
         {/* Skills - Optional (UPDATED) */}
         {renderField(
           `Skills (Optional - e.g., ${skillsExamples})`, // The full label
@@ -216,14 +251,17 @@ const ProfileSettings = () => {
               {profileData.firstName !== "" &&
                 profileData.lastName !== "" &&
                 profileData.phone !== "" && (
-                  <button onClick={handleCancel} className="profile-button-secondary">
+                  <button
+                    disabled={isPosting}
+                    onClick={handleCancel}
+                    className="profile-button-secondary">
                     <X size={18} />
                     <span>Cancel</span>
                   </button>
                 )}
-              <button onClick={handleSave} className="profile-button-primary">
+              <button disabled={isPosting} onClick={handleSave} className="profile-button-primary">
                 <Save size={18} />
-                <span>Save Changes</span>
+                <span>{isPosting ? "Saving Changes..." : "Save Changes"}</span>
               </button>
             </>
           ) : (

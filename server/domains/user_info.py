@@ -31,21 +31,21 @@ class UserInfo:
     @staticmethod
     def create(email: str, first_name: str, last_name: str, phone_number: str,
                skills: set[str]) -> CreateUserInfoResult:
-        errors = []
+        errors = {}
         if len(email) == 0:
-            errors.append("Email is empty.")
+            errors["email"] = "Email is empty."
         elif not email_pattern.match(email):
-            errors.append("Malformed email.")
+            errors["email"] = "Email is empty."
 
         if len(phone_number) == 0:
-            errors.append("Phone number is empty.")
+            errors["phoneNumber"] = "Phone number is empty."
         elif not phone_number_pattern.match(phone_number):
-            errors.append("Malformed phone number. Numbers only, no dashes.")
+            errors["phoneNumber"] = "Malformed phone number. 10 digits only, no dashes or spaces."
 
         if len(first_name) == 0:
-            errors.append("First name is empty.")
+            errors["firstName"] = "First name is empty."
         if len(last_name) == 0:
-            errors.append("Last name is empty.")
+            errors["lastName"] = "Last name is empty."
 
         if len(errors) == 0:
             data = UserInfo(
@@ -90,7 +90,7 @@ class Success:
 
 @dataclasses.dataclass
 class Failure:
-    errors: list[str]
+    errors: dict[str, str]
     status: Literal["error"] = "error"
 
 

@@ -1,13 +1,22 @@
-import { getRequest, patchRequest } from "./fetchClient";
+import { patchRequest } from "./fetchClient";
+import httpClient from "./httpClient";
 
 /**
  * Fetches the current volunteer's profile data (Name, Email, Contact Number).
  * @returns {Promise<Object>} The volunteer profile data.
  */
-export const fetchUserProfile = async () => {
-    // Assuming the backend uses the Authorization token to identify the user
-    // and returns the profile data directly. Endpoint: GET /volunteer/profile
-    return getRequest("/volunteer/profile");
+export const getUserProfile = async () => {
+  return httpClient
+    .get("/volunteer/profile")
+    .then((response) => response.data)
+    .then((data) => ({
+      firstName: data.first_name ?? "",
+      lastName: data.last_name ?? "",
+      email: data.email ?? "",
+      phone: data.phone_number?.toString() ?? "",
+      skills: data.skills?.join(", ") ?? "",
+    }))
+    .catch(() => null);
 };
 
 /**
@@ -16,6 +25,28 @@ export const fetchUserProfile = async () => {
  * @returns {Promise<Object>} The response from the server (e.g., success message).
  */
 export const updateUserProfile = async (profileData) => {
-    // Uses patchRequest to send the updated fields. Endpoint: PATCH /volunteer/profile
-    return patchRequest("/volunteer/profile", profileData);
+  // Uses patchRequest to send the updated fields. Endpoint: PATCH /volunteer/profile
+  return patchRequest("/volunteer/profile", profileData);
+};
+
+export const postUserProfile = async (profileData) => {
+  const data = {
+    first_name: profileData.firstName,
+    last_name: profileData.lastName,
+    email: profileData.email,
+    phone_number: profileData.phone,
+    skills: profileData.skills.split(",").map((skill) => skill.trim()),
+  };
+
+  return httpClient
+    .post("/volunteer/profile", data)
+    .then((response) => response.data)
+    .then((data) => ({
+      firstName: data.first_name ?? "",
+      lastName: data.last_name ?? "",
+      email: data.email ?? "",
+      phone: data.phone_number?.toString() ?? "",
+      skills: data.skills?.join(", ") ?? "",
+    }))
+    .catch((error) => Promise.reject(error.response.data.errors));
 };
