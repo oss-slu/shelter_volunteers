@@ -16,7 +16,7 @@ class ShelterRepo:
         Initialize the repo with passed data.
         """
         self.db = get_db()
-        self.collection = self.db.schedule
+        self.collection = self.db.shelters
 
     def _create_shelter_objects(self, results):
         return [
