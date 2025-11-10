@@ -1,4 +1,4 @@
-import { fetchClient, patchRequest } from "./fetchClient";
+import { patchRequest } from "./fetchClient";
 import httpClient from "./httpClient";
 
 /**
