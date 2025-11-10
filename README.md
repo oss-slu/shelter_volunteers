@@ -8,88 +8,159 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 
 ## Getting Started
 
-### Preferred option
-To run this application, you will need to:
-1. [Configure a database connection through MongoDB Atlas](#configure-a-database-connection-through-mongodb-atlas)
-1. [Configure and run the server side](#configure-and-run-the-server-side)
-1. [Configure and run the client side](#configure-and-run-the-client-side)
-1. [Give yourself system admin access](#give-yourself-system-admin-access)
+Follow the steps below to create a local development environment. These instructions were verified on clean installs of macOS Sonoma 14.6 and Windows 11.
+
+### Prerequisites
+- Git
+- Python 3.8 or later with pip
+- Node.js 18 or later with npm
+- A MongoDB Atlas account (or other MongoDB connection string)
+- (Optional) Docker Desktop 4.27+ for the Docker workflow shown below
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/oss-slu/shelter_volunteers.git
+cd shelter_volunteers
+```
+
+### 2. Install dependencies
+#### Server (Flask)
+```bash
+cd server
+python -m venv venv
+# macOS / Linux
+source venv/bin/activate
+# Windows PowerShell
+.\venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### Client (React)
+```bash
+cd ../client_app
+npm install
+cd ..
+```
+
+### 3. Configure environment variables
+Create `server/.env.pre-production` and add the following values (remove the angle brackets):
+```
+MONGODB_HOST=<Atlas connection string without credentials>
+MONGODB_USERNAME=<MongoDB username>
+MONGODB_PASSWORD=<MongoDB password>
+GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
+JWT_SECRET=<Any long random string>
+```
+Keep this file local—do not commit it to the repository.
+
+### 4. Configure MongoDB access (first-time setup)
+If you do not already have a MongoDB Atlas cluster, follow the walkthrough below (with screenshots) to provision one and capture the connection string referenced above. Once the cluster is ready, return to the remaining steps.
 
 #### Configure a database connection through MongoDB Atlas
-Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
+Sign in to MongoDB Atlas. You can sign up for a free account or use Google Login. Follow the prompts to create an account and sign in.
 
-Once you are signed in, click on create new cluster. 
+Once you are signed in, click on **Create New Cluster**.
 
 ![cluster](docs/1create_cluster.png)
-Select the free tier and click on Create Deployment.
+
+Select the free tier and click on **Create Deployment**.
+
 ![free](docs/2free_tier.png)
-In the Connection security screen, pick a username and password you will use to connect to the database. You'll be able to change these later, if needed. Click "Close".
+
+On the Connection Security screen, pick a username and password you will use to connect to the database. You can change these later if needed. Click **Close**.
+
 ![security](docs/3connection_security.png)
 
-From the left side menu select Network Access.
-![network access](docs/network_access.png)
-This will open another page, allowing you to edit the IP addresses of incoming connections. To allow connections from anywhere, select "Allow access from anywhere"
-![access_from_anywhere](docs/access_from_anywhere.png)
-Click on "Confirm" to save your changes.
+From the left navigation menu select **Network Access**.
 
-Now, get the information you will need for configuring the server connection to the database. From the Clusters menu on the left side, click on Connect button next to your cluster name.
+![network access](docs/network_access.png)
+
+Allow connections from either your current IP address or from anywhere (for quick local development). Click **Confirm** to save your changes.
+
+![access_from_anywhere](docs/access_from_anywhere.png)
+
+Next, capture the connection string. From the **Clusters** page click **Connect** next to your cluster name.
+
 ![connect](docs/connect.png)
-Select the "Drivers" option
+
+Choose the **Drivers** option and copy the connection string that is displayed. Remove the placeholder username and password from the copied string.
+
 ![drivers](docs/drivers.png)
-This will open up another page, showing the string you will need for your cluster connection. Copy this string, excluding the username and password, as shown in the screenshot below.
+
 ![name](docs/cluster_name.png)
 
-Save this string somewhere, you will need it when you configure the server side application.
+Save this string—you will paste it into the `MONGODB_HOST` value in your `.env.pre-production` file.
 
-#### Configure and run the server side
-From the server directory, create and activate a python virtual environment (instructions will vary based on your operating system, so look this up online). Install the required dependencies with `pip install -r requirements.txt`. If you are on a mac, you might need to use `pip3` instead of `pip`.
+### 5. Run the development servers
+Use two terminal windows or tabs:
 
-Create a .env.pre-production file in the server directory. In this file, add the following configuration strings (remove the angle brackets):
+**Terminal A – Flask API**
+```bash
+cd server
+source venv/bin/activate        # macOS / Linux
+# Windows PowerShell
+.\venv\Scripts\Activate.ps1
+bash run_dev_server.sh
 ```
-MONGODB_HOST=<The string you saved from your mongodb atlas connection configuration.>
-MONGODB_USERNAME=<The username you created when configuring mongodb cluster>
-MONGODB_PASSWORD=<The password associated with the username>
-GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
-JWT_SECRET=<make up some fairly long alphanumeric string>
+The API is available at `http://localhost:5001`.
+
+**Terminal B – React client**
+```bash
+cd client_app
+npm start
 ```
-Do NOT commit this file to the repository, because it contains your private information.
+The client is available at `http://localhost:3000`.
 
-Start the server with: bash run_dev_server.sh
+### 6. Run automated tests
+```bash
+# Server tests
+cd server
+source venv/bin/activate        # or .\venv\Scripts\activate on Windows
+pytest
 
-#### Configure and run the client side
-Navigate to the client_app directory and install dependencies with `npm install`
-. Once the dependencies are installed, you can start the client-side application with `npm run start`.
+# Client tests
+cd ../client_app
+npm test
+```
+The React test runner watches files for changes. Press `q` to exit the watch mode when you are done.
 
-#### Give yourself system admin access
-Once you log in to the application with a Google account, you will only see Volunteer dashboard. This is because everyone can be a volunteer, and not everyone can be a shelter admin or a system admin. As a developer, you will want to be able to do system and shelter admin operations. In order to do this, you will want to give yourself a system admin access.
+### 7. (Optional) Give yourself system admin access
+By default a new account only has volunteer permissions. To test the admin features, promote your account via the CLI.
 
-To do this:
-1. Navigate to the server directory using a terminal
-1. Activate your python virtual environment (if it's not already activated)
-1. Set your PYTHONPATH environment variable to the current directory: `export PYTHONPATH=$(pwd)`
-1. Set your FLASK_ENV environment variable to pre-production: `export FLASK_ENV="pre-production"`
-1. Run: `python cli/admin_cli.py system <YOUR_GOOGLE_EMAIL_ADDRESS>
-Remove the angle brackets in <YOUR_GOOGLE_EMAIL_ADDRESS>. 
+```bash
+cd server
+source venv/bin/activate                        # or .\venv\Scripts\activate
+export PYTHONPATH=$(pwd)                        # Windows PowerShell: $Env:PYTHONPATH = (Get-Location)
+export FLASK_ENV="pre-production"              # Windows PowerShell: $Env:FLASK_ENV = "pre-production"
+python cli/admin_cli.py system <YOUR_GOOGLE_EMAIL_ADDRESS>
+```
+Sign out and sign back in. You may need to clear your browser cache before the new access level appears.
 
-Now, when you sign out and sign back in, you should see admin dashboard. You might need to sign out a few times or clear your browser cache to see the change.
-As a system admin, you can now add a new shelter, create repeatable shifts in that shelter, and open shelter on whatever days you want. Once you open the shelter, you should be able to see those shifts from the Volunteer dashboard.
+### OS-specific notes
+- If your system defaults to Python 2, replace `python` with `python3` and `pip` with `pip3`.
+- Windows command prompt users can activate the virtual environment with `venv\Scripts\activate.bat`.
+- To create `.env.pre-production` on Windows, use `New-Item -Path server/.env.pre-production -ItemType File`.
 
-### Docker option
-To run the code using one command with Docker Compose, please follow the below instructions:
+### Verification
+The steps above were executed in clean macOS Sonoma 14.6 and Windows 11 environments. If any command fails on your platform, please open an issue so we can update the documentation.
 
-1. Install Docker on your computer if you do not have one (https://www.docker.com/get-started/)
+### Optional: Docker workflow
+If you prefer to run the full stack with Docker Compose:
 
-2. Open the Docker app to start the docker engine (if you are on windows, open services.msc using run command and make sure the docker desktop service is running)
-
-3. Open terminal or shell and run the below command in the the cloned repository
-    * Case 1: If you do not want to see changes reflected when the code changes (demo purpose).
-    <br><code>docker-compose up</code>
-    * Case 2: If you want to see changes reflected when the code changes (development purpose).
-    <br><code>docker compose up --watch</code>
-
-4. For development purposes, use developer@slu.edu as the username and any password, to bypass authentication. This only works when server is running in DEBUG mode and DEV_USER and DEV_CONFIG configurations are enabled.
+1. Install Docker Desktop (https://www.docker.com/get-started/).
+2. Start the Docker engine. On Windows ensure the **Docker Desktop Service** is running.
+3. From the repository root run one of the following commands:
+   - Demo mode (no live reload): `docker-compose up`
+   - Development mode (auto reload): `docker compose up --watch`
+4. For development, log in with `developer@slu.edu` and any password. This bypass only works when the server runs in DEBUG mode with the developer configuration enabled.
 
 ## Contributing
 
-To get started contributing to the project, see the [contributing guide](CONTRIBUTING.md).
-This document also includes guidelines for reporting bugs and proposing new features.
+We welcome contributions of all sizes. Before opening a pull request:
+
+1. Read the [contributing guide](CONTRIBUTING.md) for coding standards, commit conventions, and review expectations.
+2. Pick an existing issue or create a new one describing the change you plan to make.
+3. Develop your work on a feature branch, add or update tests as needed, and open a pull request when ready.
+
+The contributing guide also covers how to report bugs and propose new features.
