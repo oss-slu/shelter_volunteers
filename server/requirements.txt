@@ -7,3 +7,5 @@ pymongo
 PyJWT
 google-auth
 google-auth-oauthlib
+pytest
+testcontainers[mongodb]

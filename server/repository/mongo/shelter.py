@@ -5,16 +5,18 @@ from config.mongodb_config import get_db
 from domains.shelter.shelter import Shelter
 from bson.objectid import ObjectId
 
+
 class ShelterRepo:
     """
     A mongo repository for storing work shifts.
     """
+
     def __init__(self):
         """
         Initialize the repo with passed data.
         """
         self.db = get_db()
-        self.collection = self.db.shelters
+        self.collection = self.db.schedule
 
     def _create_shelter_objects(self, results):
         return [
@@ -44,7 +46,7 @@ class ShelterRepo:
         The get_by_id function takes in a shelter_id and
         returns the corresponding Shelter object.
         """
-        id_filter = {"_id":ObjectId(shelter_id)}
+        id_filter = {"_id": ObjectId(shelter_id)}
         item = self.collection.find_one(filter=id_filter)
         if item:
             return Shelter.from_dict(item)
