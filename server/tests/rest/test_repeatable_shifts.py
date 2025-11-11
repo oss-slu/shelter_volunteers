@@ -6,8 +6,9 @@ use a patched decorator to avoid permission checks during unit tests.
 
 # Pytest fixtures are referenced by name in test function arguments which
 # intentionally shadow module-level symbols; disable the redefined-outer-name
-# warning for this test module.
-# pylint: disable=redefined-outer-name
+# warning for this test module. The test also performs an import inside a
+# fixture after patching a decorator; allow that pattern here as well.
+# pylint: disable=redefined-outer-name,import-outside-toplevel
 
 import json
 import pytest
