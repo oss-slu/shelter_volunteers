@@ -59,7 +59,8 @@ def post_repeatable_shifts_endpoint(shelter_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
-    errors = [(i, result) for (i, result) in enumerate(create_shift_results) if not result.is_success]
+    errors = [(i, result) for (i, result) in
+              enumerate(create_shift_results) if not result.is_success]
     if errors:
         keyed_errors = {
             idx: {

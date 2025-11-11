@@ -1,3 +1,6 @@
+"""
+Tests return values of the create method.
+"""
 from domains.shelter.schedule.repeatable_shift import RepeatableShift
 
 
