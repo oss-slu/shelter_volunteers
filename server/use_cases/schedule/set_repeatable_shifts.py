@@ -1,3 +1,10 @@
+"""Use case to set repeatable shifts for a shelter.
+
+This module exposes a single function, `set_repeatable_shifts`, which validates
+and saves a collection of RepeatableShift objects for a shelter using the
+provided repository.
+"""
+
 from typing import List
 
 from domains.shared.result import Result

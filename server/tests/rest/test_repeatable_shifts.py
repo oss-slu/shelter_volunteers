@@ -1,6 +1,17 @@
+"""Tests for the repeatable_shifts REST blueprint.
+
+These tests exercise the REST endpoints for posting repeatable shifts and
+use a patched decorator to avoid permission checks during unit tests.
+"""
+
+# Pytest fixtures are referenced by name in test function arguments which
+# intentionally shadow module-level symbols; disable the redefined-outer-name
+# warning for this test module.
+# pylint: disable=redefined-outer-name
+
 import json
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from flask import Flask
 
 
@@ -8,9 +19,18 @@ from flask import Flask
 @pytest.fixture(scope="module", autouse=True)
 def setup_mocks():
     """Mock dependencies before blueprint import."""
-    with patch('application.rest.shelter_admin_permission_required.shelter_admin_permission_required', lambda f: f):
+    decorator_path = (
+        "application.rest.shelter_admin_permission_required"
+        ".shelter_admin_permission_required"
+    )
+    with patch(decorator_path, lambda f: f):
         # Import blueprint after mocking
-        from application.rest.repeatable_shifts import repeatable_shifts_bp
+        # import-outside-toplevel is intentional here because we must patch
+        # the decorator before importing the blueprint.
+        from application.rest.repeatable_shifts import (
+            repeatable_shifts_bp,
+        )  # pylint: disable=import-outside-toplevel
+
         yield repeatable_shifts_bp
 
 
@@ -18,7 +38,7 @@ def setup_mocks():
 def app(setup_mocks):
     """Create a minimal Flask app with just the repeatable_shifts blueprint."""
     app = Flask(__name__)
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     app.register_blueprint(setup_mocks)
     return app
 
@@ -34,9 +54,9 @@ def test_post_repeatable_shifts_invalid_body(client):
 
     # Act
     response = client.post(
-        '/shelters/123/schedule',
+        "/shelters/123/schedule",
         data=json.dumps({"not": "a list"}),
-        content_type='application/json'
+        content_type="application/json",
     )
 
     # Assert
@@ -49,9 +69,7 @@ def test_post_repeatable_shifts_invalid_body(client):
 def test_post_repeatable_shifts_empty_body(client):
     # Act
     response = client.post(
-        '/shelters/123/schedule',
-        data=json.dumps(None),
-        content_type='application/json'
+        "/shelters/123/schedule", data=json.dumps(None), content_type="application/json"
     )
 
     # Assert
@@ -71,9 +89,9 @@ def test_post_repeatable_shifts_invalid_shift_format(client):
 
     # Act
     response = client.post(
-        '/shelters/123/schedule',
+        "/shelters/123/schedule",
         data=json.dumps(invalid_shifts),
-        content_type='application/json'
+        content_type="application/json",
     )
 
     # Assert

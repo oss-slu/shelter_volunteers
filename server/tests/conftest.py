@@ -1,3 +1,14 @@
+"""Test fixtures for pytest.
+
+Provides fixtures that start a temporary MongoDB container for tests when
+Docker is available. If Docker is not available the tests are skipped.
+"""
+
+# Tests use pytest fixture names as test parameters which intentionally shadow
+# names in some scopes; disable the redefined-outer-name warning for this
+# test module.
+# pylint: disable=redefined-outer-name
+
 import pytest
 from testcontainers.mongodb import MongoDbContainer
 from pymongo import MongoClient
@@ -5,14 +16,19 @@ from pymongo import MongoClient
 
 @pytest.fixture(scope="session")
 def mongo_container():
-    """Start MongoDB container if Docker is available."""
+    """Start MongoDB container if Docker is available.
+
+    If the container can't be created (Docker not present) the test session is
+    skipped. Catching a broad Exception here is intentional because test
+    containers may raise various errors when Docker is unavailable.
+    """
     try:
         container = MongoDbContainer("mongo:8.0.5")
         container.start()
         yield container
         container.stop()
-    except Exception as e:
-        pytest.skip(f"MongoDB container not available: {e}")
+    except Exception as exc:  # pylint: disable=broad-exception-caught
+        pytest.skip(f"MongoDB container not available: {exc}")
 
 
 @pytest.fixture(scope="function")

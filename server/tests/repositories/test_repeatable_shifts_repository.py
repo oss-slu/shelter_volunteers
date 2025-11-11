@@ -1,3 +1,13 @@
+"""Tests for the RepeatableShiftsRepository.
+
+These tests exercise the Mongo-backed repository for repeatable shifts.
+"""
+
+# Pytest fixtures are referenced by name in test function arguments which
+# intentionally shadow module-level symbols; disable the redefined-outer-name
+# warning for this test module.
+# pylint: disable=redefined-outer-name
+
 import pytest
 
 from domains.shelter.schedule.repeatable_shift import RepeatableShift
@@ -20,16 +30,16 @@ def repeatable_shifts1():
                 shift_end=200,
                 shift_name="Test Shift",
                 required_volunteer_count=1,
-                max_volunteer_count=5
+                max_volunteer_count=5,
             ),
             RepeatableShift(
                 shift_start=200,
                 shift_end=400,
                 shift_name="Test Shift 2",
                 required_volunteer_count=1,
-                max_volunteer_count=5
-            )
-        ]
+                max_volunteer_count=5,
+            ),
+        ],
     )
 
 
@@ -81,7 +91,7 @@ def test_partial_upsert(repeatable_shifts_repository, repeatable_shifts1):
         shift_end=600,
         shift_name="Test Shift 3",
         required_volunteer_count=2,
-        max_volunteer_count=10
+        max_volunteer_count=10,
     )
     initial_result.value.shifts.append(new_shift)
 
@@ -112,8 +122,7 @@ def test_delete_shift_on_save(repeatable_shifts_repository, repeatable_shifts1):
 
     # Remove the second shift
     updated_shifts = RepeatableShifts(
-        shelter_id="1",
-        shifts=[initial_result.value.shifts[0]]
+        shelter_id="1", shifts=[initial_result.value.shifts[0]]
     )
 
     # Act
