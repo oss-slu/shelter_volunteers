@@ -23,7 +23,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import AddUserForm from "./components/shelter/AddUserForm";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
-import RepeatableShifts from "./components/shelter/RepeatableShifts";
 import ShelterScheduleManager from "./components/shelter/ScheduleManager";
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";

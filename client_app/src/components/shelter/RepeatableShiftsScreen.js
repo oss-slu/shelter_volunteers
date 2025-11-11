@@ -7,7 +7,6 @@ import {
   millisToTimeString,
   timeStringToMillis,
 } from "../../formatting/FormatDateTime";
-import loading from "../Loading";
 
 const RepeatableShiftsScreen = () => {
   const { shelterId } = useParams();
@@ -16,7 +15,6 @@ const RepeatableShiftsScreen = () => {
   const [loadingShelterName, setLoadingShelterName] = useState(false);
 
   const [pendingShifts, setPendingShifts] = useState([]);
-  const [currentShifts, setCurrentShifts] = useState([]);
   const [loadingShifts, setLoadingShifts] = useState(false);
 
   // Set shelter name.
@@ -37,7 +35,6 @@ const RepeatableShiftsScreen = () => {
     repeatableShiftsApi.getRepeatableShifts(shelterId).then((shifts) => {
       console.log(shifts);
       setPendingShifts(shifts);
-      setCurrentShifts(shifts);
       setLoadingShifts(false);
     });
     return () => setLoadingShifts(false);
@@ -50,7 +47,6 @@ const RepeatableShiftsScreen = () => {
       .setRepeatableShifts(shelterId, pendingShifts)
       .then((shifts) => {
         setPendingShifts(shifts);
-        setCurrentShifts(shifts);
       })
       .finally(() => {
         setLoadingShifts(false);
@@ -102,7 +98,7 @@ const RepeatableShiftsScreen = () => {
           <div>Loading shifts...</div>
         ) : (
           <div className="d-flex flex-column py-4">
-            <table className="table table-striped table-responsive">
+            <table className="table table-striped">
               <thead>
                 <tr>
                   <th>Shift Name</th>
@@ -120,6 +116,7 @@ const RepeatableShiftsScreen = () => {
                     <td>
                       <input
                         type="text"
+                        className="form-control"
                         value={shift.shiftName}
                         placeholder="Shift Name"
                         onChange={(e) => updateShift(idx, "shiftName", e.target.value)}
@@ -128,6 +125,7 @@ const RepeatableShiftsScreen = () => {
                     <td>
                       <input
                         type="time"
+                        className="form-control"
                         value={millisToTimeString(shift.shiftStart)}
                         onChange={(e) =>
                           updateShift(idx, "shiftStart", timeStringToMillis(e.target.value))
@@ -137,6 +135,7 @@ const RepeatableShiftsScreen = () => {
                     <td>
                       <input
                         type="number"
+                        className="form-control"
                         step="0.01"
                         value={(shift.shiftEnd - shift.shiftStart) / 3600000}
                         onChange={(e) => updateShift(idx, "duration", e.target.value)}
@@ -148,6 +147,7 @@ const RepeatableShiftsScreen = () => {
                     <td>
                       <input
                         type="number"
+                        className="form-control"
                         value={shift.requiredVolunteerCount}
                         onChange={(e) => updateShift(idx, "requiredVolunteerCount", e.target.value)}
                       />
@@ -155,6 +155,7 @@ const RepeatableShiftsScreen = () => {
                     <td>
                       <input
                         type="number"
+                        className="form-control"
                         value={shift.maxVolunteerCount}
                         onChange={(e) => updateShift(idx, "maxVolunteerCount", e.target.value)}
                       />
