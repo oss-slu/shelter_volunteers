@@ -24,7 +24,7 @@ export const repeatableShiftsApi = {
       .get(`/shelters/${shelterId}/schedule`)
       .then((response) => response.data)
       .then((data) => data.map(shiftSnakeToCamel))
-      .catch((error) => console.log(error));
+      .catch((error) => Promise.reject(error.response.data));
   },
   setRepeatableShifts: (shelterId, shifts) => {
     const body = shifts.map(shiftCamelToSnake);
@@ -32,6 +32,6 @@ export const repeatableShiftsApi = {
       .post(`/shelters/${shelterId}/schedule`, body)
       .then((response) => response.data)
       .then((data) => data.map(shiftSnakeToCamel))
-      .catch((error) => console.log(error));
+      .catch((error) => Promise.reject(error.response.data));
   },
 };

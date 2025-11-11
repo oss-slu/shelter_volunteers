@@ -14,6 +14,8 @@ const RepeatableShiftsScreen = () => {
   const [shelterName, setShelterName] = useState("");
   const [loadingShelterName, setLoadingShelterName] = useState(false);
 
+  const [errorMessages, setErrorMessages] = useState([]);
+
   const [pendingShifts, setPendingShifts] = useState([]);
   const [loadingShifts, setLoadingShifts] = useState(false);
 
@@ -47,6 +49,19 @@ const RepeatableShiftsScreen = () => {
       .setRepeatableShifts(shelterId, pendingShifts)
       .then((shifts) => {
         setPendingShifts(shifts);
+        setErrorMessages([]);
+      })
+      .catch((data) => {
+        console.log(data);
+        const errors = ["Fix form errors and try again.", ...data.generic_errors];
+        Object.keys(data.keyed_errors).forEach((key) => {
+          Object.keys(data.keyed_errors[key]).forEach((field) => {
+            for (let error of data.keyed_errors[key][field]) {
+              errors.push("Shift " + key + ": " + error);
+            }
+          });
+        });
+        setErrorMessages(errors);
       })
       .finally(() => {
         setLoadingShifts(false);
@@ -67,7 +82,6 @@ const RepeatableShiftsScreen = () => {
   };
 
   const updateShift = (index, field, value) => {
-    console.log(value);
     setPendingShifts((shifts) => {
       const updatedShifts = [...shifts];
       if (field === "duration") {
@@ -92,6 +106,13 @@ const RepeatableShiftsScreen = () => {
           Shelter: {loadingShelterName ? "Loading Shelter Name" : shelterName} ({shelterId})
         </h2>
       </div>
+      {errorMessages.length > 0 && (
+        <ul className="w-100 text-danger bg-danger-subtle text-start">
+          {errorMessages.map((message, index) => (
+            <li key={index}>{message}</li>
+          ))}
+        </ul>
+      )}
       <div className="card">
         <h1>Projected Repeatable Shifts</h1>
         {loadingShifts ? (

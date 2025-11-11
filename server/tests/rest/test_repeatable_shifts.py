@@ -50,6 +50,48 @@ def client(app):
     return app.test_client()
 
 
+def test_post_repeatable_shifts_domain_invariants(client):
+    # Arrange
+    body = [
+        # Good
+        {
+            "shift_start": 100,
+            "shift_end": 200,
+            "required_volunteer_count": 1,
+            "max_volunteer_count": 5,
+        },
+        # Bad
+        {
+            "shift_start": 100,
+            "shift_end": 50,
+            "required_volunteer_count": 1,
+            "max_volunteer_count": 5,
+        },
+        # Good
+        {
+            "shift_start": 100,
+            "shift_end": 200,
+            "required_volunteer_count": 1,
+            "max_volunteer_count": 5,
+        },
+    ]
+
+    # Act
+    response = client.post(
+        "/shelters/123/schedule",
+        data=json.dumps(body),
+        content_type="application/json",
+    )
+
+    # Assert
+    assert response.status_code == 400
+    data = response.json
+    assert "keyed_errors" in data
+    assert len(data["keyed_errors"]) == 1
+    assert "1" in data["keyed_errors"]
+    assert "shift_end" in data["keyed_errors"]["1"]
+
+
 def test_post_repeatable_shifts_invalid_body(client):
     # Arrange - send non-list body
 

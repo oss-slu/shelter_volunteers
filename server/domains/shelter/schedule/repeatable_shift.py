@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from domains.shared.result import Result, Success
+from domains.shared.result import Result, Success, Failure
 
 
 @dataclass
@@ -31,17 +31,28 @@ class RepeatableShift:
 
     @staticmethod
     def create(
-        shift_start: int,
-        shift_end: int,
-        required_volunteer_count: int,
-        max_volunteer_count: int,
-        shift_name: Optional[str] = None,
+            shift_start: int,
+            shift_end: int,
+            required_volunteer_count: int,
+            max_volunteer_count: int,
+            shift_name: Optional[str] = None,
+            id: Optional[str] = None,
     ) -> Result["RepeatableShift"]:
+        errors = {}
+        if shift_end <= shift_start:
+            if "shift_end" not in errors:
+                errors["shift_end"] = []
+            errors["shift_end"].append("End time must be after start time.")
+
+        if errors:
+            return Failure(keyed_errors=errors)
+
         result = RepeatableShift(
             shift_start,
             shift_end,
             required_volunteer_count,
             max_volunteer_count,
             shift_name,
+            id
         )
         return Success(result)

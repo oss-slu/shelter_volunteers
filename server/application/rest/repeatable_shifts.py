@@ -21,7 +21,6 @@ repeatable_shifts_bp = Blueprint("repeatable_shifts", __name__)
 
 repo = RepeatableShiftsRepository()
 
-
 # Configure module-level logger
 logger = logging.getLogger(__name__)
 
@@ -29,6 +28,12 @@ logger = logging.getLogger(__name__)
 @repeatable_shifts_bp.post("/shelters/<shelter_id>/schedule")
 @shelter_admin_permission_required
 def post_repeatable_shifts_endpoint(shelter_id):
+    """
+    Returns a json body of either a list of the created shifts, or an error body,
+    where generic_errors is a list of string errors, and keyed errors among
+    all created shifts are accumulated by "${key_name}${shift_index}"=error_string.
+    """
+
     body = request.get_json()
     if not isinstance(body, list):
         return Response(
@@ -38,7 +43,7 @@ def post_repeatable_shifts_endpoint(shelter_id):
         )
 
     try:
-        shifts = [RepeatableShift(**shift) for shift in body]
+        create_shift_results = [RepeatableShift.create(**shift) for shift in body]
     except (KeyError, TypeError, ValueError) as err:
         # Use lazy %-formatting to avoid eager string interpolation in logging
         # and keep line length within lint limits.
@@ -54,6 +59,23 @@ def post_repeatable_shifts_endpoint(shelter_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
+    errors = [(i, result) for (i, result) in enumerate(create_shift_results) if not result.is_success]
+    if errors:
+        keyed_errors = {
+            idx: {
+                key: value
+            }
+            for idx, error in errors
+            for key, value in error.keyed_errors.items()
+        }
+        generic_errors = list(set([msg for idx, error in errors for msg in error.generic_errors]))
+        return Response(
+            json.dumps({"generic_errors": generic_errors, "keyed_errors": keyed_errors}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+
+    shifts = [result.value for result in create_shift_results]
     result = set_repeatable_shifts(shelter_id, shifts, repo)
     response = [shift.__dict__ for shift in result.value.shifts]
     return Response(
