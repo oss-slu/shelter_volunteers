@@ -1,3 +1,5 @@
+"""Use-case: retrieve repeatable shifts for a shelter."""
+
 from repository.mongo.repeatable_shifts_repository import RepeatableShiftsRepository
 
 

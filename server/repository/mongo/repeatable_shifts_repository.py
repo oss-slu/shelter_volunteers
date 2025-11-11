@@ -1,3 +1,5 @@
+"""MongoDB-backed repository for storing repeatable shift templates."""
+
 from typing import Optional
 
 from bson import ObjectId
@@ -31,6 +33,13 @@ def dto_to_operation(dto: dict):
 
 
 class RepeatableShiftsRepository:
+    """Repository providing save and query operations for repeatable shifts.
+
+    This class wraps a MongoDB collection (from the configured database) and
+    exposes methods used by the use-cases to persist and retrieve
+    RepeatableShifts.
+    """
+
     def __init__(self, db: Optional[Database] = None):
         self.db = db if db is not None else get_db()
         self.collection = self.db.schedule
@@ -48,21 +57,21 @@ class RepeatableShiftsRepository:
                 bulk_operations.append(InsertOne(dto))
             else:
                 dto = shift_to_dto(shift, repeatable_shifts.shelter_id)
-                bulk_operations.append(UpdateOne({"_id": ObjectId(shift.id)}, {"$set": dto}))
+                bulk_operations.append(
+                    UpdateOne({"_id": ObjectId(shift.id)}, {"$set": dto})
+                )
             ids_to_keep.append(ObjectId(shift.id))
 
         if len(bulk_operations) > 0:
             self.collection.bulk_write(bulk_operations)
-        self.collection.delete_many({
-            "_id": {"$nin": ids_to_keep},
-            "shelter_id": repeatable_shifts.shelter_id}
+        self.collection.delete_many(
+            {"_id": {"$nin": ids_to_keep}, "shelter_id": repeatable_shifts.shelter_id}
         )
         print(ids_to_keep)
         print(repeatable_shifts)
 
         result = RepeatableShifts(
-            shelter_id=repeatable_shifts.shelter_id,
-            shifts=shifts
+            shelter_id=repeatable_shifts.shelter_id, shifts=shifts
         )
         return Success(result)
 
@@ -75,7 +84,8 @@ class RepeatableShiftsRepository:
                 shift_end=doc.get("shift_end"),
                 required_volunteer_count=doc.get("required_volunteer_count"),
                 max_volunteer_count=doc.get("max_volunteer_count"),
-                shift_name=doc.get("shift_name")
-            ) for doc in cursor
+                shift_name=doc.get("shift_name"),
+            )
+            for doc in cursor
         ]
         return Success(RepeatableShifts(shelter_id, shifts))
