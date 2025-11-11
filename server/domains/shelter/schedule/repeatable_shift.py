@@ -1,4 +1,11 @@
-"""Domain model for a single repeatable shift template."""
+"""Domain model for a single repeatable shift template.
+
+The `id` attribute is intentionally named `id` because other modules and
+serializers expect that attribute name; disable the redefined-builtin
+warning for this module to avoid renaming it project-wide.
+"""
+
+# pylint: disable=redefined-builtin
 
 from dataclasses import dataclass
 from typing import Optional
@@ -31,12 +38,12 @@ class RepeatableShift:
 
     @staticmethod
     def create(
-            shift_start: int,
-            shift_end: int,
-            required_volunteer_count: int,
-            max_volunteer_count: int,
-            shift_name: Optional[str] = None,
-            id: Optional[str] = None,
+        shift_start: int,
+        shift_end: int,
+        required_volunteer_count: int,
+        max_volunteer_count: int,
+        shift_name: Optional[str] = None,
+        id: Optional[str] = None,
     ) -> Result["RepeatableShift"]:
         errors = {}
         if shift_end <= shift_start:
@@ -53,6 +60,6 @@ class RepeatableShift:
             required_volunteer_count,
             max_volunteer_count,
             shift_name,
-            id
+            id,
         )
         return Success(result)
