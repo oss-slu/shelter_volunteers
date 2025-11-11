@@ -3,7 +3,7 @@ This module contains the RESTful route handlers
 for repeatable shifts in the server application.
 """
 import json
-
+import logging
 from flask import Blueprint, Response, request
 
 from application.rest.shelter_admin_permission_required import shelter_admin_permission_required
@@ -18,6 +18,10 @@ repeatable_shifts_bp = Blueprint("repeatable_shifts", __name__)
 
 repo = RepeatableShiftsRepository()
 
+
+
+# Configure module-level logger
+logger = logging.getLogger(__name__)
 
 @repeatable_shifts_bp.post("/shelters/<shelter_id>/schedule")
 @shelter_admin_permission_required
@@ -35,8 +39,9 @@ def post_repeatable_shifts_endpoint(shelter_id):
             RepeatableShift(**shift) for shift in body
         ]
     except (KeyError, TypeError, ValueError) as err:
+        logger.error(f"Failed to parse repeatable shifts input for shelter {shelter_id}: {err}", exc_info=True)
         return Response(
-            json.dumps({"error": f"Invalid data format: {str(err)}"}),
+            json.dumps({"error": "Invalid data format."}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
