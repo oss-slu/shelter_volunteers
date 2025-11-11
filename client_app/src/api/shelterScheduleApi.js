@@ -1,0 +1,3 @@
+const shelterScheduleApi = {
+  get,
+};

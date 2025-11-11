@@ -23,7 +23,7 @@ repo = RepeatableShiftsRepository()
 @shelter_admin_permission_required
 def post_repeatable_shifts_endpoint(shelter_id):
     body = request.get_json()
-    if not body or not isinstance(body, list):
+    if not isinstance(body, list):
         return Response(
             json.dumps({"error": "Expected a list of repeatable shifts."}),
             mimetype="application/json",

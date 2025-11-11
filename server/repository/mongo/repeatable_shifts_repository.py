@@ -51,7 +51,8 @@ class RepeatableShiftsRepository:
                 bulk_operations.append(UpdateOne({"_id": shift.id}, {"$set": dto}))
             ids_to_keep.append(shift.id)
 
-        self.collection.bulk_write(bulk_operations)
+        if len(bulk_operations) > 0:
+            self.collection.bulk_write(bulk_operations)
         self.collection.delete_many({
             "_id": {"$nin": ids_to_keep},
             "shelter_id": repeatable_shifts.shelter_id}
@@ -67,7 +68,7 @@ class RepeatableShiftsRepository:
         cursor = self.collection.find({"shelter_id": shelter_id})
         shifts = [
             RepeatableShift(
-                id=doc.get("_id"),
+                id=str(doc.get("_id")),
                 shift_start=doc.get("shift_start"),
                 shift_end=doc.get("shift_end"),
                 required_volunteer_count=doc.get("required_volunteer_count"),

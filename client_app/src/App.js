@@ -31,6 +31,7 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import { setNavigate } from "./api/fetchClient";
 import { useAuth, setGlobalLogout } from "./contexts/AuthContext";
 import { setNavigateHttpClient } from "./api/httpClient";
+import RepeatableShiftsScreen from "./components/shelter/RepeatableShiftsScreen";
 
 function AppContent() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ function AppContent() {
           <Route path="settings" element={<Settings />} />
           <Route path="schedule" element={<ShelterScheduleManager />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
-          <Route path="repeatable-shifts" element={<RepeatableShifts />} />
+          <Route path="repeatable-shifts" element={<RepeatableShiftsScreen />} />
           <Route path="users" element={<AddUserForm />} />
         </Route>
         <Route path="/volunteer-dashboard" element={<DashboardLayout />}>
