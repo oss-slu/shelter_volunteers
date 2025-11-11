@@ -16,7 +16,7 @@ def shift_to_dto(shift: RepeatableShift, shelter_id: str):
 
     # Convert 'id' to '_id' for MongoDB
     if "id" in dto and dto["id"] is not None:
-        dto["_id"] = dto["id"]
+        dto["_id"] = ObjectId(dto["id"])
     if "id" in dto:
         del dto["id"]
 
@@ -48,8 +48,8 @@ class RepeatableShiftsRepository:
                 bulk_operations.append(InsertOne(dto))
             else:
                 dto = shift_to_dto(shift, repeatable_shifts.shelter_id)
-                bulk_operations.append(UpdateOne({"_id": shift.id}, {"$set": dto}))
-            ids_to_keep.append(shift.id)
+                bulk_operations.append(UpdateOne({"_id": ObjectId(shift.id)}, {"$set": dto}))
+            ids_to_keep.append(ObjectId(shift.id))
 
         if len(bulk_operations) > 0:
             self.collection.bulk_write(bulk_operations)
@@ -57,6 +57,8 @@ class RepeatableShiftsRepository:
             "_id": {"$nin": ids_to_keep},
             "shelter_id": repeatable_shifts.shelter_id}
         )
+        print(ids_to_keep)
+        print(repeatable_shifts)
 
         result = RepeatableShifts(
             shelter_id=repeatable_shifts.shelter_id,
