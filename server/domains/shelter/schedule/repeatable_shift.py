@@ -58,6 +58,13 @@ class RepeatableShift:
                 "Required volunteer count cannot exceed maximum volunteer count."
             )
 
+        if required_volunteer_count < 1:
+            if "required_volunteer_count" not in errors:
+                errors["required_volunteer_count"] = []
+            errors["required_volunteer_count"].append(
+                "Required volunteer count must be at least 1."
+            )
+
         if errors:
             return Failure(keyed_errors=errors)
 

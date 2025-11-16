@@ -31,6 +31,19 @@ def test_required_volunteers_greater_than_max():
     assert not result.is_success
 
 
+def test_required_volunteers_less_than_one():
+    # Act
+    result = RepeatableShift.create(
+        shift_start=5,
+        shift_end=10,
+        required_volunteer_count=0,
+        max_volunteer_count=5,
+    )
+
+    # Assert
+    assert not result.is_success
+
+
 def test_multiple_errors():
     # Act
     result = RepeatableShift.create(
