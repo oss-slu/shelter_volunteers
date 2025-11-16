@@ -45,6 +45,14 @@ class RepeatableShiftsRepository:
         self.collection = self.db.schedule
 
     def save(self, repeatable_shifts: RepeatableShifts) -> Result[RepeatableShifts]:
+        """
+        This method does a full replacement of the repeatable shifts for a shelter.
+        Any shifts not in `repeatable_shifts` will be deleted from the database.
+
+        In one bulk operation, it inserts shifts without an ID and updates those with an ID.
+        After that, it deletes any shifts in the database that don't have an ID in the
+        union of those being inserted/updated.
+        """
 
         ids_to_keep = []
         bulk_operations = []
@@ -67,8 +75,6 @@ class RepeatableShiftsRepository:
         self.collection.delete_many(
             {"_id": {"$nin": ids_to_keep}, "shelter_id": repeatable_shifts.shelter_id}
         )
-        print(ids_to_keep)
-        print(repeatable_shifts)
 
         result = RepeatableShifts(
             shelter_id=repeatable_shifts.shelter_id, shifts=shifts

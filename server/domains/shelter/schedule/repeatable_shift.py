@@ -51,6 +51,13 @@ class RepeatableShift:
                 errors["shift_end"] = []
             errors["shift_end"].append("End time must be after start time.")
 
+        if required_volunteer_count > max_volunteer_count:
+            if "required_volunteer_count" not in errors:
+                errors["required_volunteer_count"] = []
+            errors["required_volunteer_count"].append(
+                "Required volunteer count cannot exceed maximum volunteer count."
+            )
+
         if errors:
             return Failure(keyed_errors=errors)
 
