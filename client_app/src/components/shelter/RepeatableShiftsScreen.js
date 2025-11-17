@@ -35,7 +35,6 @@ const RepeatableShiftsScreen = () => {
     if (!shelterId) return;
     setLoadingShifts(true);
     repeatableShiftsApi.getRepeatableShifts(shelterId).then((shifts) => {
-      console.log(shifts);
       setPendingShifts(shifts);
       setLoadingShifts(false);
     });
@@ -52,12 +51,12 @@ const RepeatableShiftsScreen = () => {
         setErrorMessages([]);
       })
       .catch((data) => {
-        console.log(data);
         const errors = ["Fix form errors and try again.", ...data.generic_errors];
         Object.keys(data.keyed_errors).forEach((key) => {
+          const idx = Number.parseInt(key) + 1;
           Object.keys(data.keyed_errors[key]).forEach((field) => {
             for (let error of data.keyed_errors[key][field]) {
-              errors.push("Shift " + key + ": " + error);
+              errors.push("Shift " + idx + ": " + error);
             }
           });
         });
@@ -122,6 +121,7 @@ const RepeatableShiftsScreen = () => {
             <table className="table table-striped">
               <thead>
                 <tr>
+                  <th></th>
                   <th>Shift Name</th>
                   <th>Start Time</th>
                   <th>Duration (hours)</th>
@@ -133,7 +133,10 @@ const RepeatableShiftsScreen = () => {
               </thead>
               <tbody>
                 {pendingShifts.map((shift, idx) => (
-                  <tr key={shift.id}>
+                  <tr key={shift.id} className="align-middle">
+                    <td>
+                      <div className="text-center align-content-center">{idx + 1}</div>
+                    </td>
                     <td>
                       <input
                         type="text"
@@ -159,7 +162,9 @@ const RepeatableShiftsScreen = () => {
                         className="form-control"
                         step="0.01"
                         value={(shift.shiftEnd - shift.shiftStart) / 3600000}
-                        onChange={(e) => updateShift(idx, "duration", e.target.value)}
+                        onChange={(e) =>
+                          updateShift(idx, "duration", Number.parseInt(e.target.value))
+                        }
                       />
                     </td>
                     <td>
@@ -170,7 +175,13 @@ const RepeatableShiftsScreen = () => {
                         type="number"
                         className="form-control"
                         value={shift.requiredVolunteerCount}
-                        onChange={(e) => updateShift(idx, "requiredVolunteerCount", e.target.value)}
+                        onChange={(e) =>
+                          updateShift(
+                            idx,
+                            "requiredVolunteerCount",
+                            Number.parseInt(e.target.value),
+                          )
+                        }
                       />
                     </td>
                     <td>
@@ -178,7 +189,9 @@ const RepeatableShiftsScreen = () => {
                         type="number"
                         className="form-control"
                         value={shift.maxVolunteerCount}
-                        onChange={(e) => updateShift(idx, "maxVolunteerCount", e.target.value)}
+                        onChange={(e) =>
+                          updateShift(idx, "maxVolunteerCount", Number.parseInt(e.target.value))
+                        }
                       />
                     </td>
                     <td>

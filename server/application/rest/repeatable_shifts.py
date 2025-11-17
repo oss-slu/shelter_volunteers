@@ -59,19 +59,24 @@ def post_repeatable_shifts_endpoint(shelter_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
-    errors = [(i, result) for (i, result) in
-              enumerate(create_shift_results) if not result.is_success]
+    errors = [
+        (i, result)
+        for (i, result) in enumerate(create_shift_results)
+        if not result.is_success
+    ]
     if errors:
         keyed_errors = {
-            idx: {
-                key: value
-            }
+            idx: {key: value}
             for idx, error in errors
             for key, value in error.keyed_errors.items()
         }
-        generic_errors = list(set([msg for idx, error in errors for msg in error.generic_errors]))
+        generic_errors = list(
+            set([msg for idx, error in errors for msg in error.generic_errors])
+        )
         return Response(
-            json.dumps({"generic_errors": generic_errors, "keyed_errors": keyed_errors}),
+            json.dumps(
+                {"generic_errors": generic_errors, "keyed_errors": keyed_errors}
+            ),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
