@@ -194,6 +194,28 @@ function VolunteerShiftSignup(){
     setShowResults(false);
   };
 
+  // Sort and format selected shifts for display
+  const sortedSelectedShifts = useMemo(() => {
+    return Array.from(selectedShifts)
+      .map(shiftId => {
+        const shift = shifts.find(s => s._id === shiftId);
+        return shift;
+      })
+      .filter(shift => shift) // Remove any undefined shifts
+      .sort((a, b) => new Date(a.shift_start).getTime() - new Date(b.shift_start).getTime()) // Sort chronologically
+      .map(shift => {
+        const shelter = shelterMap[shift.shelter_id];
+        const startTime = formatDateTime(shift.shift_start);
+        const endTime = formatDateTime(shift.shift_end);
+        return {
+          shift,
+          shelter,
+          startTime,
+          endTime
+        };
+      });
+  }, [selectedShifts, shifts, shelterMap]);
+
   if (loading) {
     return <Loading />;
   }
@@ -249,25 +271,11 @@ function VolunteerShiftSignup(){
             Selected Shifts ({selectedShifts.size})
           </h3>
           <div className="list">
-            {useMemo(() => {
-              return Array.from(selectedShifts)
-                .map(shiftId => {
-                  const shift = shifts.find(s => s._id === shiftId);
-                  return shift;
-                })
-                .filter(shift => shift) // Remove any undefined shifts
-                .sort((a, b) => new Date(a.shift_start).getTime() - new Date(b.shift_start).getTime()) // Sort chronologically
-                .map(shift => {
-                  const shelter = shelterMap[shift.shelter_id];
-                  const startTime = formatDateTime(shift.shift_start);
-                  const endTime = formatDateTime(shift.shift_end);
-                  return (
-                    <div key={shift._id} className="tagline-small">
-                      • {startTime.date} at {startTime.time} - {endTime.time} - {shelter.name}
-                    </div>
-                  );
-                });
-            }, [selectedShifts, shifts, shelterMap])}
+            {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
+              <div key={shift._id} className="tagline-small">
+                • {startTime.date} at {startTime.time} - {endTime.time} - {shelter.name}
+              </div>
+            ))}
           </div>
         </div>
         )}
