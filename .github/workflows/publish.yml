@@ -28,10 +28,10 @@ jobs:
         with:
           context: client_app
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/client-app:latest
+          tags: ghcr.io/${{ github.repository_owner }}/shelter-volunteers-client-app:latest
           target: production
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/client-app:build-cache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/client-app:build-cache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/shelter-volunteers-client-app:build-cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/shelter-volunteers-client-app:build-cache,mode=max
 
   build-server:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
         with:
           context: server
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/server:latest
+          tags: ghcr.io/${{ github.repository_owner }}/shelter-volunteers-server:latest
           target: production
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/server:build-cache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/server:build-cache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/shelter-volunteers-server:build-cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/shelter-volunteers-server:build-cache,mode=max
