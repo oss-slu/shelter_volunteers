@@ -25,4 +25,5 @@ jobs:
       run: uv sync --locked --all-extras --dev
       
     - name: Running all server-side tests written for pytest
+      working-directory: server
       run: uv run pytest
