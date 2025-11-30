@@ -49,6 +49,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
+          context: client_app
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: latest
