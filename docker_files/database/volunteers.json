@@ -1,6 +1,0 @@
-[
-{"_id":{"$oid":"6797fa33e7455501df7fc53d"},"worker":"developer@slu.edu","first_name":"SLU","last_name":"Developer","shelter":{"$numberInt":"30027"},"start_time":{"$numberLong":"1738024200000"},"end_time":{"$numberLong":"1738027800000"}},
-{"_id":{"$oid":"6797fa33e7455501df7fc53e"},"worker":"developer@slu.edu","first_name":"SLU","last_name":"Developer","shelter":{"$numberInt":"30134"},"start_time":{"$numberLong":"1738103400000"},"end_time":{"$numberLong":"1738105200000"}},
-{"_id":{"$oid":"679a74d15917754cdeac0877"},"worker":"developer@slu.edu","first_name":"SLU","last_name":"Developer","shelter":{"$numberInt":"30207"},"start_time":{"$numberLong":"1738177200000"},"end_time":{"$numberLong":"1738180800000"}}
-]
-

@@ -1,13 +1,24 @@
-FROM node:lts
-
+FROM node:18-alpine AS base
+ENV REACT_APP_SERVER_URL ""
 WORKDIR /app
 
+FROM base AS dependencies
 COPY ./package.json ./package-lock.json ./
+RUN npm install --frozen-lockfile
 
-RUN npm install
-
+FROM dependencies AS builder
 COPY . .
+RUN npm run build
 
+FROM dependencies AS development
+RUN npm install --frozen-lockfile
+COPY . .
 EXPOSE 3000
-
+VOLUME [ "/app/client_app" ]
 CMD ["npm", "run", "start"]
+
+FROM nginxinc/nginx-unprivileged:alpine3.22-perl AS production
+USER nginx
+COPY --chown=nginx:nginx --from=builder /app/build /usr/share/nginx/html
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
