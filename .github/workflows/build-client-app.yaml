@@ -1,5 +1,10 @@
 name: Build Client App
 
+on:
+  push:
+    branches:
+      - main
+
 permissions:
   contents: read
   packages: write
