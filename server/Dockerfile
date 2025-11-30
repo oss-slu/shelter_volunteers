@@ -18,6 +18,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM base AS development
 COPY --from=builder /app /app
 ENV PATH="/app/.venv/bin:${PATH}"
+EXPOSE 8000
 CMD ["sh", "/app/development-entrypoint.sh"]
 
 FROM base AS production
@@ -25,5 +26,6 @@ RUN apk add --no-cache shadow && \
     useradd --system --uid 999 --gid 999 -m nonroot
 COPY --from=builder --chown=nonroot:nonroot /app /app
 ENV PATH="/app/.venv/bin:${PATH}"
+EXPOSE 8000
 USER nonroot
 CMD ["sh", "/app/production-entrypoint.sh"]
