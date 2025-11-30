@@ -5,6 +5,8 @@ import json
 from flask import Blueprint, request, Response
 from use_cases.authorization.add_shelter_admin import add_shelter_admin
 from use_cases.authorization.add_system_admin import add_system_admin
+from use_cases.authorization.remove_system_admin import remove_system_admin
+from use_cases.authorization.remove_shelter_admin import remove_shelter_admin
 from use_cases.authorization.get_user_permission import get_user_permission
 from use_cases.authorization.get_system_admins import get_system_admins
 from use_cases.authorization.get_shelter_admins import get_shelter_admins
@@ -106,6 +108,32 @@ def post_system_admin():
         status=HTTP_STATUS_CODES_MAPPING[response.response_type]
     )
 
+@authorization_blueprint.route('/system_admin', methods=['DELETE'])
+@system_admin_permission_required
+def delete_system_admin():
+    """
+    Endpoint to remove system admin permission from user.
+    Expects a JSON object with 'user_email' field.
+    Returns a JSON response with the result of the permission removal and a
+    corresponding status code.
+    """
+    data = request.get_json()
+    user_email = data.get('user_email')
+
+    if not user_email:
+        return Response(
+            json.dumps({'message': 'User email is required'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        )
+
+    response = remove_system_admin(repo, user_email)
+    return Response(
+        json.dumps(response.value),
+        mimetype='application/json',
+        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+    )
+
 @authorization_blueprint.route('/shelters/<shelter_id>/admin', methods=['POST'])
 @shelter_admin_permission_required
 def post_shelter_admin(shelter_id):
@@ -131,3 +159,30 @@ def post_shelter_admin(shelter_id):
         mimetype='application/json',
         status=HTTP_STATUS_CODES_MAPPING[response.response_type]
     )
+
+@authorization_blueprint.route('/shelters/<shelter_id>/admin', methods=['DELETE'])
+@shelter_admin_permission_required
+def delete_shelter_admin(shelter_id):
+    """
+    Endpoint to remove shelter admin permission for a user.
+    Expects a JSON object with 'user_email' field.
+    Returns a JSON response with the result of the permission removal and a 
+    corresponding status code.
+    """
+    data = request.get_json()
+    user_email = data.get('user_email')
+
+    if not user_email:
+        return Response(
+            json.dumps({'message': 'User email is required'}),
+            mimetype='application/json',
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
+        )
+
+    response = remove_shelter_admin(repo, shelter_id, user_email)
+    return Response(
+        json.dumps(response.value),
+        mimetype='application/json',
+        status=HTTP_STATUS_CODES_MAPPING[response.response_type]
+    )
+

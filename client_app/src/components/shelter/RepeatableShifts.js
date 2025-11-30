@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/shelter/RepeatableShifts.css";
 import { scheduleAPI } from "../../api/schedule";
 import { DesktopShiftRow } from "./DesktopShiftRow";
 import { timeStringToMillis } from "../../formatting/FormatDateTime";
+import { shelterAPI } from "../../api/shelter";
 const RepeatableShifts = () => {
   const { shelterId } = useParams(); // grab the shelterId from URL
 
@@ -16,6 +17,26 @@ const RepeatableShifts = () => {
     maxVolunteers: 5,
   });
   const [successMessage, setSuccessMessage] = useState("");
+  const [loadingShelterInfo, setLoadingShelterInfo] = useState(false);
+  const [shelterInfo, setShelterInfo] = useState(null);
+
+  const shelterNameLabel = loadingShelterInfo
+    ? "[Loading name...]"
+    : (shelterInfo?.name ?? shelterId);
+
+  // Get shelter info from ID.
+  useEffect(() => {
+    if (!shelterId) return;
+    setLoadingShelterInfo(true);
+    shelterAPI.getShelter(shelterId).then((shelter) => {
+      setShelterInfo(shelter);
+      setLoadingShelterInfo(false);
+    });
+
+    return () => {
+      setLoadingShelterInfo(false);
+    };
+  }, [shelterId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,14 +70,14 @@ const RepeatableShifts = () => {
         shift_end: timeStringToMillis(shift.startTime) + shift.duration * 60 * 60 * 1000,
         required_volunteer_count: Number(shift.requiredVolunteers),
         max_volunteer_count: Number(shift.maxVolunteers),
-        shelter_id: shelterId
+        shelter_id: shelterId,
       }));
-  
+
       await scheduleAPI.submitRepeatableShifts(shelterId, transformedShifts);
-  
+
       const updatedSchedule = await scheduleAPI.getShifts(shelterId);
       console.log("Updated schedule from backend:", updatedSchedule);
-  
+
       setSuccessMessage("Schedule submitted successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
       setShifts([]);
@@ -65,7 +86,6 @@ const RepeatableShifts = () => {
       alert("There was an error submitting the schedule.");
     }
   };
-  
 
   const updateShift = (index, field, value) => {
     const updatedShifts = [...shifts];
@@ -80,9 +100,10 @@ const RepeatableShifts = () => {
 
   return (
     <div className="repeatable-shifts-page">
-      <h2>Define Repeatable Shifts for Shelter {shelterId}</h2>
+      <h2>Define Repeatable Shifts for Shelter {shelterNameLabel}</h2>
       <p className="instructions">
-        Define the repeatable shifts below. Once you've added all your shifts, click "Submit Schedule" to save them.
+        Define the repeatable shifts below. Once you've added all your shifts, click "Submit
+        Schedule" to save them.
       </p>
       <form onSubmit={handleSubmit} className="shift-form">
         <label>
@@ -133,7 +154,9 @@ const RepeatableShifts = () => {
             min="1"
           />
         </label>
-        <button type="submit" className="submit-button">Add Shift</button>
+        <button type="submit" className="submit-button">
+          Add Shift
+        </button>
       </form>
       <div>
         <h3>Current Repeatable Shifts</h3>
@@ -161,7 +184,7 @@ const RepeatableShifts = () => {
                     shift={shift}
                     updateShift={updateShift}
                     deleteShift={deleteShift}
-                    />
+                  />
                 ))}
               </tbody>
             </table>

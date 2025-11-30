@@ -6,13 +6,22 @@ Use cases for listing service commitments and their shifts.
 The helpers work with shift dicts (used in tests) and objects that expose:
   .get_id(), .shift_start, .shift_end
 """
+
+
 from datetime import datetime
+from repository.mongo.service_commitments import MongoRepoCommitments
 
 
-def list_service_commitments(commitments_repo, user_email=None, shift_id=None):
+def list_service_commitments(
+        commitments_repo: MongoRepoCommitments,
+        user_email=None,
+        shift_id=None):
     """Return raw commitments from the repository."""
-    commitments = commitments_repo.fetch_service_commitments(user_email, shift_id)
+    commitments = commitments_repo.fetch_service_commitments(
+        user_email,
+        shift_id)
     return commitments
+
 
 def _shift_id(shift):
     """Return a shift id from either an object or a dict."""

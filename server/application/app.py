@@ -1,15 +1,16 @@
 """
 This module handles the creation of Flask app
 """
+
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
 
+from application.rest.repeatable_shifts import repeatable_shifts_bp
 from application.rest.service_commitment import service_commitment_bp
 from application.rest.shelter import shelter_blueprint
 from application.rest.service_shifts import service_shift_bp
 from application.rest.authorization.authorization import authorization_blueprint
 from application.rest.login import login_blueprint
-from application.rest.schedule import schedule_bp
 from application.rest.user_info import user_info_bp
 
 from config import mongodb_config
@@ -33,7 +34,7 @@ def create_app(config_name="development"):
     app.register_blueprint(service_shift_bp)
     app.register_blueprint(authorization_blueprint)
     app.register_blueprint(login_blueprint)
-    app.register_blueprint(schedule_bp)
+    app.register_blueprint(repeatable_shifts_bp)
     app.register_blueprint(user_info_bp)
 
     load_dotenv()  # Load environment variables from the .env file

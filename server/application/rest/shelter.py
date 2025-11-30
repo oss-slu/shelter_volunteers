@@ -6,6 +6,7 @@ import json
 from flask import Blueprint, Response, request
 from repository.mongo.shelter import ShelterRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
+from use_cases.shelters.get_shelter_by_id import get_shelter_by_id
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.system_admin_permission_required import system_admin_permission_required
@@ -15,6 +16,9 @@ from responses import ResponseTypes
 
 shelter_blueprint = Blueprint("shelter", __name__)
 
+repo = ShelterRepo()
+
+
 @shelter_blueprint.route("/shelters", methods=["GET"])
 def get_shelters():
     """
@@ -22,7 +26,6 @@ def get_shelters():
     No authentication is required to access this endpoint.
     GET requests can be made to retrieve the list of shelters.
     """
-    repo = ShelterRepo()
     shelters_as_dict = shelter_list_use_case(repo)
     shelters_as_json = json.dumps(
         [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
@@ -33,6 +36,26 @@ def get_shelters():
         status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
     )
 
+
+@shelter_blueprint.route("/shelters/<shelter_id>", methods=["GET"])
+def get_shelter(shelter_id: str):
+    """
+    Returns shelter info by its id
+    """
+    shelter = get_shelter_by_id(shelter_id, repo)
+    if not shelter:
+        return Response(
+            json.dumps({"error": "shelter_id is not found"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND]
+        )
+    return Response(
+        json.dumps(shelter, cls=ShelterJsonEncoder),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    )
+
+
 @shelter_blueprint.route("/shelters", methods=["POST"])
 @system_admin_permission_required
 def add_shelter():
@@ -41,7 +64,6 @@ def add_shelter():
     POST requests can be made by authenticated users with 
     system admin permissions to add a new shelter.
     """
-    repo = ShelterRepo()
     try:
         shelter_data_dict = request.get_json()
         # shelter_add_use_case expects a Shelter object
