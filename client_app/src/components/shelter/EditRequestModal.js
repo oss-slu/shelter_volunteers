@@ -1,26 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { ModalComponent } from './ModalComponent';
+import { timestampToTimeInput, timeInputToTimestamp } from '../../formatting/FormatDateTime';
 import "../../styles/shelter/EditRequestModal.css";
 
 
 export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
-  const [updatedShift, setUpdatedShift] = useState(shift || { fromTime: "", toTime: "", volunteersRequested: 0 });
+  const [fromTime, setFromTime] = useState("");
+  const [toTime, setToTime] = useState("");
+  const [volunteersRequested, setVolunteersRequested] = useState(0);
+  const [originalShift, setOriginalShift] = useState(null);
 
   useEffect(() => {
     if (shift) {
-      setUpdatedShift(shift);
+      setOriginalShift(shift);
+      setFromTime(timestampToTimeInput(shift.shift_start));
+      setToTime(timestampToTimeInput(shift.shift_end));
+      setVolunteersRequested(shift.required_volunteer_count || 0);
     }
   }, [shift]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedShift((prevShift) => ({
-      ...prevShift,
-      [name]: name === "required_volunteer_count" ? parseInt(value, 10) || 0 : value
-    }));
+  const handleFromTimeChange = (e) => {
+    setFromTime(e.target.value);
+  };
+
+  const handleToTimeChange = (e) => {
+    setToTime(e.target.value);
+  };
+
+  const handleVolunteersChange = (e) => {
+    setVolunteersRequested(parseInt(e.target.value, 10) || 0);
   };
 
   const handleSave = () => {
+    if (!originalShift) return;
+    
+    const updatedShift = {
+      ...originalShift,
+      shift_start: timeInputToTimestamp(fromTime, originalShift.shift_start),
+      shift_end: timeInputToTimestamp(toTime, originalShift.shift_end),
+      required_volunteer_count: volunteersRequested
+    };
+    
     onSave(updatedShift);
     onClose();
   };
@@ -28,36 +48,38 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   const renderData = () => (
     <div className="modalEditRequest">
       <h3 className="editShiftHeader">Edit Shift</h3>
-      <label className="fromLabel">
-        From Time:
+      <div className="formField">
+        <label className="fieldLabel">From Time:</label>
         <input
-          type="text"
-          name="shift_start"
-          value={updatedShift.shift_start}
-          onChange={handleChange}
-          className="shiftTime"
+          type="time"
+          value={fromTime}
+          onChange={handleFromTimeChange}
+          className="timeInput"
         />
-      </label>
-      <label className="toLabel">
-        To Time:
+      </div>
+      <div className="formField">
+        <label className="fieldLabel">To Time:</label>
         <input
-          type="text"
-          name="shift_end"
-          value={updatedShift.shift_end}
-          onChange={handleChange}
+          type="time"
+          value={toTime}
+          onChange={handleToTimeChange}
+          className="timeInput"
         />
-      </label>
-      <label className="volunteersRequestedLabel">
-        Volunteers Requested:
+      </div>
+      <div className="formField">
+        <label className="fieldLabel">Volunteers Requested:</label>
         <input
           type="number"
-          name="required_volunteer_count"
-          value={updatedShift.required_volunteer_count}
-          onChange={handleChange}
+          min="0"
+          value={volunteersRequested}
+          onChange={handleVolunteersChange}
+          className="numberInput"
         />
-      </label>
-      <button className="saveButton" onClick={handleSave}>Save</button>
-      <button className="cancelButton" onClick={onClose}>Cancel</button>
+      </div>
+      <div className="buttonContainer">
+        <button className="saveButton" onClick={handleSave}>Save</button>
+        <button className="cancelButton" onClick={onClose}>Cancel</button>
+      </div>
     </div>
   );
 
