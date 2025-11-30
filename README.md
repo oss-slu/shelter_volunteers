@@ -1,6 +1,6 @@
 # Application for shelter volunteers to manage their volunteer time
 
-This application is a work in progress. It uses Flask server with a React JS client.
+This application is a work in progress. It uses Flask server with a React JS client. The application is actively being developed and improved.
 
 ## Project Overview
 
