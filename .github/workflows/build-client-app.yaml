@@ -53,7 +53,7 @@ jobs:
           context: client_app
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: latest
+          tags: ghcr.io/${{ github.repository_owner }}/shelter-volunteers-client-app
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
