@@ -1,5 +1,5 @@
 FROM node:18-alpine AS base
-ENV REACT_APP_SERVER_URL ""
+ENV SERVER_URL=""
 WORKDIR /app
 
 FROM base AS dependencies
@@ -20,5 +20,8 @@ CMD ["npm", "run", "start"]
 FROM nginxinc/nginx-unprivileged:alpine3.22-perl AS production
 USER nginx
 COPY --chown=nginx:nginx --from=builder /app/build /usr/share/nginx/html
+COPY --chown=nginx:nginx ./nginx.conf.template /etc/nginx/nginx.conf.template
+COPY --chown=nginx:nginx ./production-entrypoint.sh /production-entrypoint.sh
 EXPOSE 8080
+ENTRYPOINT [ "sh", "/production-entrypoint.sh" ]
 CMD ["nginx", "-g", "daemon off;"]

@@ -53,10 +53,20 @@ class MongoPreProductionConfig(MongoConfig):
     )
 
 
+class MongoProductionConfig(MongoConfig):
+    """Production configuration using MongoDB Atlas."""
+
+    MONGODB_URI = (
+        f"mongodb+srv://{MongoConfig.MONGODB_USERNAME}:"
+        f"{MongoConfig.MONGODB_PASSWORD}@{MongoConfig.MONGODB_HOST}"
+    )
+
+
 def get_config():
     """Return the appropriate configuration based on environment."""
     env = os.getenv("FLASK_ENV", "development")
     config_map = {
+        "production": MongoProductionConfig,
         "development": MongoDevelopmentConfig,
         "pre-production": MongoPreProductionConfig,
     }
@@ -72,9 +82,11 @@ def get_db():
     """
     config = get_config()
     env = os.getenv("FLASK_ENV", "development")
-    client_map = {
-        "development": MongoClient(config.MONGODB_URI, tls=False),
-        "pre-production": MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where()),
-    }
-    client = client_map[env]
+
+    if env == "development":
+        client = MongoClient(config.MONGODB_URI, tls=False)
+    else:
+        # For MongoDB Atlas (production/pre-production)
+        client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+
     return client[config.MONGODB_DATABASE]
