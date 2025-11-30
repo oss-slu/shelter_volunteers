@@ -6,6 +6,7 @@ This module defines the response classes and types for the server.
 - ResponseTypes: Enumerates possible response types/errors.
 """
 
+
 class ResponseTypes:
     SYSTEM_ERROR = "SystemError"
     NOT_FOUND = "NotFound"
@@ -21,6 +22,7 @@ class ResponseFailure:
     Represents a failed response, encapsulating a type of error
     and an associated message.
     """
+
     def __init__(self, response_type, message):
         self.response_type = response_type
         self.message = self._format_message(message)
@@ -49,7 +51,6 @@ class ResponseSuccess:
 
 def build_response_from_invalid_request(invalid_request):
     message = "\n".join(
-        [f"{err['parameter']}: {err['message']}"
-         for err in invalid_request.errors]
+        [f"{err["parameter"]}: {err["message"]}" for err in invalid_request.errors]
     )
     return ResponseFailure(ResponseTypes.PARAMETER_ERROR, message)

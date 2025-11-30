@@ -1,14 +1,18 @@
 """
 This module handles data conversion from dictionary to class obj or vice versa
 """
+
 from typing import List
 import dataclasses
+
+
 @dataclasses.dataclass
 class ShelterVolunteer:
     """
     Data class for keeping track of the number of workers and which workers
     signed up for a given time interval
     """
+
     email: str
     first_name: str
     last_name: str
@@ -29,4 +33,3 @@ class ShelterVolunteer:
         representation of the object
         """
         return dataclasses.asdict(self)
-    
