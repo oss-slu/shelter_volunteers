@@ -1,6 +1,6 @@
 # Application for shelter volunteers to manage their volunteer time
 
-This application is a work in progress. It uses Flask server with a React JS client.
+This application is a work in progress. It uses Flask server with a React JS client. The application is actively being developed and improved.
 
 ## Project Overview
 
@@ -8,88 +8,51 @@ Homeless shelters rely on volunteers' help. When inclement weather strikes, home
 
 ## Getting Started
 
-### Preferred option
-To run this application, you will need to:
-1. [Configure a database connection through MongoDB Atlas](#configure-a-database-connection-through-mongodb-atlas)
-1. [Configure and run the server side](#configure-and-run-the-server-side)
-1. [Configure and run the client side](#configure-and-run-the-client-side)
-1. [Give yourself system admin access](#give-yourself-system-admin-access)
+The first time you want to run this code, you will need to:
 
-#### Configure a database connection through MongoDB Atlas
-Sign in to MongoDB atlas. You can sign up for free account or use your Google Login to sign in. Follow the prompts to create an account/sign in.
+1. Clone the repository: <code>git clone https://github.com/oss-slu/shelter_volunteers.git</code>
+2. Install server dependencies:
+   * <code>cd server</code>
+   * <code>python3 -m venv venv</code>
+   * Activate virtual environment:
+     * On Mac or Linux: <code>source venv/bin/activate</code>
+     * On Windows: <code>source ./venv/Scripts/activate</code>
+   * <code>pip3 install -r requirements.txt</code>
+3. Install client dependencies:
+   * <code>cd ../client_app</code>
+   * <code>npm install</code>
+   * <code>cd ..</code>
+4. Configure environment variables:
+   * Create <code>server/.env.pre-production</code> and add the following values:
+     ```
+     MONGODB_HOST=<Atlas connection string without credentials>
+     MONGODB_USERNAME=<MongoDB username>
+     MONGODB_PASSWORD=<MongoDB password>
+     GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
+     JWT_SECRET=<Any long random string>
+     ```
+   * If you do not already have a MongoDB Atlas cluster, follow the [MongoDB Atlas setup guide](docs/mongodb_atlas_setup.md) to create one and capture the connection string.
+   * Keep this file local—do not commit it to the repository.
 
-Once you are signed in, click on create new cluster. 
+On all subsequent runs, you will need to:
 
-![cluster](docs/1create_cluster.png)
-Select the free tier and click on Create Deployment.
-![free](docs/2free_tier.png)
-In the Connection security screen, pick a username and password you will use to connect to the database. You'll be able to change these later, if needed. Click "Close".
-![security](docs/3connection_security.png)
+1. Run the Flask API server:
+   * <code>cd server</code>
+   * Activate virtual environment: <code>source venv/bin/activate</code> (or <code>source ./venv/Scripts/activate</code> on Windows)
+   * <code>bash run_dev_server.sh</code>
+   * The API is available at <code>http://localhost:5001</code>
 
-From the left side menu select Network Access.
-![network access](docs/network_access.png)
-This will open another page, allowing you to edit the IP addresses of incoming connections. To allow connections from anywhere, select "Allow access from anywhere"
-![access_from_anywhere](docs/access_from_anywhere.png)
-Click on "Confirm" to save your changes.
-
-Now, get the information you will need for configuring the server connection to the database. From the Clusters menu on the left side, click on Connect button next to your cluster name.
-![connect](docs/connect.png)
-Select the "Drivers" option
-![drivers](docs/drivers.png)
-This will open up another page, showing the string you will need for your cluster connection. Copy this string, excluding the username and password, as shown in the screenshot below.
-![name](docs/cluster_name.png)
-
-Save this string somewhere, you will need it when you configure the server side application.
-
-#### Configure and run the server side
-From the server directory, create and activate a python virtual environment (instructions will vary based on your operating system, so look this up online). Install the required dependencies with `pip install -r requirements.txt`. If you are on a mac, you might need to use `pip3` instead of `pip`.
-
-Create a .env.pre-production file in the server directory. In this file, add the following configuration strings (remove the angle brackets):
-```
-MONGODB_HOST=<The string you saved from your mongodb atlas connection configuration.>
-MONGODB_USERNAME=<The username you created when configuring mongodb cluster>
-MONGODB_PASSWORD=<The password associated with the username>
-GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
-JWT_SECRET=<make up some fairly long alphanumeric string>
-```
-Do NOT commit this file to the repository, because it contains your private information.
-
-Start the server with: bash run_dev_server.sh
-
-#### Configure and run the client side
-Navigate to the client_app directory and install dependencies with `npm install`
-. Once the dependencies are installed, you can start the client-side application with `npm run start`.
-
-#### Give yourself system admin access
-Once you log in to the application with a Google account, you will only see Volunteer dashboard. This is because everyone can be a volunteer, and not everyone can be a shelter admin or a system admin. As a developer, you will want to be able to do system and shelter admin operations. In order to do this, you will want to give yourself a system admin access.
-
-To do this:
-1. Navigate to the server directory using a terminal
-1. Activate your python virtual environment (if it's not already activated)
-1. Set your PYTHONPATH environment variable to the current directory: `export PYTHONPATH=$(pwd)`
-1. Set your FLASK_ENV environment variable to pre-production: `export FLASK_ENV="pre-production"`
-1. Run: `python cli/admin_cli.py system <YOUR_GOOGLE_EMAIL_ADDRESS>
-Remove the angle brackets in <YOUR_GOOGLE_EMAIL_ADDRESS>. 
-
-Now, when you sign out and sign back in, you should see admin dashboard. You might need to sign out a few times or clear your browser cache to see the change.
-As a system admin, you can now add a new shelter, create repeatable shifts in that shelter, and open shelter on whatever days you want. Once you open the shelter, you should be able to see those shifts from the Volunteer dashboard.
-
-### Docker option
-To run the code using one command with Docker Compose, please follow the below instructions:
-
-1. Install Docker on your computer if you do not have one (https://www.docker.com/get-started/)
-
-2. Open the Docker app to start the docker engine (if you are on windows, open services.msc using run command and make sure the docker desktop service is running)
-
-3. Open terminal or shell and run the below command in the the cloned repository
-    * Case 1: If you do not want to see changes reflected when the code changes (demo purpose).
-    <br><code>docker-compose up</code>
-    * Case 2: If you want to see changes reflected when the code changes (development purpose).
-    <br><code>docker compose up --watch</code>
-
-4. For development purposes, use developer@slu.edu as the username and any password, to bypass authentication. This only works when server is running in DEBUG mode and DEV_USER and DEV_CONFIG configurations are enabled.
+2. Run the React client (in a separate terminal):
+   * <code>cd client_app</code>
+   * <code>npm start</code>
+   * The client is available at <code>http://localhost:3000</code>
 
 ## Contributing
 
-To get started contributing to the project, see the [contributing guide](CONTRIBUTING.md).
-This document also includes guidelines for reporting bugs and proposing new features.
+We welcome contributions of all sizes. Before opening a pull request:
+
+1. Read the [contributing guide](CONTRIBUTING.md) for coding standards, commit conventions, and review expectations.
+2. Pick an existing issue or create a new one describing the change you plan to make.
+3. Develop your work on a feature branch, add or update tests as needed, and open a pull request when ready.
+
+The contributing guide also covers how to report bugs and propose new features.
