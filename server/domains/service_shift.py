@@ -5,8 +5,8 @@ dictionary to class obj or vice versa.
 import dataclasses
 from typing import Optional
 
-@dataclasses.dataclass
 
+@dataclasses.dataclass
 class ServiceShift:
     """
     Data class for work shift-related data.
@@ -14,7 +14,7 @@ class ServiceShift:
     shelter_id: str
     shift_start: int  # Number of milliseconds since the Epoch in UTC
     shift_end: int
-    shift_name: str = "Default Shift"
+    shift_name: str = "Unnamed Shift"
     required_volunteer_count: int = 1
     max_volunteer_count: int = 5
     can_sign_up: bool = True
