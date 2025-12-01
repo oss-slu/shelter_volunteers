@@ -13,9 +13,9 @@ const ServiceShiftDetails = ({ shift, view, cancel, edit }) => {
         <div className="date-time">
           <div className="request-details d-flex flex-row">
             <span>
+              {shift.shift_name && shift.shift_name + " - "}
               {startTime} - {endTime}
             </span>
-            {shift.shift_name && <span>&nbsp;({shift.shift_name})</span>}
           </div>
         </div>
       </div>
