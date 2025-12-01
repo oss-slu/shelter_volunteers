@@ -62,3 +62,9 @@ export const timeInputToTimestamp = (timeStr, originalTimestamp) => {
   return originalDate.getTime();
 };
 
+export const millisToTimeString = (millis) => {
+  const hours = Math.floor(millis / (60 * 60 * 1000));
+  const minutes = Math.floor((millis % (60 * 60 * 1000)) / (60 * 1000));
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+};
+
