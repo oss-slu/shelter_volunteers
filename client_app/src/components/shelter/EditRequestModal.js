@@ -34,10 +34,19 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   const handleSave = () => {
     if (!originalShift) return;
     
+    const startTimestamp = timeInputToTimestamp(fromTime, originalShift.shift_start);
+    const endTimestamp = timeInputToTimestamp(toTime, originalShift.shift_end);
+    
+    // Validate that start time is before end time
+    if (startTimestamp >= endTimestamp) {
+      alert("Start time must be before end time. Please correct the time range.");
+      return;
+    }
+    
     const updatedShift = {
       ...originalShift,
-      shift_start: timeInputToTimestamp(fromTime, originalShift.shift_start),
-      shift_end: timeInputToTimestamp(toTime, originalShift.shift_end),
+      shift_start: startTimestamp,
+      shift_end: endTimestamp,
       required_volunteer_count: volunteersRequested
     };
     

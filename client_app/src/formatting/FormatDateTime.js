@@ -46,7 +46,7 @@ export const timeStringToMillis = (timeStr) => {
 
 // Convert timestamp to HH:mm format for time input
 export const timestampToTimeInput = (timestamp) => {
-  if (!timestamp) return "";
+  if (timestamp == null) return "";
   const date = new Date(timestamp);
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
