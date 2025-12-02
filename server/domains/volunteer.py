@@ -1,13 +1,17 @@
 """
 This module handles data conversion from dictionary to class obj or vice versa
 """
+
 import dataclasses
+
+
 @dataclasses.dataclass
 class Volunteer:
     """
     Data class for keeping track of the number of workers and which workers
     signed up for a given time interval
     """
+
     start_time: int
     end_time: int
     count: int
@@ -28,4 +32,3 @@ class Volunteer:
         representation of the object
         """
         return dataclasses.asdict(self)
-    

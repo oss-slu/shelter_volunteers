@@ -2,6 +2,7 @@
 This module handles the creation of Flask app
 """
 
+from typing import Optional
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
 
@@ -17,10 +18,15 @@ from config import mongodb_config
 import os
 
 
-def create_app(config_name="development"):
+def create_app(config_name: Optional[str] = None):
     """
     The function  creates the Flask application.
     """
+    config_name = (
+        os.environ.get("FLASK_CONFIG", "development")
+        if not config_name
+        else config_name
+    )
 
     app = Flask(__name__, static_folder=None)
     config_module = f"application.config.{config_name.capitalize()}Config"
