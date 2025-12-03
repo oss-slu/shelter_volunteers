@@ -102,7 +102,7 @@ const RepeatableShiftsScreen = () => {
       <div>
         <h1 className="display-4">Repeatable Shifts</h1>
         <h2>
-          Shelter: {loadingShelterName ? "Loading Shelter Name" : shelterName} ({shelterId})
+          Shelter: {loadingShelterName ? "Loading Shelter Name" : shelterName}
         </h2>
       </div>
       {errorMessages.length > 0 && (
