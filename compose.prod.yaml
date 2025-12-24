@@ -1,0 +1,56 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: shelter-volunteers-db-prod
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    container_name: shelter-volunteers-backend-prod
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=secret
+      - MONGODB_PROTOCOL=mongodb
+      - JWT_SECRET=abcdef123456
+      - FLASK_ENV=production
+      - FLASK_CONFIG=production
+    entrypoint:
+      - sh
+      - -c
+      - |
+        if [ -n "${DEV_EMAIL}" ]; then
+          echo "Seeding admin user: ${DEV_EMAIL}"
+          PYTHONPATH=/app python cli/admin_cli.py system "${DEV_EMAIL}"
+        fi
+        exec /app/production-entrypoint.sh
+
+  client_app:
+    container_name: shelter-volunteers-webapp-prod
+    build:
+      context: ./client_app
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3000:8080"
+    depends_on:
+      - server
+    environment:
+      - SERVER_URL=http://server:8000
+
+volumes:
+  mongo-data:

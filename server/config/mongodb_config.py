@@ -57,7 +57,7 @@ class MongoProductionConfig(MongoConfig):
     """Production configuration using MongoDB Atlas."""
 
     MONGODB_URI = (
-        f"mongodb+srv://{MongoConfig.MONGODB_USERNAME}:"
+        f"{os.getenv("MONGODB_PROTOCOL", "mongodb+srv")}://{MongoConfig.MONGODB_USERNAME}:"
         f"{MongoConfig.MONGODB_PASSWORD}@{MongoConfig.MONGODB_HOST}"
     )
 
@@ -73,6 +73,9 @@ def get_config():
     return config_map.get(env, MongoDevelopmentConfig)()
 
 
+_client = None  # pylint: disable=invalid-name
+
+
 def get_db():
     """
     Get a database connection using the appropriate configuration.
@@ -80,13 +83,15 @@ def get_db():
     Returns:
         pymongo.database.Database: MongoDB database connection
     """
+    global _client  # pylint: disable=invalid-name
     config = get_config()
-    env = os.getenv("FLASK_ENV", "development")
 
-    if env == "development":
-        client = MongoClient(config.MONGODB_URI, tls=False)
+    if _client:
+        return _client[config.MONGODB_DATABASE]
+
+    if config.MONGODB_URI.startswith("mongodb+srv://"):
+        _client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
     else:
-        # For MongoDB Atlas (production/pre-production)
-        client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+        _client = MongoClient(config.MONGODB_URI, tls=False, connect=False)
 
-    return client[config.MONGODB_DATABASE]
+    return _client[config.MONGODB_DATABASE]
