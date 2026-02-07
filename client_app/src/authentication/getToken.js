@@ -1,19 +1,51 @@
 export function getToken() {
-  const tokenString = localStorage.getItem("token");
-  if (tokenString) {
-    return JSON.parse(tokenString);
+  // Guard for non-browser environments / early execution
+  if (typeof window === "undefined" || !window.localStorage) return undefined;
+
+  const tokenString = window.localStorage.getItem("token");
+  if (!tokenString) return undefined;
+
+  // Historically this app stored either:
+  // - a raw JWT string: "eyJhbGciOi..."
+  // - a JSON-stringified value: "\"eyJhbGciOi...\"" (or other JSON)
+  // Be tolerant to both.
+  const trimmed = tokenString.trim();
+  const looksJson =
+    trimmed.startsWith("{") ||
+    trimmed.startsWith("[") ||
+    trimmed.startsWith("\"") ||
+    trimmed === "null" ||
+    trimmed === "true" ||
+    trimmed === "false" ||
+    /^-?\d/.test(trimmed);
+
+  if (!looksJson) return trimmed;
+
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    // If parsing fails, fall back to the raw string to avoid crashing the app
+    return trimmed;
   }
 }
 
 export function removeToken() {
-  localStorage.removeItem("token");
+  if (typeof window === "undefined" || !window.localStorage) return;
+  window.localStorage.removeItem("token");
 }
 
 export function setToken(token) {
-  localStorage.setItem("token", JSON.stringify(token));
+  if (typeof window === "undefined" || !window.localStorage) return;
+  // Store tokens as plain strings for interoperability with fetch/axios headers.
+  if (typeof token === "string") {
+    window.localStorage.setItem("token", token);
+  } else {
+    window.localStorage.setItem("token", JSON.stringify(token));
+  }
 }
 
 export function haveToken() {
-  const token = localStorage.getItem("token");
+  if (typeof window === "undefined" || !window.localStorage) return false;
+  const token = window.localStorage.getItem("token");
   return !!token;
 }
