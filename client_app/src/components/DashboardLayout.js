@@ -5,6 +5,7 @@ import { Header } from './Header';
 import { getUser } from '../authentication/user';
 import { useCurrentDashboard } from '../contexts/DashboardContext';
 import { getUserProfile } from '../api/volunteerApi';
+import { isProfileIncomplete } from '../utils/profileUtils';
 import IncompleteProfileModal from './volunteer/IncompleteProfileModal';
 
 // Session storage key to track if user has dismissed the modal this session
@@ -44,19 +45,13 @@ function DashboardLayout() {
 
       try {
         const profile = await getUserProfile();
-        // Check if profile is incomplete (missing required fields)
         // Note: getUserProfile returns null on 404 (no profile exists yet)
-        const isIncomplete = !profile || 
-          !profile.firstName?.trim() || 
-          !profile.lastName?.trim() || 
-          !profile.phone?.trim();
-        if (isIncomplete) {
+        if (isProfileIncomplete(profile)) {
           setShowIncompleteProfileModal(true);
         }
       } catch (error) {
-        // If there's an error fetching profile, show the modal to be safe
+        // Don't show incomplete profile modal on API/auth errors — avoid masking real issues
         console.error('Error checking profile:', error);
-        setShowIncompleteProfileModal(true);
       } finally {
         setProfileChecked(true);
       }

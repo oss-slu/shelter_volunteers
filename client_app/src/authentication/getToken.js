@@ -1,3 +1,16 @@
+function looksLikeJson(str) {
+  const trimmed = str.trim();
+  return (
+    trimmed.startsWith("{") ||
+    trimmed.startsWith("[") ||
+    trimmed.startsWith("\"") ||
+    trimmed === "null" ||
+    trimmed === "true" ||
+    trimmed === "false" ||
+    /^-?\d/.test(trimmed)
+  );
+}
+
 export function getToken() {
   // Guard for non-browser environments / early execution
   if (typeof window === "undefined" || !window.localStorage) return undefined;
@@ -10,16 +23,7 @@ export function getToken() {
   // - a JSON-stringified value: "\"eyJhbGciOi...\"" (or other JSON)
   // Be tolerant to both.
   const trimmed = tokenString.trim();
-  const looksJson =
-    trimmed.startsWith("{") ||
-    trimmed.startsWith("[") ||
-    trimmed.startsWith("\"") ||
-    trimmed === "null" ||
-    trimmed === "true" ||
-    trimmed === "false" ||
-    /^-?\d/.test(trimmed);
-
-  if (!looksJson) return trimmed;
+  if (!looksLikeJson(trimmed)) return trimmed;
 
   try {
     return JSON.parse(trimmed);
@@ -28,6 +32,7 @@ export function getToken() {
     return trimmed;
   }
 }
+
 
 export function removeToken() {
   if (typeof window === "undefined" || !window.localStorage) return;
