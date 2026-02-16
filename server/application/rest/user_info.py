@@ -12,7 +12,7 @@ from use_cases.user_info.get_user_info_by_email import get_user_info_by_email
 from use_cases.user_info.save_user_info import save_user_info
 
 user_info_bp = Blueprint("user_info", __name__)
-user_info_repo = UserInfoRepository()
+
 
 
 def is_skills_proper_type(skills):
@@ -24,6 +24,7 @@ def is_skills_proper_type(skills):
 @user_info_bp.route("/volunteer/profile", methods=["PATCH"])
 @token_required_with_request
 def patch_user_info(user_email: str):
+    user_info_repo = UserInfoRepository()
     user_info = get_user_info_by_email(user_email, user_info_repo)
     if user_info is None:
         return Response(status=404)
@@ -54,6 +55,7 @@ def patch_user_info(user_email: str):
 @user_info_bp.route("/volunteer/profile", methods=["POST"])
 @token_required_with_request
 def post_user_info(user_email: str):
+    user_info_repo = UserInfoRepository()
     data = request.get_json()
 
     # Ensure all fields.
@@ -86,6 +88,7 @@ def post_user_info(user_email: str):
 @user_info_bp.route("/volunteer/profile", methods=["GET"])
 @token_required_with_request
 def get_user_info(user_email: str):
+    user_info_repo = UserInfoRepository()
     user_info = get_user_info_by_email(user_email, user_info_repo)
     if user_info is None:
         return Response(status=404)

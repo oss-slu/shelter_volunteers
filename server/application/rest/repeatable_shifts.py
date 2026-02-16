@@ -19,7 +19,7 @@ from use_cases.schedule.set_repeatable_shifts import set_repeatable_shifts
 
 repeatable_shifts_bp = Blueprint("repeatable_shifts", __name__)
 
-repo = RepeatableShiftsRepository()
+
 
 # Configure module-level logger
 logger = logging.getLogger(__name__)
@@ -33,6 +33,7 @@ def post_repeatable_shifts_endpoint(shelter_id):
     where generic_errors is a list of string errors, and keyed errors among
     all created shifts are accumulated by "${key_name}${shift_index}"=error_string.
     """
+    repo = RepeatableShiftsRepository()
 
     body = request.get_json()
     if not isinstance(body, list):
@@ -94,6 +95,7 @@ def post_repeatable_shifts_endpoint(shelter_id):
 @repeatable_shifts_bp.get("/shelters/<shelter_id>/schedule")
 @shelter_admin_permission_required
 def get_repeatable_shifts_endpoint(shelter_id):
+    repo = RepeatableShiftsRepository()
     result = get_repeatable_shifts(shelter_id, repo)
     response = [shift.__dict__ for shift in result.value.shifts]
 

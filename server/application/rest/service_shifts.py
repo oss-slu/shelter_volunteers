@@ -21,12 +21,12 @@ from use_cases.service_commitments.list_user_infos_in_shift import list_user_inf
 
 service_shift_bp = Blueprint("service_shift", __name__)
 
-commitments_repo = MongoRepoCommitments()
-service_shifts_repo = ServiceShiftsMongoRepo()
-user_info_repo = UserInfoRepository()
+
 
 
 def retrieve_service_shifts(http_request, shelter_id=None):
+    commitments_repo = MongoRepoCommitments()
+    service_shifts_repo = ServiceShiftsMongoRepo()
     filter_start_after_str = http_request.args.get("filter_start_after")
 
     filter_start_after = (
@@ -83,6 +83,8 @@ def get_service_shifts():
 @service_shift_bp.get("/service_shifts/<shift_id>/user_info")
 @shelter_admin_permission_required
 def get_user_infos_in_shift(shift_id: str):
+    commitments_repo = MongoRepoCommitments()
+    user_info_repo = UserInfoRepository()
     user_infos = list_user_infos_in_shift(shift_id, commitments_repo, user_info_repo)
     user_infos = [ui.to_dict() for ui in user_infos]
     body = json.dumps(user_infos)

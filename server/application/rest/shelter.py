@@ -16,7 +16,7 @@ from responses import ResponseTypes
 
 shelter_blueprint = Blueprint("shelter", __name__)
 
-repo = ShelterRepo()
+
 
 
 @shelter_blueprint.route("/shelters", methods=["GET"])
@@ -26,6 +26,7 @@ def get_shelters():
     No authentication is required to access this endpoint.
     GET requests can be made to retrieve the list of shelters.
     """
+    repo = ShelterRepo()
     shelters_as_dict = shelter_list_use_case(repo)
     shelters_as_json = json.dumps(
         [shelter for shelter in shelters_as_dict], cls=ShelterJsonEncoder
@@ -42,6 +43,7 @@ def get_shelter(shelter_id: str):
     """
     Returns shelter info by its id
     """
+    repo = ShelterRepo()
     shelter = get_shelter_by_id(shelter_id, repo)
     if not shelter:
         return Response(
@@ -68,6 +70,7 @@ def add_shelter():
         shelter_data_dict = request.get_json()
         # shelter_add_use_case expects a Shelter object
         shelter_obj = Shelter.from_dict(shelter_data_dict)
+        repo = ShelterRepo()
         add_response = shelter_add_use_case(repo, shelter_obj)
         status_code = HTTP_STATUS_CODES_MAPPING[
             ResponseTypes.PARAMETER_ERROR]

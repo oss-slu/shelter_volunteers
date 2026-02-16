@@ -20,8 +20,7 @@ from serializers.user_permission import UserPermissionJsonEncoder
 from responses import ResponseTypes
 
 authorization_blueprint = Blueprint('authorization', __name__)
-repo = PermissionsMongoRepo()
-shelter_repo = ShelterRepo()
+
 
 @authorization_blueprint.route('/system_admin', methods=['GET'])
 @system_admin_permission_required
@@ -33,6 +32,7 @@ def retrieve_system_admins():
     Returns:
         Response: A Flask Response object containing the JSON data and HTTP status code.
     """
+    repo = PermissionsMongoRepo()
     system_admins = get_system_admins(repo)
     return Response(
         json.dumps(system_admins, cls=UserPermissionJsonEncoder),
@@ -49,6 +49,7 @@ def retrieve_shelter_admins(shelter_id):
             mimetype='application/json',
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
+    repo = PermissionsMongoRepo()
     shelter_admins = get_shelter_admins(repo, shelter_id)
     return Response(
         json.dumps(shelter_admins, cls=UserPermissionJsonEncoder),
@@ -75,6 +76,8 @@ def get_permissions(user_id):
             Unauthorized: If the user token is invalid, missing,
             or the user is not authorized to make this request.
     """
+    repo = PermissionsMongoRepo()
+    shelter_repo = ShelterRepo()
     user_permission = get_user_permission(repo, user_id, shelter_repo)
     return Response(
         json.dumps(user_permission, cls=UserPermissionJsonEncoder),
@@ -101,6 +104,7 @@ def post_system_admin():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
+    repo = PermissionsMongoRepo()
     response = add_system_admin(repo, user_email)
     return Response(
         json.dumps(response.value),
@@ -127,6 +131,7 @@ def delete_system_admin():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
+    repo = PermissionsMongoRepo()
     response = remove_system_admin(repo, user_email)
     return Response(
         json.dumps(response.value),
@@ -153,6 +158,7 @@ def post_shelter_admin(shelter_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
+    repo = PermissionsMongoRepo()
     response = add_shelter_admin(repo, shelter_id, user_email)
     return Response(
         json.dumps(response.value),
@@ -179,10 +185,10 @@ def delete_shelter_admin(shelter_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
+    repo = PermissionsMongoRepo()
     response = remove_shelter_admin(repo, shelter_id, user_email)
     return Response(
         json.dumps(response.value),
         mimetype='application/json',
         status=HTTP_STATUS_CODES_MAPPING[response.response_type]
     )
-

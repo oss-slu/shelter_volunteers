@@ -11,11 +11,11 @@ from domains.resources import Resources
 from repository.mongo.authorization import PermissionsMongoRepo
 from responses import ResponseTypes
 
-repo = PermissionsMongoRepo()
 def shelter_admin_permission_required(f):
     @wraps(f)
     @token_required_with_request
     def decorated(user_email, *args, **kwargs):
+        repo = PermissionsMongoRepo()
         shelter_id = kwargs.get('shelter_id')
         # Check if the user has admin permissions
         if not is_authorized(repo, user_email, Resources.SHELTER, shelter_id):

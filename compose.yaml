@@ -1,0 +1,71 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: shelter-volunteers-db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: shelter-volunteers-mongo-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: mongodb
+  server:
+    container_name: shelter-volunteers-backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=secret
+      - JWT_SECRET=abcdef123456
+      - FLASK_ENV=development
+      - FLASK_CONFIG=development
+    develop:
+      watch:
+        - path: server/pyproject.toml
+          action: rebuild
+        - path: server/
+          target: /app
+          action: sync
+
+  client_app:
+    container_name: shelter-volunteers-webapp
+    build:
+      context: ./client_app
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      - REACT_APP_SERVER_URL=http://localhost:8000
+    develop:
+      watch:
+        - path: client_app/package.json
+          action: rebuild
+        - path: client_app/
+          target: /app
+          action: sync
+
+volumes:
+  mongo-data:

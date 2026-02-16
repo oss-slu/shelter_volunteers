@@ -24,9 +24,7 @@ from responses import ResponseTypes
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
 
-commitments_repo = MongoRepoCommitments()
-shifts_repo = ServiceShiftsMongoRepo()
-shelter_repo = ShelterRepo()
+
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
 @token_required_with_request
@@ -36,6 +34,10 @@ def create_service_commitment(user_email):
     Extract user info from Authorization token and create commitments.
     """
     try:
+        commitments_repo = MongoRepoCommitments()
+        shifts_repo = ServiceShiftsMongoRepo()
+
+
         request_data = request.get_json()
         if not isinstance(request_data, list):
             return (
@@ -75,6 +77,10 @@ def fetch_service_commitments(user_email):
     Handle GET request to retrieve service commitments.
     """
     try:
+        commitments_repo = MongoRepoCommitments()
+        shifts_repo = ServiceShiftsMongoRepo()
+        shelter_repo = ShelterRepo()
+
         # Extract service_shift_id from query parameters if provided
         service_shift_id = request.args.get("service_shift_id")
         include_shift_details = is_true(request.args, "include_shift_details")
@@ -167,6 +173,8 @@ def delete_service_commitment_by_id(user_email, commitment_id):
     Handle DELETE request to remove a service commitment.
     """
     try:
+        commitments_repo = MongoRepoCommitments()
+
         response = delete_service_commitment(
             commitments_repo,
             commitment_id,
