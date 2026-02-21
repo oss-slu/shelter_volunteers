@@ -5,7 +5,12 @@ import { formatTime } from '../../formatting/FormatDateTime';
 import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
 import { SubmitResultsMessage } from './SubmitResultsMessage';
+import VolunteerShiftCalendar from './VolunteerShiftCalendar';
 import Loading from '../Loading';
+import '../../styles/volunteer/CommitmentsViewToggle.css';
+
+const VIEW_LIST = 'list';
+const VIEW_CALENDAR = 'calendar';
 
 function Commitments(){
   const [loading, setLoading] = useState(true);
@@ -13,6 +18,7 @@ function Commitments(){
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [resultMessage, setResultMessage] = useState({});
+  const [viewMode, setViewMode] = useState(VIEW_LIST);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,18 +124,7 @@ function Commitments(){
     return <Loading />;
   }
 
-  if (shifts.length === 0) {
-    return (
-      <div>
-        <h1 className="title-small">Your Upcoming Shifts</h1>
-        <div className="description">
-          <p className="tagline-small">
-            You have no upcoming shifts. You can sign up for shifts through the "Sign Up To Help" menu option.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const hasShifts = shifts.length > 0;
 
   return (
     <div className="has-sticky-bottom">
@@ -138,65 +133,94 @@ function Commitments(){
         resultMessage={resultMessage}
         closeModal={closeModal}
       />
-      <div className="description">
+      <div className="description commitments-description">
         <p className="tagline-small">
-          Here are your upcoming shifts. You can select shifts to cancel them.
+          {hasShifts
+            ? 'Here are your upcoming shifts. You can select shifts to cancel them.'
+            : 'You have no upcoming shifts. Sign up through "Sign Up To Help" or use the calendar to view your schedule.'}
         </p>
-      </div>
-      {/* Desktop Table View */}
-      <div className="table-container desktop-only">
-        <table className="shifts-table">
-          <thead>
-            <tr className="table-header">
-              <th>Shelter</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* Mobile Card View */}
-      <div className="cards-container mobile-only">
-        {shifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
-        ))}
-      </div>
-      <div className="sticky-signup-container">
-        {selectedShifts.size > 0 && (
-        <div className="selected-shifts-summary">
-          <h3 className="summary-title">
-            Shifts Selected to Cancel ({selectedShifts.size})
-          </h3>
-          <div className="list">
-            {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
-              <div key={shift._id} className="tagline-small">
-                • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
-              </div>
-            ))}
-          </div>
-        </div>
-        )}
-        {selectedShifts.size === 0 && (
-          <div>
-            <p className="tagline-small">You can select shifts you want to cancel.</p>
-          </div>
-        )}
-        <div className="signup-section">
+        <div className="commitments-view-toggle" role="tablist" aria-label="View mode">
           <button
-            onClick={handleCancel}
-            disabled={selectedShifts.size === 0}
-            className={`signup-button ${selectedShifts.size > 0 ? 'enabled signedup' : 'disabled'}`}
+            type="button"
+            role="tab"
+            aria-selected={viewMode === VIEW_LIST}
+            className={`commitments-view-btn ${viewMode === VIEW_LIST ? 'active' : ''}`}
+            onClick={() => setViewMode(VIEW_LIST)}
           >
-            Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
+            List
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === VIEW_CALENDAR}
+            className={`commitments-view-btn ${viewMode === VIEW_CALENDAR ? 'active' : ''}`}
+            onClick={() => setViewMode(VIEW_CALENDAR)}
+          >
+            Calendar
           </button>
         </div>
       </div>
+      {viewMode === VIEW_CALENDAR && (
+        <VolunteerShiftCalendar shifts={shifts} />
+      )}
+      {viewMode === VIEW_LIST && (
+        <>
+          {/* Desktop Table View */}
+          <div className="table-container desktop-only">
+            <table className="shifts-table">
+              <thead>
+                <tr className="table-header">
+                  <th>Shelter</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shifts.map((shift) => (
+                  <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile Card View */}
+          <div className="cards-container mobile-only">
+            {shifts.map((shift) => (
+              <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+            ))}
+          </div>
+          <div className="sticky-signup-container">
+            {selectedShifts.size > 0 && (
+              <div className="selected-shifts-summary">
+                <h3 className="summary-title">
+                  Shifts Selected to Cancel ({selectedShifts.size})
+                </h3>
+                <div className="list">
+                  {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
+                    <div key={shift._id} className="tagline-small">
+                      • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {selectedShifts.size === 0 && (
+              <div>
+                <p className="tagline-small">You can select shifts you want to cancel.</p>
+              </div>
+            )}
+            <div className="signup-section">
+              <button
+                onClick={handleCancel}
+                disabled={selectedShifts.size === 0}
+                className={`signup-button ${selectedShifts.size > 0 ? 'enabled signedup' : 'disabled'}`}
+              >
+                Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
