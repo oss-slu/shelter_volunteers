@@ -33,22 +33,36 @@
     color: #333;
   }
   
-  .timeInput,
-  .numberInput {
-    padding: 10px 12px;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    box-sizing: border-box;
-  }
+.timeInput,
+.numberInput,
+.instructionsInput {
+  padding: 10px 12px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.instructionsInput {
+  resize: vertical;
+  font-family: inherit;
+}
   
-  .timeInput:focus,
-  .numberInput:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
+.timeInput:focus,
+.numberInput:focus,
+.instructionsInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.helperText {
+  margin-top: 6px;
+  text-align: right;
+  font-size: 0.8em;
+  color: #555;
+}
   
   .buttonContainer {
     display: flex;

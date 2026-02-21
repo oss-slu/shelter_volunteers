@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "../../styles/shelter/UpcomingShifts.css";
 import ServiceShiftDetails from "./ServiceShiftDetails.js";
 import { EditRequestModal } from "./EditRequestModal.js";
 import { CancelRequestModal } from "./CancelRequestModal.js";
 import { formatDate } from "../../formatting/FormatDateTime.js";
 import ShiftUserInfoDisplay from "./ShiftUserInfoDisplay";
+import { serviceShiftAPI } from "../../api/serviceShift.js";
 
 const ViewShifts = ({ shiftDetailsData }) => {
+  const { shelterId } = useParams();
   const [shiftsData, setShiftsData] = useState(shiftDetailsData || []);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -38,13 +41,30 @@ const ViewShifts = ({ shiftDetailsData }) => {
     setIsCancelModalOpen(false);
   };
 
-  const handleSaveEdit = (updatedShift) => {
-    const updatedShifts = shiftsData.map((shift) =>
-      shift._id === updatedShift._id ? updatedShift : shift,
-    );
+  const handleSaveEdit = async (updatedShift) => {
+    try {
+      const patchPayload = {
+        shift_start: updatedShift.shift_start,
+        shift_end: updatedShift.shift_end,
+        required_volunteer_count: updatedShift.required_volunteer_count,
+        instructions: updatedShift.instructions || "",
+      };
 
-    setShiftsData(updatedShifts);
-    setIsEditModalOpen(false);
+      const savedShift = await serviceShiftAPI.updateShift(
+        shelterId,
+        updatedShift._id,
+        patchPayload,
+      );
+      const updatedShifts = shiftsData.map((shift) =>
+        shift._id === savedShift._id ? { ...shift, ...savedShift } : shift,
+      );
+
+      setShiftsData(updatedShifts);
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating shift:", error);
+      alert(`Failed to update shift: ${error.message}`);
+    }
   };
 
   const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {

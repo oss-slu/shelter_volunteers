@@ -63,6 +63,32 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(data.get("service_shift_ids"), expected_ids)
         mock_shift_add_use_case.assert_called_once()
 
+    @patch("application.rest.service_shifts.shift_add_use_case")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_post_service_shift_trims_instructions(
+        self, mock_is_authorized, mock_shift_add_use_case
+    ):
+        mock_is_authorized.return_value = True
+        mock_shift_add_use_case.return_value = {"success": True, "service_shift_ids": [101]}
+
+        payload = [
+            {
+                "shelter_id": "12345",
+                "shift_start": 10,
+                "shift_end": 20,
+                "instructions": "  bring gloves  ",
+            }
+        ]
+        response = self.client.post(
+            "/shelters/12345/service_shifts",
+            data=json.dumps(payload),
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        (_, shifts_obj), _ = mock_shift_add_use_case.call_args
+        self.assertEqual(shifts_obj[0].instructions, "bring gloves")
+
     @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
     def test_get_service_shift(self, mock_list_use_case):
         # Arrange: Define the expected list of shift objects.
@@ -75,7 +101,8 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "required_volunteer_count": 1,
                 "max_volunteer_count": 5,
                 "can_sign_up": True,
-                "shift_name": "Default Shift"
+                "shift_name": "Default Shift",
+                "instructions": "",
             },
             {
                 "_id": "202",
@@ -85,7 +112,8 @@ class TestServiceShiftAPI(unittest.TestCase):
                 "required_volunteer_count": 1,
                 "max_volunteer_count": 5,
                 "can_sign_up": True,
-                "shift_name": "Default Shift"            
+                "shift_name": "Default Shift",
+                "instructions": "",
             }
         ]
         mock_list_use_case.return_value = ([ServiceShift.from_dict(shift)
@@ -116,7 +144,8 @@ class TestServiceShiftAPI(unittest.TestCase):
           "required_volunteer_count": 1,
           "max_volunteer_count": 5,
           "can_sign_up": True,
-          "shift_name": "Default Shift"
+          "shift_name": "Default Shift",
+          "instructions": "",
         }
         mock_list_use_case.return_value = ([ServiceShift.from_dict(
             expected_shift)], [[]])
@@ -132,6 +161,74 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["shelter_id"], test_shelter_id)
         mock_list_use_case.assert_called_once()
+
+    @patch("application.rest.service_shifts.service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_updates_instructions(
+        self, mock_is_authorized, mock_service_shifts_repo
+    ):
+        mock_is_authorized.return_value = True
+        existing_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=1,
+            instructions="old text",
+            _id="abc123",
+        )
+        updated_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=2,
+            instructions="updated instructions",
+            _id="abc123",
+        )
+
+        mock_service_shifts_repo.get_shift.side_effect = [existing_shift, updated_shift]
+        mock_service_shifts_repo.check_shift_overlap.return_value = False
+        mock_service_shifts_repo.update_service_shift.return_value = True
+
+        response = self.client.patch(
+            "/shelters/12345/service_shifts/abc123",
+            data=json.dumps(
+                {
+                    "required_volunteer_count": 2,
+                    "instructions": "  updated instructions  ",
+                }
+            ),
+            headers=self.headers,
+        )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["instructions"], "updated instructions")
+        mock_service_shifts_repo.update_service_shift.assert_called_once_with(
+            "abc123",
+            {"required_volunteer_count": 2, "instructions": "updated instructions"},
+        )
+
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_rejects_long_instructions(self, mock_is_authorized):
+        mock_is_authorized.return_value = True
+        long_instructions = "x" * 501
+
+        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+            mock_repo.get_shift.return_value = ServiceShift(
+                shelter_id="12345",
+                shift_start=10,
+                shift_end=20,
+                _id="abc123",
+            )
+            response = self.client.patch(
+                "/shelters/12345/service_shifts/abc123",
+                data=json.dumps({"instructions": long_instructions}),
+                headers=self.headers,
+            )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("at most 500 characters", data["message"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,7 +17,8 @@ class ServiceShiftJsonEncoder(json.JSONEncoder):
                 "required_volunteer_count": shift.required_volunteer_count,
                 "max_volunteer_count": shift.max_volunteer_count,
                 "can_sign_up": shift.can_sign_up,
-                "shift_name": shift.shift_name
+                "shift_name": shift.shift_name,
+                "instructions": shift.instructions,
             }
             return to_serialize
         except AttributeError:

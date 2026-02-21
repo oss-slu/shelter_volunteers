@@ -5,9 +5,11 @@ import "../../styles/shelter/EditRequestModal.css";
 
 
 export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
+  const MAX_INSTRUCTIONS_LENGTH = 500;
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
   const [volunteersRequested, setVolunteersRequested] = useState(0);
+  const [instructions, setInstructions] = useState("");
   const [originalShift, setOriginalShift] = useState(null);
 
   useEffect(() => {
@@ -16,6 +18,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       setFromTime(timestampToTimeInput(shift.shift_start));
       setToTime(timestampToTimeInput(shift.shift_end));
       setVolunteersRequested(shift.required_volunteer_count || 0);
+      setInstructions(shift.instructions || "");
     }
   }, [shift]);
 
@@ -31,7 +34,11 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
     setVolunteersRequested(parseInt(e.target.value, 10) || 0);
   };
 
-  const handleSave = () => {
+  const handleInstructionsChange = (e) => {
+    setInstructions(e.target.value);
+  };
+
+  const handleSave = async () => {
     if (!originalShift) return;
     
     const startTimestamp = timeInputToTimestamp(fromTime, originalShift.shift_start);
@@ -47,11 +54,11 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       ...originalShift,
       shift_start: startTimestamp,
       shift_end: endTimestamp,
-      required_volunteer_count: volunteersRequested
+      required_volunteer_count: volunteersRequested,
+      instructions: instructions.trim(),
     };
     
-    onSave(updatedShift);
-    onClose();
+    await onSave(updatedShift);
   };
 
   const renderData = () => (
@@ -84,6 +91,20 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
           onChange={handleVolunteersChange}
           className="numberInput"
         />
+      </div>
+      <div className="formField">
+        <label className="fieldLabel">Instructions for Volunteers (optional)</label>
+        <textarea
+          value={instructions}
+          onChange={handleInstructionsChange}
+          className="instructionsInput"
+          placeholder="Enter entry instructions, items to bring, parking info, etc."
+          maxLength={MAX_INSTRUCTIONS_LENGTH}
+          rows={4}
+        />
+        <div className="helperText">
+          {instructions.trim().length}/{MAX_INSTRUCTIONS_LENGTH}
+        </div>
       </div>
       <div className="buttonContainer">
         <button className="saveButton" onClick={handleSave}>Save</button>
