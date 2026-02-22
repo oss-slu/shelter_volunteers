@@ -108,6 +108,42 @@
   font-size: 1rem;
 }
 
+.instructions-toggle-button {
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.instructions-empty {
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+.instructions-row td {
+  background-color: #f8fafc;
+}
+
+.instructions-panel {
+  border: 1px solid #dbe5fa;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.instructions-title {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.instructions-content {
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
 .shifts-table input[type="text"],
 .shifts-table input[type="time"],
 .shifts-table input[type="number"] {
@@ -202,6 +238,14 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.mobile-instructions-panel {
+  margin-top: 4px;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #dbe5fa;
 }
 
 .detail-row {

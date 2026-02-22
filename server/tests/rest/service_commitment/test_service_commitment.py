@@ -61,6 +61,7 @@ def test_get_commitments_with_augmented_data(
             "required_volunteer_count": 1,
             "max_volunteer_count": 5,
             "shift_name": "Morning Shift",
+            "instructions": "Use side entrance.\nBring water bottle.",
             "can_sign_up": True,
             # Other shift details...
         },
@@ -72,6 +73,7 @@ def test_get_commitments_with_augmented_data(
             "required_volunteer_count": 1,
             "max_volunteer_count": 5,
             "shift_name": "Evening Shift",
+            "instructions": "",
             "can_sign_up": True,
             # Other shift details...
         },

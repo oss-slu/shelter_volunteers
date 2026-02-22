@@ -12,6 +12,7 @@ function Commitments(){
   const [results, setResults] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
+  const [expandedInstructions, setExpandedInstructions] = useState(new Set());
   const [resultMessage, setResultMessage] = useState({});
 
   useEffect(() => {
@@ -49,6 +50,16 @@ function Commitments(){
     setSelectedShifts(newSelectedShifts);
   };
 
+  const toggleInstructions = (shiftId) => {
+    const nextExpanded = new Set(expandedInstructions);
+    if (nextExpanded.has(shiftId)) {
+      nextExpanded.delete(shiftId);
+    } else {
+      nextExpanded.add(shiftId);
+    }
+    setExpandedInstructions(nextExpanded);
+  };
+
   // Handle cancellagion
   const handleCancel = async () => {
     try {
@@ -76,6 +87,7 @@ function Commitments(){
     const endTime = formatTime(shift.shift_end);
     const isSelected = selectedShifts.has(shift._id);
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
+    const instructions = (shift.instructions || "").trim();
     const canInteract = true;
     return {
       shift,
@@ -85,7 +97,9 @@ function Commitments(){
       endTime,
       isSelected,
       duration,
-      canInteract
+      canInteract,
+      hasInstructions: instructions.length > 0,
+      instructions
     };
   };  
   const closeModal = () => {
@@ -152,11 +166,20 @@ function Commitments(){
               <th>Date</th>
               <th>Time</th>
               <th>Duration</th>
+              <th>Shelter Instructions</th>
             </tr>
           </thead>
           <tbody>
             {shifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+              <DesktopShiftRow
+                key={shift._id}
+                shiftData={processShiftData(shift)}
+                handleShiftToggle={handleShiftToggle}
+                showInstructions={true}
+                isInstructionsOpen={expandedInstructions.has(shift._id)}
+                onInstructionsToggle={toggleInstructions}
+                instructionsColSpan={5}
+              />
             ))}
           </tbody>
         </table>
@@ -164,7 +187,14 @@ function Commitments(){
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
         {shifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+          <MobileShiftCard
+            key={shift._id}
+            shiftData={processShiftData(shift)}
+            handleShiftToggle={handleShiftToggle}
+            showInstructions={true}
+            isInstructionsOpen={expandedInstructions.has(shift._id)}
+            onInstructionsToggle={toggleInstructions}
+          />
         ))}
       </div>
       <div className="sticky-signup-container">
