@@ -9,14 +9,27 @@ import '../../styles/volunteer/VolunteerShiftCalendar.css';
 
 const localizer = dayjsLocalizer(dayjs);
 
+/** Returns true if the value yields a valid Date (not Invalid Date). */
+function isValidDate(value) {
+  if (value == null) return false;
+  const d = new Date(value);
+  return !Number.isNaN(d.getTime());
+}
+
 /**
  * Builds calendar events from volunteer commitments (shifts).
  * Each event has start, end, title, and resource (shift + shelter).
+ * Skips commitments with invalid shift_start or shift_end.
  */
 function shiftsToEvents(shifts) {
   if (!shifts || !Array.isArray(shifts)) return [];
   return shifts
-    .filter((c) => c && c.shift_start != null && c.shift_end != null)
+    .filter(
+      (c) =>
+        c &&
+        isValidDate(c.shift_start) &&
+        isValidDate(c.shift_end)
+    )
     .map((c) => {
       const start = new Date(c.shift_start);
       const end = new Date(c.shift_end);
@@ -30,7 +43,15 @@ function shiftsToEvents(shifts) {
         resource: { shift: c, shelter: c.shelter },
       };
     })
-    .filter((e) => e && e.title && e.start && e.end);
+    .filter(
+      (e) =>
+        e &&
+        e.title &&
+        e.start &&
+        e.end &&
+        !Number.isNaN(e.start.getTime()) &&
+        !Number.isNaN(e.end.getTime())
+    );
 }
 
 /**
@@ -60,7 +81,7 @@ export default function VolunteerShiftCalendar({ shifts }) {
         setDetailsOpen(true);
       }
     },
-    []
+    [formatDate]
   );
 
   const handleSelectSlot = useCallback(
@@ -77,7 +98,7 @@ export default function VolunteerShiftCalendar({ shifts }) {
         setDetailsOpen(true);
       }
     },
-    [shifts]
+    [shifts, formatDate]
   );
 
   const dayPropGetter = useCallback(
