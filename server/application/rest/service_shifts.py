@@ -244,7 +244,7 @@ def patch_service_shift(shelter_id, shift_id):
             updates["instructions"] = _sanitize_instructions(updates.get("instructions"))
     except ValueError as err:
         return Response(
-            json.dumps({"message": f"Invalid data format"}),
+            json.dumps({"message": f"Invalid data format: {str(err)}"}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
