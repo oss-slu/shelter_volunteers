@@ -258,7 +258,7 @@ def patch_service_shift(shelter_id, shift_id):
         shift_obj = ServiceShift.from_dict(merged_shift)
     except (KeyError, TypeError, ValueError):
         return Response(
-            json.dumps({"message": f"Invalid data format"}),
+            json.dumps({"message": "Invalid data format"}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
