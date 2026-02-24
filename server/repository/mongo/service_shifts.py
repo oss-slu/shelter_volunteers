@@ -6,6 +6,8 @@ from domains.service_shift import ServiceShift
 from config.mongodb_config import get_db
 #from bson.errors import InvalidId
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
+from pymongo import ReturnDocument
 
 class ServiceShiftsMongoRepo:
     """
@@ -34,7 +36,9 @@ class ServiceShiftsMongoRepo:
         result = self.collection.insert_many(shift_data)
         return [str(shift_id) for shift_id in result.inserted_ids]
 
-    def check_shift_overlap(self, shelter_id, shift_start, shift_end):
+    def check_shift_overlap(
+        self, shelter_id, shift_start, shift_end, exclude_shift_id=None
+    ):
         """
         Checks if a new shift overlaps with an existing shift.
         
@@ -46,14 +50,50 @@ class ServiceShiftsMongoRepo:
         Returns:
             bool: True if there is an overlap, False otherwise.
         """
-        overlapping = self.collection.find_one(
-            {
-                "shelter_id": shelter_id,
-                "shift_start": {"$lt": shift_end},
-                "shift_end": {"$gt": shift_start},
-            }
-        )
+        overlap_filter = {
+            "shelter_id": shelter_id,
+            "shift_start": {"$lt": shift_end},
+            "shift_end": {"$gt": shift_start},
+        }
+        if exclude_shift_id:
+            overlap_filter["_id"] = {"$ne": ObjectId(exclude_shift_id)}
+
+        overlapping = self.collection.find_one(overlap_filter)
         return overlapping is not None
+
+    def get_shift(self, shift_id):
+        """
+        Gets one shift by id.
+        """
+        try:
+            shift = self.collection.find_one({"_id": ObjectId(shift_id)})
+        except (InvalidId, TypeError):
+            return None
+
+        if not shift:
+            return None
+
+        shift["_id"] = str(shift["_id"])
+        return ServiceShift.from_dict(shift)
+
+    def update_service_shift(self, shift_id, updates):
+        """
+        Updates an existing shift.
+        """
+        try:
+            updated_shift = self.collection.find_one_and_update(
+                {"_id": ObjectId(shift_id)},
+                {"$set": updates},
+                return_document=ReturnDocument.AFTER,
+            )
+        except (InvalidId, TypeError):
+            return None
+
+        if not updated_shift:
+            return None
+
+        updated_shift["_id"] = str(updated_shift["_id"])
+        return ServiceShift.from_dict(updated_shift)
 
     def list(self, shelter_id=None, filter_start_after=None):
         """
