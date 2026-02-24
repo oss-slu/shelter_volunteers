@@ -9,6 +9,14 @@ export const DesktopShiftRow = ({
   onInstructionsToggle = null,
   instructionsColSpan = 1,
 }) => {
+  if (!shiftData || !shiftData.shift) {
+    return null;
+  }
+
+  const instructionsButtonLabel = isInstructionsOpen
+    ? "Hide shelter instructions"
+    : "View shelter instructions";
+
   return(
     <>
       <tr
@@ -42,6 +50,7 @@ export const DesktopShiftRow = ({
             {shiftData.hasInstructions ? (
               <button
                 className="button-transparent instructions-toggle-button"
+                aria-label={instructionsButtonLabel}
                 onClick={(event) => {
                   event.stopPropagation();
                   if (onInstructionsToggle) {

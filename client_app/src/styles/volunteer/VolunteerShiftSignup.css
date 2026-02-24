@@ -115,6 +115,10 @@
   text-decoration: underline;
 }
 
+.instructions-toggle-button:hover {
+  color: #00518d;
+}
+
 .instructions-empty {
   color: var(--accent-color);
   font-size: 0.9rem;
@@ -142,6 +146,7 @@
   font-size: 0.95rem;
   line-height: 1.4;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .shifts-table input[type="text"],
