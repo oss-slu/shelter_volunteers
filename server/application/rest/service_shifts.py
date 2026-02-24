@@ -3,6 +3,7 @@ This module handles service shift operations.
 """
 
 import json
+import logging
 
 from flask import Blueprint, request, Response
 
@@ -21,6 +22,7 @@ from use_cases.service_commitments.list_user_infos_in_shift import list_user_inf
 
 service_shift_bp = Blueprint("service_shift", __name__)
 MAX_INSTRUCTIONS_LENGTH = 500
+logger = logging.getLogger(__name__)
 
 commitments_repo = MongoRepoCommitments()
 service_shifts_repo = ServiceShiftsMongoRepo()
@@ -81,6 +83,15 @@ def _validate_shift_payload(shift_payload):
         shift_payload.get("instructions", "")
     )
     return validated
+
+
+def _validate_volunteer_counts(shift):
+    if shift.required_volunteer_count <= 0:
+        raise ValueError("required_volunteer_count must be greater than 0")
+    if shift.required_volunteer_count > shift.max_volunteer_count:
+        raise ValueError(
+            "required_volunteer_count must be less than or equal to max_volunteer_count"
+        )
 
 
 @service_shift_bp.route("/service_shifts", methods=["GET"])
@@ -175,6 +186,14 @@ def post_service_shifts(shelter_id):
                 mimetype="application/json",
                 status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
+        try:
+            _validate_volunteer_counts(shift)
+        except ValueError:
+            return Response(
+                json.dumps({"message": "Invalid data provided"}),
+                mimetype="application/json",
+                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+            )
 
     add_response = shift_add_use_case(repo, shifts_obj)
     status_code = (
@@ -240,11 +259,14 @@ def patch_service_shift(shelter_id, shift_id):
 
     try:
         updates = dict(shift_updates)
+        if ("shift_start" in updates) != ("shift_end" in updates):
+            raise ValueError("shift_start and shift_end must be updated together")
         if "instructions" in updates:
             updates["instructions"] = _sanitize_instructions(updates.get("instructions"))
     except ValueError as err:
+        logger.warning("Invalid patch data for shift %s: %s", shift_id, err)
         return Response(
-            json.dumps({"message": f"Invalid data format: {str(err)}"}),
+            json.dumps({"message": "Invalid data provided"}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
@@ -269,6 +291,14 @@ def patch_service_shift(shelter_id, shift_id):
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
+    try:
+        _validate_volunteer_counts(shift_obj)
+    except ValueError:
+        return Response(
+            json.dumps({"message": "Invalid data provided"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
 
     overlap = service_shifts_repo.check_shift_overlap(
         shelter_id,
@@ -283,17 +313,16 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT],
         )
 
-    update_success = service_shifts_repo.update_service_shift(shift_id, updates)
-    if not update_success:
+    updated_shift = service_shifts_repo.update_service_shift(shift_id, updates)
+    if not updated_shift:
         return Response(
             json.dumps({"message": "Failed to update service shift"}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND],
         )
 
-    refreshed_shift = service_shifts_repo.get_shift(shift_id)
     return Response(
-        json.dumps(refreshed_shift, cls=ServiceShiftJsonEncoder),
+        json.dumps(updated_shift, cls=ServiceShiftJsonEncoder),
         mimetype="application/json",
         status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
     )

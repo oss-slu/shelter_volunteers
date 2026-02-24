@@ -15,10 +15,19 @@ const ViewShifts = ({ shiftDetailsData }) => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState(null);
+  const [errorToast, setErrorToast] = useState("");
 
   useEffect(() => {
     setShiftsData(shiftDetailsData || []);
   }, [shiftDetailsData]);
+
+  useEffect(() => {
+    if (!errorToast) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(() => setErrorToast(""), 4000);
+    return () => clearTimeout(timeoutId);
+  }, [errorToast]);
 
   const handleRosterClick = (shift) => {
     setSelectedShift(shift);
@@ -63,7 +72,8 @@ const ViewShifts = ({ shiftDetailsData }) => {
       setIsEditModalOpen(false);
     } catch (error) {
       console.error("Error updating shift:", error);
-      alert(`Failed to update shift: ${error.message}`);
+      setErrorToast(error?.message || "Failed to update shift. Please try again.");
+      throw error;
     }
   };
 
@@ -85,6 +95,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
 
   return (
     <div className="upcoming-requests">
+      {errorToast && <div className="shift-toast">{errorToast}</div>}
       {sortedDates.map((timestamp) => (
         <div key={timestamp} className="date-section">
           <div className="date-header">{timestamp}</div>
