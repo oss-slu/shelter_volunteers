@@ -32,9 +32,13 @@ class ServiceShift:
     def from_dict(cls, d):
         """
         Creates an instance of ServiceShift from a dictionary.
+        Ignores unknown keys (e.g. legacy fields like 'instructions').
         """
-        obj = cls(**d)
-        return obj
+        valid_keys = {f.name for f in dataclasses.fields(cls)}
+        filtered = {k: v for k, v in d.items() if k in valid_keys}
+        if "_id" in filtered and filtered["_id"] is not None:
+            filtered["_id"] = str(filtered["_id"])
+        return cls(**filtered)
 
     def to_dict(self):
         """

@@ -1,0 +1,76 @@
+/* Volunteer shift calendar wrapper */
+.volunteer-shift-calendar-wrapper {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Legend: yellow = 1 shift, red = 2+ shifts */
+.volunteer-calendar-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.volunteer-calendar-legend .legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--accent-color, #555);
+}
+
+.volunteer-calendar-legend .legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.volunteer-calendar-legend .legend-one {
+  background-color: #f4d03f;
+  border: 1px solid #e5c02a;
+}
+
+.volunteer-calendar-legend .legend-multiple {
+  background-color: #e74c3c;
+  border: 1px solid #c0392b;
+}
+
+/* Calendar container - give it height for month/week view */
+.volunteer-calendar-container {
+  min-height: 400px;
+  flex-grow: 1;
+}
+
+/* Day cell colors: yellow = one shift, red = multiple */
+.volunteer-shift-calendar .volunteer-calendar-day-one-shift {
+  background-color: #fef9e7 !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-one-shift:hover {
+  background-color: #f4d03f !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-multiple-shifts {
+  background-color: #fdedec !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-multiple-shifts:hover {
+  background-color: #e74c3c !important;
+}
+
+/* Ensure calendar fills container */
+.volunteer-shift-calendar {
+  height: 100%;
+  min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  .volunteer-calendar-container {
+    min-height: 350px;
+  }
+
+  .volunteer-shift-calendar {
+    min-height: 350px;
+  }
+}
