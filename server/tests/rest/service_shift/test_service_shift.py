@@ -185,9 +185,9 @@ class TestServiceShiftAPI(unittest.TestCase):
             _id="abc123",
         )
 
-        mock_service_shifts_repo.get_shift.side_effect = [existing_shift, updated_shift]
+        mock_service_shifts_repo.get_shift.return_value = existing_shift
         mock_service_shifts_repo.check_shift_overlap.return_value = False
-        mock_service_shifts_repo.update_service_shift.return_value = True
+        mock_service_shifts_repo.update_service_shift.return_value = updated_shift
 
         response = self.client.patch(
             "/shelters/12345/service_shifts/abc123",
@@ -228,7 +228,54 @@ class TestServiceShiftAPI(unittest.TestCase):
 
         data = json.loads(response.data.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
-        self.assertIn("at most 500 characters", data["message"])
+        self.assertEqual(data["message"], "Invalid data provided")
+
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_requires_start_and_end_together(self, mock_is_authorized):
+        mock_is_authorized.return_value = True
+        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+            mock_repo.get_shift.return_value = ServiceShift(
+                shelter_id="12345",
+                shift_start=10,
+                shift_end=20,
+                _id="abc123",
+            )
+            response = self.client.patch(
+                "/shelters/12345/service_shifts/abc123",
+                data=json.dumps({"shift_start": 100}),
+                headers=self.headers,
+            )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data["message"], "Invalid data provided")
+
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_rejects_invalid_volunteer_counts(self, mock_is_authorized):
+        mock_is_authorized.return_value = True
+        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+            mock_repo.get_shift.return_value = ServiceShift(
+                shelter_id="12345",
+                shift_start=10,
+                shift_end=20,
+                required_volunteer_count=1,
+                max_volunteer_count=5,
+                _id="abc123",
+            )
+            response = self.client.patch(
+                "/shelters/12345/service_shifts/abc123",
+                data=json.dumps(
+                    {
+                        "required_volunteer_count": 6,
+                        "max_volunteer_count": 5,
+                    }
+                ),
+                headers=self.headers,
+            )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data["message"], "Invalid data provided")
 
 if __name__ == "__main__":
     unittest.main()

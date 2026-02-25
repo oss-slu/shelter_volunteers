@@ -59,6 +59,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
     };
     
     await onSave(updatedShift);
+    onClose();
   };
 
   const renderData = () => (

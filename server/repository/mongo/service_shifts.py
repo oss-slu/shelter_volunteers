@@ -7,6 +7,7 @@ from config.mongodb_config import get_db
 #from bson.errors import InvalidId
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
+from pymongo import ReturnDocument
 
 class ServiceShiftsMongoRepo:
     """
@@ -80,13 +81,19 @@ class ServiceShiftsMongoRepo:
         Updates an existing shift.
         """
         try:
-            result = self.collection.update_one(
+            updated_shift = self.collection.find_one_and_update(
                 {"_id": ObjectId(shift_id)},
                 {"$set": updates},
+                return_document=ReturnDocument.AFTER,
             )
         except (InvalidId, TypeError):
-            return False
-        return result.matched_count > 0
+            return None
+
+        if not updated_shift:
+            return None
+
+        updated_shift["_id"] = str(updated_shift["_id"])
+        return ServiceShift.from_dict(updated_shift)
 
     def list(self, shelter_id=None, filter_start_after=None):
         """
