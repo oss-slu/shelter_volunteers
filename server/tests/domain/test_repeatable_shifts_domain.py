@@ -1,3 +1,5 @@
+"""Domain tests for repeatable shift collection behavior."""
+
 from domains.shelter.schedule.repeatable_shift import RepeatableShift
 from domains.shelter.schedule.repeatable_shifts import RepeatableShifts
 
@@ -30,4 +32,3 @@ def test_repeatable_shifts_create_deduplicates_exact_duplicates():
     assert len(result.value.shifts) == 1
     # Prefer persisted record when deduping.
     assert result.value.shifts[0].id == "abc123"
-

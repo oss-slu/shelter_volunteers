@@ -9,6 +9,8 @@ from domains.shelter.schedule.repeatable_shift import RepeatableShift
 
 @dataclass
 class RepeatableShifts:
+    """Collection wrapper for a shelter's repeatable shift templates."""
+
     shelter_id: str
     shifts: List[RepeatableShift]
 
