@@ -29,6 +29,8 @@ def repeatable_shifts1():
                 shift_start=100,
                 shift_end=200,
                 shift_name="Test Shift",
+                instructions="Bring gloves",
+                instructions_recurring=True,
                 required_volunteer_count=1,
                 max_volunteer_count=5,
             ),
@@ -47,6 +49,8 @@ def assert_equal(shift1, shift2):
     assert shift1.shift_start == shift2.shift_start
     assert shift1.shift_end == shift2.shift_end
     assert shift1.shift_name == shift2.shift_name
+    assert shift1.instructions == shift2.instructions
+    assert shift1.instructions_recurring == shift2.instructions_recurring
     assert shift1.required_volunteer_count == shift2.required_volunteer_count
     assert shift1.max_volunteer_count == shift2.max_volunteer_count
 

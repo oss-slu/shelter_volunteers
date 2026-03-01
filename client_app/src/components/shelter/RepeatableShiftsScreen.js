@@ -8,6 +8,40 @@ import {
   timeStringToMillis,
 } from "../../formatting/FormatDateTime";
 
+const MAX_INSTRUCTIONS_LENGTH = 500;
+
+const getShiftDedupeKey = (shift) =>
+  [
+    shift.shiftStart,
+    shift.shiftEnd,
+    shift.requiredVolunteerCount,
+    shift.maxVolunteerCount,
+    shift.shiftName || "",
+    (shift.instructions || "").trim(),
+    Boolean(shift.instructionsRecurring),
+  ].join("|");
+
+const dedupeShifts = (shifts) => {
+  const deduped = [];
+  const idxByKey = new Map();
+
+  shifts.forEach((shift) => {
+    const key = getShiftDedupeKey(shift);
+    const existingIdx = idxByKey.get(key);
+    if (existingIdx === undefined) {
+      idxByKey.set(key, deduped.length);
+      deduped.push(shift);
+      return;
+    }
+
+    if (!deduped[existingIdx].id && shift.id) {
+      deduped[existingIdx] = shift;
+    }
+  });
+
+  return deduped;
+};
+
 const RepeatableShiftsScreen = () => {
   const { shelterId } = useParams();
 
@@ -35,7 +69,7 @@ const RepeatableShiftsScreen = () => {
     if (!shelterId) return;
     setLoadingShifts(true);
     repeatableShiftsApi.getRepeatableShifts(shelterId).then((shifts) => {
-      setPendingShifts(shifts);
+      setPendingShifts(dedupeShifts(shifts));
       setLoadingShifts(false);
     });
     return () => setLoadingShifts(false);
@@ -44,10 +78,11 @@ const RepeatableShiftsScreen = () => {
   const submitShifts = () => {
     if (!shelterId) return;
     setLoadingShifts(true);
+    const dedupedPendingShifts = dedupeShifts(pendingShifts);
     repeatableShiftsApi
-      .setRepeatableShifts(shelterId, pendingShifts)
+      .setRepeatableShifts(shelterId, dedupedPendingShifts)
       .then((shifts) => {
-        setPendingShifts(shifts);
+        setPendingShifts(dedupeShifts(shifts));
         setErrorMessages([]);
       })
       .catch((data) => {
@@ -76,6 +111,8 @@ const RepeatableShiftsScreen = () => {
         shiftEnd: 13 * 3600000,
         requiredVolunteerCount: 1,
         maxVolunteerCount: 5,
+        instructions: "",
+        instructionsRecurring: false,
       },
     ]);
   };
@@ -128,12 +165,14 @@ const RepeatableShiftsScreen = () => {
                   <th>End Time</th>
                   <th>Required Volunteers</th>
                   <th>Max Volunteers</th>
+                  <th style={{ minWidth: "280px" }}>Shelter Instructions</th>
+                  <th>Recurring Instructions</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {pendingShifts.map((shift, idx) => (
-                  <tr key={shift.id} className="align-middle">
+                  <tr key={shift.id || `new-${idx}`} className="align-top">
                     <td>
                       <div className="text-center align-content-center">{idx + 1}</div>
                     </td>
@@ -192,6 +231,30 @@ const RepeatableShiftsScreen = () => {
                         onChange={(e) =>
                           updateShift(idx, "maxVolunteerCount", Number.parseInt(e.target.value))
                         }
+                      />
+                    </td>
+                    <td>
+                      <textarea
+                        className="form-control"
+                        rows={2}
+                        value={shift.instructions || ""}
+                        maxLength={MAX_INSTRUCTIONS_LENGTH}
+                        placeholder="Enter entry instructions, items to bring, parking info, etc."
+                        onChange={(e) => updateShift(idx, "instructions", e.target.value)}
+                      />
+                      <small className="text-muted">
+                        {(shift.instructions || "").trim().length}/{MAX_INSTRUCTIONS_LENGTH}
+                      </small>
+                    </td>
+                    <td className="text-center">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={Boolean(shift.instructionsRecurring)}
+                        onChange={(e) =>
+                          updateShift(idx, "instructionsRecurring", e.target.checked)
+                        }
+                        title="When enabled, instructions are copied to every generated shift."
                       />
                     </td>
                     <td>

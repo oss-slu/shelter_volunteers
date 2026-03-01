@@ -16,5 +16,27 @@ class RepeatableShifts:
     def create(
         shelter_id: str, shifts: List[RepeatableShift]
     ) -> Result["RepeatableShifts"]:
-        result = RepeatableShifts(shelter_id, shifts)
+        deduped_shifts = []
+        dedupe_idx_by_key = {}
+        for shift in shifts:
+            dedupe_key = (
+                shift.shift_start,
+                shift.shift_end,
+                shift.required_volunteer_count,
+                shift.max_volunteer_count,
+                shift.shift_name,
+                shift.instructions,
+                shift.instructions_recurring,
+            )
+            existing_idx = dedupe_idx_by_key.get(dedupe_key)
+            if existing_idx is None:
+                dedupe_idx_by_key[dedupe_key] = len(deduped_shifts)
+                deduped_shifts.append(shift)
+                continue
+
+            # Prefer the entry with an id so updates keep stable persisted records.
+            if deduped_shifts[existing_idx].id is None and shift.id is not None:
+                deduped_shifts[existing_idx] = shift
+
+        result = RepeatableShifts(shelter_id, deduped_shifts)
         return Success(result)
