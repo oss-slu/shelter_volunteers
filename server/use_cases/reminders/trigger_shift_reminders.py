@@ -77,7 +77,7 @@ def run_reminder_check(
                             "reminder_type": reminder_type,
                         },
                     )
-                except Exception as e:
+                except Exception:
                     all_success = False
                     logger.exception(
                         "Reminder failed",
