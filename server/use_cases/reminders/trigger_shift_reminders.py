@@ -77,7 +77,8 @@ def run_reminder_check(
                             "reminder_type": reminder_type,
                         },
                     )
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # Reminder handler is external callback; broad catch for robustness
                     all_success = False
                     logger.exception(
                         "Reminder failed",

@@ -230,5 +230,6 @@ class ServiceShiftsMongoRepo:
                 {"$set": {field: True}},
             )
             return result.modified_count > 0
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Catch-all for DB driver errors (connection, InvalidId, etc.)
             return False

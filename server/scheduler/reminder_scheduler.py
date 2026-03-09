@@ -38,7 +38,8 @@ def _run_reminder_job():
         commitments_repo = MongoRepoCommitments()
         run_reminder_check(shifts_repo, commitments_repo)
         logger.info("Reminder scheduler: run completed")
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
+        # Broad catch needed: scheduler job can fail for many reasons (DB, repos, etc.)
         logger.exception("Reminder scheduler: run failed", exc_info=True)
     finally:
         _reminder_lock.release()
