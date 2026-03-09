@@ -9,3 +9,4 @@ google-auth
 google-auth-oauthlib
 pytest
 testcontainers[mongodb]
+APScheduler>=3.10.0
