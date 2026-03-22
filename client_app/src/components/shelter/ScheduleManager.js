@@ -6,38 +6,7 @@ import { formatDate, displayTime } from "../../formatting/FormatDateTime";
 import { scheduleAPI } from "../../api/schedule";
 import { serviceShiftAPI } from "../../api/serviceShift";
 import Loading from "../Loading";
-
-const getTemplateDedupeKey = (shift) =>
-  [
-    shift.shift_start,
-    shift.shift_end,
-    shift.required_volunteer_count,
-    shift.max_volunteer_count,
-    shift.shift_name || "",
-    (shift.instructions || "").trim(),
-    Boolean(shift.instructions_recurring),
-  ].join("|");
-
-const dedupeTemplates = (templates) => {
-  const deduped = [];
-  const idxByKey = new Map();
-
-  templates.forEach((shift) => {
-    const key = getTemplateDedupeKey(shift);
-    const existingIdx = idxByKey.get(key);
-    if (existingIdx === undefined) {
-      idxByKey.set(key, deduped.length);
-      deduped.push(shift);
-      return;
-    }
-
-    if (!deduped[existingIdx].id && shift.id) {
-      deduped[existingIdx] = shift;
-    }
-  });
-
-  return deduped;
-};
+import { dedupeRepeatableShifts } from "../../utils/repeatableShiftDeduplication";
 
 function ShelterScheduleManager() {
   const { shelterId } = useParams(); // Extract from URL param
@@ -56,7 +25,7 @@ function ShelterScheduleManager() {
       if (!shifts || shifts.length === 0) {
         setNoSchedule(true);
       } else {
-        setShiftTemplates(dedupeTemplates(shifts));
+        setShiftTemplates(dedupeRepeatableShifts(shifts));
         const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
         const openDatesSet = new Set(
           existingShifts.map((shift) => {

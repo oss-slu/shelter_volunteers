@@ -94,6 +94,19 @@ def test_instructions_trimmed_and_switch_is_stored():
     assert shift.instructions_recurring is True
 
 
+def test_instructions_accept_max_length():
+    result = RepeatableShift.create(
+        shift_start=5,
+        shift_end=10,
+        required_volunteer_count=2,
+        max_volunteer_count=5,
+        instructions="x" * 500,
+    )
+
+    assert result.is_success
+    assert result.value.instructions == "x" * 500
+
+
 def test_instructions_recurring_must_be_boolean():
     result = RepeatableShift.create(
         shift_start=5,

@@ -7,40 +7,9 @@ import {
   millisToTimeString,
   timeStringToMillis,
 } from "../../formatting/FormatDateTime";
+import { dedupeRepeatableShifts } from "../../utils/repeatableShiftDeduplication";
 
 const MAX_INSTRUCTIONS_LENGTH = 500;
-
-const getShiftDedupeKey = (shift) =>
-  [
-    shift.shiftStart,
-    shift.shiftEnd,
-    shift.requiredVolunteerCount,
-    shift.maxVolunteerCount,
-    shift.shiftName || "",
-    (shift.instructions || "").trim(),
-    Boolean(shift.instructionsRecurring),
-  ].join("|");
-
-const dedupeShifts = (shifts) => {
-  const deduped = [];
-  const idxByKey = new Map();
-
-  shifts.forEach((shift) => {
-    const key = getShiftDedupeKey(shift);
-    const existingIdx = idxByKey.get(key);
-    if (existingIdx === undefined) {
-      idxByKey.set(key, deduped.length);
-      deduped.push(shift);
-      return;
-    }
-
-    if (!deduped[existingIdx].id && shift.id) {
-      deduped[existingIdx] = shift;
-    }
-  });
-
-  return deduped;
-};
 
 const RepeatableShiftsScreen = () => {
   const { shelterId } = useParams();
@@ -69,7 +38,7 @@ const RepeatableShiftsScreen = () => {
     if (!shelterId) return;
     setLoadingShifts(true);
     repeatableShiftsApi.getRepeatableShifts(shelterId).then((shifts) => {
-      setPendingShifts(dedupeShifts(shifts));
+      setPendingShifts(dedupeRepeatableShifts(shifts));
       setLoadingShifts(false);
     });
     return () => setLoadingShifts(false);
@@ -78,11 +47,11 @@ const RepeatableShiftsScreen = () => {
   const submitShifts = () => {
     if (!shelterId) return;
     setLoadingShifts(true);
-    const dedupedPendingShifts = dedupeShifts(pendingShifts);
+    const dedupedPendingShifts = dedupeRepeatableShifts(pendingShifts);
     repeatableShiftsApi
       .setRepeatableShifts(shelterId, dedupedPendingShifts)
       .then((shifts) => {
-        setPendingShifts(dedupeShifts(shifts));
+        setPendingShifts(dedupeRepeatableShifts(shifts));
         setErrorMessages([]);
       })
       .catch((data) => {
