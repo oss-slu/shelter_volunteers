@@ -6,6 +6,7 @@ import { formatDate, displayTime } from "../../formatting/FormatDateTime";
 import { scheduleAPI } from "../../api/schedule";
 import { serviceShiftAPI } from "../../api/serviceShift";
 import Loading from "../Loading";
+import { dedupeRepeatableShifts } from "../../utils/repeatableShiftDeduplication";
 
 function ShelterScheduleManager() {
   const { shelterId } = useParams(); // Extract from URL param
@@ -24,7 +25,7 @@ function ShelterScheduleManager() {
       if (!shifts || shifts.length === 0) {
         setNoSchedule(true);
       } else {
-        setShiftTemplates(shifts);
+        setShiftTemplates(dedupeRepeatableShifts(shifts));
         const existingShifts = await serviceShiftAPI.getFutureShiftsForShelter(shelterId);
         const openDatesSet = new Set(
           existingShifts.map((shift) => {
@@ -108,6 +109,8 @@ function ShelterScheduleManager() {
           endTime: displayTime(shift.shift_end, true),
           duration: (shift.shift_end - shift.shift_start) / (1000 * 60 * 60), // Convert milliseconds to hours
           shiftName: shift.shift_name,
+          instructions: shift.instructions || "",
+          instructionsRecurring: Boolean(shift.instructions_recurring),
           id: `${index}`,
           date: dateStr,
           assignedVolunteers: 0,
@@ -150,6 +153,7 @@ function ShelterScheduleManager() {
           required_volunteer_count: shift.requiredVolunteers,
           max_volunteer_count: shift.maxVolunteers,
           shift_name: shift.shiftName,
+          instructions: shift.instructionsRecurring ? (shift.instructions || "").trim() : "",
         });
       });
     });

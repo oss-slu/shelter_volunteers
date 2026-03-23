@@ -76,3 +76,45 @@ def test_valid_shift():
     assert shift.required_volunteer_count == 2
     assert shift.max_volunteer_count == 5
     assert shift.shift_name == "Morning Shift"
+
+
+def test_instructions_trimmed_and_switch_is_stored():
+    result = RepeatableShift.create(
+        shift_start=5,
+        shift_end=10,
+        required_volunteer_count=2,
+        max_volunteer_count=5,
+        instructions="  Bring gloves and a badge  ",
+        instructions_recurring=True,
+    )
+
+    assert result.is_success
+    shift = result.value
+    assert shift.instructions == "Bring gloves and a badge"
+    assert shift.instructions_recurring is True
+
+
+def test_instructions_accept_max_length():
+    result = RepeatableShift.create(
+        shift_start=5,
+        shift_end=10,
+        required_volunteer_count=2,
+        max_volunteer_count=5,
+        instructions="x" * 500,
+    )
+
+    assert result.is_success
+    assert result.value.instructions == "x" * 500
+
+
+def test_instructions_recurring_must_be_boolean():
+    result = RepeatableShift.create(
+        shift_start=5,
+        shift_end=10,
+        required_volunteer_count=2,
+        max_volunteer_count=5,
+        instructions_recurring="yes",
+    )
+
+    assert not result.is_success
+    assert "instructions_recurring" in result.keyed_errors
