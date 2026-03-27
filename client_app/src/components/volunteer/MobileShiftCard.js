@@ -39,24 +39,20 @@ export const MobileShiftCard = ({
           <VolunteerCount shift={shiftData.shift} />
         </div>
       )}
-      {showInstructions && (
+      {showInstructions && shiftData.hasInstructions && (
         <div className="detail-row">
           <span className="detail-label">Instructions:</span>
-          {shiftData.hasInstructions ? (
-            <button
-              className="button-transparent instructions-toggle-button"
-              onClick={(event) => {
-                event.stopPropagation();
-                if (onInstructionsToggle) {
-                  onInstructionsToggle(shiftData.shift._id);
-                }
-              }}
-            >
-              {isInstructionsOpen ? "Hide" : "View"}
-            </button>
-          ) : (
-            <span className="instructions-empty">No instructions</span>
-          )}
+          <button
+            className="button-transparent instructions-toggle-button"
+            onClick={(event) => {
+              event.stopPropagation();
+              if (onInstructionsToggle) {
+                onInstructionsToggle(shiftData.shift._id);
+              }
+            }}
+          >
+            {isInstructionsOpen ? "Hide" : "View"}
+          </button>
         </div>
       )}
       {showInstructions && isInstructionsOpen && shiftData.hasInstructions && (

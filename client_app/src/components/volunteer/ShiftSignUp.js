@@ -20,6 +20,7 @@ function VolunteerShiftSignup(){
   const [shifts, setShifts] = useState([]);
   const [commitments, setCommitments] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
+  const [expandedInstructions, setExpandedInstructions] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
   const user = getUser();
   useEffect(() => {
@@ -85,6 +86,16 @@ function VolunteerShiftSignup(){
     return Array.from(new Set([...selectedConflicts, ...committedConflicts]));
   };
 
+  const toggleInstructions = (shiftId) => {
+    const nextExpanded = new Set(expandedInstructions);
+    if (nextExpanded.has(shiftId)) {
+      nextExpanded.delete(shiftId);
+    } else {
+      nextExpanded.add(shiftId);
+    }
+    setExpandedInstructions(nextExpanded);
+  };
+
   // Process shift data for rendering (eliminates duplication)
   const processShiftData = (shift) => {
     const shelter = shelterMap[shift.shelter_id];
@@ -96,6 +107,7 @@ function VolunteerShiftSignup(){
     const conflicts = getConflictingShifts(shift);
     const hasConflict = conflicts.length > 0;
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
+    const instructions = (shift.instructions || "").trim();
     let signedUp = commitments.some(commitment => commitment.service_shift_id === shift._id);
     let needClass = 'need-low';
     let priority = 'Low';
@@ -120,7 +132,9 @@ function VolunteerShiftSignup(){
       isSelected,
       hasConflict,
       duration,
-      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp
+      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp,
+      hasInstructions: instructions.length > 0,
+      instructions
     };
   };
 
@@ -246,13 +260,22 @@ function VolunteerShiftSignup(){
               <th>Date</th>
               <th>Time</th>
               <th>Duration</th>
+              <th>Shelter Instructions</th>
               <th>Volunteers Available</th>
               <th>Priority</th>
             </tr>
           </thead>
           <tbody>
             {sortedShifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+              <DesktopShiftRow
+                key={shift._id}
+                shiftData={processShiftData(shift)}
+                handleShiftToggle={handleShiftToggle}
+                showInstructions={true}
+                isInstructionsOpen={expandedInstructions.has(shift._id)}
+                onInstructionsToggle={toggleInstructions}
+                instructionsColSpan={7}
+              />
             ))}
           </tbody>
         </table>
@@ -260,7 +283,14 @@ function VolunteerShiftSignup(){
       {/* Mobile Card View */}
       <div className="cards-container mobile-only">
         {sortedShifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+          <MobileShiftCard
+            key={shift._id}
+            shiftData={processShiftData(shift)}
+            handleShiftToggle={handleShiftToggle}
+            showInstructions={true}
+            isInstructionsOpen={expandedInstructions.has(shift._id)}
+            onInstructionsToggle={toggleInstructions}
+          />
         ))}
       </div>
       {/* Selected Shifts Summary */}
