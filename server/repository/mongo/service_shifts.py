@@ -15,9 +15,17 @@ class ServiceShiftsMongoRepo:
     def __init__(self, collection_name="service_shifts"):
         """
         Initialize the repository with a MongoDB connection.
+        Ensures indexes exist for reminder queries.
         """
         self.db = get_db()
         self.collection = self.db[collection_name]
+        self._ensure_reminder_indexes()
+
+    def _ensure_reminder_indexes(self):
+        """Create indexes for reminder queries to avoid full collection scans."""
+        self.collection.create_index([("shift_start", 1), ("reminder_24h_sent", 1)])
+        self.collection.create_index([("shift_start", 1), ("reminder_2h_sent", 1)])
+        self.collection.create_index([("can_sign_up", 1)])
 
     def add_service_shifts(self, shift_data):
         """

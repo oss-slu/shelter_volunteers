@@ -7,6 +7,7 @@ reminder flags for idempotency.
 """
 
 import logging
+import os
 import time
 from typing import Callable, Optional
 
@@ -21,11 +22,17 @@ MS_2H = 2 * MS_PER_HOUR
 MS_15MIN = 15 * 60 * 1000
 
 
+def _get_window_ms() -> int:
+    """Reminder window in ms. Configurable via REMINDER_WINDOW_MINUTES (default 15)."""
+    minutes = int(os.environ.get("REMINDER_WINDOW_MINUTES", "15"))
+    return minutes * 60 * 1000
+
+
 def run_reminder_check(
     shifts_repo,
     commitments_repo,
     reminder_handler: Optional[Callable[[str, str, str, ServiceShift], None]] = None,
-    window_ms: int = MS_15MIN,
+    window_ms: Optional[int] = None,  # Default from REMINDER_WINDOW_MINUTES env
 ) -> None:
     """
     Run the reminder check: find shifts due for 24h and 2h reminders,
@@ -36,8 +43,10 @@ def run_reminder_check(
         commitments_repo: Repository with fetch_service_commitments(shift_id=...).
         reminder_handler: Callback(shift_id, volunteer_id, reminder_type, shift).
                           Called for each volunteer. Email delivery plugs in here.
-        window_ms: Time window for matching shifts (default 15 min).
+        window_ms: Time window for matching shifts. Default from REMINDER_WINDOW_MINUTES env.
     """
+    if window_ms is None:
+        window_ms = _get_window_ms()
     now_ms = int(time.time() * 1000)
 
     for reminder_type, offset_ms in [("reminder_24h", MS_24H), ("reminder_2h", MS_2H)]:

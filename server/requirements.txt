@@ -10,3 +10,4 @@ google-auth-oauthlib
 pytest
 testcontainers[mongodb]
 APScheduler>=3.10.0
+sendgrid>=6.11.0

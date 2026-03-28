@@ -6,6 +6,7 @@ to prevent overlapping runs, and triggers the reminder engine.
 """
 
 import logging
+import os
 import threading
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -13,7 +14,11 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.service_commitments import MongoRepoCommitments
+from repository.mongo.shelter import ShelterRepo
+from repository.mongo.user_info_repository import UserInfoRepository
 from use_cases.reminders.trigger_shift_reminders import run_reminder_check
+
+from reminder_email.reminder_handler import send_reminder_email
 
 logger = logging.getLogger(__name__)
 
@@ -30,13 +35,26 @@ def _run_reminder_job():
     to prevent overlapping executions.
     """
     if not _reminder_lock.acquire(blocking=False):
-        logger.info("Reminder job skipped: previous run still in progress")
+        logger.warning(
+            "Reminder job skipped: previous run still in progress (consider increasing interval)",
+            extra={"event": "scheduler_run_skipped"},
+        )
         return
     try:
         logger.info("Reminder scheduler: starting run")
         shifts_repo = ServiceShiftsMongoRepo()
         commitments_repo = MongoRepoCommitments()
-        run_reminder_check(shifts_repo, commitments_repo)
+        shelter_repo = ShelterRepo()
+        user_info_repo = UserInfoRepository()
+
+        def email_handler(shift_id, volunteer_id, reminder_type, shift):
+            send_reminder_email(
+                shift_id, volunteer_id, reminder_type, shift,
+                shelter_repo, user_info_repo,
+            )
+
+        reminder_handler = email_handler if os.environ.get("SENDGRID_API_KEY") else None
+        run_reminder_check(shifts_repo, commitments_repo, reminder_handler=reminder_handler)
         logger.info("Reminder scheduler: run completed")
     except Exception:  # pylint: disable=broad-exception-caught
         # Broad catch needed: scheduler job can fail for many reasons (DB, repos, etc.)

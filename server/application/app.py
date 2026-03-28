@@ -26,10 +26,16 @@ def _configure_reminder_logging():
     handler.setFormatter(logging.Formatter(
         "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
     ))
-    for name in ("scheduler.reminder_scheduler", "use_cases.reminders.trigger_shift_reminders"):
+    for name in (
+        "scheduler.reminder_scheduler",
+        "use_cases.reminders.trigger_shift_reminders",
+        "reminder_email.reminder_handler",
+        "reminder_email.email_service",
+    ):
         logger = logging.getLogger(name)
         logger.setLevel(logging.INFO)
-        logger.addHandler(handler)
+        if not logger.handlers:
+            logger.addHandler(handler)
 
 
 def create_app(config_name="development"):
