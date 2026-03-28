@@ -21,9 +21,29 @@ from use_cases.service_commitments.list_user_infos_in_shift import list_user_inf
 
 service_shift_bp = Blueprint("service_shift", __name__)
 
-commitments_repo = MongoRepoCommitments()
-service_shifts_repo = ServiceShiftsMongoRepo()
-user_info_repo = UserInfoRepository()
+# Lazy init: avoid MongoDB connection at import time (e.g. CI without MongoDB)
+_repos = {"commitments": None, "service_shifts": None, "user_info": None}
+
+
+def get_commitments_repo():
+    """Return commitments repository (instantiated on first use)."""
+    if _repos["commitments"] is None:
+        _repos["commitments"] = MongoRepoCommitments()
+    return _repos["commitments"]
+
+
+def get_service_shifts_repo():
+    """Return service shifts repository (instantiated on first use)."""
+    if _repos["service_shifts"] is None:
+        _repos["service_shifts"] = ServiceShiftsMongoRepo()
+    return _repos["service_shifts"]
+
+
+def get_user_info_repo():
+    """Return user info repository (instantiated on first use)."""
+    if _repos["user_info"] is None:
+        _repos["user_info"] = UserInfoRepository()
+    return _repos["user_info"]
 
 
 def retrieve_service_shifts(http_request, shelter_id=None):
@@ -36,8 +56,8 @@ def retrieve_service_shifts(http_request, shelter_id=None):
     )
 
     shifts, volunteers = list_service_shifts_with_volunteers_use_case(
-        service_shifts_repo,
-        commitments_repo,
+        get_service_shifts_repo(),
+        get_commitments_repo(),
         shelter_id,
         filter_start_after=filter_start_after
     )
@@ -83,7 +103,9 @@ def get_service_shifts():
 @service_shift_bp.get("/service_shifts/<shift_id>/user_info")
 @shelter_admin_permission_required
 def get_user_infos_in_shift(shift_id: str):
-    user_infos = list_user_infos_in_shift(shift_id, commitments_repo, user_info_repo)
+    user_infos = list_user_infos_in_shift(
+        shift_id, get_commitments_repo(), get_user_info_repo()
+    )
     user_infos = [ui.to_dict() for ui in user_infos]
     body = json.dumps(user_infos)
     return Response(
@@ -122,8 +144,6 @@ def post_service_shifts(shelter_id):
     POST requests can be made by authenticated users with permissions to 
     be this shelter's admin.
     """
-    repo = ServiceShiftsMongoRepo()
-
     shifts_as_dict = request.get_json()
 
     # Validate JSON payload
@@ -153,7 +173,7 @@ def post_service_shifts(shelter_id):
                 status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
 
-    add_response = shift_add_use_case(repo, shifts_obj)
+    add_response = shift_add_use_case(get_service_shifts_repo(), shifts_obj)
     status_code = (
         HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         if add_response.get("success")
