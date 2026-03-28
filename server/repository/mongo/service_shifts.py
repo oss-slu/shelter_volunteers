@@ -2,10 +2,15 @@
 This module handles MongoDB interactions with the service_shifts collection.
 """
 
+import logging
+
 from domains.service_shift import ServiceShift
 from config.mongodb_config import get_db
 #from bson.errors import InvalidId
 from bson.objectid import ObjectId
+
+logger = logging.getLogger(__name__)
+
 
 class ServiceShiftsMongoRepo:
     """
@@ -15,17 +20,31 @@ class ServiceShiftsMongoRepo:
     def __init__(self, collection_name="service_shifts"):
         """
         Initialize the repository with a MongoDB connection.
-        Ensures indexes exist for reminder queries.
+
+        Reminder indexes are created lazily on first reminder query (not in __init__)
+        so tests can import blueprints and construct repos without MongoDB.
         """
         self.db = get_db()
         self.collection = self.db[collection_name]
-        self._ensure_reminder_indexes()
+        self._reminder_indexes_ensured = False
 
-    def _ensure_reminder_indexes(self):
-        """Create indexes for reminder queries to avoid full collection scans."""
-        self.collection.create_index([("shift_start", 1), ("reminder_24h_sent", 1)])
-        self.collection.create_index([("shift_start", 1), ("reminder_2h_sent", 1)])
-        self.collection.create_index([("can_sign_up", 1)])
+    def _ensure_reminder_indexes_once(self):
+        """
+        Create indexes for reminder queries (once per repo instance).
+        Deferred from __init__ so CI/tests without MongoDB do not fail on create_index.
+        """
+        if self._reminder_indexes_ensured:
+            return
+        try:
+            self.collection.create_index([("shift_start", 1), ("reminder_24h_sent", 1)])
+            self.collection.create_index([("shift_start", 1), ("reminder_2h_sent", 1)])
+            self.collection.create_index([("can_sign_up", 1)])
+            self._reminder_indexes_ensured = True
+        except Exception:  # pylint: disable=broad-exception-caught
+            logger.warning(
+                "Could not create reminder indexes (MongoDB unavailable?)",
+                exc_info=True,
+            )
 
     def add_service_shifts(self, shift_data):
         """
@@ -120,6 +139,7 @@ class ServiceShiftsMongoRepo:
         Returns:
             list: ServiceShift objects.
         """
+        self._ensure_reminder_indexes_once()
         ms_24h = 24 * 60 * 60 * 1000
         start_bound = now_ms + ms_24h - window_ms
         end_bound = now_ms + ms_24h + window_ms
@@ -209,6 +229,7 @@ class ServiceShiftsMongoRepo:
         Returns:
             list: A list of ServiceShift objects.
         """
+        self._ensure_reminder_indexes_once()
         field = "reminder_24h_sent" if reminder_type == "reminder_24h" else "reminder_2h_sent"
         db_filter = {
             "shift_start": {"$gte": window_start_ms, "$lte": window_end_ms},

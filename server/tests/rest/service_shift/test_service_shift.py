@@ -30,8 +30,11 @@ class TestServiceShiftAPI(unittest.TestCase):
         }
 
     @patch("application.rest.service_shifts.shift_add_use_case")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
-    def test_post_service_shift(self, mock_is_authorized, mock_shift_add_use_case):
+    def test_post_service_shift(
+        self, mock_is_authorized, mock_get_service_shifts_repo, mock_shift_add_use_case
+    ):
         mock_is_authorized.return_value = True
         # Arrange: Set up the expected response from the use case.
         expected_ids = [101, 102]
@@ -64,7 +67,11 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_shift_add_use_case.assert_called_once()
 
     @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
-    def test_get_service_shift(self, mock_list_use_case):
+    @patch("application.rest.service_shifts.get_commitments_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    def test_get_service_shift(
+        self, mock_get_service_shifts_repo, mock_get_commitments_repo, mock_list_use_case
+    ):
         # Arrange: Define the expected list of shift objects.
         expected_shifts = [
             {
@@ -103,8 +110,16 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_list_use_case.assert_called_once()
 
     @patch("application.rest.service_shifts.list_service_shifts_with_volunteers_use_case")
+    @patch("application.rest.service_shifts.get_commitments_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
-    def test_get_service_shift_with_shelter_id_filter(self, mock_is_authorized, mock_list_use_case):
+    def test_get_service_shift_with_shelter_id_filter(
+        self,
+        mock_is_authorized,
+        mock_get_service_shifts_repo,
+        mock_get_commitments_repo,
+        mock_list_use_case,
+    ):
         mock_is_authorized.return_value = True
         # Arrange: Define the expected shift for a specific shelter
         test_shelter_id = "ID1"

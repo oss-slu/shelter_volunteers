@@ -30,7 +30,13 @@ def client():
 # pylint: disable=line-too-long
 @patch("application.rest.service_commitment.list_service_commitments_with_shifts")
 @patch("application.rest.service_commitment.list_shelters_for_shifts")
+@patch("application.rest.service_commitment.get_shelter_repo")
+@patch("application.rest.service_commitment.get_shifts_repo")
+@patch("application.rest.service_commitment.get_commitments_repo")
 def test_get_commitments_with_augmented_data(
+    mock_get_commitments_repo,
+    mock_get_shifts_repo,
+    mock_get_shelter_repo,
     mock_list_shelters_for_shifts,
     mock_list_service_commitments_with_shifts,
     client):
