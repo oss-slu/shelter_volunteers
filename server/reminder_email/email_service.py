@@ -77,7 +77,11 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
     )
 
 
-def _html_to_plain(html: str) -> str:
-    """Simple strip of HTML tags for plain-text fallback."""
+def _html_to_plain(html_str: str) -> str:
+    """Strip HTML tags and collapse whitespace for plain-text fallback."""
+    import html as html_module
     import re as re_module
-    return re_module.sub(r"<[^>]+>", " ", html).strip()
+
+    text = re_module.sub(r"<[^>]+>", " ", html_str)
+    text = re_module.sub(r"\s+", " ", text).strip()
+    return html_module.unescape(text)
