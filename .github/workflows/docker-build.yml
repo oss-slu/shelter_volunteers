@@ -1,0 +1,39 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Log in to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
+    - name: Build and push server
+      uses: docker/build-push-action@v5
+      with:
+        context: ./server
+        file: ./docker_files/server/Dockerfile
+        push: true
+        tags: ghcr.io/oss-slu/shelter_volunteers/server:latest
+
+    - name: Build and push client
+      uses: docker/build-push-action@v5
+      with:
+        context: ./client_app
+        file: ./docker_files/client_app/Dockerfile
+        push: true
+        tags: ghcr.io/oss-slu/shelter_volunteers/client:latest
