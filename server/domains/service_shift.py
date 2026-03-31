@@ -19,6 +19,8 @@ class ServiceShift:
     required_volunteer_count: int = 1
     max_volunteer_count: int = 5
     can_sign_up: bool = True
+    reminder_24h_sent: bool = False
+    reminder_2h_sent: bool = False
     _id: Optional[str] = None
 
     def get_id(self):
