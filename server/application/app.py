@@ -14,28 +14,7 @@ from application.rest.login import login_blueprint
 from application.rest.user_info import user_info_bp
 
 from config import mongodb_config
-from scheduler.reminder_scheduler import start_reminder_scheduler
-import logging
 import os
-
-
-def _configure_reminder_logging():
-    """Configure logging so reminder scheduler activity appears in the terminal."""
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
-    ))
-    for name in (
-        "scheduler.reminder_scheduler",
-        "use_cases.reminders.trigger_shift_reminders",
-        "reminder_email.reminder_handler",
-        "reminder_email.email_service",
-    ):
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
-        if not logger.handlers:
-            logger.addHandler(handler)
 
 
 def create_app(config_name="development"):
@@ -59,12 +38,6 @@ def create_app(config_name="development"):
     app.register_blueprint(user_info_bp)
 
     load_dotenv()  # Load environment variables from the .env file
-
-    # Configure logging so reminder scheduler activity appears in the terminal
-    _configure_reminder_logging()
-
-    # Start automated shift reminder scheduler (runs every 10 min)
-    start_reminder_scheduler(interval_minutes=10)
 
     # Serve static files
     react_build_dir = os.path.abspath("../build/")
