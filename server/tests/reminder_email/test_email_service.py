@@ -1,6 +1,23 @@
 """Tests for SendGrid email utility."""
 
+import pytest
+
 from reminder_email import email_service
+
+
+def test_get_sendgrid_http_timeout_default(monkeypatch):
+    monkeypatch.delenv("SENDGRID_HTTP_TIMEOUT", raising=False)
+    assert email_service._get_sendgrid_http_timeout() == email_service._DEFAULT_SENDGRID_HTTP_TIMEOUT
+
+
+def test_get_sendgrid_http_timeout_from_env(monkeypatch):
+    monkeypatch.setenv("SENDGRID_HTTP_TIMEOUT", "45")
+    assert email_service._get_sendgrid_http_timeout() == 45.0
+
+
+def test_get_sendgrid_http_timeout_invalid_falls_back(monkeypatch):
+    monkeypatch.setenv("SENDGRID_HTTP_TIMEOUT", "not-a-number")
+    assert email_service._get_sendgrid_http_timeout() == email_service._DEFAULT_SENDGRID_HTTP_TIMEOUT
 
 
 def test_validate_email_rejects_injection_like_content():
