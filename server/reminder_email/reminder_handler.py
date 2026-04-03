@@ -5,9 +5,9 @@ Connects the reminder engine to actual email delivery. Fetches shelter
 and volunteer info, renders templates, and sends via SendGrid.
 """
 
-import html
+import html as html_module
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from domains.service_shift import ServiceShift
@@ -30,13 +30,13 @@ SUBJECT_2H = "Reminder: Your Volunteer Shift Starts Soon"
 
 def _format_date(ms: int) -> str:
     """Format milliseconds since epoch to e.g. 'Mar 08, 2026'."""
-    dt = datetime.utcfromtimestamp(ms / 1000)
+    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
     return dt.strftime("%b %d, %Y")
 
 
 def _format_time(ms: int) -> str:
     """Format milliseconds since epoch to e.g. '03:26 PM'."""
-    dt = datetime.utcfromtimestamp(ms / 1000)
+    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
     return dt.strftime("%I:%M %p")
 
 
@@ -70,9 +70,13 @@ def _get_shelter_name(shelter_id: str, shelter_repo: ShelterRepo) -> str:
 
 
 def _get_shift_instructions(shift: ServiceShift) -> str:
-    """Get optional shift instructions. ServiceShift has no instructions field by default."""
-    # Legacy shifts might have instructions in raw dict; we don't have access here.
-    return ""
+    """Optional shift instructions from the shift record (Mongo ``instructions`` or legacy ``shift_instructions``)."""
+    instr = shift.instructions
+    if instr is None:
+        return ""
+    if not isinstance(instr, str):
+        return ""
+    return instr.strip()
 
 
 def send_reminder_email(
@@ -97,16 +101,17 @@ def send_reminder_email(
     Raises:
         RuntimeError: If email send fails (caller should not update reminder flags).
     """
-    volunteer_name = html.escape(_get_volunteer_name(volunteer_id, user_info_repo))
-    shelter_name = html.escape(_get_shelter_name(shift.shelter_id, shelter_repo))
+    volunteer_name = html_module.escape(_get_volunteer_name(volunteer_id, user_info_repo))
+    shelter_name = html_module.escape(_get_shelter_name(shift.shelter_id, shelter_repo))
     shift_date = _format_date(shift.shift_start)
     shift_time = _format_time(shift.shift_start)
     duration = _duration_hours(shift)
-    instructions = html.escape(_get_shift_instructions(shift))
+    raw_instructions = _get_shift_instructions(shift)
+    instructions = html_module.escape(raw_instructions) if raw_instructions else ""
 
     if reminder_type == "reminder_24h":
         subject = SUBJECT_24H
-        html = _load_template("reminder_24h.html")
+        html_body = _load_template("reminder_24h.html")
         if instructions:
             instructions_section = (
                 f'<div class="instructions">'
@@ -116,7 +121,7 @@ def send_reminder_email(
             )
         else:
             instructions_section = ""
-        html = html.format(
+        html_body = html_body.format(
             volunteer_name=volunteer_name,
             shelter_name=shelter_name,
             shift_date=shift_date,
@@ -126,11 +131,12 @@ def send_reminder_email(
         )
     else:
         subject = SUBJECT_2H
-        html = _load_template("reminder_2h.html")
-        html = html.format(
+        html_body = _load_template("reminder_2h.html")
+        html_body = html_body.format(
             volunteer_name=volunteer_name,
             shelter_name=shelter_name,
             shift_time=shift_time,
+            shift_date=shift_date,
         )
 
-    send_email(volunteer_id, subject, html)
+    send_email(volunteer_id, subject, html_body)

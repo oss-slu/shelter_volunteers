@@ -245,6 +245,7 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
+    service_shifts_repo = get_service_shifts_repo()
     existing_shift = service_shifts_repo.get_shift(shift_id)
     if not existing_shift:
         return Response(

@@ -4,19 +4,51 @@ Reusable email sending utility using SendGrid.
 Credentials from environment variables. No API keys in code.
 """
 
+import html as html_module
 import logging
 import os
 import re
+import socket
+import urllib.error
 
 logger = logging.getLogger(__name__)
 
 # Basic email validation - protect against injection
 EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
+# HTML → plain-text fallback (compiled once; used by send_email)
+_HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
+
+# Default HTTP timeout for SendGrid API (seconds). Override with SENDGRID_HTTP_TIMEOUT.
+_DEFAULT_SENDGRID_HTTP_TIMEOUT = 30.0
+
 
 def _get_api_key():
     """Get SendGrid API key from environment."""
     return os.environ.get("SENDGRID_API_KEY")
+
+
+def _get_sendgrid_http_timeout() -> float:
+    """Seconds for urllib timeout on SendGrid HTTP calls. Invalid env falls back to default."""
+    raw = os.environ.get("SENDGRID_HTTP_TIMEOUT")
+    if raw is None or raw.strip() == "":
+        return _DEFAULT_SENDGRID_HTTP_TIMEOUT
+    try:
+        value = float(raw)
+        if value <= 0:
+            logger.warning(
+                "SENDGRID_HTTP_TIMEOUT must be positive; using default",
+                extra={"invalid_value": raw},
+            )
+            return _DEFAULT_SENDGRID_HTTP_TIMEOUT
+        return value
+    except ValueError:
+        logger.warning(
+            "Invalid SENDGRID_HTTP_TIMEOUT; using default",
+            extra={"invalid_value": raw},
+        )
+        return _DEFAULT_SENDGRID_HTTP_TIMEOUT
 
 
 def _validate_email(address: str) -> bool:
@@ -48,6 +80,7 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
         raise RuntimeError("SENDGRID_API_KEY not set; cannot send email")
 
     try:
+        from python_http_client.exceptions import HTTPError as SendGridHTTPError
         from sendgrid import SendGridAPIClient
         from sendgrid.helpers.mail import Mail
     except ImportError as err:
@@ -62,7 +95,37 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
     )
 
     client = SendGridAPIClient(api_key)
-    response = client.send(message)
+    timeout = _get_sendgrid_http_timeout()
+    client.client.timeout = timeout
+
+    try:
+        response = client.send(message)
+    except SendGridHTTPError as err:
+        status = getattr(err, "status_code", None)
+        logger.error(
+            "SendGrid send failed (HTTP error)",
+            extra={
+                "status_code": status,
+                "to": to_email,
+                "subject": subject,
+                "timeout_seconds": timeout,
+            },
+        )
+        raise RuntimeError(
+            f"SendGrid request failed with status {status}"
+        ) from err
+    except (urllib.error.URLError, OSError, socket.timeout) as err:
+        logger.error(
+            "SendGrid send failed (network or timeout)",
+            extra={
+                "to": to_email,
+                "subject": subject,
+                "timeout_seconds": timeout,
+                "error": str(err),
+            },
+            exc_info=True,
+        )
+        raise RuntimeError("SendGrid request failed: network error or timeout") from err
 
     if response.status_code >= 400:
         logger.error(
@@ -77,7 +140,8 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
     )
 
 
-def _html_to_plain(html: str) -> str:
-    """Simple strip of HTML tags for plain-text fallback."""
-    import re as re_module
-    return re_module.sub(r"<[^>]+>", " ", html).strip()
+def _html_to_plain(html_str: str) -> str:
+    """Strip HTML tags and collapse whitespace for plain-text fallback."""
+    text = _HTML_TAG_PATTERN.sub(" ", html_str)
+    text = _WHITESPACE_PATTERN.sub(" ", text).strip()
+    return html_module.unescape(text)

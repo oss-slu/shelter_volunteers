@@ -47,6 +47,15 @@ def run_reminder_check(
     """
     if window_ms is None:
         window_ms = _get_window_ms()
+
+    if reminder_handler is None:
+        logger.warning(
+            "Reminder check skipped: no email handler configured "
+            "(set SENDGRID_API_KEY to send reminder emails)",
+            extra={"event": "reminder_no_handler"},
+        )
+        return
+
     now_ms = int(time.time() * 1000)
 
     for reminder_type, offset_ms in [("reminder_24h", MS_24H), ("reminder_2h", MS_2H)]:
@@ -76,8 +85,7 @@ def run_reminder_check(
             for commitment in commitments:
                 volunteer_id = commitment.volunteer_id
                 try:
-                    if reminder_handler:
-                        reminder_handler(shift_id, volunteer_id, reminder_type, shift)
+                    reminder_handler(shift_id, volunteer_id, reminder_type, shift)
                     logger.info(
                         "Reminder triggered",
                         extra={
