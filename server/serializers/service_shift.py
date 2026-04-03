@@ -18,9 +18,8 @@ class ServiceShiftJsonEncoder(json.JSONEncoder):
                 "max_volunteer_count": shift.max_volunteer_count,
                 "can_sign_up": shift.can_sign_up,
                 "shift_name": shift.shift_name,
+                "instructions": shift.instructions,
             }
-            if shift.instructions:
-                to_serialize["instructions"] = shift.instructions
             return to_serialize
         except AttributeError:
             return super().default(shift)
