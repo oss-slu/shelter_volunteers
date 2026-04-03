@@ -142,3 +142,26 @@ def test_post_repeatable_shifts_invalid_shift_format(client):
     data = json.loads(response.data)
     assert "error" in data
     assert "Invalid data format" in data["error"]
+
+
+def test_post_repeatable_shifts_invalid_recurring_switch_type(client):
+    body = [
+        {
+            "shift_start": 100,
+            "shift_end": 200,
+            "required_volunteer_count": 1,
+            "max_volunteer_count": 5,
+            "instructions_recurring": "true",
+        }
+    ]
+
+    response = client.post(
+        "/shelters/123/schedule",
+        data=json.dumps(body),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    data = response.json
+    assert "0" in data["keyed_errors"]
+    assert "instructions_recurring" in data["keyed_errors"]["0"]

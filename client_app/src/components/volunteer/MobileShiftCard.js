@@ -2,7 +2,13 @@ import { PriorityBadge } from './PriorityBadge';
 import { ShelterInfo } from './ShelterInfo';
 import { VolunteerCount } from './VolunteerCount';
 
-export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
+export const MobileShiftCard = ({
+  shiftData,
+  handleShiftToggle,
+  showInstructions = false,
+  isInstructionsOpen = false,
+  onInstructionsToggle = null,
+}) => (
   <div 
     key={shiftData.shift._id} 
     className={`dashboard-button table-row ${shiftData.isSelected ? 'selected' : ''} ${shiftData.canInteract ? 'clickable' : 'disabled'}`}
@@ -31,6 +37,32 @@ export const MobileShiftCard = ({ shiftData, handleShiftToggle }) => (
         <div className="detail-row">
           <span className="detail-label">Volunteers Available:</span>
           <VolunteerCount shift={shiftData.shift} />
+        </div>
+      )}
+      {showInstructions && (
+        <div className="detail-row">
+          <span className="detail-label">Instructions:</span>
+          {shiftData.hasInstructions ? (
+            <button
+              className="button-transparent instructions-toggle-button"
+              onClick={(event) => {
+                event.stopPropagation();
+                if (onInstructionsToggle) {
+                  onInstructionsToggle(shiftData.shift._id);
+                }
+              }}
+            >
+              {isInstructionsOpen ? "Hide" : "View"}
+            </button>
+          ) : (
+            <span className="instructions-empty">No instructions</span>
+          )}
+        </div>
+      )}
+      {showInstructions && isInstructionsOpen && shiftData.hasInstructions && (
+        <div className="mobile-instructions-panel">
+          <div className="instructions-title">Shelter Instructions</div>
+          <div className="instructions-content">{shiftData.instructions}</div>
         </div>
       )}
     </div>

@@ -23,4 +23,3 @@ class ServiceShiftJsonEncoder(json.JSONEncoder):
             return to_serialize
         except AttributeError:
             return super().default(shift)
-        
