@@ -1,24 +1,23 @@
 """Configuration module for MongoDB connection."""
-
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
 
+
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
     env = os.getenv('FLASK_ENV', 'development')
-
     env_vars = ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']
     if all(os.getenv(var) for var in env_vars):
         return
-
     env_file = f'.env.{env}'
     # First try environment-specific file, fall back to default .env
     if os.path.exists(env_file):
         load_dotenv(env_file)
     else:
         load_dotenv('.env')
+
 
 class MongoConfig(object):
     """Base configuration class."""
@@ -29,19 +28,24 @@ class MongoConfig(object):
     MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
     MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
 
+
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
     # Local Docker MongoDB connection
+    USE_TLS = False
     MONGODB_URI = (
         f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
     )
 
+
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
+    USE_TLS = True
     MONGODB_URI = (
         f'mongodb+srv://{MongoConfig.MONGODB_USERNAME}:'
         f'{MongoConfig.MONGODB_PASSWORD}@{MongoConfig.MONGODB_HOST}'
     )
+
 
 def get_config():
     """Return the appropriate configuration based on environment."""
@@ -52,13 +56,17 @@ def get_config():
     }
     return config_map.get(env, MongoDevelopmentConfig)()
 
+
 def get_db():
     """
     Get a database connection using the appropriate configuration.
-    
+
     Returns:
         pymongo.database.Database: MongoDB database connection
     """
     config = get_config()
-    client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    if config.USE_TLS:
+        client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    else:
+        client = MongoClient(config.MONGODB_URI)
     return client[config.MONGODB_DATABASE]
