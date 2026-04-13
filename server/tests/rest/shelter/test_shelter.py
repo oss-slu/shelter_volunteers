@@ -28,6 +28,7 @@ def client():
     app.config["TESTING"] = True
     return app.test_client()
 
+
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
 @patch("application.rest.shelter.shelter_add_use_case")
@@ -35,8 +36,8 @@ def client():
 def test_post_shelter(
     mock_is_authorized,
     mock_shelter_add_use_case,
-    client
-    ):
+    client,
+):
     mock_is_authorized.return_value = True
     mock_response = {
         "id": "SOME_ID",
@@ -60,7 +61,7 @@ def test_post_shelter(
 
     token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
-        "Authorization": f"{token}"
+        "Authorization": f"{token}",
     }
 
     response = client.post(
@@ -74,15 +75,14 @@ def test_post_shelter(
     assert response.json == mock_response
 
 @patch("application.rest.system_admin_permission_required.is_authorized")
-def test_post_shelter_missing_required_fields(
-    mock_is_authorized, client):
+def test_post_shelter_missing_required_fields(mock_is_authorized, client):
     mock_is_authorized.return_value = True
     request_data = {
-        "name": "Test shelter" #missing address field
+        "name": "Test shelter"  # missing address field
     }
     token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
-        "Authorization": f"{token}"
+        "Authorization": f"{token}",
     }
     response = client.post(
         "/shelters",
@@ -90,14 +90,14 @@ def test_post_shelter_missing_required_fields(
         content_type="application/json",
         headers=headers
     )
-    assert response.status_code == 400 #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "address" in response.json["message"]
     request_data = {
         "name": "Test shelter",
         "address": {
             "city": "St.Louis",
-            "state": "MO", #missing street1
+            "state": "MO",  # missing street1
         }
     }
 
@@ -107,14 +107,14 @@ def test_post_shelter_missing_required_fields(
         content_type="application/json",
         headers=headers
     )
-    assert response.status_code == 400 #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "street1" in response.json["message"]
     request_data = {
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "state": "MO", #missing city
+            "state": "MO",  # missing city
         }
     }
     response = client.post(
@@ -130,7 +130,7 @@ def test_post_shelter_missing_required_fields(
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "city": "St.Louis", #missing state
+            "city": "St.Louis",  # missing state
         }
     }
     response = client.post(
@@ -173,10 +173,7 @@ def test_get_shelter(mock_shelter_list_use_case, client):
             },
         },
     ]
-    mock_shelters = [
-        Shelter.from_dict(shelter)
-        for shelter in mock_shelters_json
-    ]
+    mock_shelters = [Shelter.from_dict(shelter) for shelter in mock_shelters_json]
 
     mock_shelter_list_use_case.return_value = mock_shelters
     response = client.get("/shelters")
@@ -195,7 +192,7 @@ def test_get_open_shelters_grouped_by_date(
     mock_time,
     client,
 ):
-    _ = mock_time
+    assert mock_time is not None
     mock_shelters = [
         Shelter.from_dict({
             "_id": "s1",
@@ -234,7 +231,7 @@ def test_get_open_shelters_grouped_by_date(
             shift_end=1776474000000,
         ),
         ServiceShift(
-            shelter_id="s1", 
+            shelter_id="s1",
             shift_start=1776477600000,  # same date, should dedupe shelter
             shift_end=1776481200000,
         ),
