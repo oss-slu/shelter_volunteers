@@ -192,9 +192,10 @@ def test_get_shelter(mock_shelter_list_use_case, client):
 def test_get_open_shelters_grouped_by_date(
     mock_shelter_list_use_case,
     mock_service_shifts_list_use_case,
-    _mock_time,
+    mock_time,
     client,
 ):
+    _ = mock_time
     mock_shelters = [
         Shelter.from_dict({
             "_id": "s1",
@@ -229,17 +230,17 @@ def test_get_open_shelters_grouped_by_date(
     mock_shifts = [
         ServiceShift(
             shelter_id="s1",
-            shift_start=1776470400000,  # 2026-04-17T00:00:00Z
+            shift_start=1776470400000,  # 2026-04-18T00:00:00Z
             shift_end=1776474000000,
         ),
         ServiceShift(
-            shelter_id="s1",
+            shelter_id="s1", 
             shift_start=1776477600000,  # same date, should dedupe shelter
             shift_end=1776481200000,
         ),
         ServiceShift(
             shelter_id="s2",
-            shift_start=1776384000000,  # 2026-04-16T00:00:00Z
+            shift_start=1776384000000,  # 2026-04-17T00:00:00Z
             shift_end=1776387600000,
         ),
     ]
@@ -253,7 +254,7 @@ def test_get_open_shelters_grouped_by_date(
     assert response.status_code == 200
     assert parsed_response == [
         {
-            "date": "2026-04-17",
+            "date": "2026-04-18",
             "shelters": [
                 {
                     "_id": "s1",
@@ -271,7 +272,7 @@ def test_get_open_shelters_grouped_by_date(
             ],
         },
         {
-            "date": "2026-04-16",
+            "date": "2026-04-17",
             "shelters": [
                 {
                     "_id": "s2",
