@@ -60,9 +60,7 @@ export const DesktopShiftRow = ({
               >
                 {isInstructionsOpen ? "Hide Instructions" : "View Instructions"}
               </button>
-            ) : (
-              <span className="instructions-empty">No instructions</span>
-            )}
+            ) : null}
           </td>
         )}
         {'volunteer_count' in shiftData.shift && (

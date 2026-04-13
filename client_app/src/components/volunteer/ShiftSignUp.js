@@ -40,6 +40,7 @@ function VolunteerShiftSignup(){
   /** YYYY-MM-DD from input type="date", or '' to show all days */
   const [filterDate, setFilterDate] = useState('');
   const [a11yAnnouncement, setA11yAnnouncement] = useState('');
+  const [expandedInstructions, setExpandedInstructions] = useState(new Set());
   const filterDateId = useId();
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
@@ -107,6 +108,16 @@ function VolunteerShiftSignup(){
     return Array.from(new Set([...selectedConflicts, ...committedConflicts]));
   };
 
+  const toggleInstructions = (shiftId) => {
+    const next = new Set(expandedInstructions);
+    if (next.has(shiftId)) {
+      next.delete(shiftId);
+    } else {
+      next.add(shiftId);
+    }
+    setExpandedInstructions(next);
+  };
+
   // Process shift data for rendering (eliminates duplication)
   const processShiftData = (shift) => {
     const shelter = shelterMap[shift.shelter_id];
@@ -129,6 +140,7 @@ function VolunteerShiftSignup(){
       priority = 'Medium';
       needClass = 'need-medium';
     }
+    const instructions = (shift.instructions || '').trim();
     return {
       shift,
       shelter,
@@ -142,7 +154,9 @@ function VolunteerShiftSignup(){
       isSelected,
       hasConflict,
       duration,
-      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp
+      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp,
+      hasInstructions: instructions.length > 0,
+      instructions,
     };
   };
 
@@ -400,13 +414,22 @@ function VolunteerShiftSignup(){
               <th>Date</th>
               <th>Time</th>
               <th>Duration</th>
+              <th>Shelter Instructions</th>
               <th>Volunteers Available</th>
               <th>Priority</th>
             </tr>
           </thead>
           <tbody>
             {filteredShifts.map((shift) => (
-              <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+              <DesktopShiftRow
+                key={shift._id}
+                shiftData={processShiftData(shift)}
+                handleShiftToggle={handleShiftToggle}
+                showInstructions={true}
+                isInstructionsOpen={expandedInstructions.has(shift._id)}
+                onInstructionsToggle={toggleInstructions}
+                instructionsColSpan={7}
+              />
             ))}
           </tbody>
         </table>
@@ -414,7 +437,14 @@ function VolunteerShiftSignup(){
       {/* Mobile Card View */}
       <div className="cards-container mobile-only" role="region" aria-label="Open shifts list">
         {filteredShifts.map((shift) => (
-          <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
+          <MobileShiftCard
+            key={shift._id}
+            shiftData={processShiftData(shift)}
+            handleShiftToggle={handleShiftToggle}
+            showInstructions={true}
+            isInstructionsOpen={expandedInstructions.has(shift._id)}
+            onInstructionsToggle={toggleInstructions}
+          />
         ))}
       </div>
       {/* Selected Shifts Summary */}

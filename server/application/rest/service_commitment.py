@@ -24,30 +24,9 @@ from responses import ResponseTypes
 
 service_commitment_bp = Blueprint("service_commitment", __name__)
 
-# Lazy init: avoid MongoDB connection at import time (e.g. CI without MongoDB)
-_repos = {"commitments": None, "shifts": None, "shelter": None}
-
-
-def get_commitments_repo():
-    """Return commitments repository (instantiated on first use)."""
-    if _repos["commitments"] is None:
-        _repos["commitments"] = MongoRepoCommitments()
-    return _repos["commitments"]
-
-
-def get_shifts_repo():
-    """Return service shifts repository (instantiated on first use)."""
-    if _repos["shifts"] is None:
-        _repos["shifts"] = ServiceShiftsMongoRepo()
-    return _repos["shifts"]
-
-
-def get_shelter_repo():
-    """Return shelter repository (instantiated on first use)."""
-    if _repos["shelter"] is None:
-        _repos["shelter"] = ShelterRepo()
-    return _repos["shelter"]
-
+commitments_repo = MongoRepoCommitments()
+shifts_repo = ServiceShiftsMongoRepo()
+shelter_repo = ShelterRepo()
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
 @token_required_with_request
@@ -69,8 +48,8 @@ def create_service_commitment(user_email):
             commitment["volunteer_id"] = user_email
             commitments_as_obj.append(ServiceCommitment.from_dict(commitment))
         response = add_service_commitments(
-            get_commitments_repo(),
-            get_shifts_repo(),
+            commitments_repo,
+            shifts_repo,
             commitments_as_obj)
 
         return Response(
@@ -108,8 +87,8 @@ def fetch_service_commitments(user_email):
         # If service_shift_id is not provided, we filter by user_email as before
         filter_user = None if service_shift_id else user_email
         commitments, shifts = list_service_commitments_with_shifts(
-            get_commitments_repo(),
-            get_shifts_repo(),
+            commitments_repo,
+            shifts_repo,
             time_filter_obj,
             filter_user,
             service_shift_id
@@ -123,7 +102,7 @@ def fetch_service_commitments(user_email):
             commitments_list.append(commitment_dict)
 
         if include_shift_details:
-            shelters = list_shelters_for_shifts(shifts, get_shelter_repo())
+            shelters = list_shelters_for_shifts(shifts, shelter_repo)
             # Convert shifts to JSON
             shifts_list = []
             for shift in shifts:
@@ -189,7 +168,7 @@ def delete_service_commitment_by_id(user_email, commitment_id):
     """
     try:
         response = delete_service_commitment(
-            get_commitments_repo(),
+            commitments_repo,
             commitment_id,
             user_email)
         response_code = response["response_code"]
