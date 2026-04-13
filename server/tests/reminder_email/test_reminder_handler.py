@@ -1,18 +1,28 @@
 """Tests for reminder HTML rendering and send wiring."""
 
+# Tests call module-private format helpers for timezone behavior.
+# pylint: disable=protected-access
+
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 from domains.service_shift import ServiceShift
-from reminder_email.reminder_handler import send_reminder_email, SUBJECT_24H, SUBJECT_2H
+import reminder_email.reminder_handler as rh
+from reminder_email.reminder_handler import (
+    SUBJECT_24H,
+    SUBJECT_2H,
+    send_reminder_email,
+)
 
 
 @patch("reminder_email.reminder_handler.send_email")
 @patch("reminder_email.reminder_handler._get_shelter_name", return_value="Test Shelter")
 @patch("reminder_email.reminder_handler._get_volunteer_name", return_value="Jane Doe")
 def test_send_reminder_24h_includes_instructions_in_html(
-    mock_vol, mock_shelter, mock_send,
-):
+    mock_vol,
+    mock_shelter,
+    mock_send,
+):  # pylint: disable=unused-argument
     shift = ServiceShift(
         shelter_id="s1",
         shift_start=1_704_067_200_000,
@@ -38,7 +48,11 @@ def test_send_reminder_24h_includes_instructions_in_html(
 @patch("reminder_email.reminder_handler.send_email")
 @patch("reminder_email.reminder_handler._get_shelter_name", return_value="Test Shelter")
 @patch("reminder_email.reminder_handler._get_volunteer_name", return_value="Jane Doe")
-def test_send_reminder_2h_subject_and_date(mock_vol, mock_shelter, mock_send):
+def test_send_reminder_2h_subject_and_date(
+    mock_vol,
+    mock_shelter,
+    mock_send,
+):  # pylint: disable=unused-argument
     shift = ServiceShift(
         shelter_id="s1",
         shift_start=1_704_067_200_000,
@@ -55,8 +69,6 @@ def test_send_reminder_2h_subject_and_date(mock_vol, mock_shelter, mock_send):
 def test_format_time_uses_reminder_display_timezone(monkeypatch):
     """Apr 9 2026 21:40 UTC = 4:40 PM in America/Chicago (CDT)."""
     monkeypatch.setenv("REMINDER_DISPLAY_TIMEZONE", "America/Chicago")
-    from reminder_email import reminder_handler as rh
-
     ms = int(
         datetime(2026, 4, 9, 21, 40, tzinfo=timezone.utc).timestamp() * 1000
     )

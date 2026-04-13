@@ -18,20 +18,24 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+_SERVER_DIR = Path(__file__).resolve().parent.parent
+if str(_SERVER_DIR) not in sys.path:
+    sys.path.insert(0, str(_SERVER_DIR))
+
+# App imports require ``server`` on path (see block above).
+# pylint: disable=wrong-import-position
+from reminder_email.email_service import send_email
+
 
 def _load_env():
-    server_dir = Path(__file__).resolve().parent.parent
-    os.chdir(server_dir)
-    if str(server_dir) not in sys.path:
-        sys.path.insert(0, str(server_dir))
-
-    from dotenv import load_dotenv
-
+    os.chdir(_SERVER_DIR)
     env = os.environ.get("FLASK_ENV", "pre-production")
-    env_file = server_dir / f".env.{env}"
+    env_file = _SERVER_DIR / f".env.{env}"
     if env_file.exists():
         load_dotenv(env_file)
-    load_dotenv(server_dir / ".env")
+    load_dotenv(_SERVER_DIR / ".env")
 
 
 def main():
@@ -46,8 +50,6 @@ def main():
         env = os.environ.get("FLASK_ENV", "pre-production")
         print(f"Error: SENDGRID_API_KEY is not set. Add it to .env.{env} or .env")
         sys.exit(1)
-
-    from reminder_email.email_service import send_email
 
     send_email(
         recipient,

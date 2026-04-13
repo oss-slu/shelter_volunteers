@@ -22,20 +22,29 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+_SERVER_DIR = Path(__file__).resolve().parent.parent
+if str(_SERVER_DIR) not in sys.path:
+    sys.path.insert(0, str(_SERVER_DIR))
+
+# App imports require ``server`` on path (see block above).
+# pylint: disable=wrong-import-position
+from reminder_email.reminder_handler import send_reminder_email
+from repository.mongo.service_commitments import MongoRepoCommitments
+from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from repository.mongo.shelter import ShelterRepo
+from repository.mongo.user_info_repository import UserInfoRepository
+from use_cases.reminders.trigger_shift_reminders import run_reminder_check
+
 
 def _load_env():
-    server_dir = Path(__file__).resolve().parent.parent
-    os.chdir(server_dir)
-    if str(server_dir) not in sys.path:
-        sys.path.insert(0, str(server_dir))
-
-    from dotenv import load_dotenv
-
+    os.chdir(_SERVER_DIR)
     env = os.environ.get("FLASK_ENV", "pre-production")
-    env_file = server_dir / f".env.{env}"
+    env_file = _SERVER_DIR / f".env.{env}"
     if env_file.exists():
         load_dotenv(env_file)
-    load_dotenv(server_dir / ".env")
+    load_dotenv(_SERVER_DIR / ".env")
 
 
 def main():
@@ -50,13 +59,6 @@ def main():
         print("Add it to .env.pre-production (with FLASK_ENV=pre-production).")
 
     # Same wiring as scheduler.reminder_scheduler._run_reminder_job (no lock)
-    from repository.mongo.service_commitments import MongoRepoCommitments
-    from repository.mongo.service_shifts import ServiceShiftsMongoRepo
-    from repository.mongo.shelter import ShelterRepo
-    from repository.mongo.user_info_repository import UserInfoRepository
-    from reminder_email.reminder_handler import send_reminder_email
-    from use_cases.reminders.trigger_shift_reminders import run_reminder_check
-
     logger = logging.getLogger(__name__)
     logger.info("Running reminder check once (manual)")
 

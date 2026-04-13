@@ -18,26 +18,41 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+_SERVER_DIR = Path(__file__).resolve().parent.parent
+if str(_SERVER_DIR) not in sys.path:
+    sys.path.insert(0, str(_SERVER_DIR))
+
+# App imports require ``server`` on path (see block above).
+# pylint: disable=wrong-import-position
+from domains.service_shift import ServiceShift
+from reminder_email.email_service import send_email
+from reminder_email.reminder_handler import (
+    SUBJECT_24H,
+    _duration_hours,
+    _format_date,
+    _format_time,
+    _load_template,
+)
+
 
 def _load_env():
-    server_dir = Path(__file__).resolve().parent.parent
-    os.chdir(server_dir)
-    if str(server_dir) not in sys.path:
-        sys.path.insert(0, str(server_dir))
-
-    from dotenv import load_dotenv
-
+    os.chdir(_SERVER_DIR)
     env = os.environ.get("FLASK_ENV", "pre-production")
-    env_file = server_dir / f".env.{env}"
+    env_file = _SERVER_DIR / f".env.{env}"
     if env_file.exists():
         load_dotenv(env_file)
-    load_dotenv(server_dir / ".env")
+    load_dotenv(_SERVER_DIR / ".env")
 
 
 def main():
     if len(sys.argv) < 2:
         print("Usage: python scripts/send_demo_24h_reminder_email.py recipient@email.com")
-        print('       python scripts/send_demo_24h_reminder_email.py recipient@email.com "Shelter Name"')
+        print(
+            "       python scripts/send_demo_24h_reminder_email.py "
+            'recipient@email.com "Shelter Name"'
+        )
         sys.exit(1)
 
     recipient = sys.argv[1].strip()
@@ -48,16 +63,6 @@ def main():
     if not os.environ.get("SENDGRID_API_KEY"):
         print("Error: SENDGRID_API_KEY not set.")
         sys.exit(1)
-
-    from domains.service_shift import ServiceShift
-    from reminder_email.email_service import send_email
-    from reminder_email.reminder_handler import (
-        SUBJECT_24H,
-        _duration_hours,
-        _format_date,
-        _format_time,
-        _load_template,
-    )
 
     # "Tomorrow" at 5:45 PM UTC — reads well on camera with the template copy
     tomorrow = datetime.now(timezone.utc).date() + timedelta(days=1)

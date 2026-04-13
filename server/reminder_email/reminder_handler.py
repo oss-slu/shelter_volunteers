@@ -17,9 +17,8 @@ except ImportError:  # Python < 3.9
     from backports.zoneinfo import ZoneInfo
 
 from domains.service_shift import ServiceShift
+from reminder_email.email_service import send_email
 from repository.mongo.shelter import ShelterRepo
-
-from .email_service import send_email
 from repository.mongo.user_info_repository import UserInfoRepository
 from use_cases.shelters.get_shelter_by_id import get_shelter_by_id
 from use_cases.user_info.get_user_info_by_email import get_user_info_by_email
@@ -33,8 +32,8 @@ _TEMPLATES_DIR = Path(__file__).parent / "templates"
 SUBJECT_24H = "Reminder: Upcoming Volunteer Shift Tomorrow"
 SUBJECT_2H = "Reminder: Your Volunteer Shift Starts Soon"
 
-# IANA zone for email date/time lines. Matches typical US Central shelter times; override per deploy.
-# The web app shows times in the volunteer's browser local zone — email uses one zone for consistency.
+# IANA zone for email date/time (default US Central). Override via REMINDER_DISPLAY_TIMEZONE.
+# Browser UI uses local time; email uses one display zone for consistency.
 _DEFAULT_REMINDER_DISPLAY_TZ = "America/Chicago"
 
 
@@ -101,7 +100,7 @@ def _get_shelter_name(shelter_id: str, shelter_repo: ShelterRepo) -> str:
 
 
 def _get_shift_instructions(shift: ServiceShift) -> str:
-    """Optional shift instructions from the shift record (Mongo ``instructions`` or legacy ``shift_instructions``)."""
+    """Optional instructions from Mongo ``instructions`` or legacy ``shift_instructions``."""
     instr = shift.instructions
     if instr is None:
         return ""
@@ -122,7 +121,7 @@ def send_reminder_email(
     Send a reminder email to the volunteer.
 
     Args:
-        shift_id: Shift ID.
+        shift_id: Shift ID (for API symmetry; body uses ``shift``).
         volunteer_id: Volunteer email.
         reminder_type: 'reminder_24h' or 'reminder_2h'.
         shift: ServiceShift with shift details.
@@ -132,6 +131,7 @@ def send_reminder_email(
     Raises:
         RuntimeError: If email send fails (caller should not update reminder flags).
     """
+    logger.debug("Reminder email for shift %s type %s", shift_id, reminder_type)
     volunteer_name = html_module.escape(_get_volunteer_name(volunteer_id, user_info_repo))
     shelter_name = html_module.escape(_get_shelter_name(shift.shelter_id, shelter_repo))
     shift_date = _format_date(shift.shift_start)

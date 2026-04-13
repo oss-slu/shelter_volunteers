@@ -11,6 +11,15 @@ import re
 import socket
 import urllib.error
 
+try:
+    from python_http_client.exceptions import HTTPError as SendGridHTTPError
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail
+except ImportError:
+    SendGridHTTPError = None  # type: ignore[misc, assignment]
+    SendGridAPIClient = None  # type: ignore[assignment]
+    Mail = None  # type: ignore[assignment]
+
 logger = logging.getLogger(__name__)
 
 # Basic email validation - protect against injection
@@ -79,12 +88,8 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
     if not api_key:
         raise RuntimeError("SENDGRID_API_KEY not set; cannot send email")
 
-    try:
-        from python_http_client.exceptions import HTTPError as SendGridHTTPError
-        from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail
-    except ImportError as err:
-        raise RuntimeError("sendgrid package not installed") from err
+    if Mail is None or SendGridAPIClient is None:
+        raise RuntimeError("sendgrid package not installed")
 
     message = Mail(
         from_email=os.environ.get("SENDGRID_FROM_EMAIL", "noreply@example.com"),
@@ -100,32 +105,36 @@ def send_email(to_email: str, subject: str, html_content: str, plain_content: st
 
     try:
         response = client.send(message)
-    except SendGridHTTPError as err:
-        status = getattr(err, "status_code", None)
-        logger.error(
-            "SendGrid send failed (HTTP error)",
-            extra={
-                "status_code": status,
-                "to": to_email,
-                "subject": subject,
-                "timeout_seconds": timeout,
-            },
-        )
-        raise RuntimeError(
-            f"SendGrid request failed with status {status}"
-        ) from err
-    except (urllib.error.URLError, OSError, socket.timeout) as err:
-        logger.error(
-            "SendGrid send failed (network or timeout)",
-            extra={
-                "to": to_email,
-                "subject": subject,
-                "timeout_seconds": timeout,
-                "error": str(err),
-            },
-            exc_info=True,
-        )
-        raise RuntimeError("SendGrid request failed: network error or timeout") from err
+    except Exception as err:
+        if SendGridHTTPError is not None and isinstance(err, SendGridHTTPError):
+            status = getattr(err, "status_code", None)
+            logger.error(
+                "SendGrid send failed (HTTP error)",
+                extra={
+                    "status_code": status,
+                    "to": to_email,
+                    "subject": subject,
+                    "timeout_seconds": timeout,
+                },
+            )
+            raise RuntimeError(
+                f"SendGrid request failed with status {status}"
+            ) from err
+        if isinstance(err, (urllib.error.URLError, OSError, socket.timeout)):
+            logger.error(
+                "SendGrid send failed (network or timeout)",
+                extra={
+                    "to": to_email,
+                    "subject": subject,
+                    "timeout_seconds": timeout,
+                    "error": str(err),
+                },
+                exc_info=True,
+            )
+            raise RuntimeError(
+                "SendGrid request failed: network error or timeout"
+            ) from err
+        raise
 
     if response.status_code >= 400:
         logger.error(
