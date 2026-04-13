@@ -94,7 +94,10 @@ class MongoRepoCommitments:
 
     def delete_commitments_for_service_shift(self, service_shift_id: str) -> int:
         """
-        Deletes all volunteer commitments tied to a service shift (e.g. when staff removes the shift).
+        Deletes all volunteer commitments tied to a service shift
+        (e.g. when staff removes the shift).
         """
-        result = self.collection.delete_many({"service_shift_id": service_shift_id})
+        result = self.collection.delete_many(
+            {'service_shift_id': service_shift_id}
+        )
         return result.deleted_count
