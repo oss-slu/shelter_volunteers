@@ -10,7 +10,11 @@ import logging
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from zoneinfo import ZoneInfo
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # Python < 3.9
+    from backports.zoneinfo import ZoneInfo
 
 from domains.service_shift import ServiceShift
 from repository.mongo.shelter import ShelterRepo
