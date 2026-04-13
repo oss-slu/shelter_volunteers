@@ -23,7 +23,6 @@ from responses import ResponseTypes
 shelter_blueprint = Blueprint("shelter", __name__)
 
 repo = ShelterRepo()
-service_shifts_repo = ServiceShiftsMongoRepo()
 
 
 @shelter_blueprint.route("/shelters", methods=["GET"])
@@ -49,6 +48,7 @@ def get_open_shelters_grouped_by_date():
     """Return future open shelters grouped by date in descending order."""
     shelters = shelter_list_use_case(repo)
     current_time_ms = int(time.time() * 1000)
+    service_shifts_repo = ServiceShiftsMongoRepo()
     service_shifts = service_shifts_list_use_case(
         service_shifts_repo,
         filter_start_after=current_time_ms,

@@ -2,21 +2,25 @@
 This module contains tests for the shelter REST API.
 """
 import json
-import pytest
-
 from unittest.mock import patch, ANY
+
+import pytest
 from flask import Flask
+
+from authentication.token import create_token
 from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
 from domains.service_shift import ServiceShift
-from authentication.token import create_token
 
 test_secret = "test_secret"
+
+
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(shelter_blueprint)
     app.config["JWT_SECRET"] = test_secret
     return app
+
 
 @pytest.fixture
 def client():
