@@ -337,3 +337,41 @@ def patch_service_shift(shelter_id, shift_id):
         mimetype="application/json",
         status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
     )
+
+
+@service_shift_bp.route("/shelters/<shelter_id>/service_shifts/<shift_id>", methods=["DELETE"])
+@shelter_admin_permission_required
+def delete_service_shift(shelter_id, shift_id):
+    """
+    Deletes a service shift and all volunteer commitments for that shift.
+    Requires shelter admin permissions for the given shelter.
+    """
+    shifts_repo = get_service_shifts_repo()
+    existing_shift = shifts_repo.get_shift(shift_id)
+    if not existing_shift:
+        return Response(
+            json.dumps({"message": "Service shift not found"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND],
+        )
+
+    if str(existing_shift.shelter_id) != str(shelter_id):
+        return Response(
+            json.dumps({"message": "shelter_id in URL does not match shift shelter"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+
+    commitments_repo.delete_commitments_for_service_shift(shift_id)
+    if not shifts_repo.delete_service_shift(shift_id):
+        return Response(
+            json.dumps({"message": "Failed to delete service shift"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR],
+        )
+
+    return Response(
+        json.dumps({"message": "Service shift deleted"}),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
+    )

@@ -311,6 +311,54 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data["message"], "Invalid data provided")
 
+    @patch("application.rest.service_shifts.commitments_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_delete_service_shift_removes_shift_and_commitments(
+        self, mock_is_authorized, mock_get_repo, mock_commitments_repo
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        existing_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            _id="abc123",
+        )
+        mock_shifts_repo.get_shift.return_value = existing_shift
+        mock_shifts_repo.delete_service_shift.return_value = True
+
+        response = self.client.delete(
+            "/shelters/12345/service_shifts/abc123",
+            headers=self.headers,
+        )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data.get("message"), "Service shift deleted")
+        mock_commitments_repo.delete_commitments_for_service_shift.assert_called_once_with(
+            "abc123"
+        )
+        mock_shifts_repo.delete_service_shift.assert_called_once_with("abc123")
+
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_delete_service_shift_returns_404_when_missing(
+        self, mock_is_authorized, mock_get_repo
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        mock_shifts_repo.get_shift.return_value = None
+
+        response = self.client.delete(
+            "/shelters/12345/service_shifts/missingid",
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 404)
+
 if __name__ == "__main__":
     unittest.main()
 # pylint: enable=line-too-long

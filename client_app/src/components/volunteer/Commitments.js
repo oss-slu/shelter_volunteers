@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
@@ -14,26 +14,34 @@ const VIEW_CALENDAR = 'calendar';
 
 function Commitments(){
   const [loading, setLoading] = useState(true);
-  const [results, setResults] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [expandedInstructions, setExpandedInstructions] = useState(new Set());
   const [resultMessage, setResultMessage] = useState({});
   const [viewMode, setViewMode] = useState(VIEW_LIST);
 
+  const refreshCommitments = useCallback(async () => {
+    const commitments = await serviceCommitmentAPI.getFutureCommitments();
+    setShifts(commitments);
+  }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
+    let cancelled = false;
+    (async () => {
       try {
-        const commitments = await serviceCommitmentAPI.getFutureCommitments();
-        setShifts(commitments);
-        setLoading(false);
+        await refreshCommitments();
       } catch (error) {
         console.error("fetch error:", error);
-        setLoading(false);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    fetchData();
-  }, [results]);
+  }, [refreshCommitments]);
   
 
   // Format date and time
@@ -69,20 +77,20 @@ function Commitments(){
   // Handle cancellagion
   const handleCancel = async () => {
     try {
-      console.log("Cancelling shifts:", selectedShifts);
-      let responses = [];
       for (const commitment_id of selectedShifts) {
-        const response = await serviceCommitmentAPI.cancelCommitment(commitment_id);
-        responses.push(response);
+        await serviceCommitmentAPI.cancelCommitment(commitment_id);
       }
-      setResults(responses);
       setResultMessage({'text': 'Cancelled successfully', 'success': true});
-      // Reset form
       setSelectedShifts(new Set());
+      await refreshCommitments();
     }
     catch (error) {
       console.error("Error cancelling shifts:", error);
-    } 
+      setResultMessage({
+        text: error?.message || 'Could not cancel shift(s). Please try again.',
+        success: false,
+      });
+    }
   };
 
 // Process shift data for rendering (eliminates duplication)

@@ -134,3 +134,11 @@ class ServiceShiftsMongoRepo:
             return [ServiceShift.from_dict(shift) for shift in shifts]
         except Exception as e:
             raise ValueError(f"Invalid shift ID: {e}") from e
+
+    def delete_service_shift(self, shift_id):
+        """Deletes one service shift document by id. Returns True if a document was removed."""
+        try:
+            result = self.collection.delete_one({"_id": ObjectId(shift_id)})
+        except (InvalidId, TypeError):
+            return False
+        return result.deleted_count > 0
