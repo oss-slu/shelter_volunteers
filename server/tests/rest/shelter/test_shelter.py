@@ -4,10 +4,11 @@ This module contains tests for the shelter REST API.
 import json
 import pytest
 
-from unittest.mock import patch
+from unittest.mock import patch, ANY
 from flask import Flask
 from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
+from domains.service_shift import ServiceShift
 from authentication.token import create_token
 
 test_secret = "test_secret"
@@ -179,5 +180,114 @@ def test_get_shelter(mock_shelter_list_use_case, client):
     parsed_response = json.loads(raw_data)
     assert response.status_code == 200
     assert parsed_response == mock_shelters_json
+
+
+@patch("application.rest.shelter.time.time", return_value=1760000000)
+@patch("application.rest.shelter.service_shifts_list_use_case")
+@patch("application.rest.shelter.shelter_list_use_case")
+def test_get_open_shelters_grouped_by_date(
+    mock_shelter_list_use_case,
+    mock_service_shifts_list_use_case,
+    _mock_time,
+    client,
+):
+    mock_shelters = [
+        Shelter.from_dict({
+            "_id": "s1",
+            "name": "Shelter One",
+            "address": {
+                "street1": "456 Elm St",
+                "street2": "",
+                "city": "Springfield",
+                "state": "IL",
+                "postal_code": "62701",
+                "country": "USA",
+                "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
+            },
+        }),
+        Shelter.from_dict({
+            "_id": "s2",
+            "name": "Shelter Two",
+            "address": {
+                "street1": "789 Oak St",
+                "street2": "",
+                "city": "Chicago",
+                "state": "IL",
+                "postal_code": "60616",
+                "country": "USA",
+                "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
+            },
+        }),
+    ]
+    for shelter, shelter_id in zip(mock_shelters, ["s1", "s2"]):
+        shelter.set_id(shelter_id)
+
+    mock_shifts = [
+        ServiceShift(
+            shelter_id="s1",
+            shift_start=1776470400000,  # 2026-04-17T00:00:00Z
+            shift_end=1776474000000,
+        ),
+        ServiceShift(
+            shelter_id="s1",
+            shift_start=1776477600000,  # same date, should dedupe shelter
+            shift_end=1776481200000,
+        ),
+        ServiceShift(
+            shelter_id="s2",
+            shift_start=1776384000000,  # 2026-04-16T00:00:00Z
+            shift_end=1776387600000,
+        ),
+    ]
+
+    mock_shelter_list_use_case.return_value = mock_shelters
+    mock_service_shifts_list_use_case.return_value = mock_shifts
+
+    response = client.get("/shelters/open")
+    parsed_response = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert parsed_response == [
+        {
+            "date": "2026-04-17",
+            "shelters": [
+                {
+                    "_id": "s1",
+                    "name": "Shelter One",
+                    "address": {
+                        "street1": "456 Elm St",
+                        "street2": "",
+                        "city": "Springfield",
+                        "state": "IL",
+                        "postal_code": "62701",
+                        "country": "USA",
+                        "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
+                    },
+                }
+            ],
+        },
+        {
+            "date": "2026-04-16",
+            "shelters": [
+                {
+                    "_id": "s2",
+                    "name": "Shelter Two",
+                    "address": {
+                        "street1": "789 Oak St",
+                        "street2": "",
+                        "city": "Chicago",
+                        "state": "IL",
+                        "postal_code": "60616",
+                        "country": "USA",
+                        "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
+                    },
+                }
+            ],
+        },
+    ]
+    mock_service_shifts_list_use_case.assert_called_once_with(
+        ANY,
+        filter_start_after=1760000000000,
+    )
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
