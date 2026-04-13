@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useId } from 'react';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -9,7 +9,23 @@ import SignUpResults from './SignUpResults';
 import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
 import Loading from '../Loading';
+import { Calendar } from 'lucide-react';
 
+/** Filter shifts to those starting on the given YYYY-MM-DD (local calendar day). */
+function filterShiftsByLocalDate(shifts, dateStr) {
+  if (!dateStr) return shifts;
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return shifts;
+  const [y, m, d] = parts;
+  return shifts.filter((s) => {
+    const t = new Date(s.shift_start);
+    return (
+      t.getFullYear() === y &&
+      t.getMonth() === m - 1 &&
+      t.getDate() === d
+    );
+  });
+}
 
 function VolunteerShiftSignup(){
   const [loading, setLoading] = useState(true);
@@ -21,6 +37,12 @@ function VolunteerShiftSignup(){
   const [commitments, setCommitments] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
+  /** YYYY-MM-DD from input type="date", or '' to show all days */
+  const [filterDate, setFilterDate] = useState('');
+  const [a11yAnnouncement, setA11yAnnouncement] = useState('');
+  const filterDateId = useId();
+  const filterHintId = useId();
+  const [dateFieldFocused, setDateFieldFocused] = useState(false);
   const user = getUser();
   useEffect(() => {
     const fetchData = async () => {
@@ -149,6 +171,40 @@ function VolunteerShiftSignup(){
     return sortedArray;
   }, [shifts, sortBy, shelterMap]);
 
+  const filteredShifts = useMemo(
+    () => filterShiftsByLocalDate(sortedShifts, filterDate),
+    [sortedShifts, filterDate]
+  );
+
+  useEffect(() => {
+    const total = sortedShifts.length;
+    if (!filterDate) {
+      setA11yAnnouncement(
+        `Showing all ${total} open shift${total !== 1 ? 's' : ''}.`
+      );
+      return;
+    }
+    const label = new Date(`${filterDate}T12:00:00`).toLocaleDateString(
+      'en-US',
+      {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }
+    );
+    const n = filteredShifts.length;
+    if (n === 0) {
+      setA11yAnnouncement(
+        `Selected ${label}. No open shifts on this day. Try another date or clear the filter to see all shifts.`
+      );
+    } else {
+      setA11yAnnouncement(
+        `Selected ${label}. ${n} open shift${n !== 1 ? 's' : ''} available.`
+      );
+    }
+  }, [filterDate, sortedShifts.length, filteredShifts.length]);
+
   // Handle shift selection
   const handleShiftToggle = (shift) => {
     const newSelectedShifts = new Set(selectedShifts);
@@ -220,25 +276,123 @@ function VolunteerShiftSignup(){
     return <Loading />;
   }
   return (
-    <div className="has-sticky-bottom">
-      <h1 className="title-small">Volunteer Shift Sign-up</h1>
-      <div className="controls-section">
-        {/* Sort Controls */}
-        <div className="sort-section">
-          <label className="tagline-small">Sort by:</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="sort-select"
-          >
-            <option value="date">Date & Time</option>
-            <option value="shelter">Shelter Name</option>
-            <option value="need">Priority</option>
-          </select>
+    <div className="has-sticky-bottom volunteer-shift-signup">
+      <header className="signup-page-header">
+        <h1 className="title-small signup-page-title">Volunteer Shift Sign-up</h1>
+        <p className="signup-page-subtitle">
+          Browse open shifts and sign up where shelters need volunteers most.
+        </p>
+      </header>
+      <div
+        className="signup-sr-live"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {a11yAnnouncement}
+      </div>
+      <div className="signup-controls-panel">
+        <div className="controls-section">
+          <div className="signup-date-filter">
+            <label className="signup-date-label" htmlFor={filterDateId}>
+              Filter by date
+            </label>
+            <div className="signup-date-row">
+              <div className="signup-date-input-wrap">
+                <span className="signup-date-input-icon" aria-hidden="true">
+                  <Calendar size={20} strokeWidth={1.75} />
+                </span>
+                {!filterDate && !dateFieldFocused && (
+                  <span className="signup-date-placeholder" aria-hidden="true">
+                    Pick a date
+                  </span>
+                )}
+                <input
+                  id={filterDateId}
+                  type="date"
+                  className={`signup-date-input ${!filterDate && !dateFieldFocused ? 'signup-date-input--ghost' : ''}`}
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  onFocus={() => setDateFieldFocused(true)}
+                  onBlur={() => setDateFieldFocused(false)}
+                  aria-describedby={filterHintId}
+                  aria-label="Pick a date to filter shifts"
+                />
+              </div>
+              {filterDate && (
+                <button
+                  type="button"
+                  className="signup-clear-date-btn"
+                  onClick={() => setFilterDate('')}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <p id={filterHintId} className="signup-date-hint">
+              {filterDate
+                ? 'Only shifts starting on this day are shown. Clear to see all open shifts.'
+                : 'Optional: choose a day to focus on shelters with openings that day.'}
+            </p>
+          </div>
+          <div className="sort-section">
+            <label className="sort-section-label" htmlFor="shift-signup-sort">
+              Sort list by
+            </label>
+            <select
+              id="shift-signup-sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="sort-select"
+            >
+              <option value="date">Date &amp; time</option>
+              <option value="shelter">Shelter name</option>
+              <option value="need">Need (priority)</option>
+            </select>
+          </div>
         </div>
       </div>
+      {sortedShifts.length > 0 && (
+        <p className="signup-results-meta" aria-live="polite">
+          {filterDate ? (
+            <span className="signup-results-copy">
+              {filteredShifts.length === 1
+                ? 'Shift on the selected date'
+                : 'Shifts on the selected date'}
+            </span>
+          ) : (
+            <span className="signup-results-copy">
+              {sortedShifts.length === 1
+                ? 'Open shift available'
+                : 'Open shifts available'}
+            </span>
+          )}
+        </p>
+      )}
+      {filterDate && filteredShifts.length === 0 && sortedShifts.length > 0 && (
+        <div className="signup-empty-day signup-empty-day--filtered" role="status">
+          <span className="signup-empty-icon" aria-hidden="true">📅</span>
+          <div>
+            <p className="signup-empty-day-title">No open shifts on this day</p>
+            <p className="signup-empty-day-text">
+              Try another date or clear the filter to see all available shifts.
+            </p>
+          </div>
+        </div>
+      )}
+      {sortedShifts.length === 0 && (
+        <div className="signup-empty-day signup-empty-day--global" role="status">
+          <span className="signup-empty-icon" aria-hidden="true">✨</span>
+          <p className="signup-empty-day-text">
+            There are no open shifts to sign up for right now. Check back later.
+          </p>
+        </div>
+      )}
       {/* Desktop Table View */}
-      <div className="table-container desktop-only">
+      <div
+        className="table-container desktop-only"
+        role="region"
+        aria-label="Open shifts list"
+      >
         <table className="shifts-table">
           <thead>
             <tr className="table-header">
@@ -251,47 +405,52 @@ function VolunteerShiftSignup(){
             </tr>
           </thead>
           <tbody>
-            {sortedShifts.map((shift) => (
+            {filteredShifts.map((shift) => (
               <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
             ))}
           </tbody>
         </table>
       </div>
       {/* Mobile Card View */}
-      <div className="cards-container mobile-only">
-        {sortedShifts.map((shift) => (
+      <div className="cards-container mobile-only" role="region" aria-label="Open shifts list">
+        {filteredShifts.map((shift) => (
           <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
         ))}
       </div>
       {/* Selected Shifts Summary */}
-      <div className="sticky-signup-container">
-        {selectedShifts.size > 0 && (
-        <div className="selected-shifts-summary">
-          <h3 className="summary-title">
-            Selected Shifts ({selectedShifts.size})
-          </h3>
-          <div className="list">
-            {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
-              <div key={shift._id} className="tagline-small">
-                • {startTime.date} at {startTime.time} - {endTime.time} - {shelter.name}
+      <div className="sticky-signup-container volunteer-sticky-signup">
+        <div className="sticky-signup-inner">
+          <div className="sticky-signup-main">
+            {selectedShifts.size > 0 && (
+              <div className="selected-shifts-summary">
+                <h3 className="summary-title">
+                  Selected shifts ({selectedShifts.size})
+                </h3>
+                <div className="list">
+                  {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
+                    <div key={shift._id} className="tagline-small">
+                      • {startTime.date} at {startTime.time} - {endTime.time} - {shelter.name}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            )}
+            {selectedShifts.size === 0 && (
+              <p className="sticky-signup-hint">Select some shifts to sign up.</p>
+            )}
           </div>
-        </div>
-        )}
-        {selectedShifts.size === 0 && (
-          <div>
-            <p className="tagline-small">Select some shifts to sign up.</p>
+          <div className="signup-section signup-section--sticky">
+            <button
+              type="button"
+              onClick={handleSignUp}
+              disabled={selectedShifts.size === 0}
+              className={`signup-button signup-button--cta ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
+            >
+              {selectedShifts.size === 0
+                ? 'Sign up for shifts'
+                : `Sign up for ${selectedShifts.size} shift${selectedShifts.size !== 1 ? 's' : ''}`}
+            </button>
           </div>
-        )}
-        <div className="signup-section">
-          <button
-            onClick={handleSignUp}
-            disabled={selectedShifts.size === 0}
-            className={`signup-button ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
-          >
-            Sign Up for {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
-          </button>
         </div>
       </div>
       {/* Modal markup */}

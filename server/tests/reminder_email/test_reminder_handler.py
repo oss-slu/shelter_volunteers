@@ -1,5 +1,6 @@
 """Tests for reminder HTML rendering and send wiring."""
 
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 from domains.service_shift import ServiceShift
@@ -49,6 +50,18 @@ def test_send_reminder_2h_subject_and_date(mock_vol, mock_shelter, mock_send):
     )
     assert mock_send.call_args[0][1] == SUBJECT_2H
     assert "Jane Doe" in mock_send.call_args[0][2]
+
+
+def test_format_time_uses_reminder_display_timezone(monkeypatch):
+    """Apr 9 2026 21:40 UTC = 4:40 PM in America/Chicago (CDT)."""
+    monkeypatch.setenv("REMINDER_DISPLAY_TIMEZONE", "America/Chicago")
+    from reminder_email import reminder_handler as rh
+
+    ms = int(
+        datetime(2026, 4, 9, 21, 40, tzinfo=timezone.utc).timestamp() * 1000
+    )
+    assert rh._format_time(ms) == "04:40 PM"
+    assert rh._format_date(ms) == "Apr 09, 2026"
 
 
 def test_service_shift_from_dict_shift_instructions_alias():

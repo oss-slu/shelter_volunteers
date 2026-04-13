@@ -7,8 +7,10 @@ and volunteer info, renders templates, and sends via SendGrid.
 
 import html as html_module
 import logging
+import os
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from domains.service_shift import ServiceShift
 from repository.mongo.shelter import ShelterRepo
@@ -27,16 +29,41 @@ _TEMPLATES_DIR = Path(__file__).parent / "templates"
 SUBJECT_24H = "Reminder: Upcoming Volunteer Shift Tomorrow"
 SUBJECT_2H = "Reminder: Your Volunteer Shift Starts Soon"
 
+# IANA zone for email date/time lines. Matches typical US Central shelter times; override per deploy.
+# The web app shows times in the volunteer's browser local zone — email uses one zone for consistency.
+_DEFAULT_REMINDER_DISPLAY_TZ = "America/Chicago"
+
+
+def _get_reminder_display_tz():
+    """
+    Timezone used when formatting shift start in reminder HTML.
+
+    Stored shift times are UTC ms; the UI uses the user's local timezone. Email uses a single
+    display zone so times align with how shelters schedule (often Central for this region).
+    Set REMINDER_DISPLAY_TIMEZONE (e.g. America/New_York) to match your deployment.
+    """
+    name = (os.environ.get("REMINDER_DISPLAY_TIMEZONE") or _DEFAULT_REMINDER_DISPLAY_TZ).strip()
+    if not name:
+        name = _DEFAULT_REMINDER_DISPLAY_TZ
+    try:
+        return ZoneInfo(name)
+    except Exception:  # pylint: disable=broad-exception-caught
+        logger.warning(
+            "Invalid REMINDER_DISPLAY_TIMEZONE %r; using UTC for reminder times",
+            name,
+        )
+        return timezone.utc
+
 
 def _format_date(ms: int) -> str:
-    """Format milliseconds since epoch to e.g. 'Mar 08, 2026'."""
-    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+    """Format milliseconds since epoch to e.g. 'Mar 08, 2026' in the reminder display timezone."""
+    dt = datetime.fromtimestamp(ms / 1000, tz=_get_reminder_display_tz())
     return dt.strftime("%b %d, %Y")
 
 
 def _format_time(ms: int) -> str:
-    """Format milliseconds since epoch to e.g. '03:26 PM'."""
-    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+    """Format milliseconds since epoch to e.g. '03:26 PM' in the reminder display timezone."""
+    dt = datetime.fromtimestamp(ms / 1000, tz=_get_reminder_display_tz())
     return dt.strftime("%I:%M %p")
 
 

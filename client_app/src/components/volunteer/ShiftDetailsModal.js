@@ -15,6 +15,7 @@ export default function ShiftDetailsModal({ isOpen, onClose, shifts = [], dateLa
       className="shift-details-modal"
       overlayClassName="shift-details-overlay"
       ariaHideApp={false}
+      contentLabel="Shift details"
     >
       <div className="shift-details-header">
         <h3 className="shift-details-title">Shift details</h3>
@@ -30,7 +31,13 @@ export default function ShiftDetailsModal({ isOpen, onClose, shifts = [], dateLa
       </div>
       <div className="shift-details-body">
         {shifts.length === 0 ? (
-          <p className="tagline-small">No shifts on this day.</p>
+          <div className="shift-details-empty" role="status">
+            <p className="shift-details-empty-title">No open shelter shifts this day</p>
+            <p className="tagline-small shift-details-empty-hint">
+              Try another date on the calendar—days with shifts are highlighted. You can
+              also move between days with Tab and activate a day with Enter or Space.
+            </p>
+          </div>
         ) : (
           <ul className="shift-details-list">
             {shifts.map((c) => (
