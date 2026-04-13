@@ -29,6 +29,11 @@ service_shifts_repo = ServiceShiftsMongoRepo()
 user_info_repo = UserInfoRepository()
 
 
+def get_service_shifts_repo():
+    """Return the shared shifts repository (separate function so tests can patch it)."""
+    return service_shifts_repo
+
+
 def retrieve_service_shifts(http_request, shelter_id=None):
     filter_start_after_str = http_request.args.get("filter_start_after")
 
@@ -225,6 +230,7 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
+    service_shifts_repo = get_service_shifts_repo()
     existing_shift = service_shifts_repo.get_shift(shift_id)
     if not existing_shift:
         return Response(

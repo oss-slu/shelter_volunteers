@@ -9,6 +9,20 @@ import '../../styles/volunteer/VolunteerShiftCalendar.css';
 
 const localizer = dayjsLocalizer(dayjs);
 
+/** Long form date string for accessibility announcements and labels. */
+function formatDateForAccess(date) {
+  try {
+    return new Date(date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return '';
+  }
+}
+
 /** Returns true if the value yields a valid Date (not Invalid Date). */
 function isValidDate(value) {
   if (value == null) return false;
@@ -72,17 +86,19 @@ export default function VolunteerShiftCalendar({ shifts }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsShifts, setDetailsShifts] = useState([]);
   const [detailsDateLabel, setDetailsDateLabel] = useState('');
+  const [liveMessage, setLiveMessage] = useState('');
 
-  const handleSelectEvent = useCallback(
-    (event) => {
-      if (event.resource?.shift) {
-        setDetailsShifts([event.resource.shift]);
-        setDetailsDateLabel(formatDate(event.resource.shift.shift_start));
-        setDetailsOpen(true);
-      }
-    },
-    [formatDate]
-  );
+  const handleSelectEvent = useCallback((event) => {
+    if (event.resource?.shift) {
+      const shift = event.resource.shift;
+      setDetailsShifts([shift]);
+      setDetailsDateLabel(formatDate(shift.shift_start));
+      setLiveMessage(
+        `Opening shift details for ${formatDateForAccess(shift.shift_start)}.`
+      );
+      setDetailsOpen(true);
+    }
+  }, [formatDate]);
 
   const handleSelectSlot = useCallback(
     (slotInfo) => {
@@ -92,13 +108,59 @@ export default function VolunteerShiftCalendar({ shifts }) {
         const start = c.shift_start;
         return start >= dayStart && start <= dayEnd;
       });
-      if (shiftsOnDay.length > 0) {
-        setDetailsShifts(shiftsOnDay);
-        setDetailsDateLabel(formatDate(slotInfo.start));
-        setDetailsOpen(true);
-      }
+      const longLabel = formatDateForAccess(slotInfo.start);
+      const count = shiftsOnDay.length;
+      setLiveMessage(
+        count === 0
+          ? `Selected ${longLabel}. No open shelter shifts on this day.`
+          : `Selected ${longLabel}. ${count} open shelter shift${
+              count !== 1 ? 's' : ''
+            } on this day.`
+      );
+      setDetailsShifts(shiftsOnDay);
+      setDetailsDateLabel(formatDate(slotInfo.start));
+      setDetailsOpen(true);
     },
     [shifts, formatDate]
+  );
+
+  const handleDayKeyboardActivate = useCallback(
+    (date) => {
+      handleSelectSlot({ start: date, slots: [date], action: 'click' });
+    },
+    [handleSelectSlot]
+  );
+
+  const calendarComponents = useMemo(
+    () => ({
+      dateCellWrapper: function KeyboardDateCellWrapper({ children, value }) {
+        const count = getShiftCountForDay(shifts || [], value);
+        const longLabel = formatDateForAccess(value);
+        const ariaLabel =
+          count === 0
+            ? `${longLabel}. No open shifts. Press Enter or Space to view details.`
+            : `${longLabel}. ${count} open shift${
+                count !== 1 ? 's' : ''
+              }. Press Enter or Space to view details.`;
+        return (
+          <div
+            className="volunteer-date-cell-keyboard"
+            role="button"
+            tabIndex={0}
+            aria-label={ariaLabel}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleDayKeyboardActivate(value);
+              }
+            }}
+          >
+            {children}
+          </div>
+        );
+      },
+    }),
+    [shifts, handleDayKeyboardActivate]
   );
 
   const dayPropGetter = useCallback(
@@ -120,6 +182,13 @@ export default function VolunteerShiftCalendar({ shifts }) {
 
   return (
     <div className="volunteer-shift-calendar-wrapper">
+      <div
+        className="volunteer-calendar-sr-live"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {liveMessage}
+      </div>
       <div className="volunteer-calendar-legend">
         <span className="legend-item">
           <span className="legend-dot legend-one" /> 1 shift
@@ -137,6 +206,7 @@ export default function VolunteerShiftCalendar({ shifts }) {
           step={180}
           timeslots={1}
           className="volunteer-shift-calendar"
+          components={calendarComponents}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
           selectable
