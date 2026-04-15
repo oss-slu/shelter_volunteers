@@ -3,7 +3,7 @@ This module contains unit tests for the service_shift API.
 """
 import unittest
 import json
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from flask import Flask
 from application.rest.service_shifts import service_shift_bp
 from authentication.token import create_token
@@ -188,12 +188,14 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(data[0]["shelter_id"], test_shelter_id)
         mock_list_use_case.assert_called_once()
 
-    @patch("application.rest.service_shifts.service_shifts_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_patch_service_shift_updates_instructions(
-        self, mock_is_authorized, mock_service_shifts_repo
+        self, mock_is_authorized, mock_get_repo
     ):
         mock_is_authorized.return_value = True
+        mock_service_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_service_shifts_repo
         existing_shift = ServiceShift(
             shelter_id="12345",
             shift_start=10,
@@ -239,7 +241,9 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_is_authorized.return_value = True
         long_instructions = "x" * 501
 
-        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+        with patch("application.rest.service_shifts.get_service_shifts_repo") as mock_get:
+            mock_repo = MagicMock()
+            mock_get.return_value = mock_repo
             mock_repo.get_shift.return_value = ServiceShift(
                 shelter_id="12345",
                 shift_start=10,
@@ -259,7 +263,9 @@ class TestServiceShiftAPI(unittest.TestCase):
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_patch_service_shift_requires_start_and_end_together(self, mock_is_authorized):
         mock_is_authorized.return_value = True
-        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+        with patch("application.rest.service_shifts.get_service_shifts_repo") as mock_get:
+            mock_repo = MagicMock()
+            mock_get.return_value = mock_repo
             mock_repo.get_shift.return_value = ServiceShift(
                 shelter_id="12345",
                 shift_start=10,
@@ -279,7 +285,9 @@ class TestServiceShiftAPI(unittest.TestCase):
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_patch_service_shift_rejects_invalid_volunteer_counts(self, mock_is_authorized):
         mock_is_authorized.return_value = True
-        with patch("application.rest.service_shifts.service_shifts_repo") as mock_repo:
+        with patch("application.rest.service_shifts.get_service_shifts_repo") as mock_get:
+            mock_repo = MagicMock()
+            mock_get.return_value = mock_repo
             mock_repo.get_shift.return_value = ServiceShift(
                 shelter_id="12345",
                 shift_start=10,
@@ -302,6 +310,54 @@ class TestServiceShiftAPI(unittest.TestCase):
         data = json.loads(response.data.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data["message"], "Invalid data provided")
+
+    @patch("application.rest.service_shifts.commitments_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_delete_service_shift_removes_shift_and_commitments(
+        self, mock_is_authorized, mock_get_repo, mock_commitments_repo
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        existing_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            _id="abc123",
+        )
+        mock_shifts_repo.get_shift.return_value = existing_shift
+        mock_shifts_repo.delete_service_shift.return_value = True
+
+        response = self.client.delete(
+            "/shelters/12345/service_shifts/abc123",
+            headers=self.headers,
+        )
+
+        data = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data.get("message"), "Service shift deleted")
+        mock_commitments_repo.delete_commitments_for_service_shift.assert_called_once_with(
+            "abc123"
+        )
+        mock_shifts_repo.delete_service_shift.assert_called_once_with("abc123")
+
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_delete_service_shift_returns_404_when_missing(
+        self, mock_is_authorized, mock_get_repo
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        mock_shifts_repo.get_shift.return_value = None
+
+        response = self.client.delete(
+            "/shelters/12345/service_shifts/missingid",
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 404)
 
 if __name__ == "__main__":
     unittest.main()

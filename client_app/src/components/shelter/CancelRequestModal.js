@@ -3,9 +3,10 @@ import { ModalComponent } from './ModalComponent';
 import "../../styles/shelter/CancelRequestModal.css";
 
 export const CancelRequestModal = ({ isOpen, onClose, shift, onConfirmCancel }) => {
-  const handleConfirm = () => {
-    onConfirmCancel(shift); 
-    onClose(); 
+  const handleConfirm = async () => {
+    if (typeof onConfirmCancel === "function") {
+      await onConfirmCancel(shift);
+    }
   };
 
   const renderData = () => {

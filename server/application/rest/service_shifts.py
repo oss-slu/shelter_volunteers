@@ -29,6 +29,11 @@ service_shifts_repo = ServiceShiftsMongoRepo()
 user_info_repo = UserInfoRepository()
 
 
+def get_service_shifts_repo():
+    """Return the shared shifts repository (separate function so tests can patch it)."""
+    return service_shifts_repo
+
+
 def retrieve_service_shifts(http_request, shelter_id=None):
     filter_start_after_str = http_request.args.get("filter_start_after")
 
@@ -225,7 +230,8 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
-    existing_shift = service_shifts_repo.get_shift(shift_id)
+    shifts_repo = get_service_shifts_repo()
+    existing_shift = shifts_repo.get_shift(shift_id)
     if not existing_shift:
         return Response(
             json.dumps({"message": "Service shift not found"}),
@@ -252,7 +258,12 @@ def patch_service_shift(shelter_id, shift_id):
     invalid_fields = [k for k in shift_updates if k not in allowed_update_fields]
     if invalid_fields:
         return Response(
-            json.dumps({"message": f"Invalid update fields: {', '.join(invalid_fields)}"}),
+            json.dumps(
+                {
+                    "message": "Invalid update fields: "
+                    + ", ".join(invalid_fields),
+                }
+            ),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
@@ -300,7 +311,7 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
 
-    overlap = service_shifts_repo.check_shift_overlap(
+    overlap = shifts_repo.check_shift_overlap(
         shelter_id,
         shift_obj.shift_start,
         shift_obj.shift_end,
@@ -313,7 +324,7 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.CONFLICT],
         )
 
-    updated_shift = service_shifts_repo.update_service_shift(shift_id, updates)
+    updated_shift = shifts_repo.update_service_shift(shift_id, updates)
     if not updated_shift:
         return Response(
             json.dumps({"message": "Failed to update service shift"}),
@@ -323,6 +334,44 @@ def patch_service_shift(shelter_id, shift_id):
 
     return Response(
         json.dumps(updated_shift, cls=ServiceShiftJsonEncoder),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
+    )
+
+
+@service_shift_bp.route("/shelters/<shelter_id>/service_shifts/<shift_id>", methods=["DELETE"])
+@shelter_admin_permission_required
+def delete_service_shift(shelter_id, shift_id):
+    """
+    Deletes a service shift and all volunteer commitments for that shift.
+    Requires shelter admin permissions for the given shelter.
+    """
+    shifts_repo = get_service_shifts_repo()
+    existing_shift = shifts_repo.get_shift(shift_id)
+    if not existing_shift:
+        return Response(
+            json.dumps({"message": "Service shift not found"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND],
+        )
+
+    if str(existing_shift.shelter_id) != str(shelter_id):
+        return Response(
+            json.dumps({"message": "shelter_id in URL does not match shift shelter"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
+
+    commitments_repo.delete_commitments_for_service_shift(shift_id)
+    if not shifts_repo.delete_service_shift(shift_id):
+        return Response(
+            json.dumps({"message": "Failed to delete service shift"}),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR],
+        )
+
+    return Response(
+        json.dumps({"message": "Service shift deleted"}),
         mimetype="application/json",
         status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
     )

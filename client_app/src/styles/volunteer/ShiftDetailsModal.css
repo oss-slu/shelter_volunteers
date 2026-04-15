@@ -66,6 +66,22 @@
   padding: 1rem 1.25rem 1.25rem;
 }
 
+.shift-details-empty {
+  padding: 0.25rem 0 0;
+}
+
+.shift-details-empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color, #1f3b52);
+}
+
+.shift-details-empty-hint {
+  margin: 0;
+  line-height: 1.45;
+}
+
 .shift-details-list {
   list-style: none;
   margin: 0;

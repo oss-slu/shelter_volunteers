@@ -48,8 +48,10 @@ class ResponseSuccess:
 
 
 def build_response_from_invalid_request(invalid_request):
-    message = "\n".join(
-        [f"{err['parameter']}: {err['message']}"
-         for err in invalid_request.errors]
-    )
+    lines = []
+    for err in invalid_request.errors:
+        param = err["parameter"]
+        msg = err["message"]
+        lines.append(f"{param}: {msg}")
+    message = "\n".join(lines)
     return ResponseFailure(ResponseTypes.PARAMETER_ERROR, message)

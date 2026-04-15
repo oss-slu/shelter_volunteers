@@ -29,4 +29,3 @@ class ShelterVolunteer:
         representation of the object
         """
         return dataclasses.asdict(self)
-    
