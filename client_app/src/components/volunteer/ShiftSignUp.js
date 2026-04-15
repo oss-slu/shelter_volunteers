@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useId } from 'react';
+import { useState, useMemo, useEffect, useId, useCallback } from 'react';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -45,24 +45,32 @@ function VolunteerShiftSignup(){
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
   const user = getUser();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const sheltersData = await shelterAPI.getShelters();
-        const futureShifts = await serviceShiftAPI.getFutureShifts();
-        const commitments = await serviceCommitmentAPI.getFutureCommitments();
 
-        setShelters(sheltersData);
-        setShifts(futureShifts);
-        setCommitments(commitments);
-        setLoading(false);
+  const loadShiftPageData = useCallback(async () => {
+    const sheltersData = await shelterAPI.getShelters();
+    const futureShifts = await serviceShiftAPI.getFutureShifts();
+    const commitments = await serviceCommitmentAPI.getFutureCommitments();
+    setShelters(sheltersData);
+    setShifts(futureShifts);
+    setCommitments(commitments);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      try {
+        await loadShiftPageData();
       } catch (error) {
         console.error("fetch error:", error);
-        setLoading(false);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
-    fetchData();
-  }, [results]);
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [loadShiftPageData]);
   
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
@@ -253,6 +261,7 @@ function VolunteerShiftSignup(){
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
+      await loadShiftPageData();
     }
     catch (error) {
       console.error("Error submitting shifts:", error);
