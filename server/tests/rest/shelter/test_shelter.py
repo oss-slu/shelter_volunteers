@@ -2,26 +2,32 @@
 This module contains tests for the shelter REST API.
 """
 import json
-import pytest
+from unittest.mock import ANY, patch
 
-from unittest.mock import patch
+import pytest
 from flask import Flask
+
+from authentication.token import create_token
 from application.rest.shelter import shelter_blueprint
 from domains.shelter.shelter import Shelter
-from authentication.token import create_token
+from domains.service_shift import ServiceShift
 
 test_secret = "test_secret"
+
+
 def create_test_app():
     app = Flask(__name__)
     app.register_blueprint(shelter_blueprint)
     app.config["JWT_SECRET"] = test_secret
     return app
 
+
 @pytest.fixture
 def client():
     app = create_test_app()
     app.config["TESTING"] = True
     return app.test_client()
+
 
 # pylint: disable=unused-argument
 # pylint: disable=redefined-outer-name
@@ -30,8 +36,8 @@ def client():
 def test_post_shelter(
     mock_is_authorized,
     mock_shelter_add_use_case,
-    client
-    ):
+    client,
+):
     mock_is_authorized.return_value = True
     mock_response = {
         "id": "SOME_ID",
@@ -55,62 +61,61 @@ def test_post_shelter(
 
     token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
-        "Authorization": f"{token}"
+        "Authorization": f"{token}",
     }
 
     response = client.post(
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
 
     assert response.status_code == 200
     assert response.json == mock_response
 
 @patch("application.rest.system_admin_permission_required.is_authorized")
-def test_post_shelter_missing_required_fields(
-    mock_is_authorized, client):
+def test_post_shelter_missing_required_fields(mock_is_authorized, client):
     mock_is_authorized.return_value = True
     request_data = {
-        "name": "Test shelter" #missing address field
+        "name": "Test shelter",  # missing address field
     }
     token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
-        "Authorization": f"{token}"
+        "Authorization": f"{token}",
     }
     response = client.post(
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
-    assert response.status_code == 400 #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "address" in response.json["message"]
     request_data = {
         "name": "Test shelter",
         "address": {
             "city": "St.Louis",
-            "state": "MO", #missing street1
-        }
+            "state": "MO",  # missing street1
+        },
     }
 
     response = client.post(
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
-    assert response.status_code == 400 #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "street1" in response.json["message"]
     request_data = {
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "state": "MO", #missing city
-        }
+            "state": "MO",  # missing city
+        },
     }
     response = client.post(
         "/shelters",
@@ -118,23 +123,23 @@ def test_post_shelter_missing_required_fields(
         content_type="application/json",
         headers=headers
     )
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "city" in response.json["message"]
     request_data = {
         "name": "Test shelter",
         "address": {
             "street1": "123 Main",
-            "city": "St.Louis", #missing state
-        }
+            "city": "St.Louis",  # missing state
+        },
     }
     response = client.post(
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "state" in response.json["message"]
 
@@ -168,10 +173,7 @@ def test_get_shelter(mock_shelter_list_use_case, client):
             },
         },
     ]
-    mock_shelters = [
-        Shelter.from_dict(shelter)
-        for shelter in mock_shelters_json
-    ]
+    mock_shelters = [Shelter.from_dict(shelter) for shelter in mock_shelters_json]
 
     mock_shelter_list_use_case.return_value = mock_shelters
     response = client.get("/shelters")
@@ -179,5 +181,115 @@ def test_get_shelter(mock_shelter_list_use_case, client):
     parsed_response = json.loads(raw_data)
     assert response.status_code == 200
     assert parsed_response == mock_shelters_json
+
+
+@patch("application.rest.shelter.time.time", return_value=1760000000)
+@patch("application.rest.shelter.service_shifts_list_use_case")
+@patch("application.rest.shelter.shelter_list_use_case")
+def test_get_open_shelters_grouped_by_date(
+    mock_shelter_list_use_case,
+    mock_service_shifts_list_use_case,
+    mock_time,
+    client,
+):
+    assert mock_time is not None
+    mock_shelters = [
+        Shelter.from_dict({
+            "_id": "s1",
+            "name": "Shelter One",
+            "address": {
+                "street1": "456 Elm St",
+                "street2": "",
+                "city": "Springfield",
+                "state": "IL",
+                "postal_code": "62701",
+                "country": "USA",
+                "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
+            },
+        }),
+        Shelter.from_dict({
+            "_id": "s2",
+            "name": "Shelter Two",
+            "address": {
+                "street1": "789 Oak St",
+                "street2": "",
+                "city": "Chicago",
+                "state": "IL",
+                "postal_code": "60616",
+                "country": "USA",
+                "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
+            },
+        }),
+    ]
+    for shelter, shelter_id in zip(mock_shelters, ["s1", "s2"]):
+        shelter.set_id(shelter_id)
+
+    mock_shifts = [
+        ServiceShift(
+            shelter_id="s1",
+            shift_start=1776470400000,
+            shift_end=1776474000000,
+        ),
+        ServiceShift(
+            shelter_id="s1",
+            shift_start=1776477600000,
+            shift_end=1776481200000,
+        ),
+        ServiceShift(
+            shelter_id="s2",
+            shift_start=1776384000000,
+            shift_end=1776387600000,
+        ),
+    ]
+
+    mock_shelter_list_use_case.return_value = mock_shelters
+    mock_service_shifts_list_use_case.return_value = mock_shifts
+
+    response = client.get("/shelters/open")
+    parsed_response = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert parsed_response == [
+        {
+            "date": "2026-04-18",
+            "shelters": [
+                {
+                    "_id": "s1",
+                    "name": "Shelter One",
+                    "address": {
+                        "street1": "456 Elm St",
+                        "street2": "",
+                        "city": "Springfield",
+                        "state": "IL",
+                        "postal_code": "62701",
+                        "country": "USA",
+                        "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
+                    },
+                },
+            ],
+        },
+        {
+            "date": "2026-04-17",
+            "shelters": [
+                {
+                    "_id": "s2",
+                    "name": "Shelter Two",
+                    "address": {
+                        "street1": "789 Oak St",
+                        "street2": "",
+                        "city": "Chicago",
+                        "state": "IL",
+                        "postal_code": "60616",
+                        "country": "USA",
+                        "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
+                    },
+                },
+            ],
+        },
+    ]
+    mock_service_shifts_list_use_case.assert_called_once_with(
+        ANY,
+        filter_start_after=1760000000000,
+    )
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
