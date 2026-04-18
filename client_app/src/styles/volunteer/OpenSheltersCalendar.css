@@ -15,6 +15,14 @@
   padding: 1.25rem;
 }
 
+.open-shelters-calendar__error {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  padding: 1.25rem;
+}
+
 .open-shelters-calendar__results-title {
   margin: 0 0 0.5rem;
   color: #0f172a;

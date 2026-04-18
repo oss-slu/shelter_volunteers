@@ -11,9 +11,11 @@ function OpenSheltersCalendar() {
   const [shelters, setShelters] = useState([]);
   const [futureShifts, setFutureShifts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     const fetchCalendarData = async () => {
+      setLoadError('');
       try {
         const [shelterData, shiftData] = await Promise.all([
           shelterAPI.getShelters(),
@@ -24,6 +26,7 @@ function OpenSheltersCalendar() {
         setFutureShifts(shiftData);
       } catch (error) {
         console.error('Error loading open shelters calendar:', error);
+        setLoadError('We could not load the open shelters list right now. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -49,6 +52,13 @@ function OpenSheltersCalendar() {
           Browse upcoming open shelters grouped by date in descending order.
         </p>
       </div>
+      {loadError && (
+        <div className="open-shelters-calendar__error" role="alert">
+          <h2 className="open-shelters-calendar__results-title">Unable to Load Shelters</h2>
+          <p className="tagline-small">{loadError}</p>
+        </div>
+      )}
+      {!loadError && (
       <div className="open-shelters-calendar__results open-shelters-calendar__results--list">
         <h2 className="open-shelters-calendar__results-title">Upcoming Open Shelters</h2>
         <p className="tagline-small">
@@ -76,6 +86,7 @@ function OpenSheltersCalendar() {
           ))}
         </div>
       </div>
+      )}
     </section>
   );
 }
