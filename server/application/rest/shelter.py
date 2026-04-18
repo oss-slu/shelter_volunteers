@@ -46,20 +46,34 @@ def get_shelters():
 @shelter_blueprint.route("/shelters/open", methods=["GET"])
 def get_open_shelters_grouped_by_date():
     """Return future open shelters grouped by date in descending order."""
-    shelters = shelter_list_use_case(repo)
-    current_time_ms = int(time.time() * 1000)
-    service_shifts_repo = ServiceShiftsMongoRepo()
-    service_shifts = service_shifts_list_use_case(
-        service_shifts_repo,
-        filter_start_after=current_time_ms,
-    )
-    grouped_shelters = list_open_shelters_by_date_use_case(shelters, service_shifts)
+    try:
+        shelters = shelter_list_use_case(repo)
+        current_time_ms = int(time.time() * 1000)
+        service_shifts_repo = ServiceShiftsMongoRepo()
+        service_shifts = service_shifts_list_use_case(
+            service_shifts_repo,
+            filter_start_after=current_time_ms,
+        )
+        grouped_shelters = list_open_shelters_by_date_use_case(
+            shelters,
+            service_shifts
+        )
 
-    return Response(
-        json.dumps(grouped_shelters),
-        mimetype="application/json",
-        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
-    )
+        return Response(
+            json.dumps(grouped_shelters),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+        )
+    except Exception as error:  # pylint: disable=broad-except
+        error_response = {
+            "success": False,
+            "message": f"Unable to load open shelters: {error}"
+        }
+        return Response(
+            json.dumps(error_response),
+            mimetype="application/json",
+            status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SYSTEM_ERROR]
+        )
 
 
 @shelter_blueprint.route("/shelters/<shelter_id>", methods=["GET"])

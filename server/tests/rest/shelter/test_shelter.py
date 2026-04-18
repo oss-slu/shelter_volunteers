@@ -291,5 +291,21 @@ def test_get_open_shelters_grouped_by_date(
         ANY,
         filter_start_after=1760000000000,
     )
+
+
+@patch("application.rest.shelter.shelter_list_use_case")
+def test_get_open_shelters_grouped_by_date_returns_structured_error(
+    mock_shelter_list_use_case,
+    client,
+):
+    mock_shelter_list_use_case.side_effect = RuntimeError("database unavailable")
+
+    response = client.get("/shelters/open")
+
+    assert response.status_code == 500
+    assert response.json == {
+        "success": False,
+        "message": "Unable to load open shelters: database unavailable",
+    }
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
