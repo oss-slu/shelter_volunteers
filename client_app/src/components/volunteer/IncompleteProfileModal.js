@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AlertCircle, User, X } from "lucide-react";
 import "../../styles/volunteer/IncompleteProfileModal.css";
 
@@ -8,15 +8,22 @@ import "../../styles/volunteer/IncompleteProfileModal.css";
  * Modal component that appears when a volunteer logs in with an incomplete profile.
  * Prompts the user to complete their profile information (firstName, lastName, phone).
  */
+const PROFILE_PATH = "/volunteer-dashboard/profile";
+
 const IncompleteProfileModal = ({ isOpen, onClose, onNavigateToProfile }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const alreadyOnProfile = location.pathname === PROFILE_PATH;
 
   const handleCompleteProfile = () => {
     onClose();
+    if (alreadyOnProfile) {
+      return;
+    }
     if (onNavigateToProfile) {
       onNavigateToProfile();
     } else {
-      navigate("/volunteer-dashboard/profile");
+      navigate(PROFILE_PATH);
     }
   };
 
