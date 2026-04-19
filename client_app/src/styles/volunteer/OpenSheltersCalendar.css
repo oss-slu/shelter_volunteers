@@ -1,0 +1,101 @@
+.open-shelters-calendar {
+  width: 100%;
+  text-align: left;
+}
+
+.open-shelters-calendar__header {
+  margin-bottom: 1.5rem;
+}
+
+.open-shelters-calendar__results {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  padding: 1.25rem;
+}
+
+.open-shelters-calendar__results-title {
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}
+
+.open-shelters-calendar__results--list {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.open-shelters-calendar__groups {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.open-shelters-calendar__group {
+  border: 1px solid #dbe4ee;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 1rem;
+}
+
+.open-shelters-calendar__group-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  margin-bottom: 0.85rem;
+}
+
+.open-shelters-calendar__group-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.open-shelters-calendar__group-count {
+  color: #516072;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.open-shelters-calendar__cards {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.open-shelters-calendar__card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.open-shelters-calendar__card .shelter-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.45rem;
+}
+
+.open-shelters-calendar__card .shelter-location a {
+  color: #1d4ed8;
+  text-decoration: none;
+  line-height: 1.6;
+}
+
+.open-shelters-calendar__card .shelter-location a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .open-shelters-calendar__results {
+    padding: 1rem;
+  }
+
+  .open-shelters-calendar__group-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+}
