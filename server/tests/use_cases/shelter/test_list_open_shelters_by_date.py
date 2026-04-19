@@ -1,6 +1,7 @@
 """
 Unit tests for the ``list_open_shelters_by_date`` use case.
 """
+from datetime import datetime, timezone
 from unittest import mock
 
 from domains.service_shift import ServiceShift
@@ -39,8 +40,6 @@ def _shift(shelter_id, start_iso_ms, end_iso_ms):
 
 def _ms(year, month, day, hour=12):
     """Return ms for the given UTC moment without depending on any timezone."""
-    from datetime import datetime, timezone
-
     return int(
         datetime(year, month, day, hour, tzinfo=timezone.utc).timestamp() * 1000
     )
