@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AddShelterForm from "./AddShelterForm";
 import ShelterList from "./ShelterList";
+import OpenSheltersByDate from "./OpenSheltersByDate";
 import "../../styles/admin/AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -19,10 +20,16 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("view")}>
           View All Shelters
         </button>
+        <button
+          className={`tab-button ${activeTab === "open" ? "active" : ""}`}
+          onClick={() => setActiveTab("open")}>
+          Open Shelters by Date
+        </button>
       </div>
       <div className="tab-content">
         {activeTab === "add" && <AddShelterForm />}
         {activeTab === "view" && <ShelterList />}
+        {activeTab === "open" && <OpenSheltersByDate />}
       </div>
     </div>
   );
