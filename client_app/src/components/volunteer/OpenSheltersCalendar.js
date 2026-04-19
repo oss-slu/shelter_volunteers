@@ -59,33 +59,38 @@ function OpenSheltersCalendar() {
         </div>
       )}
       {!loadError && (
-      <div className="open-shelters-calendar__results open-shelters-calendar__results--list">
-        <h2 className="open-shelters-calendar__results-title">Upcoming Open Shelters</h2>
-        <p className="tagline-small">
-          {openShelterGroups.length === 0
-            ? 'No upcoming open shelters are currently scheduled.'
-            : `${openShelterGroups.length} date${openShelterGroups.length === 1 ? '' : 's'} listed.`}
-        </p>
-        <div className="open-shelters-calendar__groups">
-          {openShelterGroups.map((group) => (
-            <section key={group.date.toISOString()} className="open-shelters-calendar__group">
-              <div className="open-shelters-calendar__group-header">
-                <h3 className="open-shelters-calendar__group-title">{formatDate(group.date)}</h3>
-                <span className="open-shelters-calendar__group-count">
-                  {group.shelters.length} shelter{group.shelters.length === 1 ? '' : 's'} open
-                </span>
-              </div>
-              <div className="open-shelters-calendar__cards">
-                {group.shelters.map((shelter) => (
-                  <article key={`${group.date.toISOString()}-${shelter._id}`} className="open-shelters-calendar__card">
-                    <ShelterInfo shelter={shelter} showLocation={Boolean(shelter?.address)} />
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
+        <div className="open-shelters-calendar__results open-shelters-calendar__results--list">
+          <h2 className="open-shelters-calendar__results-title">Upcoming Open Shelters</h2>
+          <p className="tagline-small">
+            {openShelterGroups.length === 0
+              ? 'No upcoming open shelters are currently scheduled.'
+              : `${openShelterGroups.length} date${openShelterGroups.length === 1 ? '' : 's'} listed.`}
+          </p>
+          <div className="open-shelters-calendar__groups">
+            {openShelterGroups.map((group) => (
+              <section key={group.date.toISOString()} className="open-shelters-calendar__group">
+                <div className="open-shelters-calendar__group-header">
+                  <h3 className="open-shelters-calendar__group-title">
+                    {formatDate(group.date)}
+                  </h3>
+                  <span className="open-shelters-calendar__group-count">
+                    {group.shelters.length} shelter{group.shelters.length === 1 ? '' : 's'} open
+                  </span>
+                </div>
+                <div className="open-shelters-calendar__cards">
+                  {group.shelters.map((shelter) => (
+                    <article
+                      key={`${group.date.toISOString()}-${shelter._id}`}
+                      className="open-shelters-calendar__card"
+                    >
+                      <ShelterInfo shelter={shelter} showLocation={Boolean(shelter?.address)} />
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
-      </div>
       )}
     </section>
   );
