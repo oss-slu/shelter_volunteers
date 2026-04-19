@@ -67,7 +67,7 @@ def get_open_shelters_grouped_by_date():
     except Exception as error:  # pylint: disable=broad-except
         error_response = {
             "success": False,
-            "message": f"Unable to load open shelters: {error}"
+            "message": "Unable to load open shelters."
         }
         return Response(
             json.dumps(error_response),
