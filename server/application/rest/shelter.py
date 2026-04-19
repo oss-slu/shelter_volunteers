@@ -64,7 +64,7 @@ def get_open_shelters_grouped_by_date():
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
-    except Exception as error:  # pylint: disable=broad-except
+    except Exception:  # pylint: disable=broad-exception-caught
         error_response = {
             "success": False,
             "message": "Unable to load open shelters."

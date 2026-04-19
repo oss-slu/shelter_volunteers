@@ -305,7 +305,7 @@ def test_get_open_shelters_grouped_by_date_returns_structured_error(
     assert response.status_code == 500
     assert response.json == {
         "success": False,
-        "message": "Unable to load open shelters: database unavailable",
+        "message": "Unable to load open shelters.",
     }
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name
