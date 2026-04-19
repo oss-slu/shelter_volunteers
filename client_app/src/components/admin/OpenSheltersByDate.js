@@ -1,19 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { shelterAPI } from "../../api/shelter";
-import { serviceShiftAPI } from "../../api/serviceShift";
 import "../../styles/admin/OpenSheltersByDate.css";
 
-// Build a stable local-day key (YYYY-MM-DD) for grouping, plus a human-readable label.
-const buildDateKey = (timestamp) => {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
-const formatDateLabel = (timestamp) => {
-  return new Date(timestamp).toLocaleDateString("en-US", {
+const formatDateLabel = (dateKey) => {
+  // Build a midday Date so DST transitions never flip the displayed weekday.
+  const date = new Date(`${dateKey}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return dateKey;
+  return date.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -34,8 +27,7 @@ const formatLocation = (shelter) => {
 };
 
 const OpenSheltersByDate = () => {
-  const [shelters, setShelters] = useState([]);
-  const [shifts, setShifts] = useState([]);
+  const [groupedByDate, setGroupedByDate] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,13 +35,11 @@ const OpenSheltersByDate = () => {
     let cancelled = false;
     const loadData = async () => {
       try {
-        const [shelterData, shiftData] = await Promise.all([
-          shelterAPI.getShelters(),
-          serviceShiftAPI.getFutureShifts(),
-        ]);
+        const data = await shelterAPI.getOpenSheltersByDate({
+          tzOffsetMinutes: new Date().getTimezoneOffset(),
+        });
         if (cancelled) return;
-        setShelters(Array.isArray(shelterData) ? shelterData : []);
-        setShifts(Array.isArray(shiftData) ? shiftData : []);
+        setGroupedByDate(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
         if (cancelled) return;
@@ -65,48 +55,12 @@ const OpenSheltersByDate = () => {
     };
   }, []);
 
-  const shelterMap = useMemo(() => {
-    return shelters.reduce((acc, shelter) => {
-      acc[shelter._id || shelter.id] = shelter;
-      return acc;
-    }, {});
-  }, [shelters]);
-
-  // Group shelters by the local date their shifts start on. A shelter is
-  // considered "open" on a given date if it has at least one shift starting
-  // that day; we de-duplicate per (date, shelter).
-  const groupedByDate = useMemo(() => {
-    const groups = new Map();
-    shifts.forEach((shift) => {
-      const shelter = shelterMap[shift.shelter_id];
-      if (!shelter) return;
-      const dateKey = buildDateKey(shift.shift_start);
-      if (!groups.has(dateKey)) {
-        groups.set(dateKey, {
-          dateKey,
-          label: formatDateLabel(shift.shift_start),
-          sortValue: new Date(`${dateKey}T00:00:00`).getTime(),
-          shelters: new Map(),
-        });
-      }
-      const bucket = groups.get(dateKey);
-      const shelterId = shelter._id || shelter.id;
-      if (!bucket.shelters.has(shelterId)) {
-        bucket.shelters.set(shelterId, shelter);
-      }
-    });
-    return Array.from(groups.values())
-      .map((group) => ({
-        ...group,
-        shelters: Array.from(group.shelters.values()).sort((a, b) =>
-          (a.name || "").localeCompare(b.name || "")
-        ),
-      }))
-      .sort((a, b) => b.sortValue - a.sortValue);
-  }, [shifts, shelterMap]);
-
   const totalOpenInstances = useMemo(
-    () => groupedByDate.reduce((sum, group) => sum + group.shelters.length, 0),
+    () =>
+      groupedByDate.reduce(
+        (sum, group) => sum + (group.shelters ? group.shelters.length : 0),
+        0
+      ),
     [groupedByDate]
   );
 
@@ -154,14 +108,14 @@ const OpenSheltersByDate = () => {
         <div className="open-shelters-list" role="list">
           {groupedByDate.map((group) => (
             <section
-              key={group.dateKey}
+              key={group.date}
               className="date-section"
               role="listitem"
-              aria-label={`Shelters open on ${group.label}`}
+              aria-label={`Shelters open on ${formatDateLabel(group.date)}`}
             >
-              <div className="date-header">{group.label}</div>
+              <div className="date-header">{formatDateLabel(group.date)}</div>
               <ul className="shelter-entries">
-                {group.shelters.map((shelter) => {
+                {(group.shelters || []).map((shelter) => {
                   const id = shelter._id || shelter.id;
                   const location = formatLocation(shelter);
                   return (
