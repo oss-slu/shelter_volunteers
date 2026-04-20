@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { shelterAPI } from '../../api/shelter';
+import { serviceShiftAPI } from '../../api/serviceShift';
 import Loading from '../Loading';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { ShelterInfo } from './ShelterInfo';
+import { getOpenSheltersGroupedByDate } from '../../utils/openShelterCalendar';
 import '../../styles/volunteer/OpenSheltersCalendar.css';
 
 function OpenSheltersCalendar() {
-  const [openShelterGroups, setOpenShelterGroups] = useState([]);
+  const [shelters, setShelters] = useState([]);
+  const [futureShifts, setFutureShifts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
@@ -14,8 +17,13 @@ function OpenSheltersCalendar() {
     const fetchCalendarData = async () => {
       setLoadError('');
       try {
-        const groupedShelters = await shelterAPI.getOpenShelters();
-        setOpenShelterGroups(groupedShelters);
+        const [shelterData, shiftData] = await Promise.all([
+          shelterAPI.getShelters(),
+          serviceShiftAPI.getFutureShifts(),
+        ]);
+
+        setShelters(shelterData);
+        setFutureShifts(shiftData);
       } catch (error) {
         console.error('Error loading open shelters calendar:', error);
         setLoadError('We could not load the open shelters list right now. Please try again.');
@@ -26,6 +34,11 @@ function OpenSheltersCalendar() {
 
     fetchCalendarData();
   }, []);
+
+  const openShelterGroups = useMemo(
+    () => getOpenSheltersGroupedByDate(shelters, futureShifts),
+    [futureShifts, shelters]
+  );
 
   if (loading) {
     return <Loading />;
@@ -55,16 +68,21 @@ function OpenSheltersCalendar() {
           </p>
           <div className="open-shelters-calendar__groups">
             {openShelterGroups.map((group) => (
-              <section key={group.date} className="open-shelters-calendar__group">
+              <section key={group.date.toISOString()} className="open-shelters-calendar__group">
                 <div className="open-shelters-calendar__group-header">
-                  <h3 className="open-shelters-calendar__group-title">{formatDate(group.date)}</h3>
+                  <h3 className="open-shelters-calendar__group-title">
+                    {formatDate(group.date)}
+                  </h3>
                   <span className="open-shelters-calendar__group-count">
                     {group.shelters.length} shelter{group.shelters.length === 1 ? '' : 's'} open
                   </span>
                 </div>
                 <div className="open-shelters-calendar__cards">
                   {group.shelters.map((shelter) => (
-                    <article key={`${group.date}-${shelter._id}`} className="open-shelters-calendar__card">
+                    <article
+                      key={`${group.date.toISOString()}-${shelter._id}`}
+                      className="open-shelters-calendar__card"
+                    >
                       <ShelterInfo shelter={shelter} showLocation={Boolean(shelter?.address)} />
                     </article>
                   ))}
