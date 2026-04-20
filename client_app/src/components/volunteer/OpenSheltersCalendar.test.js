@@ -1,10 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import OpenSheltersCalendar from './OpenSheltersCalendar';
 import { shelterAPI } from '../../api/shelter';
+import { serviceShiftAPI } from '../../api/serviceShift';
 
 jest.mock('../../api/shelter', () => ({
   shelterAPI: {
     getShelters: jest.fn(),
+  },
+}));
+
+jest.mock('../../api/serviceShift', () => ({
+  serviceShiftAPI: {
+    getFutureShifts: jest.fn(),
   },
 }));
 
@@ -19,12 +26,12 @@ describe('OpenSheltersCalendar', () => {
     jest.clearAllMocks();
   });
 
-  it('renders grouped open shelters from the backend endpoint', async () => {
+  it('renders grouped open shelters from shelter and shift data', async () => {
     shelterAPI.getShelters.mockResolvedValue([
-      {
-        date: '2026-04-18',
-        shelters: [{ _id: 's1', name: 'Shelter One' }],
-      },
+      { _id: 's1', name: 'Shelter One' },
+    ]);
+    serviceShiftAPI.getFutureShifts.mockResolvedValue([
+      { shelter_id: 's1', shift_start: new Date('2026-04-18T08:00:00').getTime() },
     ]);
 
     render(<OpenSheltersCalendar />);
@@ -34,12 +41,14 @@ describe('OpenSheltersCalendar', () => {
     );
 
     expect(shelterAPI.getShelters).toHaveBeenCalledTimes(1);
+    expect(serviceShiftAPI.getFutureShifts).toHaveBeenCalledTimes(1);
     expect(screen.getByText('Shelter One')).toBeInTheDocument();
     expect(screen.getByText('1 date listed.')).toBeInTheDocument();
   });
 
   it('renders an error message when the backend request fails', async () => {
     shelterAPI.getShelters.mockRejectedValue(new Error('Request failed'));
+    serviceShiftAPI.getFutureShifts.mockResolvedValue([]);
 
     render(<OpenSheltersCalendar />);
 
