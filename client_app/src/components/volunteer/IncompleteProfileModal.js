@@ -17,9 +17,6 @@ const IncompleteProfileModal = ({ isOpen, onClose, onNavigateToProfile }) => {
 
   const handleCompleteProfile = () => {
     onClose();
-    if (alreadyOnProfile) {
-      return;
-    }
     if (onNavigateToProfile) {
       onNavigateToProfile();
     } else {
@@ -57,14 +54,26 @@ const IncompleteProfileModal = ({ isOpen, onClose, onNavigateToProfile }) => {
           <User size={18} className="info-icon" />
           <span>Required: First Name, Last Name, and Phone Number</span>
         </div>
+        {alreadyOnProfile && (
+          <p className="modal-hint" role="status">
+            You're already on the contact information page. Use the form below, then save your
+            changes.
+          </p>
+        )}
       </div>
       <div className="modal-actions">
-        <button className="btn-secondary" onClick={handleRemindLater}>
+        <button type="button" className="btn-secondary" onClick={handleRemindLater}>
           Remind Me Later
         </button>
-        <button className="btn-primary" onClick={handleCompleteProfile}>
-          Complete Profile
-        </button>
+        {alreadyOnProfile ? (
+          <button type="button" className="btn-primary" onClick={onClose}>
+            Got it
+          </button>
+        ) : (
+          <button type="button" className="btn-primary" onClick={handleCompleteProfile}>
+            Complete Profile
+          </button>
+        )}
       </div>
     </Modal>
   );
