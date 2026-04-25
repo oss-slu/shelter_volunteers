@@ -1,11 +1,10 @@
 import { patchRequest } from "./fetchClient";
 import httpClient from "./httpClient";
 
-/**
- * Fetches the current volunteer's profile data (Name, Email, Contact Number).
- * @returns {Promise<Object>} The volunteer profile data.
- */
-export const getUserProfile = async () => {
+/** Coalesce overlapping getUserProfile calls (DashboardLayout + Profile + Strict Mode). */
+let getUserProfileInflight = null;
+
+const fetchUserProfileOnce = () => {
   return httpClient
     .get("/volunteer/profile")
     .then((response) => response.data)
@@ -16,7 +15,21 @@ export const getUserProfile = async () => {
       phone: data.phone_number?.toString() ?? "",
       skills: data.skills?.join(", ") ?? "",
     }))
-    .catch(() => null);
+    .catch(() => null)
+    .finally(() => {
+      getUserProfileInflight = null;
+    });
+};
+
+/**
+ * Fetches the current volunteer's profile data (Name, Email, Contact Number).
+ * @returns {Promise<Object>} The volunteer profile data.
+ */
+export const getUserProfile = () => {
+  if (!getUserProfileInflight) {
+    getUserProfileInflight = fetchUserProfileOnce();
+  }
+  return getUserProfileInflight;
 };
 
 /**

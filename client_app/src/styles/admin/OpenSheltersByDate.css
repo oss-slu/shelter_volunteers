@@ -1,0 +1,104 @@
+.open-shelters-container {
+  padding: 20px;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.open-shelters-header {
+  margin-bottom: 16px;
+}
+
+.open-shelters-container h2 {
+  margin: 0 0 6px 0;
+  color: #333;
+}
+
+.open-shelters-subtitle {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.open-shelters-meta {
+  margin: 8px 0 0 0;
+  color: #1e4c5b;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.open-shelters-container .loading,
+.open-shelters-container .error-message,
+.open-shelters-container .no-shelters {
+  padding: 20px;
+  text-align: center;
+}
+
+.open-shelters-container .error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-radius: 4px;
+}
+
+.open-shelters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.open-shelters-list .date-section {
+  margin-bottom: 0;
+  padding: 15px;
+  border: 2px solid #1e4c5b;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.open-shelters-list .date-header {
+  font-size: 1.15em;
+  font-weight: bold;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border: 2px solid #1e4c5b;
+  border-radius: 5px;
+  display: inline-block;
+  color: #1e4c5b;
+  background-color: #f0f8fb;
+}
+
+.shelter-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shelter-entry {
+  background-color: #ffffff;
+  border: 1px solid #d8e1e6;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.shelter-entry-name {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 2px;
+}
+
+.shelter-entry-location {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .open-shelters-container {
+    padding: 12px;
+    max-height: none;
+  }
+
+  .open-shelters-list .date-section {
+    padding: 12px;
+  }
+}
