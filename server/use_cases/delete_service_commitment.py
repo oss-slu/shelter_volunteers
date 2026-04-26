@@ -6,6 +6,7 @@ If a waitlist repository (and shifts repository) is supplied, the next
 eligible volunteer on the waitlist is promoted into a commitment.
 """
 from responses import ResponseTypes
+from use_cases.waitlist.promote_from_waitlist import promote_from_waitlist
 
 
 def delete_service_commitment(
@@ -33,18 +34,12 @@ def delete_service_commitment(
         if result:
             message = "Commitment deleted successfully"
             if waitlist_repo is not None and shifts_repo is not None:
-                try:
-                    from use_cases.waitlist.promote_from_waitlist import (
-                        promote_from_waitlist,
-                    )
-                    response["promoted"] = promote_from_waitlist(
-                        waitlist_repo,
-                        commitments_repo,
-                        shifts_repo,
-                        commitment.service_shift_id,
-                    )
-                except Exception:  # pylint: disable=broad-except
-                    response["promoted"] = []
+                response["promoted"] = promote_from_waitlist(
+                    waitlist_repo,
+                    commitments_repo,
+                    shifts_repo,
+                    commitment.service_shift_id,
+                )
         else:
             response_code = ResponseTypes.SYSTEM_ERROR
             message = "Failed to delete commitment"
