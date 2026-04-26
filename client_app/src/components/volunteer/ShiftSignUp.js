@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useId } from 'react';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
+import { waitlistAPI } from '../../api/waitlist';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
@@ -10,6 +11,23 @@ import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
 import Loading from '../Loading';
 import { Calendar } from 'lucide-react';
+
+/**
+ * Loads data for the shift signup view. Kept at module scope so mount and post–sign-up
+ * refresh share one implementation without useEffect depending on a hook callback.
+ */
+async function loadShiftSignupPageData() {
+  const sheltersData = await shelterAPI.getShelters();
+  const futureShifts = await serviceShiftAPI.getFutureShifts();
+  const commitments = await serviceCommitmentAPI.getFutureCommitments();
+  let waitlistEntries = [];
+  try {
+    waitlistEntries = await waitlistAPI.getMine();
+  } catch (err) {
+    console.error('Failed to load waitlist entries:', err);
+  }
+  return { sheltersData, futureShifts, commitments, waitlistEntries };
+}
 
 /** Filter shifts to those starting on the given YYYY-MM-DD (local calendar day). */
 function filterShiftsByLocalDate(shifts, dateStr) {
@@ -35,6 +53,9 @@ function VolunteerShiftSignup(){
   const [shelters, setShelters] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [commitments, setCommitments] = useState([]);
+  const [waitlistEntries, setWaitlistEntries] = useState([]);
+  const [waitlistBusyShifts, setWaitlistBusyShifts] = useState(new Set());
+  const [waitlistMessage, setWaitlistMessage] = useState(null);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [sortBy, setSortBy] = useState('date');
   /** YYYY-MM-DD from input type="date", or '' to show all days */
@@ -45,24 +66,37 @@ function VolunteerShiftSignup(){
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
   const user = getUser();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const sheltersData = await shelterAPI.getShelters();
-        const futureShifts = await serviceShiftAPI.getFutureShifts();
-        const commitments = await serviceCommitmentAPI.getFutureCommitments();
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const {
+          sheltersData,
+          futureShifts,
+          commitments,
+          waitlistEntries: nextWaitlist,
+        } = await loadShiftSignupPageData();
+        if (cancelled) return;
         setShelters(sheltersData);
         setShifts(futureShifts);
         setCommitments(commitments);
-        setLoading(false);
+        setWaitlistEntries(nextWaitlist || []);
       } catch (error) {
         console.error("fetch error:", error);
-        setLoading(false);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    fetchData();
-  }, [results]);
+  }, []);
+
+  const waitlistShiftIds = useMemo(
+    () => new Set((waitlistEntries || []).map((e) => e.service_shift_id)),
+    [waitlistEntries]
+  );
   
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
@@ -130,6 +164,11 @@ function VolunteerShiftSignup(){
     const hasConflict = conflicts.length > 0;
     const duration = Math.round((shift.shift_end - shift.shift_start) / (1000 * 60 * 60));
     let signedUp = commitments.some(commitment => commitment.service_shift_id === shift._id);
+    const isFull = typeof shift.max_volunteer_count === 'number'
+      && typeof shift.volunteer_count === 'number'
+      && shift.volunteer_count >= shift.max_volunteer_count;
+    const waitlisted = waitlistShiftIds.has(shift._id);
+    const waitlistBusy = waitlistBusyShifts.has(shift._id);
     let needClass = 'need-low';
     let priority = 'Low';
     if (needLevel > 0.6) {
@@ -154,9 +193,18 @@ function VolunteerShiftSignup(){
       isSelected,
       hasConflict,
       duration,
-      canInteract: shift.can_sign_up && (!hasConflict || isSelected) && !signedUp,
+      canInteract:
+        shift.can_sign_up &&
+        !isFull &&
+        (!hasConflict || isSelected) &&
+        !signedUp,
       hasInstructions: instructions.length > 0,
       instructions,
+      isFull,
+      waitlisted,
+      waitlistBusy,
+      canJoinWaitlist:
+        shift.can_sign_up && isFull && !signedUp && !hasConflict && !waitlisted,
     };
   };
 
@@ -253,6 +301,16 @@ function VolunteerShiftSignup(){
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
+      const {
+        sheltersData,
+        futureShifts,
+        commitments: nextCommitments,
+        waitlistEntries: nextWaitlist,
+      } = await loadShiftSignupPageData();
+      setShelters(sheltersData);
+      setShifts(futureShifts);
+      setCommitments(nextCommitments);
+      setWaitlistEntries(nextWaitlist || []);
     }
     catch (error) {
       console.error("Error submitting shifts:", error);
@@ -262,6 +320,53 @@ function VolunteerShiftSignup(){
   // Modal for sign up results
   const closeModal = () => {
     setShowResults(false);
+  };
+
+  const handleWaitlistToggle = async (shift) => {
+    const shiftId = shift._id;
+    if (waitlistBusyShifts.has(shiftId)) return;
+    const isOnWaitlist = waitlistShiftIds.has(shiftId);
+
+    setWaitlistBusyShifts((prev) => new Set(prev).add(shiftId));
+    setWaitlistMessage(null);
+
+    try {
+      if (isOnWaitlist) {
+        await waitlistAPI.leave(shiftId);
+        setWaitlistMessage({
+          text: 'Removed from the waitlist for that shift.',
+          success: true,
+        });
+      } else {
+        await waitlistAPI.join(shiftId);
+        setWaitlistMessage({
+          text: "You're on the waitlist! We'll move you into the shift if a spot opens.",
+          success: true,
+        });
+      }
+      const {
+        sheltersData,
+        futureShifts,
+        commitments: nextCommitments,
+        waitlistEntries: nextWaitlist,
+      } = await loadShiftSignupPageData();
+      setShelters(sheltersData);
+      setShifts(futureShifts);
+      setCommitments(nextCommitments);
+      setWaitlistEntries(nextWaitlist || []);
+    } catch (err) {
+      console.error('Waitlist action failed:', err);
+      setWaitlistMessage({
+        text: err?.message || 'Could not update your waitlist status. Please try again.',
+        success: false,
+      });
+    } finally {
+      setWaitlistBusyShifts((prev) => {
+        const next = new Set(prev);
+        next.delete(shiftId);
+        return next;
+      });
+    }
   };
 
   // Sort and format selected shifts for display
@@ -304,6 +409,22 @@ function VolunteerShiftSignup(){
       >
         {a11yAnnouncement}
       </div>
+      {waitlistMessage && (
+        <div
+          className={`waitlist-banner ${waitlistMessage.success ? 'waitlist-banner--success' : 'waitlist-banner--error'}`}
+          role="status"
+        >
+          <span>{waitlistMessage.text}</span>
+          <button
+            type="button"
+            className="waitlist-banner__dismiss"
+            aria-label="Dismiss"
+            onClick={() => setWaitlistMessage(null)}
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="signup-controls-panel">
         <div className="controls-section">
           <div className="signup-date-filter">
@@ -425,6 +546,7 @@ function VolunteerShiftSignup(){
                 key={shift._id}
                 shiftData={processShiftData(shift)}
                 handleShiftToggle={handleShiftToggle}
+                handleWaitlistToggle={handleWaitlistToggle}
                 showInstructions={true}
                 isInstructionsOpen={expandedInstructions.has(shift._id)}
                 onInstructionsToggle={toggleInstructions}
@@ -441,6 +563,7 @@ function VolunteerShiftSignup(){
             key={shift._id}
             shiftData={processShiftData(shift)}
             handleShiftToggle={handleShiftToggle}
+            handleWaitlistToggle={handleWaitlistToggle}
             showInstructions={true}
             isInstructionsOpen={expandedInstructions.has(shift._id)}
             onInstructionsToggle={toggleInstructions}

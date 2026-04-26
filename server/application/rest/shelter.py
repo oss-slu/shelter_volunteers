@@ -10,6 +10,9 @@ from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 from use_cases.shelters.get_shelter_by_id import get_shelter_by_id
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
+from use_cases.shelters.list_open_shelters_by_date import (
+    list_open_shelters_by_date,
+)
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
 from use_cases.shelters.list_open_shelters_by_date_use_case import (
     list_open_shelters_by_date_use_case,
@@ -23,6 +26,7 @@ from responses import ResponseTypes
 shelter_blueprint = Blueprint("shelter", __name__)
 
 repo = ShelterRepo()
+service_shifts_repo = ServiceShiftsMongoRepo()
 
 
 @shelter_blueprint.route("/shelters", methods=["GET"])
@@ -49,7 +53,6 @@ def get_open_shelters_grouped_by_date():
     try:
         shelters = shelter_list_use_case(repo)
         current_time_ms = int(time.time() * 1000)
-        service_shifts_repo = ServiceShiftsMongoRepo()
         service_shifts = service_shifts_list_use_case(
             service_shifts_repo,
             filter_start_after=current_time_ms,
@@ -92,6 +95,49 @@ def get_shelter(shelter_id: str):
         json.dumps(shelter, cls=ShelterJsonEncoder),
         mimetype="application/json",
         status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
+    )
+
+
+@shelter_blueprint.route("/admin/open_shelters_by_date", methods=["GET"])
+@system_admin_permission_required
+def get_open_shelters_by_date():
+    """
+    Returns shelters with at least one upcoming shift, grouped by the
+    calendar date of the shift, sorted in descending order (latest dates
+    first). Restricted to system admins.
+
+    Optional query parameters:
+        filter_start_after (int, ms epoch): only consider shifts starting
+            strictly after this time. Defaults to "now" (server clock).
+        tz_offset_minutes (int): offset west of UTC, matching
+            ``Date.prototype.getTimezoneOffset`` so the frontend can pass
+            it directly. Defaults to 0 (UTC bucketing).
+    """
+    filter_start_after = request.args.get("filter_start_after")
+    tz_offset_minutes = request.args.get("tz_offset_minutes", default=0)
+
+    grouped = list_open_shelters_by_date(
+        repo,
+        service_shifts_repo,
+        filter_start_after=filter_start_after,
+        tz_offset_minutes=tz_offset_minutes,
+    )
+
+    payload = [
+        {
+            "date": entry["date"],
+            "shelters": [
+                json.loads(json.dumps(shelter, cls=ShelterJsonEncoder))
+                for shelter in entry["shelters"]
+            ],
+        }
+        for entry in grouped
+    ]
+
+    return Response(
+        json.dumps(payload),
+        mimetype="application/json",
+        status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS],
     )
 
 

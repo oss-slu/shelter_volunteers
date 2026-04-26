@@ -30,6 +30,16 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
     }
     valid_commitments = []
     valid_indexes = []
+    # Pre-compute current occupancy per shift so we can reject sign-ups that
+    # would push a shift past its max_volunteer_count. The new commitments
+    # being added in this batch also count toward the cap.
+    shift_occupancy = {}
+    for sid, shift in existing_shifts.items():
+        try:
+            current = commitments_repo.fetch_service_commitments(shift_id=sid) or []
+        except (AttributeError, TypeError):
+            current = []
+        shift_occupancy[sid] = len(current)
     for i, commitment in enumerate(commitments):
         shift_id = commitment.service_shift_id
         if shift_id not in existing_shifts:
@@ -38,9 +48,18 @@ def add_service_commitments(commitments_repo, shifts_repo, commitments):
                 "success": False,
                 "message": f"cannot commit to non-existing shift {shift_id}"
             }
-        else:
-            valid_commitments.append(commitment)
-            valid_indexes.append(i)
+            continue
+        shift = existing_shifts[shift_id]
+        if shift_occupancy.get(shift_id, 0) >= shift.max_volunteer_count:
+            results[i] = {
+                "service_commitment_id": None,
+                "success": False,
+                "message": "Shift is full. Join the waitlist instead."
+            }
+            continue
+        shift_occupancy[shift_id] = shift_occupancy.get(shift_id, 0) + 1
+        valid_commitments.append(commitment)
+        valid_indexes.append(i)
     if not valid_commitments:
         return results
     # Get user ID from first commitment

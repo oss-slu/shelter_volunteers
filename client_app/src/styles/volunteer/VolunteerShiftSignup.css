@@ -981,3 +981,81 @@ body {
   background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
   pointer-events: none;
 }
+
+/* Waitlist controls */
+.waitlist-action-row {
+  margin-top: 8px;
+}
+
+.waitlist-button {
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.waitlist-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.waitlist-button--join {
+  background-color: #f59e0b;
+  color: #1f2937;
+  border-color: #d97706;
+}
+
+.waitlist-button--join:hover:not(:disabled) {
+  background-color: #d97706;
+  color: #ffffff;
+}
+
+.waitlist-button--leave {
+  background-color: #ffffff;
+  color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.waitlist-button--leave:hover:not(:disabled) {
+  background-color: #fee2e2;
+}
+
+.checkmark.waitlisted {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.waitlist-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin: 8px 0 16px;
+  font-size: 0.95rem;
+}
+
+.waitlist-banner--success {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #34d399;
+}
+
+.waitlist-banner--error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+}
+
+.waitlist-banner__dismiss {
+  background: transparent;
+  border: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+}
