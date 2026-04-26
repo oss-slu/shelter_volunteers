@@ -12,6 +12,7 @@ from application.rest.service_shifts import service_shift_bp
 from application.rest.authorization.authorization import authorization_blueprint
 from application.rest.login import login_blueprint
 from application.rest.user_info import user_info_bp
+from application.rest.waitlist import waitlist_bp
 
 from config import mongodb_config
 from scheduler.reminder_scheduler import start_reminder_scheduler
@@ -57,6 +58,7 @@ def create_app(config_name="development"):
     app.register_blueprint(login_blueprint)
     app.register_blueprint(repeatable_shifts_bp)
     app.register_blueprint(user_info_bp)
+    app.register_blueprint(waitlist_bp)
 
     load_dotenv()  # Load environment variables from the .env file
 

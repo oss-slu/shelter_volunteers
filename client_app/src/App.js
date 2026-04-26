@@ -8,6 +8,7 @@ import Commitments from "./components/volunteer/Commitments";
 import PastCommitments from "./components/volunteer/PastCommitments";
 import Impact from "./components/volunteer/Impact";
 import VolunteerShiftSignup from "./components/volunteer/ShiftSignUp";
+import VolunteerWaitlist from "./components/volunteer/Waitlist";
 import VolunteerProfile from "./components/volunteer/Profile"; // <-- NEW IMPORT
 import OpenSheltersCalendar from "./components/volunteer/OpenSheltersCalendar";
 
@@ -71,6 +72,7 @@ function AppContent() {
           <Route path="shelters" element={<VolunteerShiftSignup />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<Commitments />} />
+          <Route path="waitlist" element={<VolunteerWaitlist />} />
           <Route path="impact" element={<Impact />} />
           <Route path="profile" element={<VolunteerProfile />} /> {/* <-- NEW ROUTE */}
         </Route>

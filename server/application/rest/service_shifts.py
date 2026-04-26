@@ -82,11 +82,43 @@ def _sanitize_instructions(instructions):
     return trimmed
 
 
+_INT_FIELDS = (
+    "shift_start",
+    "shift_end",
+    "required_volunteer_count",
+    "max_volunteer_count",
+)
+
+
+def _coerce_int(value, field_name):
+    """Coerce a payload value to an int, raising ValueError on bad input."""
+    if isinstance(value, bool):
+        raise ValueError(f"{field_name} must be an integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if not value.is_integer():
+            raise ValueError(f"{field_name} must be an integer")
+        return int(value)
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError(f"{field_name} must be an integer")
+        try:
+            return int(stripped)
+        except ValueError as err:
+            raise ValueError(f"{field_name} must be an integer") from err
+    raise ValueError(f"{field_name} must be an integer")
+
+
 def _validate_shift_payload(shift_payload):
     validated = dict(shift_payload)
     validated["instructions"] = _sanitize_instructions(
         shift_payload.get("instructions", "")
     )
+    for field in _INT_FIELDS:
+        if field in validated and validated[field] is not None:
+            validated[field] = _coerce_int(validated[field], field)
     return validated
 
 
@@ -274,6 +306,9 @@ def patch_service_shift(shelter_id, shift_id):
             raise ValueError("shift_start and shift_end must be updated together")
         if "instructions" in updates:
             updates["instructions"] = _sanitize_instructions(updates.get("instructions"))
+        for field in _INT_FIELDS:
+            if field in updates and updates[field] is not None:
+                updates[field] = _coerce_int(updates[field], field)
     except ValueError as err:
         logger.warning("Invalid patch data for shift %s: %s", shift_id, err)
         return Response(
