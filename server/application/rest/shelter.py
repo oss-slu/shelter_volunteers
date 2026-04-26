@@ -25,7 +25,7 @@ from responses import ResponseTypes
 
 shelter_blueprint = Blueprint("shelter", __name__)
 
-repo = ShelterRepo()
+shelter_repo = ShelterRepo()
 service_shifts_repo = ServiceShiftsMongoRepo()
 
 
