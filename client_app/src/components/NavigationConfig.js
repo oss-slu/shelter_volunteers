@@ -1,6 +1,7 @@
 import { faHome, faShield, faGear, faCalendar, faHeart, faClock } from '@fortawesome/free-solid-svg-icons';
 const navigationConfig = {
   volunteer: [
+    { icon: faCalendar, label: 'Open Shelters List', path: '/volunteer-dashboard/open-shelters-calendar', description: 'Browse upcoming open shelters grouped by date.' },
     { icon: faHeart, label: 'Sign Up to Help', path: '/volunteer-dashboard/shelters', description: 'Find shelters in need of volunteers and sign up to help.' },
     { icon: faClock, label: 'Upcoming Shifts', path: '/volunteer-dashboard/upcoming-shifts', description: 'View and manage your upcoming volunteering shifts.' },
     { icon: faClock, label: 'Waitlist', path: '/volunteer-dashboard/waitlist', description: 'See the shifts you are queued for if a spot opens up.' },

@@ -10,6 +10,7 @@ import Impact from "./components/volunteer/Impact";
 import VolunteerShiftSignup from "./components/volunteer/ShiftSignUp";
 import VolunteerWaitlist from "./components/volunteer/Waitlist";
 import VolunteerProfile from "./components/volunteer/Profile"; // <-- NEW IMPORT
+import OpenSheltersCalendar from "./components/volunteer/OpenSheltersCalendar";
 
 // Common components
 import { DashboardProvider } from "./contexts/DashboardContext";
@@ -67,6 +68,7 @@ function AppContent() {
         </Route>
         <Route path="/volunteer-dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
+          <Route path="open-shelters-calendar" element={<OpenSheltersCalendar />} />
           <Route path="shelters" element={<VolunteerShiftSignup />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<Commitments />} />
