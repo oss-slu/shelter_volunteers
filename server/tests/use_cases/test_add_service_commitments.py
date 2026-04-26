@@ -15,6 +15,7 @@ def test_valid_shift_commitment():
     valid_shift.get_id.return_value = "mocked-valid-shift-id"
     valid_shift.shift_start = 10
     valid_shift.shift_end = 20
+    valid_shift.max_volunteer_count = 5
     shifts_repo.get_shifts.return_value = [valid_shift]
 
     valid_commitment = Mock()
@@ -75,6 +76,7 @@ def test_mixed_shifts_commitment():
     valid_shift.get_id.return_value = "mocked-valid-shift-id"
     valid_shift.shift_start = 10
     valid_shift.shift_end = 20
+    valid_shift.max_volunteer_count = 5
     shifts_repo.get_shifts.return_value = [valid_shift]
 
     valid_commitment = Mock()
