@@ -11,6 +11,17 @@ import { DesktopShiftRow } from './DesktopShiftRow';
 import Loading from '../Loading';
 import { Calendar } from 'lucide-react';
 
+/**
+ * Loads data for the shift signup view. Kept at module scope so mount and post–sign-up
+ * refresh share one implementation without useEffect depending on a hook callback.
+ */
+async function loadShiftSignupPageData() {
+  const sheltersData = await shelterAPI.getShelters();
+  const futureShifts = await serviceShiftAPI.getFutureShifts();
+  const commitments = await serviceCommitmentAPI.getFutureCommitments();
+  return { sheltersData, futureShifts, commitments };
+}
+
 /** Filter shifts to those starting on the given YYYY-MM-DD (local calendar day). */
 function filterShiftsByLocalDate(shifts, dateStr) {
   if (!dateStr) return shifts;
@@ -45,24 +56,26 @@ function VolunteerShiftSignup(){
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
   const user = getUser();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const sheltersData = await shelterAPI.getShelters();
-        const futureShifts = await serviceShiftAPI.getFutureShifts();
-        const commitments = await serviceCommitmentAPI.getFutureCommitments();
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { sheltersData, futureShifts, commitments } = await loadShiftSignupPageData();
+        if (cancelled) return;
         setShelters(sheltersData);
         setShifts(futureShifts);
         setCommitments(commitments);
-        setLoading(false);
       } catch (error) {
         console.error("fetch error:", error);
-        setLoading(false);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    fetchData();
-  }, [results]);
+  }, []);
   
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
@@ -253,6 +266,11 @@ function VolunteerShiftSignup(){
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
+      const { sheltersData, futureShifts, commitments: nextCommitments } =
+        await loadShiftSignupPageData();
+      setShelters(sheltersData);
+      setShifts(futureShifts);
+      setCommitments(nextCommitments);
     }
     catch (error) {
       console.error("Error submitting shifts:", error);
