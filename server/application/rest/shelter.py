@@ -20,13 +20,6 @@ from application.rest.system_admin_permission_required import system_admin_permi
 from domains.shelter.shelter import Shelter
 from responses import ResponseTypes
 from serializers.shelter import ShelterJsonEncoder
-from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
-from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
-from use_cases.shelters.get_shelter_by_id import get_shelter_by_id
-from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
-from use_cases.shelters.list_open_shelters_by_date_use_case import (
-    list_open_shelters_by_date_use_case,
-)
 
 shelter_blueprint = Blueprint("shelter", __name__)
 
