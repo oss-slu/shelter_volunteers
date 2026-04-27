@@ -48,6 +48,8 @@ function DashboardLayout() {
         // Note: getUserProfile returns null on 404 (no profile exists yet)
         if (isProfileIncomplete(profile)) {
           setShowIncompleteProfileModal(true);
+        } else {
+          setShowIncompleteProfileModal(false);
         }
       } catch (error) {
         // Don't show incomplete profile modal on API/auth errors — avoid masking real issues

@@ -2,7 +2,7 @@
 This module contains tests for the shelter REST API.
 """
 import json
-from unittest.mock import ANY, patch
+from unittest.mock import patch, ANY
 
 import pytest
 from flask import Flask
@@ -78,7 +78,7 @@ def test_post_shelter(
 def test_post_shelter_missing_required_fields(mock_is_authorized, client):
     mock_is_authorized.return_value = True
     request_data = {
-        "name": "Test shelter",  # missing address field
+        "name": "Test shelter"  # missing address field
     }
     token = create_token({"email": "user@app.com"}, test_secret)
     headers = {
@@ -98,7 +98,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "address": {
             "city": "St.Louis",
             "state": "MO",  # missing street1
-        },
+        }
     }
 
     response = client.post(
@@ -115,7 +115,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "address": {
             "street1": "123 Main",
             "state": "MO",  # missing city
-        },
+        }
     }
     response = client.post(
         "/shelters",
@@ -131,7 +131,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "address": {
             "street1": "123 Main",
             "city": "St.Louis",  # missing state
-        },
+        }
     }
     response = client.post(
         "/shelters",
@@ -227,17 +227,17 @@ def test_get_open_shelters_grouped_by_date(
     mock_shifts = [
         ServiceShift(
             shelter_id="s1",
-            shift_start=1776470400000,
+            shift_start=1776470400000,  # 2026-04-18T00:00:00Z
             shift_end=1776474000000,
         ),
         ServiceShift(
             shelter_id="s1",
-            shift_start=1776477600000,
+            shift_start=1776477600000,  # same date, should dedupe shelter
             shift_end=1776481200000,
         ),
         ServiceShift(
             shelter_id="s2",
-            shift_start=1776384000000,
+            shift_start=1776384000000,  # 2026-04-17T00:00:00Z
             shift_end=1776387600000,
         ),
     ]
@@ -265,7 +265,7 @@ def test_get_open_shelters_grouped_by_date(
                         "country": "USA",
                         "coordinates": {"latitude": 39.7817, "longitude": -89.6501},
                     },
-                },
+                }
             ],
         },
         {
@@ -283,7 +283,7 @@ def test_get_open_shelters_grouped_by_date(
                         "country": "USA",
                         "coordinates": {"latitude": 41.8781, "longitude": -87.6298},
                     },
-                },
+                }
             ],
         },
     ]
@@ -291,5 +291,21 @@ def test_get_open_shelters_grouped_by_date(
         ANY,
         filter_start_after=1760000000000,
     )
+
+
+@patch("application.rest.shelter.shelter_list_use_case")
+def test_get_open_shelters_grouped_by_date_returns_structured_error(
+    mock_shelter_list_use_case,
+    client,
+):
+    mock_shelter_list_use_case.side_effect = RuntimeError("database unavailable")
+
+    response = client.get("/shelters/open")
+
+    assert response.status_code == 500
+    assert response.json == {
+        "success": False,
+        "message": "Unable to load open shelters.",
+    }
 # pylint: enable=unused-argument
 # pylint: enable=redefined-outer-name

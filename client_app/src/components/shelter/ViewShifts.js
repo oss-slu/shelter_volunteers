@@ -44,10 +44,15 @@ const ViewShifts = ({ shiftDetailsData }) => {
     setIsCancelModalOpen(true);
   };
 
-  const handleConfirmCancel = (shiftToCancel) => {
-    // Add API call to cancel the shift
-    setShiftsData((prevData) => prevData.filter((shift) => shift._id !== shiftToCancel._id));
-    setIsCancelModalOpen(false);
+  const handleConfirmCancel = async (shiftToCancel) => {
+    try {
+      await serviceShiftAPI.deleteShift(shelterId, shiftToCancel._id);
+      setShiftsData((prevData) => prevData.filter((shift) => shift._id !== shiftToCancel._id));
+      setIsCancelModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting shift:", error);
+      setErrorToast(error?.message || "Failed to delete shift. Please try again.");
+    }
   };
 
   const handleSaveEdit = async (updatedShift) => {
