@@ -7,11 +7,15 @@ import time
 from flask import Blueprint, Response, request
 from repository.mongo.shelter import ShelterRepo
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
+from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
 from use_cases.shelters.add_shelter_use_case import shelter_add_use_case
 from use_cases.shelters.get_shelter_by_id import get_shelter_by_id
 from use_cases.shelters.list_shelters_use_case import shelter_list_use_case
 from use_cases.shelters.list_open_shelters_by_date import (
     list_open_shelters_by_date,
+)
+from use_cases.shelters.list_open_shelters_by_date_use_case import (
+    list_open_shelters_by_date_use_case,
 )
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.system_admin_permission_required import system_admin_permission_required
@@ -49,7 +53,6 @@ def get_open_shelters_grouped_by_date():
     try:
         shelters = shelter_list_use_case(repo)
         current_time_ms = int(time.time() * 1000)
-        service_shifts_repo = ServiceShiftsMongoRepo()
         service_shifts = service_shifts_list_use_case(
             service_shifts_repo,
             filter_start_after=current_time_ms,
