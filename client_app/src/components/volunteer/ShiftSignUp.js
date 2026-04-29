@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useId, useCallback } from 'react';
+import { useState, useMemo, useEffect, useId } from 'react';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -10,6 +10,17 @@ import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
 import Loading from '../Loading';
 import { Calendar } from 'lucide-react';
+
+/**
+ * Loads data for the shift signup view. Kept at module scope so mount and post–sign-up
+ * refresh share one implementation without useEffect depending on a hook callback.
+ */
+async function loadShiftSignupPageData() {
+  const sheltersData = await shelterAPI.getShelters();
+  const futureShifts = await serviceShiftAPI.getFutureShifts();
+  const commitments = await serviceCommitmentAPI.getFutureCommitments();
+  return { sheltersData, futureShifts, commitments };
+}
 
 /** Filter shifts to those starting on the given YYYY-MM-DD (local calendar day). */
 function filterShiftsByLocalDate(shifts, dateStr) {
@@ -46,31 +57,25 @@ function VolunteerShiftSignup(){
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
   const user = getUser();
 
-  const loadShiftPageData = useCallback(async () => {
-    const sheltersData = await shelterAPI.getShelters();
-    const futureShifts = await serviceShiftAPI.getFutureShifts();
-    const commitments = await serviceCommitmentAPI.getFutureCommitments();
-    setShelters(sheltersData);
-    setShifts(futureShifts);
-    setCommitments(commitments);
-  }, []);
-
   useEffect(() => {
     let cancelled = false;
-    const run = async () => {
+    (async () => {
       try {
-        await loadShiftPageData();
+        const { sheltersData, futureShifts, commitments } = await loadShiftSignupPageData();
+        if (cancelled) return;
+        setShelters(sheltersData);
+        setShifts(futureShifts);
+        setCommitments(commitments);
       } catch (error) {
         console.error("fetch error:", error);
       } finally {
         if (!cancelled) setLoading(false);
       }
-    };
-    run();
+    })();
     return () => {
       cancelled = true;
     };
-  }, [loadShiftPageData]);
+  }, []);
   
   // Create a map of shelters for quick lookup
   const shelterMap = useMemo(() => {
@@ -261,7 +266,11 @@ function VolunteerShiftSignup(){
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
-      await loadShiftPageData();
+      const { sheltersData, futureShifts, commitments: nextCommitments } =
+        await loadShiftSignupPageData();
+      setShelters(sheltersData);
+      setShifts(futureShifts);
+      setCommitments(nextCommitments);
     }
     catch (error) {
       console.error("Error submitting shifts:", error);
