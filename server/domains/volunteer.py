@@ -28,3 +28,4 @@ class Volunteer:
         representation of the object
         """
         return dataclasses.asdict(self)
+    

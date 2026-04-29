@@ -31,12 +31,6 @@ export const serviceShiftAPI = {
     });
     return response;
   },
-  deleteShift: async (shelterId, shiftId) => {
-    const response = await fetchClient(`/shelters/${shelterId}/service_shifts/${shiftId}`, {
-      method: "DELETE",
-    });
-    return response;
-  },
   getUserInfosInShift: async (shiftId) => {
     return await fetchClient(`/service_shifts/${shiftId}/user_info`, {
       method: "GET",

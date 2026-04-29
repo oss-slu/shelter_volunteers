@@ -88,16 +88,7 @@ def post_user_info(user_email: str):
 def get_user_info(user_email: str):
     user_info = get_user_info_by_email(user_email, user_info_repo)
     if user_info is None:
-        # No row yet — still 200 so browsers don't spam the console with 404s;
-        # the client maps this to an empty form (same as it did with 404 + catch).
-        body = json.dumps({
-            "email": user_email,
-            "first_name": None,
-            "last_name": None,
-            "phone_number": None,
-            "skills": [],
-        })
-        return Response(body, mimetype="application/json", status=200)
+        return Response(status=404)
 
     response = json.dumps(user_info.to_dict())
-    return Response(response, mimetype="application/json", status=200)
+    return Response(response, status=200)

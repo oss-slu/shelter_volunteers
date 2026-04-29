@@ -15,7 +15,7 @@ class ServiceShift:
     shift_start: int  # Number of milliseconds since the Epoch in UTC
     shift_end: int
     shift_name: str = "Unnamed Shift"
-    instructions: Optional[str] = None
+    instructions: str = ""
     required_volunteer_count: int = 1
     max_volunteer_count: int = 5
     can_sign_up: bool = True
@@ -33,12 +33,10 @@ class ServiceShift:
     def from_dict(cls, d):
         """
         Creates an instance of ServiceShift from a dictionary.
-        Unknown keys are ignored. Accepts ``shift_instructions`` as alias for ``instructions``.
+        Ignores unknown keys (e.g. legacy fields like 'instructions').
         """
         valid_keys = {f.name for f in dataclasses.fields(cls)}
         filtered = {k: v for k, v in d.items() if k in valid_keys}
-        if "instructions" not in filtered and d.get("shift_instructions") is not None:
-            filtered["instructions"] = d["shift_instructions"]
         if "_id" in filtered and filtered["_id"] is not None:
             filtered["_id"] = str(filtered["_id"])
         return cls(**filtered)

@@ -4,8 +4,9 @@ This module handles MongoDB interactions with the service_shifts collection.
 
 from domains.service_shift import ServiceShift
 from config.mongodb_config import get_db
-from bson.errors import InvalidId
+#from bson.errors import InvalidId
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 from pymongo import ReturnDocument
 
 class ServiceShiftsMongoRepo:
@@ -40,13 +41,12 @@ class ServiceShiftsMongoRepo:
     ):
         """
         Checks if a new shift overlaps with an existing shift.
-
+        
         Args:
             shelter_id (int): The shelter ID.
             shift_start (int): The start time of the new shift.
             shift_end (int): The end time of the new shift.
-            exclude_shift_id (str, optional): Shift id to exclude from overlap check.
-
+        
         Returns:
             bool: True if there is an overlap, False otherwise.
         """
@@ -62,7 +62,9 @@ class ServiceShiftsMongoRepo:
         return overlapping is not None
 
     def get_shift(self, shift_id):
-        """Gets one shift by id."""
+        """
+        Gets one shift by id.
+        """
         try:
             shift = self.collection.find_one({"_id": ObjectId(shift_id)})
         except (InvalidId, TypeError):
@@ -75,7 +77,9 @@ class ServiceShiftsMongoRepo:
         return ServiceShift.from_dict(shift)
 
     def update_service_shift(self, shift_id, updates):
-        """Updates an existing shift."""
+        """
+        Updates an existing shift.
+        """
         try:
             updated_shift = self.collection.find_one_and_update(
                 {"_id": ObjectId(shift_id)},
@@ -134,11 +138,3 @@ class ServiceShiftsMongoRepo:
             return [ServiceShift.from_dict(shift) for shift in shifts]
         except Exception as e:
             raise ValueError(f"Invalid shift ID: {e}") from e
-
-    def delete_service_shift(self, shift_id):
-        """Deletes one service shift document by id. Returns True if a document was removed."""
-        try:
-            result = self.collection.delete_one({"_id": ObjectId(shift_id)})
-        except (InvalidId, TypeError):
-            return False
-        return result.deleted_count > 0

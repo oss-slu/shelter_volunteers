@@ -9,7 +9,6 @@ import PastCommitments from "./components/volunteer/PastCommitments";
 import Impact from "./components/volunteer/Impact";
 import VolunteerShiftSignup from "./components/volunteer/ShiftSignUp";
 import VolunteerProfile from "./components/volunteer/Profile"; // <-- NEW IMPORT
-import OpenSheltersCalendar from "./components/volunteer/OpenSheltersCalendar";
 
 // Common components
 import { DashboardProvider } from "./contexts/DashboardContext";
@@ -25,6 +24,7 @@ import AddUserForm from "./components/shelter/AddUserForm";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import ShelterScheduleManager from "./components/shelter/ScheduleManager";
+import OpenSheltersList from "./components/shelter/OpenSheltersList";
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
 
@@ -60,6 +60,7 @@ function AppContent() {
         <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="open-shelters-list" element={<OpenSheltersList />} />
           <Route path="schedule" element={<ShelterScheduleManager />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
           <Route path="repeatable-shifts" element={<RepeatableShiftsScreen />} />
@@ -67,7 +68,6 @@ function AppContent() {
         </Route>
         <Route path="/volunteer-dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
-          <Route path="open-shelters-calendar" element={<OpenSheltersCalendar />} />
           <Route path="shelters" element={<VolunteerShiftSignup />} />
           <Route path="past-shifts" element={<PastCommitments />} />
           <Route path="upcoming-shifts" element={<Commitments />} />

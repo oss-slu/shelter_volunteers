@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
@@ -14,34 +14,26 @@ const VIEW_CALENDAR = 'calendar';
 
 function Commitments(){
   const [loading, setLoading] = useState(true);
+  const [results, setResults] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
   const [expandedInstructions, setExpandedInstructions] = useState(new Set());
   const [resultMessage, setResultMessage] = useState({});
   const [viewMode, setViewMode] = useState(VIEW_LIST);
 
-  const refreshCommitments = useCallback(async () => {
-    const commitments = await serviceCommitmentAPI.getFutureCommitments();
-    setShifts(commitments);
-  }, []);
-
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
+    const fetchData = async () => {
       try {
-        await refreshCommitments();
+        const commitments = await serviceCommitmentAPI.getFutureCommitments();
+        setShifts(commitments);
+        setLoading(false);
       } catch (error) {
         console.error("fetch error:", error);
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
-    })();
-    return () => {
-      cancelled = true;
     };
-  }, [refreshCommitments]);
+    fetchData();
+  }, [results]);
   
 
   // Format date and time
@@ -77,20 +69,20 @@ function Commitments(){
   // Handle cancellagion
   const handleCancel = async () => {
     try {
+      console.log("Cancelling shifts:", selectedShifts);
+      let responses = [];
       for (const commitment_id of selectedShifts) {
-        await serviceCommitmentAPI.cancelCommitment(commitment_id);
+        const response = await serviceCommitmentAPI.cancelCommitment(commitment_id);
+        responses.push(response);
       }
+      setResults(responses);
       setResultMessage({'text': 'Cancelled successfully', 'success': true});
+      // Reset form
       setSelectedShifts(new Set());
-      await refreshCommitments();
     }
     catch (error) {
       console.error("Error cancelling shifts:", error);
-      setResultMessage({
-        text: error?.message || 'Could not cancel shift(s). Please try again.',
-        success: false,
-      });
-    }
+    } 
   };
 
 // Process shift data for rendering (eliminates duplication)
@@ -161,16 +153,68 @@ function Commitments(){
             ? 'Here are your upcoming shifts. You can select shifts to cancel them.'
             : 'You have no upcoming shifts. Sign up through "Sign Up To Help" or use the calendar to view your schedule.'}
         </p>
-        <div className="commitments-view-toggle" role="tablist" aria-label="View mode">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={viewMode === VIEW_LIST}
-            className={`commitments-view-btn ${viewMode === VIEW_LIST ? 'active' : ''}`}
-            onClick={() => setViewMode(VIEW_LIST)}
-          >
-            List
-          </button>
+      </div>
+      {/* Desktop Table View */}
+      <div className="table-container desktop-only">
+        <table className="shifts-table">
+          <thead>
+            <tr className="table-header">
+              <th>Shelter</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Duration</th>
+              <th>Shelter Instructions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shifts.map((shift) => (
+              <DesktopShiftRow
+                key={shift._id}
+                shiftData={processShiftData(shift)}
+                handleShiftToggle={handleShiftToggle}
+                showInstructions={true}
+                isInstructionsOpen={expandedInstructions.has(shift._id)}
+                onInstructionsToggle={toggleInstructions}
+                instructionsColSpan={5}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* Mobile Card View */}
+      <div className="cards-container mobile-only">
+        {shifts.map((shift) => (
+          <MobileShiftCard
+            key={shift._id}
+            shiftData={processShiftData(shift)}
+            handleShiftToggle={handleShiftToggle}
+            showInstructions={true}
+            isInstructionsOpen={expandedInstructions.has(shift._id)}
+            onInstructionsToggle={toggleInstructions}
+          />
+        ))}
+      </div>
+      <div className="sticky-signup-container">
+        {selectedShifts.size > 0 && (
+        <div className="selected-shifts-summary">
+          <h3 className="summary-title">
+            Shifts Selected to Cancel ({selectedShifts.size})
+          </h3>
+          <div className="list">
+            {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
+              <div key={shift._id} className="tagline-small">
+                • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
+              </div>
+            ))}
+          </div>
+        </div>
+        )}
+        {selectedShifts.size === 0 && (
+          <div>
+            <p className="tagline-small">You can select shifts you want to cancel.</p>
+          </div>
+        )}
+        <div className="signup-section">
           <button
             type="button"
             role="tab"
@@ -196,20 +240,11 @@ function Commitments(){
                   <th>Date</th>
                   <th>Time</th>
                   <th>Duration</th>
-                  <th>Shelter Instructions</th>
                 </tr>
               </thead>
               <tbody>
                 {shifts.map((shift) => (
-                  <DesktopShiftRow
-                    key={shift._id}
-                    shiftData={processShiftData(shift)}
-                    handleShiftToggle={handleShiftToggle}
-                    showInstructions={true}
-                    isInstructionsOpen={expandedInstructions.has(shift._id)}
-                    onInstructionsToggle={toggleInstructions}
-                    instructionsColSpan={5}
-                  />
+                  <DesktopShiftRow key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
                 ))}
               </tbody>
             </table>
@@ -217,14 +252,7 @@ function Commitments(){
           {/* Mobile Card View */}
           <div className="cards-container mobile-only">
             {shifts.map((shift) => (
-              <MobileShiftCard
-                key={shift._id}
-                shiftData={processShiftData(shift)}
-                handleShiftToggle={handleShiftToggle}
-                showInstructions={true}
-                isInstructionsOpen={expandedInstructions.has(shift._id)}
-                onInstructionsToggle={toggleInstructions}
-              />
+              <MobileShiftCard key={shift._id} shiftData={processShiftData(shift)} handleShiftToggle={handleShiftToggle} />
             ))}
           </div>
           <div className="sticky-signup-container">
@@ -249,7 +277,6 @@ function Commitments(){
             )}
             <div className="signup-section">
               <button
-                type="button"
                 onClick={handleCancel}
                 disabled={selectedShifts.size === 0}
                 className={`signup-button ${selectedShifts.size > 0 ? 'enabled signedup' : 'disabled'}`}

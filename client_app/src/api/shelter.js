@@ -5,10 +5,6 @@ export const shelterAPI = {
         const response = await fetchClient("/shelters");
         return response;
     },
-    getOpenShelters: async () => {
-        const response = await fetchClient("/shelters/open");
-        return response;
-    },
     getShelter: async (id) => {
         const response = await fetchClient(`/shelters/${id}`);
         return response;
@@ -21,3 +17,4 @@ export const shelterAPI = {
         return response;
     }
 };
+

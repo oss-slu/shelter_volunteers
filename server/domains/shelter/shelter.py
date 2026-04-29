@@ -43,9 +43,7 @@ class Shelter:
                               field]]
         if missing_fields:
             raise ValueError(
-                "Missing required address fields: "
-                + ", ".join(missing_fields)
-            )
+                f"Missing required address fields: {', '.join(missing_fields)}")
         #address object then shelter object is created
         address_obj = Address(**address_data)
         shelter_data = d.copy()

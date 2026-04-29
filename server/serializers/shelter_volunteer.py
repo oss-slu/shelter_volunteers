@@ -18,3 +18,4 @@ class ShelterVolunteerJsonEncoder(json.JSONEncoder):
             return to_serialize
         except AttributeError:
             return super().default(sheltervolunteer)
+        

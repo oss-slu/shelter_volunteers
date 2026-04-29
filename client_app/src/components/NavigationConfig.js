@@ -1,7 +1,6 @@
 import { faHome, faShield, faGear, faCalendar, faHeart, faClock } from '@fortawesome/free-solid-svg-icons';
 const navigationConfig = {
   volunteer: [
-    { icon: faCalendar, label: 'Open Shelters List', path: '/volunteer-dashboard/open-shelters-calendar', description: 'Browse upcoming open shelters grouped by date.' },
     { icon: faHeart, label: 'Sign Up to Help', path: '/volunteer-dashboard/shelters', description: 'Find shelters in need of volunteers and sign up to help.' },
     { icon: faClock, label: 'Upcoming Shifts', path: '/volunteer-dashboard/upcoming-shifts', description: 'View and manage your upcoming volunteering shifts.' },
     { icon: faShield, label: 'Past Shifts', path: '/volunteer-dashboard/past-shifts', description: 'Review your past volunteering activities and contributions.' },
@@ -9,6 +8,7 @@ const navigationConfig = {
   ],
   shelter: [
     { icon: faGear, label: 'Users', path: '/shelter-dashboard/:ID/users', description: 'View, add, or remove other shelter admins.' },
+    { icon: faCalendar, label: 'Open Shelters List', path: '/shelter-dashboard/:ID/open-shelters-list', description: 'Browse upcoming open shelters grouped by date.' },
     { icon: faCalendar, label: 'Daily Schedule', path: '/shelter-dashboard/:ID/repeatable-shifts', description: 'Create and manage a schedule that will be used when you open a shelter.' },
     { icon: faCalendar, label: 'Open Shelter', path: '/shelter-dashboard/:ID/schedule', description: 'Select days when the shelter will be open and define volunteering shifts.' },
     { icon: faClock, label: 'Upcoming Shifts', path: '/shelter-dashboard/:ID/upcoming-shifts' }

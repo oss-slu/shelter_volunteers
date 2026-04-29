@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const DashboardContext = createContext();
 import { permissionsAPI } from '../api/permission';
 import { shelterAPI } from '../api/shelter';
@@ -11,18 +11,6 @@ export const DashboardProvider = ({ children }) => {
   const [loadingDashboards, setLoadingDashboards] = useState(true);
   const {isAuthenticated} = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Keep selected dashboard aligned with the URL (SPA navigations do not always go through onSelectDashboard).
-  useEffect(() => {
-    if (dashboards.length === 0) return;
-    const path = location.pathname;
-    const matchingDashboard = dashboards.find(
-      (d) => path === d.path || path.startsWith(`${d.path}/`)
-    );
-    setCurrentDashboard(matchingDashboard ?? null);
-  }, [location.pathname, dashboards]);
-
   const value = {
     currentDashboard,
     setCurrentDashboard,
@@ -70,6 +58,13 @@ export const DashboardProvider = ({ children }) => {
           })),
         ];
         setDashboards(newDashboards);
+
+        // Set current dashboard based on URL
+        const currentPath = window.location.pathname;
+        const matchingDashboard = newDashboards.find(d => currentPath.includes(d.path));
+        if (matchingDashboard) {
+          setCurrentDashboard(matchingDashboard);
+        }
         setLoadingDashboards(false);
       } catch (error) {
         console.error("Error fetching permissions:", error);

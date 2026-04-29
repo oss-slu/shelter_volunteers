@@ -89,8 +89,6 @@
 
 
 .header {
-  position: relative;
-  z-index: 200;
   background-color: white;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem;
@@ -99,6 +97,7 @@
   justify-content: space-between;
   top: 0;
   left: 0;
+  z-index: 30;
   width: 100%;
 }
 

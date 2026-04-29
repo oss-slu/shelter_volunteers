@@ -153,7 +153,7 @@ function ShelterScheduleManager() {
           required_volunteer_count: shift.requiredVolunteers,
           max_volunteer_count: shift.maxVolunteers,
           shift_name: shift.shiftName,
-          instructions: (shift.instructions || "").trim(),
+          instructions: shift.instructionsRecurring ? (shift.instructions || "").trim() : "",
         });
       });
     });

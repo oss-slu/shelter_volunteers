@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons'; // <-- Import faUserCircle
 import { useSidebar } from '../contexts/DashboardContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {useCurrentDashboard} from '../contexts/DashboardContext';
 import { SidebarButton } from "./SidebarButton";
 import { DashboardSelector } from './DashboardSelector';
@@ -10,7 +10,6 @@ export const Header = ({user}) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const {isSidebarOpen} = useSidebar();
   const navigate = useNavigate();
-  const location = useLocation();
   const {currentDashboard} = useCurrentDashboard();
 
   // Determine the base path for the current dashboard type (e.g., /volunteer-dashboard)
@@ -19,12 +18,13 @@ export const Header = ({user}) => {
     : '';
 
   const handleProfileClick = () => {
-    const onVolunteerRoutes =
-      location.pathname.startsWith('/volunteer-dashboard') ||
-      currentDashboard?.type === 'volunteer';
-    if (onVolunteerRoutes) {
-      navigate('/volunteer-dashboard/profile');
+    // Navigate to the profile route, which is available only on volunteer dashboard in this context
+    if (currentDashboard && currentDashboard.type === 'volunteer') {
+      navigate('/volunteer-dashboard/profile'); 
     } else {
+      // If we are on shelter/admin dashboard, we might redirect to a generic account page or home
+      // For now, only allow navigation if the volunteer dashboard is active.
+      // NOTE: You can expand this logic if shelter/admin profiles are introduced later.
       navigate(dashboardBasePath || '/home');
     }
     setUserMenuOpen(false);
@@ -43,7 +43,6 @@ export const Header = ({user}) => {
       </div>
       <div style={{ position: 'relative' }}>
         <button
-          type="button"
           onClick={() => setUserMenuOpen(!userMenuOpen)}
           className="dropdown-menu-button"
         >
@@ -59,34 +58,16 @@ export const Header = ({user}) => {
             <div className="sidebar-header">
               {user.email}
             </div>
-            {location.pathname.startsWith('/volunteer-dashboard') ? (
-              <button
-                type="button"
-                className="dropdown-item"
-                role="menuitem"
-                onClick={() => {
-                  // Navigate before closing the menu. Closing first unmounts this control and can
-                  // cancel React Router's Link navigation on subsequent clicks.
-                  navigate('/volunteer-dashboard/profile');
-                  setUserMenuOpen(false);
-                }}
-              >
-                <FontAwesomeIcon icon={faUserCircle} />
-                View Profile
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleProfileClick}
-                className="dropdown-item"
-              >
-                <FontAwesomeIcon icon={faUserCircle} />
-                View Profile
-              </button>
-            )}
+            {/* NEW: Profile Link */}
+            <button
+              onClick={handleProfileClick}
+              className="dropdown-item"
+            >
+              <FontAwesomeIcon icon={faUserCircle} />
+              View Profile
+            </button>    
             {/* Existing Logout Button */}
             <button
-              type="button"
               onClick={() => {
                 setUserMenuOpen(false);
                 navigate('/logout');
