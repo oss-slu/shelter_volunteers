@@ -3,7 +3,7 @@ const isValidTimestamp = (value) => {
   return !Number.isNaN(date.getTime());
 };
 
-const toDateKey = (dateValue) => {
+export const toDateKey = (dateValue) => {
   const date = new Date(dateValue);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

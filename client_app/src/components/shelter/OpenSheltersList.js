@@ -4,7 +4,7 @@ import { serviceShiftAPI } from '../../api/serviceShift';
 import Loading from '../Loading';
 import { formatDate } from '../../formatting/FormatDateTime';
 import { ShelterInfo } from '../volunteer/ShelterInfo';
-import { getOpenSheltersGroupedByDate } from '../../utils/openSheltersByDate';
+import { getOpenSheltersGroupedByDate, toDateKey } from '../../utils/openSheltersByDate';
 import '../../styles/shelter/OpenSheltersList.css';
 
 function OpenSheltersList() {
@@ -14,24 +14,38 @@ function OpenSheltersList() {
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchOpenShelters = async () => {
-      setLoadError('');
+      if (isMounted) {
+        setLoadError('');
+      }
       try {
         const [shelterData, shiftData] = await Promise.all([
           shelterAPI.getShelters(),
           serviceShiftAPI.getFutureShifts(),
         ]);
-        setShelters(shelterData);
-        setFutureShifts(shiftData);
+        if (isMounted) {
+          setShelters(shelterData);
+          setFutureShifts(shiftData);
+        }
       } catch (error) {
         console.error('Error loading shelter dashboard open shelters list:', error);
-        setLoadError('We could not load the open shelters list right now. Please try again.');
+        if (isMounted) {
+          setLoadError('We could not load the open shelters list right now. Please try again.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchOpenShelters();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const openShelterGroups = useMemo(
@@ -67,7 +81,7 @@ function OpenSheltersList() {
           </p>
           <div className="shelter-open-list__groups">
             {openShelterGroups.map((group) => (
-              <section key={group.date.toISOString()} className="shelter-open-list__group">
+              <section key={toDateKey(group.date)} className="shelter-open-list__group">
                 <div className="shelter-open-list__group-header">
                   <h3 className="shelter-open-list__group-title">{formatDate(group.date)}</h3>
                   <span className="shelter-open-list__group-count">
