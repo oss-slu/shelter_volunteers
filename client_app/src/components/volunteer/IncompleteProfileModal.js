@@ -17,6 +17,9 @@ const IncompleteProfileModal = ({ isOpen, onClose, onNavigateToProfile }) => {
 
   const handleCompleteProfile = () => {
     onClose();
+    if (alreadyOnProfile) {
+      return;
+    }
     if (onNavigateToProfile) {
       onNavigateToProfile();
     } else {
