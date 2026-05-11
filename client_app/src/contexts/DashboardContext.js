@@ -1,23 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+const DashboardContext = createContext();
 import { permissionsAPI } from '../api/permission';
 import { shelterAPI } from '../api/shelter';
 import { useAuth } from './AuthContext';
-
-const DashboardContext = createContext();
-
-const volunteerDashboard = {
-  type: "volunteer",
-  id: "volunteer-dashboard",
-  name: "Volunteer Dashboard",
-  path: "/volunteer-dashboard",
-};
-
 export const DashboardProvider = ({ children }) => {
   const [dashboards, setDashboards] = useState([]);
   const [currentDashboard, setCurrentDashboard] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [loadingDashboards, setLoadingDashboards] = useState(false);
+  const [loadingDashboards, setLoadingDashboards] = useState(true);
   const {isAuthenticated} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,21 +38,10 @@ export const DashboardProvider = ({ children }) => {
     navigate(dashboard.path);
   };
   useEffect(() => {
-    if (!isAuthenticated) {
-      setDashboards([]);
-      setCurrentDashboard(null);
-      setLoadingDashboards(false);
-      return;
-    }
-
-    let cancelled = false;
-
     const fetchPermissions = async () => {
       if (dashboards.length > 0) {
-        setLoadingDashboards(false);
         return; 
       }
-      setLoadingDashboards(true);
       try {
         const permissions = await permissionsAPI.getPermissions();
         console.log(permissions);
@@ -79,7 +59,7 @@ export const DashboardProvider = ({ children }) => {
           filteredShelterInfo = sheltersInfoAll.filter(shelter => shelterAccess.resource_ids.includes(shelter._id));
         }
         const newDashboards = [
-          volunteerDashboard,
+          { type: "volunteer", id: "volunteer-dashboard", name: "Volunteer Dashboard", path: "/volunteer-dashboard" },
           ...(systemAccess ? [{ type: "admin", id: "admin-dashboard", name: "System Admin Dashboard", path: "/admin-dashboard" }] : []),
           ...filteredShelterInfo.map(shelter => ({ 
             type: "shelter", 
@@ -89,26 +69,14 @@ export const DashboardProvider = ({ children }) => {
             details: shelter,
           })),
         ];
-        if (!cancelled) {
-          setDashboards(newDashboards);
-        }
+        setDashboards(newDashboards);
+        setLoadingDashboards(false);
       } catch (error) {
         console.error("Error fetching permissions:", error);
-        if (!cancelled) {
-          setDashboards([volunteerDashboard]);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoadingDashboards(false);
-        }
       }
     };
     fetchPermissions();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isAuthenticated, dashboards.length]);
+  }, [isAuthenticated]);
 
   return (
     <DashboardContext.Provider value={value}>
