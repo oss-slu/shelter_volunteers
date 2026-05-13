@@ -68,7 +68,7 @@ def test_post_shelter(
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
 
     assert response.status_code == 200
@@ -88,7 +88,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
     assert response.status_code == 400  # bad request
     assert not response.json["success"]
@@ -105,7 +105,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
     assert response.status_code == 400  # bad request
     assert not response.json["success"]
@@ -123,7 +123,7 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         content_type="application/json",
         headers=headers
     )
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "city" in response.json["message"]
     request_data = {
@@ -137,9 +137,9 @@ def test_post_shelter_missing_required_fields(mock_is_authorized, client):
         "/shelters",
         data=json.dumps(request_data),
         content_type="application/json",
-        headers=headers
+        headers=headers,
     )
-    assert response.status_code == 400  #bad request
+    assert response.status_code == 400  # bad request
     assert not response.json["success"]
     assert "state" in response.json["message"]
 

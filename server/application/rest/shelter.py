@@ -5,6 +5,7 @@ for shelters in the server application.
 import json
 import time
 from flask import Blueprint, Response, request
+
 from repository.mongo.shelter import ShelterRepo
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from use_cases.list_service_shifts_use_case import service_shifts_list_use_case
@@ -20,8 +21,8 @@ from use_cases.shelters.list_open_shelters_by_date_use_case import (
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from application.rest.system_admin_permission_required import system_admin_permission_required
 from domains.shelter.shelter import Shelter
-from serializers.shelter import ShelterJsonEncoder
 from responses import ResponseTypes
+from serializers.shelter import ShelterJsonEncoder
 
 shelter_blueprint = Blueprint("shelter", __name__)
 

@@ -112,6 +112,18 @@
   flex-shrink: 0;
 }
 
+.modal-hint {
+  margin: 12px 0 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #0f766e;
+  text-align: center;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
 /* Modal actions */
 .modal-actions {
   display: flex;
