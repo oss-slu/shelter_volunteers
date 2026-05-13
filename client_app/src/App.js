@@ -50,6 +50,7 @@ function AppContent() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
+      <Route path="/shelter" element={<Navigate to="/home" />} />
       <Route path="/home" element={<HomeDashboard />} />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
