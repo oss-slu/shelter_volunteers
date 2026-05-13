@@ -20,7 +20,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GHCR_TOKEN }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and push server
       uses: docker/build-push-action@v5
@@ -28,7 +28,7 @@ jobs:
         context: ./server
         file: ./docker_files/server/Dockerfile
         push: true
-        tags: ghcr.io/oss-slu/shelter_volunteers/server:latest
+        tags: ghcr.io/oss-slu/shelter-volunteers-server:latest
 
     - name: Build and push client
       uses: docker/build-push-action@v5
@@ -36,4 +36,4 @@ jobs:
         context: ./client_app
         file: ./docker_files/client_app/Dockerfile
         push: true
-        tags: ghcr.io/oss-slu/shelter_volunteers/client:latest
+        tags: ghcr.io/oss-slu/shelter-volunteers-client:latest
