@@ -3,14 +3,24 @@
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from pymongo.errors import ConfigurationError
 import certifi
+
+
+def _env(name, default=None):
+    """Read an environment variable and strip accidental whitespace."""
+    value = os.getenv(name, default)
+    if value is None:
+        return None
+    return value.strip()
+
 
 def load_env_file():
     """Load the appropriate .env file based on FLASK_ENV."""
     env = os.getenv('FLASK_ENV', 'development')
 
     env_vars = ['MONGODB_HOST', 'MONGODB_USERNAME', 'MONGODB_PASSWORD']
-    if all(os.getenv(var) for var in env_vars):
+    if all(_env(var) for var in env_vars):
         return
 
     env_file = f'.env.{env}'
@@ -23,11 +33,11 @@ def load_env_file():
 class MongoConfig(object):
     """Base configuration class."""
     load_env_file()
-    MONGODB_HOST = os.getenv('MONGODB_HOST', 'mongodb')
-    MONGODB_PORT = int(os.getenv('MONGODB_PORT', '27017'))
-    MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'volunteers_db')
-    MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
-    MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
+    MONGODB_HOST = _env('MONGODB_HOST', 'mongodb')
+    MONGODB_PORT = int(_env('MONGODB_PORT', '27017'))
+    MONGODB_DATABASE = _env('MONGODB_DATABASE', 'volunteers_db')
+    MONGODB_USERNAME = _env('MONGODB_USERNAME')
+    MONGODB_PASSWORD = _env('MONGODB_PASSWORD')
 
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
@@ -60,5 +70,18 @@ def get_db():
         pymongo.database.Database: MongoDB database connection
     """
     config = get_config()
-    client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    client_kwargs = {}
+    if config.MONGODB_URI.startswith('mongodb+srv://'):
+        client_kwargs['tlsCAFile'] = certifi.where()
+    try:
+        client = MongoClient(config.MONGODB_URI, **client_kwargs)
+    except ConfigurationError as exc:
+        raise ConfigurationError(
+            f"Could not connect to MongoDB host {config.MONGODB_HOST!r}. "
+            "For Atlas, copy the cluster hostname from Atlas → Connect "
+            "(it looks like cluster0.xxxxx.mongodb.net) into "
+            "MONGODB_HOST in .env.pre-production. If the cluster was "
+            "deleted or renamed, create a new one. For local MongoDB, "
+            "run with FLASK_ENV=development instead."
+        ) from exc
     return client[config.MONGODB_DATABASE]
