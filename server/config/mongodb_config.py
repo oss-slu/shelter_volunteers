@@ -77,11 +77,11 @@ def get_db():
         client = MongoClient(config.MONGODB_URI, **client_kwargs)
     except ConfigurationError as exc:
         raise ConfigurationError(
-            f"Could not connect to MongoDB host {config.MONGODB_HOST!r}. "
-            "For Atlas, copy the cluster hostname from Atlas → Connect "
-            "(it looks like cluster0.xxxxx.mongodb.net) into "
-            "MONGODB_HOST in .env.pre-production. If the cluster was "
-            "deleted or renamed, create a new one. For local MongoDB, "
-            "run with FLASK_ENV=development instead."
+            f'Could not connect to MongoDB host {config.MONGODB_HOST!r}. '
+            'For Atlas, copy the cluster hostname from Atlas → Connect '
+            '(it looks like cluster0.xxxxx.mongodb.net) into '
+            'MONGODB_HOST in .env.pre-production. If the cluster was '
+            'deleted or renamed, create a new one. For local MongoDB, '
+            'run with FLASK_ENV=development instead.'
         ) from exc
     return client[config.MONGODB_DATABASE]
