@@ -32,12 +32,14 @@ class MongoConfig(object):
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
     # Local Docker MongoDB connection
+    USE_TLS = False
     MONGODB_URI = (
         f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
     )
 
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
+    USE_TLS = True
     MONGODB_URI = (
         f'mongodb+srv://{MongoConfig.MONGODB_USERNAME}:'
         f'{MongoConfig.MONGODB_PASSWORD}@{MongoConfig.MONGODB_HOST}'
@@ -60,5 +62,8 @@ def get_db():
         pymongo.database.Database: MongoDB database connection
     """
     config = get_config()
-    client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    if config.USE_TLS:
+        client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    else:
+        client = MongoClient(config.MONGODB_URI)
     return client[config.MONGODB_DATABASE]
