@@ -85,7 +85,7 @@ function AppContent() {
 function App() {
   return (
     <div>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL || "/shelter"}>
         <AuthProvider>
           <DashboardProvider>
             <AppContent />

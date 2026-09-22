@@ -31,10 +31,15 @@ class MongoConfig(object):
 
 class MongoDevelopmentConfig(MongoConfig):
     """Development configuration."""
-    # Local Docker MongoDB connection
-    MONGODB_URI = (
-        f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
-    )
+    if MongoConfig.MONGODB_USERNAME and MongoConfig.MONGODB_PASSWORD:
+        MONGODB_URI = (
+            f'mongodb://{MongoConfig.MONGODB_USERNAME}:{MongoConfig.MONGODB_PASSWORD}@'
+            f'{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}/{MongoConfig.MONGODB_DATABASE}?authSource=admin'
+        )
+    else:
+        MONGODB_URI = (
+            f'mongodb://{MongoConfig.MONGODB_HOST}:{MongoConfig.MONGODB_PORT}'
+        )
 
 class MongoPreProductionConfig(MongoConfig):
     """Pre-production configuration using MongoDB Atlas."""
@@ -60,5 +65,8 @@ def get_db():
         pymongo.database.Database: MongoDB database connection
     """
     config = get_config()
-    client = MongoClient(config.MONGODB_URI, tlsCAFile=certifi.where())
+    kwargs = {}
+    if 'mongodb+srv://' in config.MONGODB_URI or 'tls=true' in config.MONGODB_URI.lower():
+        kwargs['tlsCAFile'] = certifi.where()
+    client = MongoClient(config.MONGODB_URI, **kwargs)
     return client[config.MONGODB_DATABASE]
