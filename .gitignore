@@ -2,6 +2,7 @@
 .vscode/settings.json
 venv/
 .env.pre-production
+.env.production
 *__pycache__/
 *.pyc
 .pytest_cache/

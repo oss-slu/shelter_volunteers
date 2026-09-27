@@ -1,0 +1,10 @@
+# Replace these with your real domains before first deploy.
+# Caddy provisions and renews Let's Encrypt certificates automatically.
+
+app.yourdomain.org {
+    reverse_proxy frontend:80
+}
+
+api.yourdomain.org {
+    reverse_proxy backend:5001
+}
