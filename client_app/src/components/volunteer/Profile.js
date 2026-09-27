@@ -63,8 +63,19 @@ const ProfileSettings = () => {
   const [isLoadingInitialData, setIsLoadingInitialData] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageStatus, setMessageStatus] = useState(null); // "success" | "error"
   const [validationErrors, setValidationErrors] = useState({});
   const [isPosting, setIsPosting] = useState(false);
+
+  const clearMessage = () => {
+    setMessage("");
+    setMessageStatus(null);
+  };
+
+  const showMessage = (text, status) => {
+    setMessage(text);
+    setMessageStatus(status);
+  };
 
   // Pre-populate fields
   useEffect(() => {
@@ -96,7 +107,7 @@ const ProfileSettings = () => {
     }
     // Clear general message if the user is typing
     if (message) {
-      setMessage("");
+      clearMessage();
     }
   };
 
@@ -104,7 +115,7 @@ const ProfileSettings = () => {
   const handleEdit = () => {
     setFormData(profileData);
     setIsEditing(true);
-    setMessage("");
+    clearMessage();
     setValidationErrors({}); // Clear any prior errors
   };
 
@@ -115,18 +126,18 @@ const ProfileSettings = () => {
     setValidationErrors(errors);
 
     if (Object.keys(errors).length > 0) {
-      setMessage("Please correct the highlighted errors before saving.");
+      showMessage("Please correct the highlighted errors before saving.", "error");
       return;
     }
 
     // Send POST.
-    setMessage("");
+    clearMessage();
     setIsPosting(true);
     postUserProfile(formData)
       .then((response) => {
         setProfileData(response);
         setIsEditing(false);
-        setMessage("Profile updated.");
+        showMessage("Profile updated.", "success");
       })
       .catch((errors) => {
         console.log(errors);
@@ -149,7 +160,7 @@ const ProfileSettings = () => {
     if (profileData.firstName !== "" && profileData.lastName !== "" && profileData.phone !== "") {
       setIsEditing(false);
     }
-    setMessage("");
+    clearMessage();
     setValidationErrors({}); // Clear errors on cancel
   };
 
@@ -202,7 +213,7 @@ const ProfileSettings = () => {
       {/* Message Box for success/error alerts */}
       {message && (
         <div
-          className={`profile-message ${message.includes("successfully") ? "success" : "error"}`}
+          className={`profile-message ${messageStatus === "success" ? "success" : "error"}`}
           role="alert">
           {message}
         </div>
