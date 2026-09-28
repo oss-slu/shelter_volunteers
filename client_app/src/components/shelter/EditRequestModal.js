@@ -15,11 +15,20 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
 
   useEffect(() => {
     if (shift) {
+      const requiredVolunteers = Number.parseInt(
+        shift.required_volunteer_count,
+        10,
+      ) || 1;
+      const maximumVolunteers = Number.parseInt(
+        shift.max_volunteer_count,
+        10,
+      ) || requiredVolunteers;
+
       setOriginalShift(shift);
       setFromTime(timestampToTimeInput(shift.shift_start));
       setToTime(timestampToTimeInput(shift.shift_end));
-      setVolunteersRequested(shift.required_volunteer_count || 0);
-      setMaxVolunteers(shift.max_volunteer_count || 0);
+      setVolunteersRequested(requiredVolunteers);
+      setMaxVolunteers(Math.max(maximumVolunteers, requiredVolunteers));
       setInstructions(shift.instructions || "");
     }
   }, [shift]);
@@ -56,6 +65,11 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       return;
     }
 
+    if (volunteersRequested < 1 || maxVolunteers < 1) {
+      alert("Volunteer counts must be at least 1.");
+      return;
+    }
+
     if (maxVolunteers < volunteersRequested) {
       alert("Maximum volunteers cannot be less than volunteers requested.");
       return;
@@ -70,8 +84,10 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       instructions: instructions.trim(),
     };
     
-    await onSave(updatedShift);
-    onClose();
+    const wasSaved = await onSave(updatedShift);
+    if (wasSaved) {
+      onClose();
+    }
   };
 
   const renderData = () => (
@@ -99,7 +115,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
         <label className="fieldLabel">Volunteers Requested:</label>
         <input
           type="number"
-          min="0"
+          min="1"
           value={volunteersRequested}
           onChange={handleVolunteersChange}
           className="numberInput"

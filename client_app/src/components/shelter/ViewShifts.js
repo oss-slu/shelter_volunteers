@@ -76,10 +76,11 @@ const ViewShifts = ({ shiftDetailsData }) => {
 
       setShiftsData(updatedShifts);
       setIsEditModalOpen(false);
+      return true;
     } catch (error) {
       console.error("Error updating shift:", error);
       setErrorToast(error?.message || "Failed to update shift. Please try again.");
-      throw error;
+      return false;
     }
   };
 
