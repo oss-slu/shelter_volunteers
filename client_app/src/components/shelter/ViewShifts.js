@@ -61,6 +61,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
         shift_start: updatedShift.shift_start,
         shift_end: updatedShift.shift_end,
         required_volunteer_count: updatedShift.required_volunteer_count,
+        max_volunteer_count: updatedShift.max_volunteer_count,
         instructions: updatedShift.instructions || "",
       };
 

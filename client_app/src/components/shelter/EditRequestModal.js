@@ -9,6 +9,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
   const [volunteersRequested, setVolunteersRequested] = useState(0);
+  const [maxVolunteers, setMaxVolunteers] = useState(0);
   const [instructions, setInstructions] = useState("");
   const [originalShift, setOriginalShift] = useState(null);
 
@@ -18,6 +19,7 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       setFromTime(timestampToTimeInput(shift.shift_start));
       setToTime(timestampToTimeInput(shift.shift_end));
       setVolunteersRequested(shift.required_volunteer_count || 0);
+      setMaxVolunteers(shift.max_volunteer_count || 0);
       setInstructions(shift.instructions || "");
     }
   }, [shift]);
@@ -32,6 +34,10 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
 
   const handleVolunteersChange = (e) => {
     setVolunteersRequested(parseInt(e.target.value, 10) || 0);
+  };
+
+  const handleMaxVolunteersChange = (e) => {
+    setMaxVolunteers(parseInt(e.target.value, 10) || 0);
   };
 
   const handleInstructionsChange = (e) => {
@@ -49,12 +55,18 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
       alert("Start time must be before end time. Please correct the time range.");
       return;
     }
+
+    if (maxVolunteers < volunteersRequested) {
+      alert("Maximum volunteers cannot be less than volunteers requested.");
+      return;
+    }
     
     const updatedShift = {
       ...originalShift,
       shift_start: startTimestamp,
       shift_end: endTimestamp,
       required_volunteer_count: volunteersRequested,
+      max_volunteer_count: maxVolunteers,
       instructions: instructions.trim(),
     };
     
@@ -90,6 +102,16 @@ export const EditRequestModal = ({ isOpen, onClose, shift, onSave }) => {
           min="0"
           value={volunteersRequested}
           onChange={handleVolunteersChange}
+          className="numberInput"
+        />
+      </div>
+      <div className="formField">
+        <label className="fieldLabel">Maximum Volunteers:</label>
+        <input
+          type="number"
+          min={Math.max(volunteersRequested, 1)}
+          value={maxVolunteers}
+          onChange={handleMaxVolunteersChange}
           className="numberInput"
         />
       </div>
