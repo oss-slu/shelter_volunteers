@@ -7,9 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SERVER_IMAGE: ghcr.io/oss-slu/shelter-volunteers-server
+      CLIENT_IMAGE: ghcr.io/oss-slu/shelter-volunteers-client
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
 
     steps:
     - name: Checkout
@@ -23,17 +29,72 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and push server
+      id: build-server
       uses: docker/build-push-action@v5
       with:
         context: ./server
         file: ./docker_files/server/Dockerfile
         push: true
         tags: ghcr.io/oss-slu/shelter-volunteers-server:latest
+    - name: Generate server SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        image: ${{ env.SERVER_IMAGE }}@${{ steps.build-server.outputs.digest }}
+        format: spdx-json
+        output-file: server.spdx.json
+
+    - name: Upload server SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: shelter-volunteers-server-sbom
+        path: server.spdx.json
+        if-no-files-found: error
 
     - name: Build and push client
+      id: build-client
       uses: docker/build-push-action@v5
       with:
         context: ./client_app
         file: ./docker_files/client_app/Dockerfile
         push: true
         tags: ghcr.io/oss-slu/shelter-volunteers-client:latest
+
+    - name: Generate client SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        image: ${{ env.CLIENT_IMAGE }}@${{ steps.build-client.outputs.digest }}
+        format: spdx-json
+        output-file: client.spdx.json
+
+    - name: Upload client SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: shelter-volunteers-client-sbom
+        path: client.spdx.json
+        if-no-files-found: error
+
+    - name: Attest server image
+      uses: actions/attest@v2
+      with:
+        subject-name: ${{ env.SERVER_IMAGE }}
+        subject-digest: ${{ steps.build-server.outputs.digest }}
+        push-to-registry: true
+
+    - name: Attest client image
+      uses: actions/attest@v2
+      with:
+        subject-name: ${{ env.CLIENT_IMAGE }}
+        subject-digest: ${{ steps.build-client.outputs.digest }}
+        push-to-registry: true
+
+    - name: Verify image provenance
+      env:
+        GH_TOKEN: ${{ github.token }}
+        SERVER_IMAGE: ${{ env.SERVER_IMAGE }}
+        SERVER_DIGEST: ${{ steps.build-server.outputs.digest }}
+        CLIENT_IMAGE: ${{ env.CLIENT_IMAGE }}
+        CLIENT_DIGEST: ${{ steps.build-client.outputs.digest }}
+      run: |
+        gh attestation verify "oci://${SERVER_IMAGE}@${SERVER_DIGEST}" --repo "${GITHUB_REPOSITORY}"
+        gh attestation verify "oci://${CLIENT_IMAGE}@${CLIENT_DIGEST}" --repo "${GITHUB_REPOSITORY}"
+
