@@ -17,6 +17,7 @@ from use_cases.delete_service_commitment import delete_service_commitment
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.shelter import ShelterRepo
+from repository.mongo.waitlist import WaitlistMongoRepo
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from serializers.service_shift import ServiceShiftJsonEncoder
 from serializers.shelter import ShelterJsonEncoder
@@ -27,6 +28,7 @@ service_commitment_bp = Blueprint("service_commitment", __name__)
 commitments_repo = MongoRepoCommitments()
 shifts_repo = ServiceShiftsMongoRepo()
 shelter_repo = ShelterRepo()
+waitlist_repo = WaitlistMongoRepo()
 
 @service_commitment_bp.route("/service_commitment", methods=["POST"])
 @token_required_with_request
@@ -170,7 +172,9 @@ def delete_service_commitment_by_id(user_email, commitment_id):
         response = delete_service_commitment(
             commitments_repo,
             commitment_id,
-            user_email)
+            user_email,
+            waitlist_repo=waitlist_repo,
+            shifts_repo=shifts_repo)
         response_code = response["response_code"]
         # remove "response_code" from the response
         del response["response_code"]

@@ -5,6 +5,7 @@ import { VolunteerCount } from './VolunteerCount';
 export const MobileShiftCard = ({
   shiftData,
   handleShiftToggle,
+  handleWaitlistToggle = null,
   showInstructions = false,
   isInstructionsOpen = false,
   onInstructionsToggle = null,
@@ -84,6 +85,30 @@ export const MobileShiftCard = ({
       {shiftData.hasConflict && (
         <div className="detail-row  selected-indicator-desktop">
           <span className="checkmark conflict"> Time Conflict</span>
+        </div>
+      )}
+      {shiftData.isFull && shiftData.waitlisted && (
+        <div className="detail-row selected-indicator-desktop">
+          <span className="checkmark waitlisted">On Waitlist</span>
+        </div>
+      )}
+      {shiftData.isFull && handleWaitlistToggle && (shiftData.canJoinWaitlist || shiftData.waitlisted) && (
+        <div className="detail-row waitlist-action-row">
+          <button
+            type="button"
+            className={`waitlist-button ${shiftData.waitlisted ? 'waitlist-button--leave' : 'waitlist-button--join'}`}
+            disabled={shiftData.waitlistBusy}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleWaitlistToggle(shiftData.shift);
+            }}
+          >
+            {shiftData.waitlistBusy
+              ? '...'
+              : shiftData.waitlisted
+                ? 'Leave Waitlist'
+                : 'Join Waitlist'}
+          </button>
         </div>
       )}
     </div>
