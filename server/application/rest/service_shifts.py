@@ -389,7 +389,7 @@ def patch_service_shift(shelter_id, shift_id):
 @shelter_admin_permission_required
 def delete_service_shift(shelter_id, shift_id):
     """
-    Deletes a service shift and all volunteer commitments for that shift.
+    Deletes a service shift and all commitments and waitlist entries for that shift.
     Requires shelter admin permissions for the given shelter.
     """
     shifts_repo = get_service_shifts_repo()
@@ -409,6 +409,7 @@ def delete_service_shift(shelter_id, shift_id):
         )
 
     commitments_repo.delete_commitments_for_service_shift(shift_id)
+    waitlist_repo.remove_all_for_shift(shift_id)
     if not shifts_repo.delete_service_shift(shift_id):
         return Response(
             json.dumps({"message": "Failed to delete service shift"}),

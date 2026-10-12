@@ -399,11 +399,16 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data["message"], "Invalid data provided")
 
+    @patch("application.rest.service_shifts.waitlist_repo")
     @patch("application.rest.service_shifts.commitments_repo")
     @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
-    def test_delete_service_shift_removes_shift_and_commitments(
-        self, mock_is_authorized, mock_get_repo, mock_commitments_repo
+    def test_delete_service_shift_removes_shift_commitments_and_waitlist_entries(
+        self,
+        mock_is_authorized,
+        mock_get_repo,
+        mock_commitments_repo,
+        mock_waitlist_repo,
     ):
         mock_is_authorized.return_value = True
         mock_shifts_repo = MagicMock()
@@ -428,12 +433,19 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_commitments_repo.delete_commitments_for_service_shift.assert_called_once_with(
             "abc123"
         )
+        mock_waitlist_repo.remove_all_for_shift.assert_called_once_with("abc123")
         mock_shifts_repo.delete_service_shift.assert_called_once_with("abc123")
 
+    @patch("application.rest.service_shifts.waitlist_repo")
+    @patch("application.rest.service_shifts.commitments_repo")
     @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_delete_service_shift_returns_404_when_missing(
-        self, mock_is_authorized, mock_get_repo
+        self,
+        mock_is_authorized,
+        mock_get_repo,
+        mock_commitments_repo,
+        mock_waitlist_repo,
     ):
         mock_is_authorized.return_value = True
         mock_shifts_repo = MagicMock()
@@ -446,6 +458,8 @@ class TestServiceShiftAPI(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+        mock_commitments_repo.delete_commitments_for_service_shift.assert_not_called()
+        mock_waitlist_repo.remove_all_for_shift.assert_not_called()
 
 if __name__ == "__main__":
     unittest.main()
