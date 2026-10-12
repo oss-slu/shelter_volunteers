@@ -21,8 +21,30 @@
   height: 24px;
 }
 
-.request-item-container .info button svg{
-  color: #193b45; 
+.request-item-container .shift-waitlist button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #9bb6bd;
+  border-radius: 999px;
+  background-color: #f2f8fa;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.request-item-container .shift-waitlist button:hover,
+.request-item-container .shift-waitlist button:focus-visible {
+  background-color: #deeff3;
+}
+
+.request-item-container .shift-waitlist button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.request-item-container .info button svg {
+  color: #193b45;
 }
 .request-item-container .delete button {
   background-color: transparent;
@@ -76,6 +98,14 @@
   margin-right: 1.1em;
   align-items: center;
   justify-content: center;
+}
+
+.request-item-container .info,
+.request-item-container .shift-waitlist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 8px 2px 2px;
 }
 
 .calendar {
@@ -143,4 +173,26 @@ progress {
 
 .progress-bar progress::-webkit-progress-value {
   background-color: #bda36b;
+}
+
+@media (max-width: 700px) {
+  .request-item-container {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .request-item-container .calendar {
+    flex-basis: 100%;
+  }
+
+  .request-item-container .info,
+  .request-item-container .shift-waitlist {
+    justify-content: flex-start;
+  }
+
+  .request-item-container .edit,
+  .request-item-container .delete {
+    margin: 2px;
+  }
 }
