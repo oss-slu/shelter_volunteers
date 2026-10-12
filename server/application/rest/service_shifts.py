@@ -13,12 +13,14 @@ from domains.service_shift import ServiceShift
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.user_info_repository import UserInfoRepository
+from repository.mongo.waitlist import WaitlistMongoRepo
 from responses import ResponseTypes
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from serializers.service_shift import ServiceShiftJsonEncoder
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import list_service_shifts_with_volunteers_use_case
 from use_cases.service_commitments.list_user_infos_in_shift import list_user_infos_in_shift
+from use_cases.waitlist.promote_from_waitlist import promote_from_waitlist
 
 service_shift_bp = Blueprint("service_shift", __name__)
 MAX_INSTRUCTIONS_LENGTH = 500
@@ -27,6 +29,7 @@ logger = logging.getLogger(__name__)
 commitments_repo = MongoRepoCommitments()
 service_shifts_repo = ServiceShiftsMongoRepo()
 user_info_repo = UserInfoRepository()
+waitlist_repo = WaitlistMongoRepo()
 
 
 def get_service_shifts_repo():
@@ -82,11 +85,43 @@ def _sanitize_instructions(instructions):
     return trimmed
 
 
+_INT_FIELDS = (
+    "shift_start",
+    "shift_end",
+    "required_volunteer_count",
+    "max_volunteer_count",
+)
+
+
+def _coerce_int(value, field_name):
+    """Coerce a payload value to an int, raising ValueError on bad input."""
+    if isinstance(value, bool):
+        raise ValueError(f"{field_name} must be an integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if not value.is_integer():
+            raise ValueError(f"{field_name} must be an integer")
+        return int(value)
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError(f"{field_name} must be an integer")
+        try:
+            return int(stripped)
+        except ValueError as err:
+            raise ValueError(f"{field_name} must be an integer") from err
+    raise ValueError(f"{field_name} must be an integer")
+
+
 def _validate_shift_payload(shift_payload):
     validated = dict(shift_payload)
     validated["instructions"] = _sanitize_instructions(
         shift_payload.get("instructions", "")
     )
+    for field in _INT_FIELDS:
+        if field in validated and validated[field] is not None:
+            validated[field] = _coerce_int(validated[field], field)
     return validated
 
 
@@ -274,6 +309,9 @@ def patch_service_shift(shelter_id, shift_id):
             raise ValueError("shift_start and shift_end must be updated together")
         if "instructions" in updates:
             updates["instructions"] = _sanitize_instructions(updates.get("instructions"))
+        for field in _INT_FIELDS:
+            if field in updates and updates[field] is not None:
+                updates[field] = _coerce_int(updates[field], field)
     except ValueError as err:
         logger.warning("Invalid patch data for shift %s: %s", shift_id, err)
         return Response(
@@ -330,6 +368,14 @@ def patch_service_shift(shelter_id, shift_id):
             json.dumps({"message": "Failed to update service shift"}),
             mimetype="application/json",
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND],
+        )
+
+    if updated_shift.max_volunteer_count > existing_shift.max_volunteer_count:
+        promote_from_waitlist(
+            waitlist_repo,
+            commitments_repo,
+            shifts_repo,
+            shift_id,
         )
 
     return Response(

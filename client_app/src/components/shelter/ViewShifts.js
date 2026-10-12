@@ -61,6 +61,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
         shift_start: updatedShift.shift_start,
         shift_end: updatedShift.shift_end,
         required_volunteer_count: updatedShift.required_volunteer_count,
+        max_volunteer_count: updatedShift.max_volunteer_count,
         instructions: updatedShift.instructions || "",
       };
 
@@ -75,10 +76,11 @@ const ViewShifts = ({ shiftDetailsData }) => {
 
       setShiftsData(updatedShifts);
       setIsEditModalOpen(false);
+      return true;
     } catch (error) {
       console.error("Error updating shift:", error);
       setErrorToast(error?.message || "Failed to update shift. Please try again.");
-      throw error;
+      return false;
     }
   };
 

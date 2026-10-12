@@ -1,0 +1,9 @@
+FROM python:3.9-slim
+WORKDIR /python-docker
+COPY . /python-docker
+RUN pip3 install --no-cache-dir -r requirements.txt
+EXPOSE 5001
+# Single worker process, multiple threads: create_app() starts an in-process
+# APScheduler job (reminder emails), so running >1 worker process would fire
+# each reminder once per worker. Threads still give request concurrency.
+CMD ["gunicorn", "--workers", "1", "--threads", "4", "-b", "0.0.0.0:5001", "--access-logfile", "-", "wsgi:app"]

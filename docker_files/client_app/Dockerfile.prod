@@ -1,0 +1,17 @@
+# Build context for this file is the repo root (see docker-compose.prod.yml /
+# docker-build.yml), so paths below are prefixed with client_app/.
+FROM node:lts-alpine AS build
+WORKDIR /usr/src/app
+# CRA bakes REACT_APP_* vars into the build at compile time, so it must be
+# supplied as a build arg (not a runtime container env var).
+ARG REACT_APP_SERVER_URL
+ENV REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
+COPY client_app/package*.json ./
+RUN npm install
+COPY client_app/. .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+COPY docker_files/client_app/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
