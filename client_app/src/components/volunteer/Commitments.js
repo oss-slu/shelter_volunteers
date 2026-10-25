@@ -209,6 +209,7 @@ function Commitments(){
                     isInstructionsOpen={expandedInstructions.has(shift._id)}
                     onInstructionsToggle={toggleInstructions}
                     instructionsColSpan={5}
+                    showCalendarExport={true}
                   />
                 ))}
               </tbody>
@@ -222,6 +223,7 @@ function Commitments(){
                 shiftData={processShiftData(shift)}
                 handleShiftToggle={handleShiftToggle}
                 showInstructions={true}
+                showCalendarExport={true}
                 isInstructionsOpen={expandedInstructions.has(shift._id)}
                 onInstructionsToggle={toggleInstructions}
               />

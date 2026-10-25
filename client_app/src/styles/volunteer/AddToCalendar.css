@@ -1,0 +1,59 @@
+.shift-calendar-export {
+  margin-top: 12px;
+  text-align: left;
+  max-width: 340px;
+}
+
+.shift-calendar-export .shift-calendar-export__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #1e4c5b;
+  border-radius: 6px;
+  background: #1e4c5b;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shift-calendar-export .shift-calendar-export__button:hover:not(:disabled) {
+  background: #163b48;
+}
+
+.shift-calendar-export .shift-calendar-export__button:focus-visible {
+  outline: 3px solid #2485a4;
+  outline-offset: 3px;
+}
+
+.shift-calendar-export .shift-calendar-export__button:disabled {
+  background: #e8edef;
+  border-color: #b9c8cd;
+  color: #52636a;
+  cursor: not-allowed;
+}
+
+.shift-calendar-export .shift-calendar-export__note,
+.shift-calendar-export .shift-calendar-export__message {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #455e66;
+  overflow-wrap: anywhere;
+}
+
+.shift-calendar-export .shift-calendar-export__message[role="alert"] {
+  color: #a32121;
+}
+
+@media (max-width: 600px) {
+  .shift-calendar-export {
+    max-width: 100%;
+  }
+  .shift-calendar-export .shift-calendar-export__button {
+    width: 100%;
+  }
+}
