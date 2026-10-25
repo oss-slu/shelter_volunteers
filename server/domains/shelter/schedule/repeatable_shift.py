@@ -34,6 +34,8 @@ class RepeatableShift:
     required_volunteer_count: int
     max_volunteer_count: int
     shift_name: Optional[str] = None
+    instructions: str = ""
+    instructions_recurring: bool = False
     id: Optional[str] = None
 
     @staticmethod
@@ -43,6 +45,8 @@ class RepeatableShift:
         required_volunteer_count: int,
         max_volunteer_count: int,
         shift_name: Optional[str] = None,
+        instructions: Optional[str] = None,
+        instructions_recurring: Optional[bool] = False,
         id: Optional[str] = None,
     ) -> Result["RepeatableShift"]:
         errors = {}
@@ -65,15 +69,38 @@ class RepeatableShift:
                 "Required volunteer count must be at least 1."
             )
 
+        if instructions is None:
+            instructions = ""
+        if not isinstance(instructions, str):
+            if "instructions" not in errors:
+                errors["instructions"] = []
+            errors["instructions"].append("Instructions must be a string.")
+        else:
+            instructions = instructions.strip()
+
+        if len(instructions) > 500:
+            if "instructions" not in errors:
+                errors["instructions"] = []
+            errors["instructions"].append("Instructions must be at most 500 characters.")
+
+        if not isinstance(instructions_recurring, bool):
+            if "instructions_recurring" not in errors:
+                errors["instructions_recurring"] = []
+            errors["instructions_recurring"].append(
+                "instructions_recurring must be a boolean."
+            )
+
         if errors:
             return Failure(keyed_errors=errors)
 
         result = RepeatableShift(
-            shift_start,
-            shift_end,
-            required_volunteer_count,
-            max_volunteer_count,
-            shift_name,
-            id,
+            shift_start=shift_start,
+            shift_end=shift_end,
+            required_volunteer_count=required_volunteer_count,
+            max_volunteer_count=max_volunteer_count,
+            shift_name=shift_name,
+            instructions=instructions,
+            instructions_recurring=instructions_recurring,
+            id=id,
         )
         return Success(result)

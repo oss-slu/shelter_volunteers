@@ -1,0 +1,130 @@
+/* Volunteer shift calendar wrapper */
+.volunteer-shift-calendar-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Screen reader announcements (selection + result count) */
+.volunteer-calendar-sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Month day cell: keyboard focusable wrapper around .rbc-day-bg */
+.volunteer-date-cell-keyboard {
+  flex: 1 1 0;
+  display: flex;
+  min-width: 0;
+  outline: none;
+}
+
+.volunteer-date-cell-keyboard .rbc-day-bg {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.volunteer-date-cell-keyboard:focus {
+  outline: none;
+}
+
+.volunteer-date-cell-keyboard:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--primary-color, #1f3b52);
+  z-index: 2;
+  border-radius: 2px;
+}
+
+/* Legend: yellow = 1 shift, red = 2+ shifts */
+.volunteer-calendar-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.volunteer-calendar-legend .legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--accent-color, #555);
+}
+
+.volunteer-calendar-legend .legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.volunteer-calendar-legend .legend-one {
+  background-color: #f4d03f;
+  border: 1px solid #e5c02a;
+}
+
+.volunteer-calendar-legend .legend-multiple {
+  background-color: #e74c3c;
+  border: 1px solid #c0392b;
+}
+
+/* Calendar container - give it height for month/week view */
+.volunteer-calendar-container {
+  min-height: 400px;
+  flex-grow: 1;
+  position: relative;
+}
+
+/* Day cell colors: yellow = one shift, red = multiple */
+.volunteer-shift-calendar .volunteer-calendar-day-one-shift {
+  background-color: #fef9e7 !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-one-shift:hover {
+  background-color: #f4d03f !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-multiple-shifts {
+  background-color: #fdedec !important;
+}
+
+.volunteer-shift-calendar .volunteer-calendar-day-multiple-shifts:hover {
+  background-color: #e74c3c !important;
+}
+
+/* Ensure calendar fills container */
+.volunteer-shift-calendar {
+  height: 100%;
+  min-height: 400px;
+}
+
+/* Toolbar (Today / Back / Next / Month / Week): visible focus for keyboard users */
+.volunteer-shift-calendar .rbc-toolbar button:focus-visible {
+  outline: 2px solid var(--primary-color, #1f3b52);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .volunteer-calendar-container {
+    min-height: 350px;
+  }
+
+  .volunteer-shift-calendar {
+    min-height: 350px;
+  }
+
+  /* Larger touch targets for day selection in month view */
+  .volunteer-calendar-legend {
+    gap: 0.75rem 1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .volunteer-date-cell-keyboard {
+    min-height: 2.75rem;
+  }
+}

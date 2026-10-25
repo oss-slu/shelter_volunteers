@@ -6,6 +6,8 @@ const shiftSnakeToCamel = (shift) => ({
   requiredVolunteerCount: shift.required_volunteer_count,
   maxVolunteerCount: shift.max_volunteer_count,
   shiftName: shift.shift_name,
+  instructions: shift.instructions || "",
+  instructionsRecurring: Boolean(shift.instructions_recurring),
   id: shift.id,
 });
 
@@ -15,6 +17,8 @@ const shiftCamelToSnake = (shift) => ({
   required_volunteer_count: shift.requiredVolunteerCount,
   max_volunteer_count: shift.maxVolunteerCount,
   shift_name: shift.shiftName,
+  instructions: (shift.instructions || "").trim(),
+  instructions_recurring: Boolean(shift.instructionsRecurring),
   id: shift.id,
 });
 

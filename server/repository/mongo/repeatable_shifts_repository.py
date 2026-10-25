@@ -91,6 +91,8 @@ class RepeatableShiftsRepository:
                 required_volunteer_count=doc.get("required_volunteer_count"),
                 max_volunteer_count=doc.get("max_volunteer_count"),
                 shift_name=doc.get("shift_name"),
+                instructions=doc.get("instructions", ""),
+                instructions_recurring=doc.get("instructions_recurring", False),
             )
             for doc in cursor
         ]

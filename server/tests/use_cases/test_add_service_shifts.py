@@ -181,4 +181,3 @@ def test_add_shift_conflicting_with_existing_shift(moch_repo):
 
     assert result["success"] is False
     assert result["message"] == "overlapping shift"
-    

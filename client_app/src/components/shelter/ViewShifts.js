@@ -1,25 +1,83 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "../../styles/shelter/UpcomingShifts.css";
 import ServiceShiftDetails from "./ServiceShiftDetails.js";
 import { EditRequestModal } from "./EditRequestModal.js";
 import { CancelRequestModal } from "./CancelRequestModal.js";
 import { formatDate } from "../../formatting/FormatDateTime.js";
 import ShiftUserInfoDisplay from "./ShiftUserInfoDisplay";
+import ShiftWaitlistModal from "./ShiftWaitlistModal";
+import { serviceShiftAPI } from "../../api/serviceShift.js";
+import { waitlistAPI } from "../../api/waitlist.js";
 
 const ViewShifts = ({ shiftDetailsData }) => {
+  const { shelterId } = useParams();
   const [shiftsData, setShiftsData] = useState(shiftDetailsData || []);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState(null);
+  const [errorToast, setErrorToast] = useState("");
+  const [waitlistCounts, setWaitlistCounts] = useState({});
+  const [waitlistStatuses, setWaitlistStatuses] = useState({});
 
   useEffect(() => {
     setShiftsData(shiftDetailsData || []);
   }, [shiftDetailsData]);
 
+  useEffect(() => {
+    let ignoreResults = false;
+
+    if (!shelterId || shiftsData.length === 0) {
+      setWaitlistCounts({});
+      setWaitlistStatuses({});
+      return undefined;
+    }
+
+    setWaitlistStatuses(Object.fromEntries(shiftsData.map((shift) => [shift._id, "loading"])));
+
+    Promise.all(
+      shiftsData.map(async (shift) => {
+        try {
+          const queue = await waitlistAPI.getForShift(shelterId, shift._id);
+          return { shiftId: shift._id, count: queue.length, status: "ready" };
+        } catch (error) {
+          console.error(`Error fetching waitlist for shift ${shift._id}:`, error);
+          return { shiftId: shift._id, count: null, status: "error" };
+        }
+      }),
+    ).then((results) => {
+      if (ignoreResults) return;
+      setWaitlistCounts(
+        Object.fromEntries(results.map((result) => [result.shiftId, result.count])),
+      );
+      setWaitlistStatuses(
+        Object.fromEntries(results.map((result) => [result.shiftId, result.status])),
+      );
+    });
+
+    return () => {
+      ignoreResults = true;
+    };
+  }, [shelterId, shiftsData]);
+
+  useEffect(() => {
+    if (!errorToast) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(() => setErrorToast(""), 4000);
+    return () => clearTimeout(timeoutId);
+  }, [errorToast]);
+
   const handleRosterClick = (shift) => {
     setSelectedShift(shift);
     setIsRosterModalOpen(true);
+  };
+
+  const handleWaitlistClick = (shift) => {
+    setSelectedShift(shift);
+    setIsWaitlistModalOpen(true);
   };
 
   const handleEditRequestClick = (shift) => {
@@ -32,19 +90,44 @@ const ViewShifts = ({ shiftDetailsData }) => {
     setIsCancelModalOpen(true);
   };
 
-  const handleConfirmCancel = (shiftToCancel) => {
-    // Add API call to cancel the shift
-    setShiftsData((prevData) => prevData.filter((shift) => shift._id !== shiftToCancel._id));
-    setIsCancelModalOpen(false);
+  const handleConfirmCancel = async (shiftToCancel) => {
+    try {
+      await serviceShiftAPI.deleteShift(shelterId, shiftToCancel._id);
+      setShiftsData((prevData) => prevData.filter((shift) => shift._id !== shiftToCancel._id));
+      setIsCancelModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting shift:", error);
+      setErrorToast(error?.message || "Failed to delete shift. Please try again.");
+    }
   };
 
-  const handleSaveEdit = (updatedShift) => {
-    const updatedShifts = shiftsData.map((shift) =>
-      shift._id === updatedShift._id ? updatedShift : shift,
-    );
+  const handleSaveEdit = async (updatedShift) => {
+    try {
+      const patchPayload = {
+        shift_start: updatedShift.shift_start,
+        shift_end: updatedShift.shift_end,
+        required_volunteer_count: updatedShift.required_volunteer_count,
+        max_volunteer_count: updatedShift.max_volunteer_count,
+        instructions: updatedShift.instructions || "",
+      };
 
-    setShiftsData(updatedShifts);
-    setIsEditModalOpen(false);
+      const savedShift = await serviceShiftAPI.updateShift(
+        shelterId,
+        updatedShift._id,
+        patchPayload,
+      );
+      const updatedShifts = shiftsData.map((shift) =>
+        shift._id === savedShift._id ? { ...shift, ...savedShift } : shift,
+      );
+
+      setShiftsData(updatedShifts);
+      setIsEditModalOpen(false);
+      return true;
+    } catch (error) {
+      console.error("Error updating shift:", error);
+      setErrorToast(error?.message || "Failed to update shift. Please try again.");
+      return false;
+    }
   };
 
   const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {
@@ -65,6 +148,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
 
   return (
     <div className="upcoming-requests">
+      {errorToast && <div className="shift-toast">{errorToast}</div>}
       {sortedDates.map((timestamp) => (
         <div key={timestamp} className="date-section">
           <div className="date-header">{timestamp}</div>
@@ -74,6 +158,9 @@ const ViewShifts = ({ shiftDetailsData }) => {
                 key={shift._id}
                 shift={shift}
                 view={handleRosterClick}
+                viewWaitlist={handleWaitlistClick}
+                waitlistCount={waitlistCounts[shift._id]}
+                waitlistStatus={waitlistStatuses[shift._id] || "loading"}
                 edit={handleEditRequestClick}
                 cancel={handleCancelRequestClick}
               />
@@ -84,6 +171,12 @@ const ViewShifts = ({ shiftDetailsData }) => {
       <ShiftUserInfoDisplay
         isOpen={isRosterModalOpen}
         onDismiss={() => setIsRosterModalOpen(false)}
+        shift={selectedShift}
+      />
+      <ShiftWaitlistModal
+        isOpen={isWaitlistModalOpen}
+        onClose={() => setIsWaitlistModalOpen(false)}
+        shelterId={shelterId}
         shift={selectedShift}
       />
       <EditRequestModal

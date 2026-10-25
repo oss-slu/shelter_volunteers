@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import navigationConfig from "./NavigationConfig";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom"; 
 import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
 import { DashboardSelector } from './DashboardSelector';
 import { SidebarButton } from "./SidebarButton";
@@ -12,25 +12,31 @@ export const Sidebar = () => {
   const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
   const {dashboards} = useDashboards();
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuItems, setMenuItems] = useState([]);
-
-  useEffect(() => {
-    if (currentDashboard) {
-      if (activeItem != null && menuItems.length > 0) {
-        const item = menuItems[activeItem];
-        if (item && item.path) {
-          // Navigate to the path if needed, e.g., using a router
-          navigate(item.path.replace(':ID', currentDashboard.id || ''));
-        }
-      }
-    }
-  }, [activeItem, menuItems, navigate]);
 
   useEffect(() => {
     if (currentDashboard) {
       setMenuItems(navigationConfig[currentDashboard.type]);
     }
   }, [currentDashboard]);
+
+  // Keep the highlighted tab in sync when the route changes (e.g. header "View Profile").
+  useEffect(() => {
+    if (!currentDashboard || menuItems.length === 0) return;
+    const idx = menuItems.findIndex((item) => {
+      const resolved = item.path.replace(":ID", currentDashboard.id || "");
+      return (
+        location.pathname === resolved ||
+        location.pathname.startsWith(`${resolved}/`)
+      );
+    });
+    if (idx >= 0) {
+      setActiveItem(idx);
+    } else if (location.pathname.startsWith("/volunteer-dashboard")) {
+      setActiveItem(null);
+    }
+  }, [location.pathname, menuItems, currentDashboard]);
 
   console.log("Is sidebar open:", isSidebarOpen);
   return (
@@ -73,7 +79,11 @@ export const Sidebar = () => {
               return (
                 <button
                   key={index}
-                  onClick={() => setActiveItem(index)}
+                  type="button"
+                  onClick={() => {
+                    setActiveItem(index);
+                    navigate(item.path.replace(":ID", currentDashboard.id || ""));
+                  }}
                   className={`nav-button ${activeItem === index ? 'active' : ''}`}
                 >
                   {item.label}
