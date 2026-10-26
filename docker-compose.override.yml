@@ -1,0 +1,19 @@
+# Local-only overrides. Compose picks this file up automatically.
+# Not part of the upstream repo - do not commit.
+#
+# Upstream's docker-compose.yml now sets FLASK_ENV, MONGODB_HOST and
+# REACT_APP_SERVER_URL itself, so only two gaps remain:
+#
+#   1. `image: mongo` resolves to a version that refuses to start on
+#      Linux kernels 6.19+ (MongoDB SERVER-121912). 8.2 is the first
+#      line that runs on this machine.
+#   2. data-importer races mongod startup - depends_on waits for the
+#      container to start, not for mongod to accept connections.
+
+services:
+  mongodb:
+    image: mongo:8.2
+
+  data-importer:
+    image: mongo:8.2
+    command: sh -c "until mongosh --host mongodb --eval 'db.runCommand(\"ping\")' >/dev/null 2>&1; do sleep 1; done; mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
