@@ -1,6 +1,7 @@
 import { ShelterInfo } from './ShelterInfo';
 import { VolunteerCount } from './VolunteerCount';
 import { PriorityBadge } from './PriorityBadge';
+import AddToCalendarButton from './AddToCalendarButton';
 export const DesktopShiftRow = ({
   shiftData,
   handleShiftToggle,
@@ -9,6 +10,7 @@ export const DesktopShiftRow = ({
   isInstructionsOpen = false,
   onInstructionsToggle = null,
   instructionsColSpan = 1,
+  showCalendarExport = false,
 }) => {
   if (!shiftData || !shiftData.shift) {
     return null;
@@ -27,6 +29,7 @@ export const DesktopShiftRow = ({
       >
         <td>
           <ShelterInfo shelter={shiftData.shelter} />
+          {showCalendarExport && <AddToCalendarButton shift={shiftData.shift} />}
           {shiftData.isSelected && (
             <div className="selected-indicator-desktop">
               <span className="checkmark">✓ Selected</span>
