@@ -37,6 +37,7 @@ def login():
             status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.SUCCESS]
         )
     except ValueError as e:
+        current_app.logger.warning("Login rejected: %s", e)
         return Response(json.dumps({"error": str(e)}),
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
