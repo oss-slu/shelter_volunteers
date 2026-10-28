@@ -63,6 +63,7 @@ jobs:
           push: true
           build-args: |
             REACT_APP_SERVER_URL=${{ vars.REACT_APP_SERVER_URL }}
+            PUBLIC_URL=/shelter
           tags: |
             ghcr.io/oss-slu/shelter-volunteers-client:latest
             ghcr.io/oss-slu/shelter-volunteers-client:${{ github.sha }}

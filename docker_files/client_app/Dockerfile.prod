@@ -2,10 +2,14 @@
 # docker-build.yml), so paths below are prefixed with client_app/.
 FROM node:lts-alpine AS build
 WORKDIR /usr/src/app
-# CRA bakes REACT_APP_* vars into the build at compile time, so it must be
-# supplied as a build arg (not a runtime container env var).
+# CRA bakes REACT_APP_* vars (and PUBLIC_URL) into the build at compile
+# time, so they must be supplied as build args, not runtime container
+# env vars - a runtime PUBLIC_URL env var on the Deployment has zero
+# effect on this already-compiled bundle (oss_infra_ops#114).
 ARG REACT_APP_SERVER_URL
 ENV REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
+ARG PUBLIC_URL
+ENV PUBLIC_URL=$PUBLIC_URL
 COPY client_app/package*.json ./
 RUN npm install
 COPY client_app/. .
