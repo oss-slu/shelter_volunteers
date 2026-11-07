@@ -42,7 +42,7 @@ export const fetchClient = async (endpoint, options = {}) => {
         logout();
       }
       if (navigate) {
-        navigate("/home");
+        navigate("/");
       }
       return Promise.reject(new Error("Authentication failed"));
     }

@@ -39,7 +39,7 @@ test("keeps authenticated logout behavior for 403 responses", async () => {
 
   await expect(fetchClient("/protected")).rejects.toThrow("Authentication failed");
   expect(logout).toHaveBeenCalledTimes(1);
-  expect(navigate).toHaveBeenCalledWith("/home");
+  expect(navigate).toHaveBeenCalledWith("/");
 });
 
 test("returns successful JSON responses", async () => {
