@@ -1387,3 +1387,14 @@ body {
     padding: 0 1rem 0.875rem calc(1rem + 1.5rem + 0.75rem);
   }
 }
+
+/* Linked from the dashboard map: land below the sticky header and flash. */
+.signup-shelter {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.signup-shelter.is-highlighted {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.25), var(--box-shadow-color);
+}
