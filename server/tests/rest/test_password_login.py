@@ -55,7 +55,7 @@ def test_password_login_returns_app_token_and_user(
     mock_login_user.assert_called_once_with("admin@example.com", "secret-password")
     mock_get_user.assert_called_once_with("gethelp-token")
     mock_create_token.assert_called_once_with(
-        {"email": "admin@example.com"},
+        {"email": "admin@example.com", "name": "Admin User", "picture": ""},
         "test-secret",
     )
 
