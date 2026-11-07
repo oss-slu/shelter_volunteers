@@ -35,7 +35,7 @@ httpClient.interceptors.response.use(
           logout();
         }
         if (navigate) {
-          navigate("/home");
+          navigate("/");
         }
       }
     }

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate, useNavigate } from "react-router-dom";
+import LegacyShelterRedirect from "./LegacyShelterRedirect";
 import { useEffect } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -51,9 +52,10 @@ function AppContent() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/shelter" element={<Navigate to="/home" />} />
-      <Route path="/home" element={<HomeDashboard />} />
+      <Route path="/" element={<HomeDashboard />} />
+      <Route path="/home" element={<Navigate to="/" replace />} />
+      {/* The app used to live under /shelter; keep old links working. */}
+      <Route path="/shelter/*" element={<LegacyShelterRedirect />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
@@ -89,7 +91,7 @@ function AppContent() {
 function App() {
   return (
     <div>
-      <Router basename={process.env.PUBLIC_URL || "/shelter"}>
+      <Router basename={process.env.PUBLIC_URL || "/"}>
         <AuthProvider>
           <DashboardProvider>
             <AppContent />

@@ -25,7 +25,7 @@ export const Header = ({user}) => {
     if (onVolunteerRoutes) {
       navigate('/volunteer-dashboard/profile');
     } else {
-      navigate(dashboardBasePath || '/home');
+      navigate(dashboardBasePath || '/');
     }
     setUserMenuOpen(false);
   };
@@ -87,7 +87,7 @@ export const Header = ({user}) => {
             <button
               type="button"
               onClick={() => {
-                navigate('/home');
+                navigate('/');
                 setUserMenuOpen(false);
               }}
               className="dropdown-item"

@@ -22,7 +22,7 @@ export default function Login() {
         ? await loginAPI.loginWithLocalAdmin(email, password)
         : await loginAPI.loginWithPassword(email, password);
       login(data.access_token, data.user);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       console.error("Admin sign-in error", error);
       setError(error.message || "Unable to sign in. Please try again.");
@@ -32,13 +32,13 @@ export default function Login() {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return (
     <main className="admin-login-page">
       <Container className="admin-login-container">
-        <Link className="admin-login-back" to="/home">← Back to Volunteer Connect</Link>
+        <Link className="admin-login-back" to="/">← Back to Volunteer Connect</Link>
         <Card className="admin-login-card">
           <Card.Body>
             <p className="landing-card-eyebrow">Admin access</p>
@@ -83,7 +83,7 @@ export default function Login() {
               </Button>
             </Form>
             <p className="admin-login-google">
-              Or <Link to="/home#sign-in">sign in with Google</Link>
+              Or <Link to="/#sign-in">sign in with Google</Link>
             </p>
           </Card.Body>
         </Card>

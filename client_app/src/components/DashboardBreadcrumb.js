@@ -40,7 +40,7 @@ export const DashboardBreadcrumb = () => {
     <nav className="breadcrumb-bar" aria-label="Breadcrumb">
       <ol className="breadcrumb">
         <li>
-          <Link to="/home" className="breadcrumb-link">
+          <Link to="/" className="breadcrumb-link">
             <FontAwesomeIcon icon={faHouse} /> Home
           </Link>
         </li>
