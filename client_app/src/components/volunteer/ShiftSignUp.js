@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useId } from 'react';
+import { useLocation } from 'react-router-dom';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -7,8 +8,7 @@ import { formatDate } from '../../formatting/FormatDateTime';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { getUser } from '../../authentication/user';
 import SignUpResults from './SignUpResults';
-import { MobileShiftCard } from './MobileShiftCard';
-import { DesktopShiftRow } from './DesktopShiftRow';
+import { ShelterShiftGroup, groupShiftsByShelter } from './ShelterShiftGroup';
 import Loading from '../Loading';
 import { Calendar } from 'lucide-react';
 
@@ -45,6 +45,11 @@ function filterShiftsByLocalDate(shifts, dateStr) {
   });
 }
 
+// Calculate need percentage (1 - current_volunteers/required_volunteers)
+function calculateNeed(shift) {
+  return 1 - (shift.volunteer_count / shift.required_volunteer_count);
+}
+
 function VolunteerShiftSignup(){
   const [loading, setLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
@@ -65,7 +70,21 @@ function VolunteerShiftSignup(){
   const filterDateId = useId();
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
+  const [highlightedShelterId, setHighlightedShelterId] = useState(null);
   const user = getUser();
+  const { hash } = useLocation();
+
+  // Arriving from the dashboard map (#shelter-<id>): scroll to that shelter's card.
+  useEffect(() => {
+    if (loading || !hash.startsWith('#shelter-')) return undefined;
+    const shelterId = decodeURIComponent(hash.slice('#shelter-'.length));
+    const card = document.getElementById(`shelter-${shelterId}`);
+    if (!card) return undefined;
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setHighlightedShelterId(shelterId);
+    const timer = setTimeout(() => setHighlightedShelterId(null), 2500);
+    return () => clearTimeout(timer);
+  }, [loading, hash]);
 
   useEffect(() => {
     let cancelled = false;
@@ -112,11 +131,6 @@ function VolunteerShiftSignup(){
       date: formatDate(timestamp),
       time: formatTime(timestamp)
     };
-  };
-
-  // Calculate need percentage (1 - current_volunteers/required_volunteers)
-  const calculateNeed = (shift) => {
-    return 1 - (shift.volunteer_count / shift.required_volunteer_count);
   };
 
   // Check if shifts overlap
@@ -236,6 +250,12 @@ function VolunteerShiftSignup(){
   const filteredShifts = useMemo(
     () => filterShiftsByLocalDate(sortedShifts, filterDate),
     [sortedShifts, filterDate]
+  );
+
+  // One card per shelter, each listing its open shifts.
+  const shelterGroups = useMemo(
+    () => groupShiftsByShelter(filteredShifts, shelterMap, sortBy, calculateNeed),
+    [filteredShifts, shelterMap, sortBy]
   );
 
   useEffect(() => {
@@ -471,7 +491,7 @@ function VolunteerShiftSignup(){
           </div>
           <div className="sort-section">
             <label className="sort-section-label" htmlFor="shift-signup-sort">
-              Sort list by
+              Sort shelters by
             </label>
             <select
               id="shift-signup-sort"
@@ -479,29 +499,24 @@ function VolunteerShiftSignup(){
               onChange={(e) => setSortBy(e.target.value)}
               className="sort-select"
             >
-              <option value="date">Date &amp; time</option>
+              <option value="date">Next available shift</option>
               <option value="shelter">Shelter name</option>
-              <option value="need">Need (priority)</option>
+              <option value="need">Greatest need</option>
             </select>
           </div>
         </div>
       </div>
-      {sortedShifts.length > 0 && (
-        <p className="signup-results-meta" aria-live="polite">
-          {filterDate ? (
-            <span className="signup-results-copy">
-              {filteredShifts.length === 1
-                ? 'Shift on the selected date'
-                : 'Shifts on the selected date'}
-            </span>
-          ) : (
-            <span className="signup-results-copy">
-              {sortedShifts.length === 1
-                ? 'Open shift available'
-                : 'Open shifts available'}
-            </span>
-          )}
-        </p>
+      {filteredShifts.length > 0 && (
+        <div className="signup-results-meta">
+          <p className="signup-results-copy">
+            {shelterGroups.length} shelter{shelterGroups.length !== 1 ? 's' : ''} ·{' '}
+            {filteredShifts.length} upcoming shift{filteredShifts.length !== 1 ? 's' : ''}
+            {filterDate ? ' on the selected date' : ''}
+          </p>
+          <p className="signup-results-hint">
+            Tick the shifts you can cover, then press <strong>Sign up</strong> at the bottom of the screen.
+          </p>
+        </div>
       )}
       {filterDate && filteredShifts.length === 0 && sortedShifts.length > 0 && (
         <div className="signup-empty-day signup-empty-day--filtered" role="status">
@@ -522,50 +537,16 @@ function VolunteerShiftSignup(){
           </p>
         </div>
       )}
-      {/* Desktop Table View */}
-      <div
-        className="table-container desktop-only"
-        role="region"
-        aria-label="Open shifts list"
-      >
-        <table className="shifts-table">
-          <thead>
-            <tr className="table-header">
-              <th>Shelter</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Duration</th>
-              <th>Shelter Instructions</th>
-              <th>Volunteers Available</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredShifts.map((shift) => (
-              <DesktopShiftRow
-                key={shift._id}
-                shiftData={processShiftData(shift)}
-                handleShiftToggle={handleShiftToggle}
-                handleWaitlistToggle={handleWaitlistToggle}
-                showInstructions={true}
-                isInstructionsOpen={expandedInstructions.has(shift._id)}
-                onInstructionsToggle={toggleInstructions}
-                instructionsColSpan={7}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* Mobile Card View */}
-      <div className="cards-container mobile-only" role="region" aria-label="Open shifts list">
-        {filteredShifts.map((shift) => (
-          <MobileShiftCard
-            key={shift._id}
-            shiftData={processShiftData(shift)}
-            handleShiftToggle={handleShiftToggle}
-            handleWaitlistToggle={handleWaitlistToggle}
-            showInstructions={true}
-            isInstructionsOpen={expandedInstructions.has(shift._id)}
+      <div className="signup-shelter-list" role="region" aria-label="Open shifts by shelter">
+        {shelterGroups.map((group) => (
+          <ShelterShiftGroup
+            key={group.shelterId}
+            shelter={group.shelter}
+            isHighlighted={group.shelterId === highlightedShelterId}
+            shiftsData={group.shifts.map(processShiftData)}
+            onToggle={handleShiftToggle}
+            onWaitlistToggle={handleWaitlistToggle}
+            expandedInstructions={expandedInstructions}
             onInstructionsToggle={toggleInstructions}
           />
         ))}
@@ -611,7 +592,7 @@ function VolunteerShiftSignup(){
         <div className="modal-overlay">
           <div className="modal-content">
             <button className="modal-close" onClick={closeModal}>×</button>
-            <SignUpResults 
+            <SignUpResults
               results={results}
               shifts={resultShifts}
               shelterMap={shelterMap}
