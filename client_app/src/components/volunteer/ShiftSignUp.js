@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useId } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useMemo, useEffect, useId, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -53,8 +53,8 @@ function calculateNeed(shift) {
 function VolunteerShiftSignup(){
   const [loading, setLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
-  const [results, setResults] = useState([]);
-  const [resultShifts, setResultShifts] = useState([]);
+  /** One entry per requested shift: { shift, shelter, result } */
+  const [resultItems, setResultItems] = useState([]);
   const [shelters, setShelters] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [commitments, setCommitments] = useState([]);
@@ -73,6 +73,7 @@ function VolunteerShiftSignup(){
   const [highlightedShelterId, setHighlightedShelterId] = useState(null);
   const user = getUser();
   const { hash } = useLocation();
+  const navigate = useNavigate();
 
   // Arriving from the dashboard map (#shelter-<id>): scroll to that shelter's card.
   useEffect(() => {
@@ -309,15 +310,26 @@ function VolunteerShiftSignup(){
   // Handle sign up
   const handleSignUp = async () => {
     try {
-      console.log("Submitting shifts:", selectedShifts);
-      const shiftsList = Array.from(selectedShifts).map(shiftId => ({
+      const requestedIds = Array.from(selectedShifts);
+      const shiftsList = requestedIds.map(shiftId => ({
         volunteer_id: user.email,
         service_shift_id: shiftId
       }));
       const response = await serviceCommitmentAPI.addCommitments(shiftsList);
-      console.log(response)
-      setResults(response);
-      setResultShifts(sortedShifts.filter(shift => selectedShifts.has(shift._id)));
+      // The API answers in request order, so pair each result with the shift
+      // it was requested for (not the on-screen sort order).
+      setResultItems(
+        requestedIds
+          .map((shiftId, i) => {
+            const shift = shifts.find(s => s._id === shiftId);
+            return shift && {
+              shift,
+              shelter: shelterMap[shift.shelter_id],
+              result: Array.isArray(response) ? response[i] : null,
+            };
+          })
+          .filter(Boolean)
+      );
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
@@ -337,10 +349,12 @@ function VolunteerShiftSignup(){
     } 
   };
 
-  // Modal for sign up results
-  const closeModal = () => {
-    setShowResults(false);
-  };
+  // Sign-up submitted dialog
+  const closeModal = useCallback(() => setShowResults(false), []);
+  const viewUpcomingShifts = useCallback(
+    () => navigate('/volunteer-dashboard/upcoming-shifts'),
+    [navigate]
+  );
 
   const handleWaitlistToggle = async (shift) => {
     const shiftId = shift._id;
@@ -587,18 +601,13 @@ function VolunteerShiftSignup(){
           </div>
         </div>
       </div>
-      {/* Modal markup */}
       {showResults && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
-            <SignUpResults
-              results={results}
-              shifts={resultShifts}
-              shelterMap={shelterMap}
-            />
-          </div>
-        </div>
+        <SignUpResults
+          items={resultItems}
+          userName={user?.name}
+          onClose={closeModal}
+          onViewUpcoming={viewUpcomingShifts}
+        />
       )}
     </div>
   );
