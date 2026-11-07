@@ -17,7 +17,8 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     """Development configuration"""
-    os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
+    BROWSER_SESSION_COOKIE_SECURE = False
+    os.environ.setdefault("GETHELP_API", "https://api2-qa.gethelp.com/")
     DEV_USER = os.getenv("DEV_USER", "developer@slu.edu")
     FIRST_NAME = os.getenv("FIRST_NAME", "SLU")
     LAST_NAME = os.getenv("LAST_NAME", "Developer")
@@ -26,5 +27,6 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     """Testing configuration"""
-    os.environ["GETHELP_API"] = "https://api2-qa.gethelp.com/"
+    BROWSER_SESSION_COOKIE_SECURE = False
+    os.environ.setdefault("GETHELP_API", "https://api2-qa.gethelp.com/")
     TESTING = True

@@ -41,6 +41,12 @@ export const DashboardProvider = ({ children }) => {
     navigate(dashboard.path);
   };
   useEffect(() => {
+    if (!isAuthenticated) {
+      setDashboards([]);
+      setCurrentDashboard(null);
+      setLoadingDashboards(true);
+      return;
+    }
     const fetchPermissions = async () => {
       if (dashboards.length > 0) {
         return; 
