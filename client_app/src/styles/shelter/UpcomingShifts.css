@@ -1,25 +1,22 @@
 .upcoming-shifts {
-  padding: 20px;
+  padding: 0;
 }
 
 .date-section {
-  margin-bottom: 20px;
-  padding: 15px;
-  border: 2px solid #1e4c5b;
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  box-shadow: var(--box-shadow-color);
 }
 
 .date-header {
-  font-size: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-  padding: 5px 10px;
-  border: 2px solid #1e4c5b;
-  border-radius: 5px;
-  display: inline-block;
-  color: #1e4c5b;
-  background-color: #f0f8fb;
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--text-strong);
+  font-size: var(--fs-lg);
+  font-weight: 650;
 }
 
 .shift-toast {

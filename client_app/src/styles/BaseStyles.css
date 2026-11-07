@@ -1,22 +1,4 @@
-
-html {
-  font-size: 16px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .html {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 640px) {
-  html {
-    font-size: 12px;
-  }
-}
-
-
+/* Full-height page shell used by the landing page and dashboard selection. */
 .home-container {
   min-height: 100vh;
   background: var(--main-background);
@@ -24,54 +6,78 @@ html {
   flex: 1;
   flex-direction: column;
   align-items: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-sans);
 }
 
 .content-wrapper {
   text-align: center;
-  width: 90%;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
 }
 
-.title{
+/* Content area inside the dashboard layout (next to the sidebar). */
+.dashboard-content {
+  flex: 1;
+  min-width: 0;
+  background: var(--main-background);
+}
+
+.dashboard-main {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 2rem var(--page-gutter) 4rem;
+  text-align: left;
+}
+
+/* Page titles: every dashboard screen starts with one of these. */
+.page-title,
+.title-small {
+  margin: 0 0 0.5rem;
+  color: var(--text-strong);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: var(--lh-tight);
+}
+
+.page-subtitle {
+  margin: 0 0 1.75rem !important;
+  max-width: 44rem;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  line-height: var(--lh-base);
+}
+
+.title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--text-strong);
   margin-bottom: 1.5rem;
-  line-height: 1.2;
-}
-
-.title-small {
-  font-size: 2rem;
-  font-weight: 700;
-  color: --var(--primary-color);
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
 }
 
 .tagline {
-  font-size: 1.25rem;
-  color: var(--accent-color);
-  margin-bottom: 3rem;
-  line-height: 2;
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+  margin-bottom: 2rem !important;
+  line-height: var(--lh-base);
 }
 
 .tagline-small {
-  font-size: 1rem;
-  color: var(--accent-color);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--lh-base);
 }
 
-/* Responsive Design */
 @media (min-width: 768px) {
   .title {
-    font-size: 4.5rem;
+    font-size: 3.5rem;
   }
-  
-  .tagline {
-    font-size: 1.5rem;
-  }
-  
+
   .home-container {
     padding: 3rem 1.5rem;
   }
@@ -79,16 +85,16 @@ html {
 
 @media (max-width: 640px) {
   .title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
-  
-  .tagline {
-    font-size: 1.125rem;
+
+  .page-title,
+  .title-small {
+    font-size: var(--fs-xl);
   }
-  
-  .login-button {
-    padding: 0.875rem 1.25rem;
-    font-size: 0.875rem;
+
+  .home-container {
+    padding: 2rem 1rem;
   }
 }
 
@@ -97,4 +103,13 @@ html {
   flex-direction: column;
   gap: 0.75rem;
   text-align: left;
+}
+
+/* Intro text that sits between a page title and its content. */
+.dashboard-main .description {
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-main .description .tagline-small {
+  font-size: var(--fs-md);
 }

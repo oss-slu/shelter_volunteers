@@ -41,7 +41,7 @@
 .shift-details-date {
   margin: 0.25rem 0 0;
   font-size: 0.95rem;
-  color: var(--accent-color, #555);
+  color: var(--accent-color, var(--text-muted));
 }
 
 .shift-details-close {
@@ -53,14 +53,14 @@
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #666;
+  color: var(--text-muted);
   padding: 0.25rem;
   border-radius: 4px;
 }
 
 .shift-details-close:hover {
   background-color: #f0f0f0;
-  color: #333;
+  color: var(--text);
 }
 
 .shift-details-body {
@@ -109,7 +109,7 @@
 .shift-details-address {
   display: block;
   font-size: 0.875rem;
-  color: var(--accent-color, #555);
+  color: var(--accent-color, var(--text-muted));
   margin: 0.2rem 0;
 }
 
@@ -124,5 +124,5 @@
 
 .shift-details-time {
   font-size: 0.9rem;
-  color: var(--accent-color, #555);
+  color: var(--accent-color, var(--text-muted));
 }

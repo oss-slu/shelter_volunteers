@@ -58,7 +58,7 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
-  color: #6b7280;
+  color: var(--text-muted);
   transition: background-color 0.2s, color 0.2s;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
 
 .modal-close-btn:hover {
   background-color: #f3f4f6;
-  color: #374151;
+  color: var(--text);
 }
 
 .modal-close-btn:focus {
@@ -90,7 +90,7 @@
 
 .modal-description {
   font-size: 0.95rem;
-  color: #6b7280;
+  color: var(--text-muted);
   line-height: 1.6;
   margin: 0 0 20px 0;
 }
@@ -146,7 +146,7 @@
 
 .btn-secondary {
   background-color: #f3f4f6;
-  color: #374151;
+  color: var(--text);
 }
 
 .btn-secondary:hover {
@@ -159,12 +159,12 @@
 }
 
 .btn-primary {
-  background-color: #2563eb;
+  background-color: var(--brand);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
+  background-color: var(--brand-strong);
 }
 
 .btn-primary:focus {

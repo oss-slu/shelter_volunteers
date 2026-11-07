@@ -42,7 +42,7 @@ function Impact() {
 
   return (
     <div className="impact-container">
-      <h1 className="impact-title">Your Impact</h1>
+      <h1 className="page-title impact-title">Your Impact</h1>
       <div className="impact-metrics">
         <div className="metric-card">
           <div className="metric-icon">

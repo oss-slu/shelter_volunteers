@@ -34,7 +34,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: var(--text-muted);
   width: 30px;
   height: 30px;
   display: flex;
@@ -46,7 +46,7 @@
 
 .modal-close:hover {
   background-color: #f0f0f0;
-  color: #333;
+  color: var(--text);
 }
 
 .modal-close:focus {
