@@ -2,16 +2,11 @@
 
 .volunteer-shift-signup {
   position: relative;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* Page header */
 .signup-page-header {
-  text-align: center;
-  margin-bottom: 1.75rem;
-  padding: 0 0.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .signup-page-title {
@@ -19,13 +14,11 @@
 }
 
 .signup-page-subtitle {
-  margin: 0 auto;
-  max-width: 32rem;
-  width: 100%;
-  text-align: center;
-  font-size: 1.05rem;
-  line-height: 1.55;
-  color: var(--accent-color, #6b7280);
+  margin: 0;
+  max-width: 44rem;
+  font-size: var(--fs-md);
+  line-height: var(--lh-base);
+  color: var(--text-muted);
 }
 
 /* Screen reader announcements (selected date + result count) */
@@ -64,7 +57,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--secondary-color, #374151);
+  color: var(--secondary-color, var(--text));
   margin-bottom: 0.3rem;
 }
 
@@ -123,7 +116,7 @@
   border-radius: 8px;
   background: #fff;
   min-height: 38px;
-  color: var(--secondary-color, #1f2937);
+  color: var(--secondary-color, var(--text-strong));
   transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }
 
@@ -161,7 +154,7 @@
   border-radius: 8px;
   border: 1px solid #cbd5e1;
   background: #fff;
-  color: var(--secondary-color, #374151);
+  color: var(--secondary-color, var(--text));
   cursor: pointer;
   min-height: 38px;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -182,7 +175,7 @@
   max-width: 38rem;
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: var(--accent-color, #6b7280);
+  color: var(--accent-color, var(--text-muted));
 }
 
 /* Results line (text only; count announced via aria-live / screen reader region) */
@@ -233,14 +226,14 @@
   margin: 0 0 0.35rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--secondary-color, #1f2937);
+  color: var(--secondary-color, var(--text-strong));
 }
 
 .signup-empty-day-text {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--accent-color, #6b7280);
+  color: var(--accent-color, var(--text-muted));
 }
 
 /* Controls Section */
@@ -269,7 +262,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--secondary-color, #374151);
+  color: var(--secondary-color, var(--text));
 }
 
 .sort-select {
@@ -279,7 +272,7 @@
   border-radius: 8px;
   font-size: 0.875rem;
   background-color: #fff;
-  color: var(--secondary-color, #1f2937);
+  color: var(--secondary-color, var(--text-strong));
   cursor: pointer;
   min-height: 38px;
   appearance: none;
@@ -335,6 +328,11 @@
     flex-direction: column;
     align-items: stretch;
     gap: 0.85rem;
+  }
+
+  /* In a column, the desktop 260px flex-basis would become a 260px height. */
+  .signup-date-filter {
+    flex: 0 0 auto;
   }
 
   .sort-section {
@@ -491,18 +489,18 @@
 
 .shelter-name {
   font-weight: bold;
-  color: #333;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .shelter-location {
   font-size: 12px;
-  color: #666;
+  color: var(--text-muted);
 }
 
 .max-volunteers {
   font-size: 12px;
-  color: #666;
+  color: var(--text-muted);
 }
 
 /* Need Level Badges */
@@ -551,13 +549,13 @@
 .card-title .shelter-name {
   font-size: 18px;
   font-weight: bold;
-  color: #333;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .card-title .shift-name {
   font-size: 14px;
-  color: #666;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -589,14 +587,14 @@
 
 .detail-label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted);
   font-size: 14px;
   min-width: 100px;
 }
 
 .detail-row span:last-child {
   font-size: 14px;
-  color: #333;
+  color: var(--text);
   text-align: right;
   flex: 1;
   margin-left: 12px;
@@ -633,7 +631,7 @@
 
 .signup-button.disabled {
   background-color: #ccc;
-  color: #666;
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
@@ -1004,7 +1002,7 @@ body {
 
 .waitlist-button--join {
   background-color: #f59e0b;
-  color: #1f2937;
+  color: var(--text-strong);
   border-color: #d97706;
 }
 
@@ -1058,4 +1056,11 @@ body {
   line-height: 1;
   cursor: pointer;
   color: inherit;
+}
+
+/* Keep the fixed action bar beside (not under) the open sidebar on desktop. */
+@media (min-width: 768px) {
+  .app:has(.sidebar.open) .sticky-signup-container {
+    left: var(--sidebar-width);
+  }
 }

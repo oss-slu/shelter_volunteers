@@ -16,6 +16,6 @@
   
   .volunteers-list {
     margin-left: 20px;
-    color: #666;
+    color: var(--text-muted);
   }
   

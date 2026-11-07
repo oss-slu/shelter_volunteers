@@ -1,38 +1,45 @@
 .admin-dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .admin-dashboard h1 {
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .tab-navigation {
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .tab-button {
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    color: #666;
-    margin-right: 10px;
-  }
-  
-  .tab-button.active {
-    color: #2c3e50;
-    border-bottom: 3px solid #2c3e50;
-  }
-  
-  .tab-content {
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
+  width: 100%;
+}
+
+.admin-dashboard h1 {
+  margin-bottom: 1.25rem;
+}
+
+.tab-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab-button {
+  margin-bottom: -1px;
+  padding: 0.625rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-button:hover {
+  color: var(--text-strong);
+}
+
+.tab-button.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+.tab-content {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--box-shadow-color);
+}

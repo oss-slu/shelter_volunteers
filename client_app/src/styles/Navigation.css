@@ -1,137 +1,287 @@
-.navigation-container {
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
-  padding: 2rem 1.5rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
+/* App shell: sidebar + (header over page content). */
 .app {
   display: flex;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--surface);
 }
+
 .content-with-header {
   flex: 1;
-  flex-direction: column;
+  min-width: 0;
   display: flex;
-  overflow: hidden;
+  flex-direction: column;
 }
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  width: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--surface);
+  border-right: 1px solid var(--line);
+  transition: width 0.2s ease-in-out;
+  z-index: 250;
+}
+
+/* Once open, let menus inside the sidebar (the dashboard switcher) extend
+   over the page instead of being clipped at the sidebar's edge. The clip is
+   kept only while the open animation runs, so contents don't spill out. */
+.sidebar.open {
+  width: var(--sidebar-width);
+  overflow: visible;
+  animation: sidebar-clip-while-opening 0.2s;
+}
+
+@keyframes sidebar-clip-while-opening {
+  from,
+  to {
+    overflow: hidden;
+  }
+}
+
+/* No stray 1px border line while collapsed. */
+.sidebar:not(.open) {
+  border-right-width: 0;
+}
+
+/* Children keep their width while the sidebar animates open/closed. */
+.sidebar > * {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+}
+
+.sidebar-top {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+}
+
+.sidebar-section-label {
+  margin: 0 0 0.5rem !important;
+  padding: 0 0.875rem !important;
+  color: #8a97aa;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .nav-button {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  margin-bottom: 0.125rem;
+  font-size: var(--fs-sm);
   font-weight: 500;
-  color: #6b7280;
+  line-height: 1.3;
+  color: var(--text-muted);
   background-color: transparent;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  margin-bottom: 0.25rem;
   text-align: left;
-  transition: all 0.2s;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .nav-button:hover {
-  background-color: #f9fafb;
+  color: var(--text-strong);
+  background-color: var(--surface-muted);
 }
 
-.nav-button.active {
-  color: #2563eb;
-  background-color: #eff6ff;
-}
-
+.nav-button.active,
 .nav-button.active:hover {
-  background-color: #eff6ff;
+  color: var(--brand);
+  font-weight: 600;
+  background-color: var(--brand-soft);
 }
 
-/* Sidebar */
-.sidebar {
-  /*position: fixed;*/
-  left: -16rem; /* Default closed state */
+.sidebar-overlay {
+  display: none;
+}
+
+/* ---------- Header ---------- */
+.header {
+  position: sticky;
   top: 0;
-  height: 100vh;
-  width: 0;
-  background-color: white;
-  border-right: 1px solid #e5e7eb;
-  transition: width 0.2s ease-in-out;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Sidebar open state */
-.sidebar.open{
-  width: 16rem; /* Width when open */
-}
-.sidebar > * {
-  width: 16rem; /* Fixed width for all direct children */
-  flex-shrink: 0; /* Prevent shrinking */
-}
-
-/* Header */
-.sidebar-header {
-  padding: 1rem;
+  z-index: 200;
+  width: 100%;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+  padding: 0 var(--page-gutter);
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--line);
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
 
+.header-divider {
+  width: 1px;
+  height: 1.5rem;
+  background: var(--line);
+  flex-shrink: 0;
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.icon-button:hover {
+  background-color: var(--surface-muted);
+  color: var(--text-strong);
+}
+
+/* ---------- Brand (logo) ---------- */
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+  color: var(--text-strong);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+}
+
+.app-brand:hover {
+  color: var(--brand);
+}
+
+.app-brand-mark {
+  width: 2rem;
+  height: 2rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 0.625rem;
+  background: var(--brand);
+  box-shadow: 0 4px 10px rgba(23, 105, 170, 0.22);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- Avatars ---------- */
 .user-avatar {
   width: 2rem;
   height: 2rem;
+  flex-shrink: 0;
   border-radius: 50%;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
+  object-fit: cover;
 }
 
-
-.header {
-  position: relative;
-  z-index: 200;
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  top: 0;
-  left: 0;
-  width: 100%;
+.user-avatar-fallback {
+  display: inline-grid;
+  place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: var(--fs-xs);
+  font-weight: 700;
 }
 
-.no-border {
-  border: none;
+/* ---------- Small screens: sidebar becomes a drawer ---------- */
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 400;
+  }
+
+  .sidebar.open {
+    box-shadow: 0 0 40px rgba(24, 57, 95, 0.25);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 350;
+    background-color: rgba(15, 30, 50, 0.45);
+  }
+
+  .app-brand-name,
+  .header .dropdown-name.user-display-name {
+    display: none;
+  }
+
+  .header {
+    padding: 0 1rem;
+  }
 }
 
+/* ---------- Dashboard links + breadcrumb (from #449) ---------- */
+.nav-button svg {
+  width: 1rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
 
 .nav-divider {
+  margin: 0.5rem 0.25rem 0.75rem;
   border: none;
-  border-top: 1px solid #e5e7eb;
-  margin: 0.5rem 0 0.75rem;
+  border-top: 1px solid var(--line);
+  opacity: 1;
 }
 
-/* Breadcrumb trail above dashboard pages */
 .breadcrumb-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  font-size: var(--fs-sm);
 }
 
 .breadcrumb {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .breadcrumb-link,
@@ -139,29 +289,30 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  color: #2563eb;
-  text-decoration: none;
+  color: var(--brand);
   font-weight: 500;
+  text-decoration: none;
 }
 
 .breadcrumb-link:hover,
 .breadcrumb-back:hover {
+  color: var(--brand-strong);
   text-decoration: underline;
 }
 
 .breadcrumb-separator {
-  color: #9ca3af;
-  font-size: 0.65rem;
+  color: #9aa8ba;
+  font-size: 0.6rem;
 }
 
 .breadcrumb-current {
-  color: #374151;
+  color: var(--text-strong);
   font-weight: 600;
 }
 
 .breadcrumb-back {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #bfdbfe;
-  border-radius: 0.5rem;
-  background-color: #eff6ff;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
 }

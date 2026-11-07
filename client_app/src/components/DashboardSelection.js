@@ -7,7 +7,7 @@ function DashboardSelection({ dashboards, onSelectDashboard }){
       <div className="content-wrapper">
         <DashboardUser user={user} />
         <h1 className="title-small">
-          Choose Your <span style={{ color: '#2563eb' }}>Dashboard</span>
+          Choose Your <span style={{ color: 'var(--brand)' }}>Dashboard</span>
         </h1>
         <p className="tagline">
           {dashboards.length === 1 
