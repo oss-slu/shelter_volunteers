@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import navigationConfig from "./NavigationConfig";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faHouse, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
 import { DashboardSelector } from './DashboardSelector';
@@ -31,11 +31,7 @@ export const Sidebar = () => {
         location.pathname.startsWith(`${resolved}/`)
       );
     });
-    if (idx >= 0) {
-      setActiveItem(idx);
-    } else if (location.pathname.startsWith("/volunteer-dashboard")) {
-      setActiveItem(null);
-    }
+    setActiveItem(idx >= 0 ? idx : null);
   }, [location.pathname, menuItems, currentDashboard]);
 
   console.log("Is sidebar open:", isSidebarOpen);
@@ -75,6 +71,25 @@ export const Sidebar = () => {
         {/* Navigation */}
         {isSidebarOpen && (
           <nav style={{ flex: '1', padding: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => navigate('/home')}
+              className="nav-button"
+            >
+              <FontAwesomeIcon icon={faHouse} />
+              All Dashboards
+            </button>
+            {currentDashboard && (
+              <button
+                type="button"
+                onClick={() => navigate(currentDashboard.path)}
+                className={`nav-button ${location.pathname.replace(/\/+$/, '') === currentDashboard.path ? 'active' : ''}`}
+              >
+                <FontAwesomeIcon icon={faTableColumns} />
+                Dashboard Home
+              </button>
+            )}
+            <hr className="nav-divider" />
             {menuItems.map((item, index) => {
               return (
                 <button

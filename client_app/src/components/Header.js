@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons'; // <-- Import faUserCircle
+import { faSignOutAlt, faUserCircle, faHouse } from '@fortawesome/free-solid-svg-icons'; // <-- Import faUserCircle
 import { useSidebar } from '../contexts/DashboardContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {useCurrentDashboard} from '../contexts/DashboardContext';
@@ -84,6 +84,17 @@ export const Header = ({user}) => {
                 View Profile
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => {
+                navigate('/home');
+                setUserMenuOpen(false);
+              }}
+              className="dropdown-item"
+            >
+              <FontAwesomeIcon icon={faHouse} />
+              All Dashboards
+            </button>
             {/* Existing Logout Button */}
             <button
               type="button"
