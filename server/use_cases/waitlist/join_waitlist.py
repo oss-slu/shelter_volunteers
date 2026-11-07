@@ -45,10 +45,10 @@ def join_waitlist(
         response["message"] = "You are already signed up for this shift"
         return response
 
-    if len(existing_commitments) < shift.max_volunteer_count:
-        response["response_code"] = ResponseTypes.PARAMETER_ERROR
-        response["message"] = "This shift still has openings; sign up directly"
-        return response
+    # if len(existing_commitments) < shift.max_volunteer_count:
+    #     response["response_code"] = ResponseTypes.PARAMETER_ERROR
+    #     response["message"] = "This shift still has openings; sign up directly"
+    #     return response
 
     if waitlist_repo.find_for_user_and_shift(volunteer_id, service_shift_id):
         response["response_code"] = ResponseTypes.CONFLICT
