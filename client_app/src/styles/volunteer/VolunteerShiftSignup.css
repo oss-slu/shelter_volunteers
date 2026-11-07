@@ -241,12 +241,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem 1.75rem;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
+/* Top-align the two controls so their labels and inputs share a baseline;
+   the date filter's hint text then hangs below without pushing the sort down. */
 .volunteer-shift-signup .controls-section {
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .sort-section {
@@ -270,7 +272,7 @@
   padding: 0.35rem 1.85rem 0.35rem 0.65rem;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   background-color: #fff;
   color: var(--secondary-color, var(--text-strong));
   cursor: pointer;
@@ -1062,5 +1064,326 @@ body {
 @media (min-width: 768px) {
   .app:has(.sidebar.open) .sticky-signup-container {
     left: var(--sidebar-width);
+  }
+}
+
+/* ---------- Shifts grouped by shelter (ShelterShiftGroup) ---------- */
+.signup-results-meta {
+  margin: 0.25rem 0 1rem;
+  padding: 0;
+  color: var(--text-strong);
+}
+
+.signup-results-copy {
+  font-size: var(--fs-md);
+  font-weight: 650;
+}
+
+.signup-results-hint {
+  margin-top: 0.125rem !important;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.signup-shelter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signup-shelter {
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--box-shadow-color);
+}
+
+.signup-shelter-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--line);
+}
+
+.signup-shelter-name {
+  margin: 0 0 0.125rem;
+  font-size: var(--fs-lg);
+}
+
+.signup-shelter-address {
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
+.signup-shelter-address a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.signup-shelter-address a:hover {
+  text-decoration: underline;
+}
+
+.signup-shelter-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem 0.75rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.signup-shelter-count {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.signup-shelter-need {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.signup-shelter-meta .need-badge,
+.signup-shift-priority .need-badge {
+  min-width: 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+}
+
+/* One row per shift */
+.signup-shift-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-shift {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 11rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 0.15s ease;
+}
+
+.signup-shift:last-child {
+  border-bottom: none;
+}
+
+.signup-shift-main {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(12rem, 1.4fr) minmax(9rem, 1fr) 5.5rem;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.875rem 0 0.875rem 1.25rem;
+  cursor: pointer;
+}
+
+.signup-shift.is-disabled .signup-shift-main {
+  cursor: default;
+}
+
+.signup-shift.is-selectable:hover {
+  background: #f7fafd;
+}
+
+.signup-shift.is-selected {
+  background: var(--brand-soft);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.signup-shift.is-disabled .signup-shift-when,
+.signup-shift.is-disabled .signup-shift-volunteers {
+  opacity: 0.6;
+}
+
+.signup-shift-check {
+  display: flex;
+  align-items: center;
+}
+
+.signup-shift-check input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--brand);
+  cursor: inherit;
+}
+
+.signup-shift-when,
+.signup-shift-volunteers {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.signup-shift-date {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.signup-shift-time,
+.signup-shift-volunteers {
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.signup-shift-duration,
+.signup-shift-max {
+  color: var(--text-muted);
+}
+
+.signup-shift-volunteers {
+  display: block;
+}
+
+.signup-shift-count {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.signup-shift-max {
+  display: block;
+  font-size: var(--fs-xs);
+}
+
+.signup-shift-status {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 1.25rem 0.5rem 0.5rem;
+}
+
+.signup-status-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.375rem;
+}
+
+.signup-pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.signup-pill--selected {
+  background: var(--brand);
+  color: #fff;
+}
+
+.signup-pill--signed {
+  background: #e7f5ee;
+  color: #1f7a4d;
+}
+
+.signup-pill--conflict {
+  background: #fdecec;
+  color: #b42318;
+}
+
+.signup-pill--full,
+.signup-pill--muted {
+  background: #eef1f5;
+  color: var(--text-muted);
+}
+
+.signup-pill--waitlisted {
+  background: #fff4e5;
+  color: #b45309;
+}
+
+/* Instructions sit under the date column, outside the clickable label */
+.signup-shift-extra {
+  grid-column: 1 / -1;
+  padding: 0 1.25rem 0.875rem calc(1.25rem + 1.5rem + 1rem);
+  margin-top: -0.375rem;
+}
+
+.signup-shift-instructions-toggle {
+  padding: 0;
+  background: none;
+  color: var(--brand);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.signup-shift-instructions-toggle:hover {
+  text-decoration: underline;
+}
+
+.signup-shift-instructions {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+@media (max-width: 767px) {
+  .signup-shelter-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .signup-shelter-meta {
+    justify-content: flex-start;
+  }
+
+  /* Stack: shift details, then status/waitlist on its own line, so the
+     date column keeps its full width. */
+  .signup-shift {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .signup-shift-main {
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+    grid-template-areas:
+      "check when priority"
+      ". volunteers volunteers";
+    gap: 0.375rem 0.75rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .signup-shift-check { grid-area: check; padding-top: 0.15rem; }
+  .signup-shift-when { grid-area: when; }
+  .signup-shift-priority { grid-area: priority; }
+  .signup-shift-volunteers { grid-area: volunteers; }
+
+  .signup-shift-max {
+    display: inline;
+    margin-left: 0.375rem;
+  }
+
+  .signup-shift-status {
+    justify-content: flex-start;
+    margin-top: -0.375rem;
+    padding: 0 1rem 0.875rem calc(1rem + 1.5rem + 0.75rem);
+  }
+
+  .signup-shift-status:empty {
+    display: none;
+  }
+
+  .signup-status-stack {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .signup-shift-extra {
+    padding: 0 1rem 0.875rem calc(1rem + 1.5rem + 0.75rem);
   }
 }
