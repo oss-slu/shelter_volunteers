@@ -3,7 +3,6 @@ This module handles Mongo database interactions with new service_shift
 """
 from domains.authorization.user_permission import UserPermission
 from config.mongodb_config import get_db
-from use_cases.authorization.add_system_admin import add_system_admin
 
 class PermissionsMongoRepo:
     """
@@ -15,7 +14,6 @@ class PermissionsMongoRepo:
         """
         self.db = get_db()
         self.collection = self.db.permissions
-        add_system_admin(self, "ramone.agard@gmail.com")
 
     def add(self, user_permission):
         """
