@@ -29,7 +29,6 @@ from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from use_cases.waitlist.join_waitlist import join_waitlist
 from use_cases.waitlist.leave_waitlist import leave_waitlist
 from use_cases.waitlist.list_user_waitlist import list_user_waitlist_with_shifts
-from use_cases.waitlist.promote_from_waitlist import promote_from_waitlist
 from domains.service_commitment import ServiceCommitment
 from use_cases.add_service_commitments import check_time_overlap
 
@@ -149,6 +148,13 @@ def approve_waitlist_participant(shelter_id, shift_id, waitlist_id):
                 HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
             )
     shift = shifts_repo.get_shift(shift_id=waitlist_entry.service_shift_id)
+
+    # check shift belongs to this shelter
+    if str(shift.shelter_id) != str(shelter_id):
+            return (
+                jsonify({"message": "shelter_id in URL does not match shift shelter"}),
+                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+            )
 
     # check existing commitments 
     current_shift_commitments = commitments_repo.fetch_service_commitments(shift_id=waitlist_entry.service_shift_id)
