@@ -25,7 +25,6 @@ from responses import ResponseTypes
 from serializers.service_shift import ServiceShiftJsonEncoder
 from serializers.shelter import ShelterJsonEncoder
 from serializers.waitlist_entry import WaitlistEntryJsonEncoder
-from server import use_cases
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from use_cases.waitlist.join_waitlist import join_waitlist
 from use_cases.waitlist.leave_waitlist import leave_waitlist
