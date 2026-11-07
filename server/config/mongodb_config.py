@@ -60,8 +60,7 @@ def get_config():
     env = os.getenv('FLASK_ENV', 'development')
     config_map = {
         'development': MongoDevelopmentConfig,
-        'pre-production': MongoPreProductionConfig,
-        'production': MongoPreProductionConfig,
+        'pre-production': MongoPreProductionConfig
     }
     return config_map.get(env, MongoDevelopmentConfig)()
 
@@ -83,8 +82,7 @@ def get_db():
             f'Could not connect to MongoDB host {config.MONGODB_HOST!r}. '
             'For Atlas, copy the cluster hostname from Atlas → Connect '
             '(it looks like cluster0.xxxxx.mongodb.net) into '
-            f'MONGODB_HOST in .env.{os.getenv("FLASK_ENV", "development")}. '
-            'If the cluster was '
+            'MONGODB_HOST in .env.pre-production. If the cluster was '
             'deleted or renamed, create a new one. For local MongoDB, '
             'run with FLASK_ENV=development instead.'
         ) from exc
