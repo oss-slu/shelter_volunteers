@@ -54,7 +54,10 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
         throw new Error(result?.message || "Unknown error");
       }
     } catch (err) {
-      setStatus({ type: "error", message: "Failed to delete user." });
+      setStatus({
+        type: "error",
+        message: err.message || "Failed to delete user.",
+      });
     }
   }
 
