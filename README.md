@@ -75,6 +75,19 @@ FLASK_ENV=development python -m cli.admin_cli set-password shelter-admin@example
 
 Use the same `FLASK_ENV` and database for the seed, CLI, and server. For an Atlas-backed pre-production database, substitute `pre-production` only when intentionally working in that database. The password prompt is private; the account has shelter permissions, not system-admin permissions. Select **Local admin account** to sign in.
 
+### Browser sessions
+
+Browser sign-in uses an HttpOnly, SameSite=Lax cookie instead of browser local
+storage. Sessions last one hour and survive refreshes; existing local-storage
+sessions are cleared, so users must sign in again after this change. Cookies
+are Secure outside Flask's development/testing configuration, so production
+requires HTTPS. The frontend and API must be same-site; configure `CLIENT_URLS`
+with exact trusted frontend origins if they are cross-origin. Cookie requests
+include a custom header for CSRF protection, so do not allow untrusted origins
+in the CORS allow-list. Sign-out clears the browser cookie; issued tokens remain
+valid until they expire. Existing non-browser clients may continue using the
+Authorization header.
+
 On all subsequent runs, you will need to:
 
 1. Run the Flask API server:

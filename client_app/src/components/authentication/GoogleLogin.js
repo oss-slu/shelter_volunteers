@@ -2,22 +2,15 @@ import { GoogleLogin } from '@react-oauth/google';
 import { Link } from 'react-router-dom';
 import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
-import { jwtDecode } from "jwt-decode";
 import {useAuth } from "../../contexts/AuthContext";
 import ShelterMap from "../ShelterMap";
 
 function Login() {
   const { login } = useAuth();
   const onSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    const user = {
-      name: decoded.name || decoded.given_name || decoded.email,
-      email: decoded.email,
-      picture: decoded.picture || decoded.profile_picture || "",
-    }
     loginAPI.login(credentialResponse.credential)
       .then(response => {
-        login(response.access_token, user);
+        login(response.user);
       })
       .catch(error => {
         console.error('API Error:', error);

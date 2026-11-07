@@ -21,7 +21,7 @@ export default function Login() {
       const data = provider === "local"
         ? await loginAPI.loginWithLocalAdmin(email, password)
         : await loginAPI.loginWithPassword(email, password);
-      login(data.access_token, data.user);
+      login(data.user);
       navigate("/");
     } catch (error) {
       console.error("Admin sign-in error", error);
