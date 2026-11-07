@@ -1,4 +1,4 @@
-import { buildShiftCalendar, downloadShiftCalendar } from "./shiftCalendar";
+import { buildShiftCalendar, buildShiftsCalendar, downloadShiftCalendar, googleCalendarUrl } from "./shiftCalendar";
 import { Buffer } from "buffer";
 
 const shift = {
@@ -101,4 +101,20 @@ test("downloads an ics file and releases its temporary URL", () => {
     URL.revokeObjectURL = originalRevoke;
     jest.useRealTimers();
   }
+});
+
+test("exports several shifts as one calendar with one event each", () => {
+  const second = { ...shift, service_shift_id: "shift-2", shift_start: shift.shift_start + 86400000, shift_end: shift.shift_end + 86400000 };
+  const content = buildShiftsCalendar([shift, second], Date.parse("2026-10-01T12:00:00Z"));
+  expect(content.match(/BEGIN:VEVENT/g)).toHaveLength(2);
+  expect(content.match(/BEGIN:VCALENDAR/g)).toHaveLength(1);
+  expect(content).toContain("UID:shift-shift-2@volunteer-connect");
+});
+
+test("builds a prefilled Google Calendar link", () => {
+  const url = new URL(googleCalendarUrl(shift));
+  expect(url.origin + url.pathname).toBe("https://calendar.google.com/calendar/render");
+  expect(url.searchParams.get("action")).toBe("TEMPLATE");
+  expect(url.searchParams.get("dates")).toMatch(/^\d{8}T\d{6}Z\/\d{8}T\d{6}Z$/);
+  expect(() => googleCalendarUrl({ ...shift, shift_end: shift.shift_start - 1 })).toThrow();
 });
