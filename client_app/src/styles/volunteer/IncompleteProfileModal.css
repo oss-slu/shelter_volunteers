@@ -124,7 +124,7 @@
   padding: 10px 12px;
 }
 
-/* Modal actions */
+/* Modal actions (scoped so they don't restyle Bootstrap buttons elsewhere) */
 .modal-actions {
   display: flex;
   gap: 12px;
@@ -132,8 +132,8 @@
   border-top: 1px solid #e5e7eb;
 }
 
-.btn-secondary,
-.btn-primary {
+.modal-actions .btn-secondary,
+.modal-actions .btn-primary {
   flex: 1;
   padding: 12px 20px;
   font-size: 0.95rem;
@@ -144,30 +144,30 @@
   border: none;
 }
 
-.btn-secondary {
+.modal-actions .btn-secondary {
   background-color: #f3f4f6;
   color: var(--text);
 }
 
-.btn-secondary:hover {
+.modal-actions .btn-secondary:hover {
   background-color: #e5e7eb;
 }
 
-.btn-secondary:focus {
+.modal-actions .btn-secondary:focus {
   outline: 2px solid #9ca3af;
   outline-offset: 2px;
 }
 
-.btn-primary {
+.modal-actions .btn-primary {
   background-color: var(--brand);
   color: white;
 }
 
-.btn-primary:hover {
+.modal-actions .btn-primary:hover {
   background-color: var(--brand-strong);
 }
 
-.btn-primary:focus {
+.modal-actions .btn-primary:focus {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
