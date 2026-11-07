@@ -4,6 +4,7 @@ import { loginAPI } from '../../api/login';
 import "../../styles/Login.css";
 import { jwtDecode } from "jwt-decode";
 import {useAuth } from "../../contexts/AuthContext";
+import ShelterMap from "../ShelterMap";
 
 function Login() {
   const { login } = useAuth();
@@ -35,6 +36,7 @@ function Login() {
             <span>Volunteer Connect</span>
           </a>
           <nav className="landing-nav-links" aria-label="Main navigation">
+            <a href="#shelters">Shelters</a>
             <a href="#how-it-works">How it works</a>
             <a className="landing-nav-cta" href="#sign-in">Sign in</a>
           </nav>
@@ -90,6 +92,7 @@ function Login() {
               </p>
             </aside>
           </section>
+          <ShelterMap />
           <section className="landing-process" id="how-it-works" aria-labelledby="process-title">
             <div className="landing-process-heading">
               <p className="landing-eyebrow">One connected effort</p>
