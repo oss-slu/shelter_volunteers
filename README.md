@@ -30,9 +30,40 @@ The first time you want to run this code, you will need to:
      MONGODB_PASSWORD=<MongoDB password>
      GOOGLE_CLIENT_ID=<Copy the value of REACT_APP_GOOGLE_CLIENT_ID from client_app/src/config.js>
      JWT_SECRET=<Any long random string>
+     GETHELP_OAUTH_CLIENT_ID=<GetHelp OAuth client ID>
+     GETHELP_OAUTH_CLIENT_SECRET=<GetHelp OAuth client secret>
      ```
+   * GetHelp OAuth credentials are only needed for the GetHelp sign-in option, not local admin accounts. Keep them private and configure them on the API server; do not put them in the React client.
+   * The GetHelp integration defaults to the existing QA OAuth/API endpoints. For another environment, configure <code>GETHELP_OAUTH_URL</code> and <code>GETHELP_API</code> to the appropriate service URLs.
    * If you do not already have a MongoDB Atlas cluster, follow the [MongoDB Atlas setup guide](docs/mongodb_atlas_setup.md) to create one and capture the connection string.
    * Keep this file local—do not commit it to the repository.
+
+To grant the first system-admin permission, use the exact email address the user will sign in with. From the `server/` directory, with its virtual environment active and `server/.env.pre-production` configured, run:
+
+```bash
+FLASK_ENV=pre-production python -m cli.admin_cli system admin@example.com
+```
+
+This adds a system-admin permission in MongoDB; it does not create or change the user's GetHelp password. To set or reset a separate local-admin password for an existing system or shelter admin, run:
+
+```bash
+FLASK_ENV=pre-production python -m cli.admin_cli set-password admin@example.com
+```
+
+Enter and confirm a password of at least 12 characters when prompted. The password is not echoed or placed in shell history; only a salted password hash is stored in MongoDB. Choose **Local admin account** on the admin sign-in page. Passwords are case-sensitive, and the email must match the permission record exactly. Five failed attempts lock that local account until the 15-minute window starting with the first attempt expires; the same command resets its password and lock.
+
+Use HTTPS outside local development and configure additional network-level rate limiting for the login endpoint before public deployment. The per-account lock does not limit traffic across unknown accounts or IP addresses.
+
+Browser sign-in uses an HttpOnly, SameSite=Lax cookie instead of browser local
+storage. Sessions last one hour and survive refreshes; existing local-storage
+sessions are cleared, so users must sign in again after this change. Cookies
+are Secure outside Flask's development/testing configuration, so production
+requires HTTPS. The frontend and API must be same-site; configure `CLIENT_URLS`
+with exact trusted frontend origins if they are cross-origin. Cookie requests
+include a custom header for CSRF protection, so do not allow untrusted origins
+in the CORS allow-list. Sign-out clears the browser cookie; issued tokens remain
+valid until they expire. Existing non-browser clients may continue using the
+Authorization header.
 
 On all subsequent runs, you will need to:
 

@@ -9,5 +9,6 @@ venv/
 .idea/
 .venv
 __init__.py
+!server/cli/__init__.py
 settings.json
 package-lock.json

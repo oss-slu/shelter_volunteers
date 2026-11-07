@@ -73,7 +73,7 @@ export const Sidebar = () => {
           <nav style={{ flex: '1', padding: '1rem' }}>
             <button
               type="button"
-              onClick={() => navigate('/home')}
+              onClick={() => navigate('/')}
               className="nav-button"
             >
               <FontAwesomeIcon icon={faHouse} />
