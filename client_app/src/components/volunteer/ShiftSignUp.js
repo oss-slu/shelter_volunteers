@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useId } from 'react';
+import { useLocation } from 'react-router-dom';
 import { shelterAPI } from '../../api/shelter';
 import { serviceShiftAPI } from '../../api/serviceShift';
 import { serviceCommitmentAPI } from '../../api/serviceCommitment';
@@ -69,7 +70,21 @@ function VolunteerShiftSignup(){
   const filterDateId = useId();
   const filterHintId = useId();
   const [dateFieldFocused, setDateFieldFocused] = useState(false);
+  const [highlightedShelterId, setHighlightedShelterId] = useState(null);
   const user = getUser();
+  const { hash } = useLocation();
+
+  // Arriving from the dashboard map (#shelter-<id>): scroll to that shelter's card.
+  useEffect(() => {
+    if (loading || !hash.startsWith('#shelter-')) return undefined;
+    const shelterId = decodeURIComponent(hash.slice('#shelter-'.length));
+    const card = document.getElementById(`shelter-${shelterId}`);
+    if (!card) return undefined;
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setHighlightedShelterId(shelterId);
+    const timer = setTimeout(() => setHighlightedShelterId(null), 2500);
+    return () => clearTimeout(timer);
+  }, [loading, hash]);
 
   useEffect(() => {
     let cancelled = false;
@@ -527,6 +542,7 @@ function VolunteerShiftSignup(){
           <ShelterShiftGroup
             key={group.shelterId}
             shelter={group.shelter}
+            isHighlighted={group.shelterId === highlightedShelterId}
             shiftsData={group.shifts.map(processShiftData)}
             onToggle={handleShiftToggle}
             onWaitlistToggle={handleWaitlistToggle}

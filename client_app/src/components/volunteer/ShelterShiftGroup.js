@@ -112,6 +112,7 @@ function ShiftOption({ shiftData, shelterName, onToggle, onWaitlistToggle, isIns
 export function ShelterShiftGroup({
   shelter,
   shiftsData,
+  isHighlighted = false,
   onToggle,
   onWaitlistToggle,
   expandedInstructions,
@@ -126,7 +127,11 @@ export function ShelterShiftGroup({
   );
 
   return (
-    <section className="signup-shelter" aria-labelledby={headingId}>
+    <section
+      id={shelter?._id ? `shelter-${shelter._id}` : undefined}
+      className={`signup-shelter ${isHighlighted ? 'is-highlighted' : ''}`}
+      aria-labelledby={headingId}
+    >
       <header className="signup-shelter-header">
         <div className="signup-shelter-identity">
           <h3 id={headingId} className="signup-shelter-name">{name}</h3>

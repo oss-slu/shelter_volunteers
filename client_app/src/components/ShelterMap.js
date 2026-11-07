@@ -3,46 +3,14 @@ import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaf
 import "leaflet/dist/leaflet.css";
 import { shelterAPI } from "../api/shelter";
 import "../styles/ShelterMap.css";
+import { STL_CENTER, toMapPoints } from "../utils/mapPoints";
 
-// Downtown St. Louis — used until shelters load, or when none have coordinates.
-export const STL_CENTER = [38.627, -90.1994];
 const DEFAULT_ZOOM = 11;
 
-/**
- * Keep only shelters with usable coordinates and flatten them into map points.
- */
-export function toMapPoints(shelters) {
-  if (!Array.isArray(shelters)) return [];
-  return shelters
-    .map((shelter) => {
-      const coords = shelter?.address?.coordinates || {};
-      const lat = Number(coords.latitude);
-      const lng = Number(coords.longitude);
-      if (
-        coords.latitude == null ||
-        coords.longitude == null ||
-        !Number.isFinite(lat) ||
-        !Number.isFinite(lng) ||
-        Math.abs(lat) > 90 ||
-        Math.abs(lng) > 180
-      ) {
-        return null;
-      }
-      const { street1, city, state, postal_code: postalCode } = shelter.address;
-      return {
-        id: shelter._id || `${shelter.name}-${lat}-${lng}`,
-        name: shelter.name,
-        street: street1 || "",
-        locality: [city, [state, postalCode].filter(Boolean).join(" ")]
-          .filter(Boolean)
-          .join(", "),
-        position: [lat, lng],
-      };
-    })
-    .filter(Boolean);
-}
+export { STL_CENTER, toMapPoints };
 
-function FitToPoints({ points }) {
+/** Zooms the map to show every point (expects `{ position: [lat, lng] }` items). */
+export function FitToPoints({ points }) {
   const map = useMap();
   useEffect(() => {
     if (points.length > 1) {
