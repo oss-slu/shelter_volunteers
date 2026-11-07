@@ -37,7 +37,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
     } catch (err) {
       setStatus({
         type: "error",
-        message: err.message || "Failed to add user.",
+        message: "Failed to add user.",
       });
     }
   };
