@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Gateway Harbor Shelter",
+    "address": {
+      "street1": "1000 Washington Ave",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63101",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6318, "longitude": -90.1925}
+    }
+  },
+  {
+    "name": "Soulard Community Haven",
+    "address": {
+      "street1": "730 Carroll St",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63104",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6109, "longitude": -90.2087}
+    }
+  },
+  {
+    "name": "Tower Grove Family Center",
+    "address": {
+      "street1": "3300 S Grand Blvd",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63118",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6045, "longitude": -90.2433}
+    }
+  },
+  {
+    "name": "Central West End Night Refuge",
+    "address": {
+      "street1": "4500 Lindell Blvd",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63108",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6403, "longitude": -90.2585}
+    }
+  },
+  {
+    "name": "The Hill Warming Station",
+    "address": {
+      "street1": "2100 Marconi Ave",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63110",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6152, "longitude": -90.2770}
+    }
+  },
+  {
+    "name": "North Grand Hope House",
+    "address": {
+      "street1": "3800 N Grand Blvd",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63107",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6620, "longitude": -90.2190}
+    }
+  },
+  {
+    "name": "Fairground Park Youth Shelter",
+    "address": {
+      "street1": "3700 Natural Bridge Ave",
+      "city": "St. Louis",
+      "state": "MO",
+      "postal_code": "63107",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6655, "longitude": -90.2265}
+    }
+  },
+  {
+    "name": "Delmar Loop Open Door",
+    "address": {
+      "street1": "6300 Delmar Blvd",
+      "city": "University City",
+      "state": "MO",
+      "postal_code": "63130",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6556, "longitude": -90.3045}
+    }
+  },
+  {
+    "name": "Maplewood Neighbors Shelter",
+    "address": {
+      "street1": "7300 Manchester Rd",
+      "city": "Maplewood",
+      "state": "MO",
+      "postal_code": "63143",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6125, "longitude": -90.3230}
+    }
+  },
+  {
+    "name": "Kirkwood Safe Rest",
+    "address": {
+      "street1": "200 N Kirkwood Rd",
+      "city": "Kirkwood",
+      "state": "MO",
+      "postal_code": "63122",
+      "country": "USA",
+      "coordinates": {"latitude": 38.5830, "longitude": -90.4065}
+    }
+  },
+  {
+    "name": "Florissant Valley Shelter",
+    "address": {
+      "street1": "1100 N New Florissant Rd",
+      "city": "Florissant",
+      "state": "MO",
+      "postal_code": "63031",
+      "country": "USA",
+      "coordinates": {"latitude": 38.8010, "longitude": -90.3220}
+    }
+  },
+  {
+    "name": "Riverbend Metro East Shelter",
+    "address": {
+      "street1": "500 Missouri Ave",
+      "city": "East St. Louis",
+      "state": "IL",
+      "postal_code": "62201",
+      "country": "USA",
+      "coordinates": {"latitude": 38.6260, "longitude": -90.1580}
+    }
+  }
+]
