@@ -7,7 +7,11 @@ import {useAuth} from "../contexts/AuthContext.js";
 function HomeDashboard() {
   const {onSelectDashboard} = useCurrentDashboard();
   const {dashboards, loadingDashboards} = useDashboards();
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated, loading} = useAuth();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (!isAuthenticated) {
     return <Login />;

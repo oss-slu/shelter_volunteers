@@ -54,6 +54,17 @@ Enter and confirm a password of at least 12 characters when prompted. The passwo
 
 Use HTTPS outside local development and configure additional network-level rate limiting for the login endpoint before public deployment. The per-account lock does not limit traffic across unknown accounts or IP addresses.
 
+Browser sign-in uses an HttpOnly, SameSite=Lax cookie instead of browser local
+storage. Sessions last one hour and survive refreshes; existing local-storage
+sessions are cleared, so users must sign in again after this change. Cookies
+are Secure outside Flask's development/testing configuration, so production
+requires HTTPS. The frontend and API must be same-site; configure `CLIENT_URLS`
+with exact trusted frontend origins if they are cross-origin. Cookie requests
+include a custom header for CSRF protection, so do not allow untrusted origins
+in the CORS allow-list. Sign-out clears the browser cookie; issued tokens remain
+valid until they expire. Existing non-browser clients may continue using the
+Authorization header.
+
 On all subsequent runs, you will need to:
 
 1. Run the Flask API server:

@@ -26,7 +26,7 @@ test.each([
   ["gethelp", "loginWithPassword"],
 ])("submits credentials to the selected %s provider", async (provider, method) => {
   const user = { email: "admin@example.com" };
-  loginAPI[method].mockResolvedValue({ access_token: "app-token", user });
+  loginAPI[method].mockResolvedValue({ user });
   render(<Login />);
   fireEvent.change(screen.getByLabelText("Account type"), { target: { value: provider } });
   fireEvent.change(screen.getByLabelText("Email address"), { target: { value: user.email } });
@@ -34,6 +34,6 @@ test.each([
   fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
   await waitFor(() => {
     expect(loginAPI[method]).toHaveBeenCalledWith(user.email, "test-password");
-    expect(useAuth().login).toHaveBeenCalledWith("app-token", user);
+    expect(useAuth().login).toHaveBeenCalledWith(user);
   });
 });

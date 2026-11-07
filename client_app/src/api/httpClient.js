@@ -1,5 +1,4 @@
 import { SERVER } from "../config";
-import { getToken } from "../authentication/getToken";
 import axios from "axios";
 import { getGlobalLogout } from "../contexts/AuthContext";
 
@@ -8,21 +7,12 @@ export const setNavigateHttpClient = (navigateFunction) => {
   navigate = navigateFunction;
 };
 
-const httpClient = axios.create({ baseURL: SERVER, timeout: 10000 });
-
-httpClient.interceptors.request.use(
-  (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = token;
-    }
-    return config;
-  },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  },
-);
+const httpClient = axios.create({
+  baseURL: SERVER,
+  timeout: 10000,
+  withCredentials: true,
+  headers: { "X-Volunteer-Session": "1" },
+});
 
 httpClient.interceptors.response.use(
   (response) => response,
@@ -32,7 +22,7 @@ httpClient.interceptors.response.use(
       if (status === 401) {
         const logout = getGlobalLogout();
         if (logout) {
-          logout();
+          logout().catch((logoutError) => console.error("Sign-out failed:", logoutError));
         }
         if (navigate) {
           navigate("/");
