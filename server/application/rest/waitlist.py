@@ -25,12 +25,12 @@ from responses import ResponseTypes
 from serializers.service_shift import ServiceShiftJsonEncoder
 from serializers.shelter import ShelterJsonEncoder
 from serializers.waitlist_entry import WaitlistEntryJsonEncoder
+from domains.service_commitment import ServiceCommitment
+from use_cases.add_service_commitments import check_time_overlap
 from use_cases.list_shelters_for_shifts import list_shelters_for_shifts
 from use_cases.waitlist.join_waitlist import join_waitlist
 from use_cases.waitlist.leave_waitlist import leave_waitlist
 from use_cases.waitlist.list_user_waitlist import list_user_waitlist_with_shifts
-from domains.service_commitment import ServiceCommitment
-from use_cases.add_service_commitments import check_time_overlap
 
 
 waitlist_bp = Blueprint("waitlist", __name__)
@@ -135,29 +135,31 @@ def get_shift_waitlist(shelter_id, shift_id):
 @shelter_admin_permission_required
 def approve_waitlist_participant(shelter_id, shift_id, waitlist_id):
     waitlist_entry = waitlist_repo.get_by_id(waitlist_id)
-    
+
     if not waitlist_entry:
         return jsonify({"message": "Waitlist entry not found"}), HTTP_STATUS_CODES_MAPPING[
-                    ResponseTypes.NOT_FOUND
-                ]   
+            ResponseTypes.NOT_FOUND
+        ]
 
     # check shift ids match
     if shift_id != waitlist_entry.service_shift_id:
         return (
-                jsonify({"message": "shift_id in URL does not match waitlist shift"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
-            )
+            jsonify({"message": "shift_id in URL does not match waitlist shift"}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
     shift = shifts_repo.get_shift(shift_id=waitlist_entry.service_shift_id)
 
     # check shift belongs to this shelter
     if str(shift.shelter_id) != str(shelter_id):
-            return (
-                jsonify({"message": "shelter_id in URL does not match shift shelter"}),
-                HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
-            )
+        return (
+            jsonify({"message": "shelter_id in URL does not match shift shelter"}),
+            HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
+        )
 
-    # check existing commitments 
-    current_shift_commitments = commitments_repo.fetch_service_commitments(shift_id=waitlist_entry.service_shift_id)
+    # check existing commitments
+    current_shift_commitments = commitments_repo.fetch_service_commitments(
+        shift_id=waitlist_entry.service_shift_id
+    )
     if len(current_shift_commitments) >= shift.max_volunteer_count:
         return (
             jsonify({"message": "This shift has reached the maximum allowed volunteers"}),
@@ -177,7 +179,7 @@ def approve_waitlist_participant(shelter_id, shift_id, waitlist_id):
             jsonify({"message": "This user is committed to an overlaping shift already"}),
             HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR],
         )
-    
+
     new_commitment = ServiceCommitment(
         volunteer_id=waitlist_entry.volunteer_id,
         service_shift_id=waitlist_entry.service_shift_id,
@@ -188,6 +190,6 @@ def approve_waitlist_participant(shelter_id, shift_id, waitlist_id):
         "service_commitment_id": new_commitment_id,
         "waitlist_entry_id": str(waitlist_entry.get_id()),
     }
-    waitlist_repo.remove_entry(waitlist_entry.get_id())      
-    
+    waitlist_repo.remove_entry(waitlist_entry.get_id())
+
     return _json_response(promotion, ResponseTypes.SUCCESS)
