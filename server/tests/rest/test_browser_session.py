@@ -49,7 +49,10 @@ def test_cookie_login_restore_csrf_and_logout(client):
 
 def test_expired_cookie_and_legacy_bearer_token(client):
     expired = create_token({"email": "admin@example.com"}, SECRET, expiration=-1)
-    client.set_cookie("volunteer_session", expired)
+    with patch("application.rest.login.authenticate_admin", return_value=True), \
+         patch("application.rest.login.create_token", return_value=expired):
+        client.post("/login/local-admin", headers=SESSION_HEADERS,
+                    json={"email": "admin@example.com", "password": "test-password"})
     assert client.get("/session", headers=SESSION_HEADERS).status_code == 401
     token = create_token({"email": "admin@example.com"}, SECRET)
     response = client.get("/protected", headers={"Authorization": token})
