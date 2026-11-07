@@ -18,6 +18,7 @@ import HomeDashboard from "./components/HomeDashboard";
 import DashboardLayout from "./components/DashboardLayout";
 import DashboardContent from "./components/DashboardContent";
 import Logout from "./components/authentication/Logout";
+import AdminLogin from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -53,6 +54,7 @@ function AppContent() {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/shelter" element={<Navigate to="/home" />} />
       <Route path="/home" element={<HomeDashboard />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/admin-dashboard" element={<DashboardLayout />}>

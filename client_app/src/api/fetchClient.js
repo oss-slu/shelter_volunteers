@@ -36,7 +36,7 @@ export const fetchClient = async (endpoint, options = {}) => {
     const response = await fetch(`${SERVER}${endpoint}`, config);
 
     // Check if the response indicates authentication failure
-    if (response.status === 401 || response.status === 403) {
+    if (token && (response.status === 401 || response.status === 403)) {
       const logout = getGlobalLogout();
       if (logout) {
         logout();
@@ -47,17 +47,22 @@ export const fetchClient = async (endpoint, options = {}) => {
       return Promise.reject(new Error("Authentication failed"));
     }
 
-    // If the response is not OK and not a 401, handle other errors
+    // Read error bodies once: JSON parsing consumes the response stream.
     if (!response.ok) {
-      let errorMessage = "An error occurred while processing your request";
+      const responseText = await response.text();
+      let errorMessage = `Request failed (HTTP ${response.status})`;
       try {
-        const errorData = await response.json();
-        if (errorData.message) {
+        const errorData = JSON.parse(responseText);
+        if (typeof errorData?.message === "string" && errorData.message) {
           errorMessage = errorData.message;
+        } else if (typeof errorData?.error === "string" && errorData.error) {
+          errorMessage = errorData.error;
         }
-      } catch {
-        const responseText = await response.text();
-        if (responseText) errorMessage = responseText;
+      } catch (error) {
+        if (!(error instanceof SyntaxError)) throw error;
+        if (responseText.trim() && !responseText.trim().startsWith("<")) {
+          errorMessage = responseText;
+        }
       }
       throw new Error(errorMessage);
     }

@@ -16,7 +16,7 @@ Design artifacts for both halves of the repo: the **React client** (`client_app/
 - **Single VM with Docker Compose and Caddy** (1a). It's cheap, works on any host, and gets TLS automatically. The trade-off is no horizontal scaling.
 - **In-process reminder scheduler** (1a, 4c). No extra worker service to run, but the API has to stay on **one gunicorn worker** or every email gets sent twice.
 - **Clean architecture on the server** (2a). Use cases get repositories passed in, so business rules (capacity, time overlap, FIFO promotion) get tested without a database.
-- **Identity is delegated to Google** (5a). We never store passwords. Email is the user key across `user_info`, `permissions` and commitments (3).
+- **Identity comes from Google, GetHelp, or a local admin credential** (5a). Local admin passwords are stored as salted hashes in MongoDB; plaintext passwords are not stored. Email is the user key across `user_info`, `permissions` and commitments (3).
 - **Automatic waitlist promotion** (4a/4b). A cancellation or a raised capacity fills the open spot right away, with no shelter admin action needed.
 
 **How these inform development**
@@ -300,13 +300,13 @@ erDiagram
     }
     PERMISSIONS {
         ObjectId _id PK
-        string email "identity from Google"
+        string email "identity from Google, GetHelp, or local admin"
         array full_access "Access{resource_type: system|shelter, resource_ids[]}"
     }
 ```
 
 **Notes**
-- Users are **not** stored as accounts — identity comes from Google; `USER_INFO` (profile) and `PERMISSIONS` (roles) are both keyed by email. No `PERMISSIONS` row = plain volunteer.
+- Identity comes from Google, GetHelp, or a local admin credential in `local_admin_credentials`; `USER_INFO` (profile) and `PERMISSIONS` (roles) are both keyed by email. Local credentials require an existing system or shelter-admin permission. No `PERMISSIONS` row = plain volunteer.
 - `SCHEDULE` is a *template*; opening a shelter on a date copies template shifts into concrete `SERVICE_SHIFTS` rows.
 - **Intended:** add unique index on (`volunteer_id`, `service_shift_id`) in `service_commitments` and `waitlist_entries` to make the "no double sign-up" rule a DB guarantee; add reminder-sent flags on `service_shifts`; drop legacy `shifts` collection.
 
@@ -420,15 +420,30 @@ sequenceDiagram
     actor U as User
     participant UI as React client
     participant G as Google Identity
+    participant GH as GetHelp OAuth
     participant API as Flask API
     participant DB as MongoDB (permissions)
 
-    U->>UI: Click "Sign in with Google"
-    UI->>G: OAuth popup (REACT_APP_GOOGLE_CLIENT_ID)
-    G-->>UI: Google ID token
-    UI->>API: POST /login {idToken}
-    API->>G: verify_google_token(idToken, GOOGLE_CLIENT_ID)
-    G-->>API: email, name
+    alt Google sign-in
+        U->>UI: Click "Sign in with Google"
+        UI->>G: OAuth popup (REACT_APP_GOOGLE_CLIENT_ID)
+        G-->>UI: Google ID token
+        UI->>API: POST /login {idToken}
+        API->>G: verify_google_token(idToken, GOOGLE_CLIENT_ID)
+        G-->>API: email
+    else GetHelp email/password sign-in
+        U->>UI: Enter GetHelp email and password
+        UI->>API: POST /login/password
+        API->>GH: Exchange credentials (server-side OAuth client)
+        GH-->>API: GetHelp access token
+        API->>GH: GET current user profile
+        GH-->>API: email, first name, last name
+    else Local admin sign-in
+        U->>UI: Enter local admin email and password
+        UI->>API: POST /login/local-admin
+        API->>DB: Verify password hash and system or shelter-admin permission
+        DB-->>API: Authentication result
+    end
     API-->>UI: {access_token: app JWT signed with JWT_SECRET}
     UI->>UI: store token in localStorage
     UI->>API: GET /user_permission (Authorization: token)
@@ -450,6 +465,7 @@ sequenceDiagram
 ```mermaid
 flowchart TB
     HOME["/home<br/>Landing + Google sign-in"] --> SEL{"DashboardSelector<br/>roles from /user_permission"}
+    HOME --> ALOGIN["/admin-login<br/>Local admin or GetHelp sign-in"]
     HOME --> SIGNUP["/signup"]
 
     SEL -- everyone --> VD["/volunteer-dashboard"]
