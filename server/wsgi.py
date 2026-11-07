@@ -18,9 +18,13 @@ if os.environ.get("VERCEL"):
         missing_names = ", ".join(missing)
         raise RuntimeError(f"Missing Vercel environment variables: {missing_names}")
 
+# These imports must come after the Vercel environment setup above: the
+# application modules read FLASK_ENV / MongoDB settings when imported.
+# pylint: disable=wrong-import-position
 from flask_cors import CORS
 from application.app import create_app
 from application.api_prefix import ApiPrefixMiddleware
+# pylint: enable=wrong-import-position
 
 config_name = (
     os.environ.get("FLASK_CONFIG", "production")
