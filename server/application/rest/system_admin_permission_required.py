@@ -12,16 +12,24 @@ from repository.mongo.authorization import PermissionsMongoRepo
 from responses import ResponseTypes
 
 repo = PermissionsMongoRepo()
-def system_admin_permission_required(f):
-    @wraps(f)
-    @token_required_with_request
-    def decorated(user_email, *args, **kwargs):
-        # Check if the user has admin permissions
-        if not is_authorized(repo, user_email, Resources.SYSTEM):
-            return Response(
-                json.dumps({'message': 'Unauthorized'}),
-                mimetype='application/json',
-                status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
-            )
-        return f(*args, **kwargs)
-    return decorated
+
+def system_admin_permission_required(f=None, *, pass_user_email=False):
+    def decorator(view):
+        @wraps(view)
+        @token_required_with_request
+        def decorated(user_email, *args, **kwargs):
+            # Check if the user has admin permissions
+            if not is_authorized(repo, user_email, Resources.SYSTEM):
+                return Response(
+                    json.dumps({'message': 'Unauthorized'}),
+                    mimetype='application/json',
+                    status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.UNAUTHORIZED]
+                )
+            if pass_user_email:
+                return view(user_email, *args, **kwargs)
+            return view(*args, **kwargs)
+        return decorated
+
+    if f is None:
+        return decorator
+    return decorator(f)
