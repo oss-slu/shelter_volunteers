@@ -195,7 +195,7 @@ export function groupShiftsByShelter(shifts, shelterMap, sortBy, needOf) {
       ...group,
       shifts: inner,
       firstStart: Math.min(...inner.map((s) => s.shift_start)),
-      maxNeed: Math.max(...inner.map(needOf)),
+      maxNeed: Math.max(...inner.map((s) => needOf(s))),
       name: group.shelter?.name || '',
     };
   });
