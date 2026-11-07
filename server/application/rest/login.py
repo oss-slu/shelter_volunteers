@@ -53,7 +53,6 @@ def login():
 
 
 @login_blueprint.route("/login/local-admin", methods=["POST"])
-@cross_origin()
 def local_admin_login():
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
@@ -86,7 +85,6 @@ def local_admin_login():
 
 
 @login_blueprint.route("/login/password", methods=["POST"])
-@cross_origin()
 def password_login():
     data = request.get_json(silent=True) or {}
     email = data.get("email")
