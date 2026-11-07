@@ -16,7 +16,9 @@ def verify_google_token(token, google_client_id):
             raise ValueError('Wrong issuer.')
 
         return {
-            'email': idinfo['email']
+            'email': idinfo['email'],
+            'name': idinfo.get('name') or idinfo['email'],
+            'picture': idinfo.get('picture', ''),
         }
     except ValueError as e:
         raise ValueError(f'Invalid token: {str(e)}') from e

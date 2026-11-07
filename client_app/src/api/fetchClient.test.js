@@ -1,12 +1,9 @@
 import { fetchClient, setNavigate } from "./fetchClient";
-import { getToken } from "../authentication/getToken";
 import { getGlobalLogout } from "../contexts/AuthContext";
 
-jest.mock("../authentication/getToken", () => ({ getToken: jest.fn() }));
 jest.mock("../contexts/AuthContext", () => ({ getGlobalLogout: jest.fn() }));
 
 beforeEach(() => {
-  getToken.mockReturnValue(undefined);
   getGlobalLogout.mockReset();
   setNavigate(null);
   window.fetch = jest.fn();
@@ -29,21 +26,27 @@ test.each([
   expect(text).toHaveBeenCalledTimes(1);
 });
 
-test("keeps authenticated logout behavior for 403 responses", async () => {
-  const logout = jest.fn();
+test("logs out on an expired session", async () => {
+  const logout = jest.fn().mockResolvedValue();
   const navigate = jest.fn();
-  getToken.mockReturnValue("token");
   getGlobalLogout.mockReturnValue(logout);
   setNavigate(navigate);
-  window.fetch.mockResolvedValue({ ok: false, status: 403 });
+  window.fetch.mockResolvedValue({ ok: false, status: 401 });
 
   await expect(fetchClient("/protected")).rejects.toThrow("Authentication failed");
   expect(logout).toHaveBeenCalledTimes(1);
   expect(navigate).toHaveBeenCalledWith("/");
 });
 
-test("returns successful JSON responses", async () => {
-  const data = { access_token: "app-token" };
+test("sends browser-session credentials and returns JSON", async () => {
+  const data = { user: { email: "admin@example.com" } };
   window.fetch.mockResolvedValue({ ok: true, json: jest.fn().mockResolvedValue(data) });
   await expect(fetchClient("/login/local-admin")).resolves.toEqual(data);
+  expect(window.fetch).toHaveBeenCalledWith(
+    "/login/local-admin",
+    expect.objectContaining({
+      credentials: "include",
+      headers: expect.objectContaining({ "X-Volunteer-Session": "1" }),
+    })
+  );
 });
