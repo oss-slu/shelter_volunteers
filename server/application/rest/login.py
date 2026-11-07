@@ -41,15 +41,22 @@ def _login_response(token, user):
 @login_blueprint.route("/session", methods=["GET"])
 def get_session():
     if not is_browser_session_request():
-        return Response(json.dumps({"message": "Missing browser session header"}), status=403, mimetype="application/json")
+        return Response(
+            json.dumps({"message": "Missing browser session header"}),
+            status=403, mimetype="application/json",
+        )
     token = request.cookies.get(COOKIE_NAME)
     if not token:
-        return Response(json.dumps({"message": "Not signed in"}), status=401, mimetype="application/json")
+        return Response(
+            json.dumps({"message": "Not signed in"}), status=401, mimetype="application/json",
+        )
     try:
         user = decode_token(token, current_app.config.get("JWT_SECRET"))
     except ValueError:
         return clear_session_cookie(
-            Response(json.dumps({"message": "Session expired"}), status=401, mimetype="application/json")
+            Response(
+                json.dumps({"message": "Session expired"}), status=401, mimetype="application/json",
+            )
         )
     response = _json_response({
         "user": {
@@ -65,7 +72,10 @@ def get_session():
 @login_blueprint.route("/session", methods=["DELETE"])
 def delete_session():
     if not is_browser_session_request():
-        return Response(json.dumps({"message": "Missing browser session header"}), status=403, mimetype="application/json")
+        return Response(
+            json.dumps({"message": "Missing browser session header"}),
+            status=403, mimetype="application/json",
+        )
     return clear_session_cookie(_json_response({"message": "Signed out"}, ResponseTypes.SUCCESS))
 
 
