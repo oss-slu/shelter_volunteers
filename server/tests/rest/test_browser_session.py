@@ -1,3 +1,5 @@
+"""Tests for cookie-based browser authentication."""
+
 from unittest.mock import patch
 
 import pytest
@@ -13,8 +15,8 @@ SECRET = "test-secret-for-jwt-signing-at-least-32-bytes"
 SESSION_HEADERS = {"X-Volunteer-Session": "1"}
 
 
-@pytest.fixture
-def client():
+@pytest.fixture(name="client")
+def browser_client():
     app = Flask(__name__)
     app.config.update(TESTING=True, JWT_SECRET=SECRET, BROWSER_SESSION_COOKIE_SECURE=True)
     app.register_blueprint(login_blueprint)
@@ -39,7 +41,8 @@ def test_cookie_login_restore_csrf_and_logout(client):
     assert "access_token" not in response.json
     cookie = response.headers["Set-Cookie"]
     assert "HttpOnly" in cookie and "Secure" in cookie and "SameSite=Lax" in cookie
-    assert client.get("/session", headers=SESSION_HEADERS).json["user"]["email"] == "admin@example.com"
+    restored = client.get("/session", headers=SESSION_HEADERS)
+    assert restored.json["user"]["email"] == "admin@example.com"
     assert client.post("/protected", headers=SESSION_HEADERS).json["email"] == "admin@example.com"
     assert client.post("/protected").status_code == 403
     assert client.delete("/session").status_code == 403
@@ -64,7 +67,9 @@ def test_other_signin_providers_issue_restorable_cookie(client, provider):
     profile = {"email": "user@example.com", "name": "User Name", "picture": ""}
     if provider == "google":
         with patch("application.rest.login.verify_google_token", return_value=profile):
-            response = client.post("/login", headers=SESSION_HEADERS, json={"idToken": "google-token"})
+            response = client.post(
+                "/login", headers=SESSION_HEADERS, json={"idToken": "google-token"}
+            )
     else:
         with patch("application.rest.login.login_user") as login_user, \
              patch("application.rest.login.get_user", return_value={
@@ -90,4 +95,5 @@ def test_preflight_allows_only_configured_origin(client):
     assert response.headers["Access-Control-Allow-Origin"] == "https://client.example"
     assert response.headers["Access-Control-Allow-Credentials"] == "true"
     headers["Origin"] = "https://attacker.example"
-    assert "Access-Control-Allow-Origin" not in client.options("/login/local-admin", headers=headers).headers
+    response = client.options("/login/local-admin", headers=headers)
+    assert "Access-Control-Allow-Origin" not in response.headers
