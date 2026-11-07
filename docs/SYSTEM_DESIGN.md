@@ -82,6 +82,11 @@ flowchart LR
 
 **Key decision:** the reminder scheduler runs *inside* the API process, so the backend is pinned to **one gunicorn worker** (more workers = duplicate emails). This keeps hosting to a single VM with no queue/worker service, at the cost of horizontal scaling.
 
+**Alternative Vercel deployment:** one project hosts a React service and a
+Flask service behind the same domain. Requests under `/api/` go to Flask;
+other requests go to React. The in-process scheduler is disabled there, so
+automatic reminder emails are not sent. See the [deployment instructions](../README.md#deploying-to-vercel).
+
 ### 1b. Build & deploy pipeline (`.github/workflows/ci-cd.yml`)
 
 ```mermaid
