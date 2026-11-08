@@ -80,8 +80,13 @@ def create_app(config_name="development"):
         @app.route("/", defaults={"path": ""})
         @app.route("/<path:path>")
         def serve(path):
-            if path != "" and os.path.exists(os.path.join(react_build_dir, path)):
-                return send_from_directory(react_build_dir, path)
+            if path != "":
+                requested_path = os.path.abspath(os.path.join(react_build_dir, path))
+                if (
+                    os.path.commonpath([react_build_dir, requested_path]) == react_build_dir
+                    and os.path.isfile(requested_path)
+                ):
+                    return send_from_directory(react_build_dir, path)
             return send_from_directory(react_build_dir, "index.html")
 
     return app
