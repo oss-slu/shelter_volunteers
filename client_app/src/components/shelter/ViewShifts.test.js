@@ -12,11 +12,6 @@ jest.mock("../../api/waitlist", () => ({
   },
 }));
 
-jest.mock("../../formatting/FormatDateTime.js", () => ({
-  formatDate: jest.fn(() => "October 11, 2026"),
-  formatTime: jest.fn(() => "9:00 AM"),
-}));
-
 jest.mock("./ShiftUserInfoDisplay", () => () => null);
 jest.mock("./ShiftWaitlistModal", () => () => null);
 jest.mock("./EditRequestModal.js", () => ({ EditRequestModal: () => null }));
@@ -47,5 +42,56 @@ describe("ViewShifts waitlist counts", () => {
 
     expect(await screen.findByText("Waitlist 2")).toBeInTheDocument();
     expect(waitlistAPI.getForShift).toHaveBeenCalledWith("shelter-1", "shift-1");
+  });
+});
+
+describe("ViewShifts chronological ordering", () => {
+  const makeShift = (name, year, month, day, hour) => ({
+    _id: name,
+    shift_name: name,
+    shift_start: new Date(year, month - 1, day, hour).getTime(),
+    shift_end: new Date(year, month - 1, day, hour + 1).getTime(),
+    volunteers: [],
+    required_volunteer_count: 2,
+  });
+
+  beforeEach(() => {
+    waitlistAPI.getForShift.mockResolvedValue([]);
+  });
+
+  it("orders shuffled dates across months and years, then times within each day", async () => {
+    const shifts = Object.freeze([
+      makeShift("January", 2027, 1, 1, 9),
+      makeShift("December evening", 2026, 12, 31, 17),
+      makeShift("November", 2026, 11, 30, 9),
+      makeShift("December morning", 2026, 12, 31, 9),
+    ]);
+    const { container } = render(<ViewShifts shiftDetailsData={shifts} />);
+
+    await screen.findAllByText("Waitlist 0");
+    expect(
+      Array.from(container.querySelectorAll(".date-header"), (node) => node.textContent),
+    ).toEqual(["Nov 30, 2026", "Dec 31, 2026", "Jan 01, 2027"]);
+    expect(
+      screen
+        .getAllByRole("button", { name: /^Edit / })
+        .map((button) => button.getAttribute("aria-label")),
+    ).toEqual(["Edit November", "Edit December morning", "Edit December evening", "Edit January"]);
+    expect(shifts[0].shift_name).toBe("January");
+  });
+
+  it("reorders the display when refreshed shift dates change", async () => {
+    const first = makeShift("First", 2026, 11, 1, 9);
+    const second = makeShift("Second", 2026, 11, 2, 9);
+    const { rerender } = render(<ViewShifts shiftDetailsData={[first, second]} />);
+    await screen.findAllByText("Waitlist 0");
+
+    rerender(<ViewShifts shiftDetailsData={[makeShift("First", 2026, 11, 3, 9), second]} />);
+    await screen.findAllByText("Waitlist 0");
+    expect(
+      screen
+        .getAllByRole("button", { name: /^Edit / })
+        .map((button) => button.getAttribute("aria-label")),
+    ).toEqual(["Edit Second", "Edit First"]);
   });
 });

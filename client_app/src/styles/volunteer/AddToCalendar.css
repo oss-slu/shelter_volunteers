@@ -4,6 +4,11 @@
   max-width: 340px;
 }
 
+.shift-calendar-export--all {
+  max-width: none;
+  margin: 0 0 20px;
+}
+
 .shift-calendar-export .shift-calendar-export__button {
   display: inline-flex;
   align-items: center;

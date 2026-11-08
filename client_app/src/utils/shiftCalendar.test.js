@@ -1,4 +1,10 @@
-import { buildShiftCalendar, downloadShiftCalendar } from "./shiftCalendar";
+import {
+  buildShiftCalendar,
+  buildShiftsCalendar,
+  downloadShiftCalendar,
+  downloadShiftsCalendar,
+  getExportableShifts,
+} from "./shiftCalendar";
 import { Buffer } from "buffer";
 
 const shift = {
@@ -76,6 +82,55 @@ test.each([null, undefined, NaN, "invalid", 9e20])("rejects invalid start time %
 test("rejects reversed times and missing identifiers", () => {
   expect(() => buildShiftCalendar({ ...shift, shift_end: shift.shift_start })).toThrow();
   expect(() => buildShiftCalendar({ ...shift, _id: null, service_shift_id: null })).toThrow();
+});
+
+test("exports multiple future commitments in one calendar and skips expired or invalid shifts", () => {
+  const now = Date.parse("2026-10-25T12:00:00Z");
+  const second = {
+    ...shift,
+    service_shift_id: "shift-2",
+    shift_name: "Morning Service",
+    shift_start: shift.shift_start + 86400000,
+    shift_end: shift.shift_end + 86400000,
+  };
+  const expired = {
+    ...shift,
+    service_shift_id: "old",
+    shift_start: now - 7200000,
+    shift_end: now - 3600000,
+  };
+  const invalid = { ...shift, service_shift_id: "invalid", shift_end: shift.shift_start };
+  expect(getExportableShifts([expired, shift, invalid, second], now)).toEqual([shift, second]);
+  const calendar = unfold(buildShiftsCalendar([expired, shift, invalid, second], now));
+  expect(calendar.match(/BEGIN:VCALENDAR/g)).toHaveLength(1);
+  expect(calendar.match(/BEGIN:VEVENT/g)).toHaveLength(2);
+  expect(calendar).toContain("UID:shift-shift-1@volunteer-connect");
+  expect(calendar).toContain("UID:shift-shift-2@volunteer-connect");
+  expect(calendar).toContain("SUMMARY:Morning Service - Community Shelter");
+  expect(calendar).not.toContain("UID:shift-old@volunteer-connect");
+  expect(calendar.endsWith("END:VCALENDAR\r\n")).toBe(true);
+  expect(() => buildShiftsCalendar([expired, invalid], now)).toThrow("no upcoming shifts");
+});
+
+test("bulk export downloads one .ics file", () => {
+  const originalCreate = URL.createObjectURL;
+  const originalRevoke = URL.revokeObjectURL;
+  URL.createObjectURL = jest.fn(() => "blob:bulk-calendar-test");
+  URL.revokeObjectURL = jest.fn();
+  const click = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function () {
+    expect(this.download).toBe("upcoming-volunteer-shifts.ics");
+  });
+  try {
+    downloadShiftsCalendar([
+      { ...shift, shift_start: Date.now() + 86400000, shift_end: Date.now() + 90000000 },
+    ]);
+    expect(click).toHaveBeenCalledTimes(1);
+    expect(URL.createObjectURL.mock.calls[0][0].type).toBe("text/calendar;charset=utf-8");
+  } finally {
+    click.mockRestore();
+    URL.createObjectURL = originalCreate;
+    URL.revokeObjectURL = originalRevoke;
+  }
 });
 
 test("downloads an ics file and releases its temporary URL", () => {
