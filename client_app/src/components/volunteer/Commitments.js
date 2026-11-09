@@ -6,6 +6,7 @@ import { MobileShiftCard } from './MobileShiftCard';
 import { DesktopShiftRow } from './DesktopShiftRow';
 import { SubmitResultsMessage } from './SubmitResultsMessage';
 import VolunteerShiftCalendar from './VolunteerShiftCalendar';
+import ExportAllShiftsButton from './ExportAllShiftsButton';
 import Loading from '../Loading';
 import '../../styles/volunteer/CommitmentsViewToggle.css';
 
@@ -182,6 +183,7 @@ function Commitments(){
           </button>
         </div>
       </div>
+      <ExportAllShiftsButton shifts={shifts} />
       {viewMode === VIEW_CALENDAR && (
         <VolunteerShiftCalendar shifts={shifts} />
       )}

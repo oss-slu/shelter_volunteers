@@ -130,7 +130,9 @@ const ViewShifts = ({ shiftDetailsData }) => {
     }
   };
 
-  const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {
+  // Sort a copy by timestamp before grouping so dates and times stay chronological.
+  const sortedShifts = [...shiftsData].sort((a, b) => a.shift_start - b.shift_start);
+  const shiftsGroupedByDate = sortedShifts.reduce((acc, shift) => {
     const timestamp = formatDate(shift.shift_start);
     if (!acc[timestamp]) {
       acc[timestamp] = [];
@@ -139,12 +141,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
     return acc;
   }, {});
 
-  const sortedDates = Object.keys(shiftsGroupedByDate).sort((a, b) => a < b);
-
-  // Sort shifts within each date by shift_start in ascending order
-  Object.keys(shiftsGroupedByDate).forEach((date) => {
-    shiftsGroupedByDate[date].sort((a, b) => a.shift_start - b.shift_start);
-  });
+  const sortedDates = Object.keys(shiftsGroupedByDate);
 
   return (
     <div className="upcoming-requests">

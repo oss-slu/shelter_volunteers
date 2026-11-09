@@ -38,7 +38,14 @@ export const hasValidShiftTimes = (shift) =>
 export const CALENDAR_EXPORT_NOTICE =
   "One-time calendar export. Shift changes or cancellations will not update your calendar automatically.";
 
-export function buildShiftCalendar(shift, now = Date.now()) {
+const calendarHeader = [
+  "BEGIN:VCALENDAR",
+  "VERSION:2.0",
+  "PRODID:-//Volunteer Connect//Shift Export//EN",
+  "CALSCALE:GREGORIAN",
+];
+
+const shiftEventLines = (shift, now) => {
   const id = shift?.service_shift_id || shift?._id;
   if (!hasValidShiftTimes(shift) || !id) {
     throw new Error("This shift has missing or invalid details and cannot be exported.");
@@ -52,11 +59,7 @@ export function buildShiftCalendar(shift, now = Date.now()) {
           .filter(Boolean)
           .join(", ");
   const description = [shift.instructions, CALENDAR_EXPORT_NOTICE].filter(Boolean).join("\n\n");
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Volunteer Connect//Shift Export//EN",
-    "CALSCALE:GREGORIAN",
+  return [
     "BEGIN:VEVENT",
     `UID:shift-${encodeURIComponent(String(id))}@volunteer-connect`,
     `DTSTAMP:${utcTimestamp(now)}`,
@@ -66,17 +69,38 @@ export function buildShiftCalendar(shift, now = Date.now()) {
     ...(location ? [`LOCATION:${escapeText(location)}`] : []),
     `DESCRIPTION:${escapeText(description)}`,
     "END:VEVENT",
-    "END:VCALENDAR",
   ];
+};
+
+const serializeCalendar = (events) => {
+  const lines = [...calendarHeader, ...events.flat(), "END:VCALENDAR"];
   return lines.map(foldLine).join("\r\n") + "\r\n";
+};
+
+export function buildShiftCalendar(shift, now = Date.now()) {
+  return serializeCalendar([shiftEventLines(shift, now)]);
 }
 
-export function downloadShiftCalendar(shift) {
-  const calendar = buildShiftCalendar(shift);
+export const getExportableShifts = (shifts, now = Date.now()) =>
+  (Array.isArray(shifts) ? shifts : []).filter(
+    (shift) =>
+      hasValidShiftTimes(shift) &&
+      Boolean(shift.service_shift_id || shift._id) &&
+      shift.shift_start > now,
+  );
+
+export function buildShiftsCalendar(shifts, now = Date.now()) {
+  const exportable = getExportableShifts(shifts, now);
+  if (!exportable.length) {
+    throw new Error("There are no upcoming shifts to export.");
+  }
+  return serializeCalendar(exportable.map((shift) => shiftEventLines(shift, now)));
+}
+
+function downloadCalendar(calendar, name) {
   const blob = new Blob([calendar], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  const name = (shift.shift_name || "volunteer-shift").replace(/[^a-z0-9_-]+/gi, "-").slice(0, 60);
   link.href = url;
   link.download = `${name}.ics`;
   document.body.appendChild(link);
@@ -87,4 +111,13 @@ export function downloadShiftCalendar(shift) {
     // Allow the browser to begin reading the download before releasing it.
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+}
+
+export function downloadShiftCalendar(shift) {
+  const name = (shift.shift_name || "volunteer-shift").replace(/[^a-z0-9_-]+/gi, "-").slice(0, 60);
+  downloadCalendar(buildShiftCalendar(shift), name);
+}
+
+export function downloadShiftsCalendar(shifts) {
+  downloadCalendar(buildShiftsCalendar(shifts), "upcoming-volunteer-shifts");
 }
