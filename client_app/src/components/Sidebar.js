@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import navigationConfig from "./NavigationConfig";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faHouse, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate, useLocation } from "react-router-dom"; 
-import { useDashboards, useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
+import { faHouse, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useCurrentDashboard, useSidebar } from '../contexts/DashboardContext';
 import { DashboardSelector } from './DashboardSelector';
 import { SidebarButton } from "./SidebarButton";
+
+const isSmallScreen = () => typeof window !== "undefined" && window.innerWidth < 768;
+
 export const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null);
-  const { isSidebarOpen, setIsSidebarOpen } = useSidebar(); 
-  const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
-  const {dashboards} = useDashboards();
+  const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
+  const {currentDashboard} = useCurrentDashboard();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuItems, setMenuItems] = useState([]);
@@ -34,79 +36,65 @@ export const Sidebar = () => {
     setActiveItem(idx >= 0 ? idx : null);
   }, [location.pathname, menuItems, currentDashboard]);
 
-  console.log("Is sidebar open:", isSidebarOpen);
+  const go = (path) => {
+    navigate(path);
+    if (isSmallScreen()) setIsSidebarOpen(false);
+  };
+  const onDashboardHome =
+    currentDashboard && location.pathname.replace(/\/+$/, '') === currentDashboard.path;
+
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Backdrop behind the drawer on small screens (hidden by CSS on desktop) */}
       {isSidebarOpen && (
-        <div 
-          style={{
-            position: 'fixed',
-            inset: '0',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 40,
-            display: window.innerWidth < 768 ? 'block' : 'none'
-          }}
-          onClick={()=>{setIsSidebarOpen(false)}}
-        >
-          <FontAwesomeIcon 
-            icon={faXmark} 
-          />
-        </div>
+        <div
+          className="sidebar-overlay"
+          aria-hidden="true"
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
-      {/* Sidebar */}
-      <div className={isSidebarOpen ? 'sidebar open' : 'sidebar'}>
-        {/* Header */}
+      <aside className={isSidebarOpen ? 'sidebar open' : 'sidebar'} aria-label="Dashboard navigation">
         {isSidebarOpen && (
-        <div className="header no-border">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="sidebar-top">
             <SidebarButton />
-            <DashboardSelector
-              dashboards={dashboards}
-              currentDashboard={currentDashboard}
-              onSelectDashboard={onSelectDashboard}
-            />
+            <DashboardSelector />
           </div>
-        </div>)}
-        {/* Navigation */}
+        )}
         {isSidebarOpen && (
-          <nav style={{ flex: '1', padding: '1rem' }}>
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="nav-button"
-            >
+          <nav className="sidebar-nav">
+            <button type="button" className="nav-button" onClick={() => go('/')}>
               <FontAwesomeIcon icon={faHouse} />
               All Dashboards
             </button>
             {currentDashboard && (
               <button
                 type="button"
-                onClick={() => navigate(currentDashboard.path)}
-                className={`nav-button ${location.pathname.replace(/\/+$/, '') === currentDashboard.path ? 'active' : ''}`}
+                className={`nav-button ${onDashboardHome ? 'active' : ''}`}
+                aria-current={onDashboardHome ? 'page' : undefined}
+                onClick={() => go(currentDashboard.path)}
               >
                 <FontAwesomeIcon icon={faTableColumns} />
                 Dashboard Home
               </button>
             )}
             <hr className="nav-divider" />
-            {menuItems.map((item, index) => {
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => {
-                    setActiveItem(index);
-                    navigate(item.path.replace(":ID", currentDashboard.id || ""));
-                  }}
-                  className={`nav-button ${activeItem === index ? 'active' : ''}`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>)}
-      </div>
+            {menuItems.map((item, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => {
+                  setActiveItem(index);
+                  go(item.path.replace(":ID", currentDashboard.id || ""));
+                }}
+                className={`nav-button ${activeItem === index ? 'active' : ''}`}
+                aria-current={activeItem === index ? 'page' : undefined}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        )}
+      </aside>
     </>
   );
 };

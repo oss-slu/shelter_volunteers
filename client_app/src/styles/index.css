@@ -1,31 +1,137 @@
+@import "./BaseStyles.css";
+@import "./message.css";
+@import "./Login.css";
+@import "./Dashboard.css";
+@import "./Navigation.css";
+@import "./Menu.css";
+@import "./volunteer/VolunteerShiftSignup.css";
+@import "./Modal.css";
+@import "./Calendar.css";
+
 :root {
-  --main-background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #faf0ff 100%);
-  --background-color: white;
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 0.9375rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --lh-tight: 1.25;
+  --lh-base: 1.55;
+
+  /* Palette (matches the landing page) */
+  --brand: #1769aa;
+  --brand-strong: #125a92;
+  --brand-soft: #eaf3fb;
+  --text-strong: #18395f;
+  --text: #2b3a4f;
+  --text-muted: #5f6f86;
+  --line: #e1e9f1;
+  --surface: #ffffff;
+  --surface-muted: #f5f8fc;
+
+  /* Layout */
+  --header-height: 4rem;
+  --sidebar-width: 16rem;
+  --page-gutter: clamp(1rem, 3vw, 2.5rem);
+  --page-max-width: 1200px;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+
+  /* Legacy tokens, kept for existing component styles */
+  --main-background: linear-gradient(160deg, #f6f9fd 0%, #ffffff 55%, #f7f8fd 100%);
+  --background-color: var(--surface);
   --background-color-success: #f1f8f1;
   --background-color-failure: #f5c8cb;
   --background-color-accent: #f3f5f9;
-  --success-color: #45a049; 
-  --failure-color: #be0c0c; 
-  --primary-color: #0066b2; /* Font color */
-  --secondary-color: #374151;
-  --accent-color: #6b7280; /* Font color */
-  --active-color: #dbe5fa;
-  --active-color-hover: #eff6ff;
-  --border-color: 2px solid #e5e7eb;
-  --box-shadow-color: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --box-shadow-active-color: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  --success-color: #2f8f5b;
+  --failure-color: #be0c0c;
+  --primary-color: var(--brand);
+  --secondary-color: var(--text);
+  --accent-color: var(--text-muted);
+  --active-color: var(--brand-soft);
+  --active-color-hover: #f3f8fd;
+  --border-color: 1px solid var(--line);
+  --box-shadow-color: 0 1px 2px rgba(24, 57, 95, 0.06), 0 4px 12px rgba(24, 57, 95, 0.05);
+  --box-shadow-active-color: 0 10px 28px rgba(24, 57, 95, 0.12);
+
+  /* Bootstrap picks these up for its components */
+  --bs-body-font-family: var(--font-sans);
+  --bs-body-color: var(--text);
+  --bs-font-sans-serif: var(--font-sans);
+}
+
+html {
+  font-size: 16px;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: var(--font-mono);
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* Headings: one consistent scale; components can still override. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  color: var(--text-strong);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  padding: 0;
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: var(--fs-xl);
+  font-weight: 650;
+}
+
+h3 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
 }
 
 table {
@@ -35,15 +141,21 @@ table {
 
 td,
 th {
-  padding: 8px;
+  padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--line);
 }
+
 th {
-  background-color: #f2f2f2;
+  background-color: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 600;
 }
+
 tr:hover {
-  background-color: #f5f5f5;
+  background-color: #f8fafd;
 }
 
 .success {
@@ -55,24 +167,13 @@ tr:hover {
 }
 
 .info-icon {
-  color: #0066b2;
+  color: var(--brand);
 }
 
 .check-icon {
   color: #4cbb17;
 }
 
-h1 {
-  margin: 0.5rem;
-  padding: 0;
-  font-size: 1.5rem;
-}
-h2 {
-  font-size: 1rem;
-}
-p {
-  font-size: 0.8rem;
-}
 .closebtn {
   background-color: #193b45;
   border-radius: 50%;
@@ -85,38 +186,53 @@ p {
   font-size: 0.5em;
 }
 
-p {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 button {
   background-color: #6b7280;
   color: white;
   border: none;
   padding: 0.5rem;
   cursor: pointer;
+  font-size: inherit;
 }
 
 button:disabled {
   background-color: #8a9da1;
-  color: #e0e0e0;      
+  color: #e0e0e0;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .button-transparent {
   background-color: transparent;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
 
-@import "./BaseStyles.css";
-@import "./message.css";
-@import "./Login.css";
-@import "./Dashboard.css";
-@import "./Navigation.css";
-@import "./Menu.css";
-@import "./volunteer/VolunteerShiftSignup.css";
-@import "./Modal.css";
-@import "./Calendar.css";
+/* Bootstrap primary buttons use the brand blue. */
+.btn-primary {
+  --bs-btn-bg: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: var(--brand-strong);
+  --bs-btn-hover-border-color: var(--brand-strong);
+  --bs-btn-active-bg: var(--brand-strong);
+  --bs-btn-active-border-color: var(--brand-strong);
+  --bs-btn-disabled-bg: var(--brand);
+  --bs-btn-disabled-border-color: var(--brand);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: var(--brand);
+  --bs-btn-hover-border-color: var(--brand);
+  --bs-btn-active-bg: var(--brand-strong);
+  --bs-btn-active-border-color: var(--brand-strong);
+}
+
+.btn {
+  --bs-btn-font-weight: 500;
+}

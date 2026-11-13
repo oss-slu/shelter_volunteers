@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("view");
   return (
     <div className="admin-dashboard">
-      <h1>System Admin Dashboard</h1>
+      <h1 className="page-title">System Admin Dashboard</h1>
       <div className="tab-navigation">
         <button
           className={`tab-button ${activeTab === "view" ? "active" : ""}`}

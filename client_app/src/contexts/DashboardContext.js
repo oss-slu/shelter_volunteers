@@ -7,7 +7,10 @@ import { useAuth } from './AuthContext';
 export const DashboardProvider = ({ children }) => {
   const [dashboards, setDashboards] = useState([]);
   const [currentDashboard, setCurrentDashboard] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // Start collapsed on phones, where the sidebar is an overlay drawer.
+  const [isSidebarOpen, setIsSidebarOpen] = useState(
+    () => typeof window === 'undefined' || window.innerWidth >= 768
+  );
   const [loadingDashboards, setLoadingDashboards] = useState(true);
   const {isAuthenticated} = useAuth();
   const navigate = useNavigate();

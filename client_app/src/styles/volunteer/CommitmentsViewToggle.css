@@ -22,14 +22,14 @@
   font-weight: 500;
   border: none;
   background: transparent;
-  color: var(--accent-color, #555);
+  color: var(--accent-color, var(--text-muted));
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
 
 .commitments-view-btn:hover {
   background: #eee;
-  color: #333;
+  color: var(--text);
 }
 
 .commitments-view-btn.active {

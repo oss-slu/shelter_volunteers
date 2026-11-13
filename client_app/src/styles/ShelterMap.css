@@ -1,0 +1,98 @@
+/* ShelterMap.css — landing page shelter map */
+
+.landing-map {
+  padding: 4.5rem 0 5rem;
+  border-top: 1px solid rgba(32, 73, 124, 0.1);
+  scroll-margin-top: 2rem;
+}
+
+.landing-map-heading {
+  max-width: 620px;
+  margin-bottom: 2.25rem;
+}
+
+.landing-map-heading .landing-eyebrow {
+  margin-bottom: 0.7rem !important;
+}
+
+.landing-map-heading h2 {
+  margin: 0;
+  color: #18395f;
+  font-size: clamp(1.8rem, 3.2vw, 2.65rem);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+}
+
+.landing-map-heading > p:last-child {
+  margin: 0.8rem 0 0 !important;
+  color: #718198;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.landing-map-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(205, 220, 237, 0.9);
+  border-radius: 1.35rem;
+  background: #eef4fa;
+  box-shadow: 0 22px 65px rgba(33, 72, 117, 0.11);
+}
+
+.landing-map-canvas {
+  width: 100%;
+  height: clamp(320px, 52vh, 520px);
+  /* Keep Leaflet panes below the sticky nav and modals. */
+  z-index: 0;
+}
+
+.landing-map-caption {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 !important;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #e1e9f1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 6px 18px rgba(33, 72, 117, 0.12);
+  color: #18395f;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.landing-map-popup-name {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #18395f;
+  font-size: 0.95rem;
+}
+
+.landing-map-popup-line {
+  display: block;
+  color: #4d5f78;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .landing-map {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .landing-map-canvas {
+    height: 360px;
+  }
+
+  .landing-map-caption {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    font-size: 0.8rem;
+  }
+}

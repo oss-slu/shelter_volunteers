@@ -1,0 +1,232 @@
+/* Volunteer dashboard: "Shelters near you" panel (NearbySheltersMap) */
+
+.nearby-map {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--box-shadow-color);
+}
+
+.nearby-map-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem 0.875rem;
+}
+
+.nearby-map-title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.nearby-map-subtitle {
+  margin-top: 0.125rem !important;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.nearby-map-locate {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nearby-map-geo {
+  margin: 0 1.25rem 0.75rem !important;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.nearby-map-frame {
+  position: relative;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #eef4fa;
+}
+
+.nearby-map-canvas {
+  width: 100%;
+  height: 340px;
+  /* Keep Leaflet panes under the sticky header and dropdowns. */
+  z-index: 0;
+}
+
+.nearby-map-legend {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 500;
+  display: flex;
+  gap: 0.875rem;
+  margin: 0;
+  padding: 0.375rem 0.75rem;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.nearby-map-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.nearby-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.nearby-dot--open { background: var(--brand); }
+.nearby-dot--closed { background: #94a3b8; }
+.nearby-dot--you { background: #16a34a; }
+
+/* Popups */
+.nearby-popup-name {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--text-strong);
+  font-size: 0.95rem;
+}
+
+.nearby-popup-line {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.nearby-popup-meta {
+  display: block;
+  margin-top: 0.375rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.nearby-popup-link {
+  display: inline-block;
+  margin-top: 0.375rem;
+  color: var(--brand);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Nearest list */
+.nearby-list {
+  padding: 0.875rem 1.25rem 1rem;
+}
+
+.nearby-list-title {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nearby-list-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nearby-list-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name distance"
+    "meta distance";
+  align-items: center;
+  column-gap: 0.75rem;
+  margin: 0 -0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.nearby-list-item:hover {
+  background: var(--surface-muted);
+}
+
+.nearby-list-item:hover .nearby-list-name {
+  color: var(--brand);
+}
+
+.nearby-list-name {
+  grid-area: name;
+  overflow: hidden;
+  color: var(--text-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nearby-list-meta {
+  grid-area: meta;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.nearby-list-distance {
+  grid-area: distance;
+  color: var(--text-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Volunteer dashboard home: options + map side by side ---------- */
+.volunteer-home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.volunteer-home .dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.volunteer-home-map {
+  position: sticky;
+  top: calc(var(--header-height) + 1.25rem);
+}
+
+@media (max-width: 1199px) {
+  .volunteer-home {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .volunteer-home-map {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .volunteer-home .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nearby-map-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nearby-map-canvas {
+    height: 280px;
+  }
+}

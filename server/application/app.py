@@ -69,19 +69,24 @@ def create_app(config_name="development"):
     # Configure logging so reminder scheduler activity appears in the terminal
     _configure_reminder_logging()
 
-    # Start automated shift reminder scheduler (runs every 10 min)
-    start_reminder_scheduler(interval_minutes=10)
+    if os.environ.get("VERCEL"):
+        app.logger.info("Reminder scheduler disabled on Vercel")
+    else:
+        start_reminder_scheduler(interval_minutes=10)
 
-    # Serve static files
-    react_build_dir = os.path.abspath("../build/")
+    if not os.environ.get("VERCEL"):
+        react_build_dir = os.path.abspath("../build/")
 
-    @app.route("/", defaults={"path": ""})
-    @app.route("/<path:path>")
-    def serve(path):
-        if path != "" and os.path.exists(os.path.join(react_build_dir, path)):
-            return send_from_directory(react_build_dir, path)
-        # If no static file is found, return index.html
-        # to let React handle routing
-        return send_from_directory(react_build_dir, "index.html")
+        @app.route("/", defaults={"path": ""})
+        @app.route("/<path:path>")
+        def serve(path):
+            if path != "":
+                requested_path = os.path.abspath(os.path.join(react_build_dir, path))
+                if (
+                    os.path.commonpath([react_build_dir, requested_path]) == react_build_dir
+                    and os.path.isfile(requested_path)
+                ):
+                    return send_from_directory(react_build_dir, path)
+            return send_from_directory(react_build_dir, "index.html")
 
     return app

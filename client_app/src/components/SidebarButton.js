@@ -6,8 +6,11 @@ export const SidebarButton = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebar();
   return (
     <button
+      type="button"
       onClick={() => {setIsSidebarOpen(!isSidebarOpen)}}
-      className='button button-transparent'
+      className="icon-button"
+      aria-label={isSidebarOpen ? "Collapse navigation" : "Expand navigation"}
+      aria-expanded={isSidebarOpen}
     >
       <FontAwesomeIcon icon={faBars} />
     </button>

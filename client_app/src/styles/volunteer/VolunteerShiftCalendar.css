@@ -54,7 +54,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.9rem;
-  color: var(--accent-color, #555);
+  color: var(--accent-color, var(--text-muted));
 }
 
 .volunteer-calendar-legend .legend-dot {

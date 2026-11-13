@@ -4,7 +4,7 @@
   
   .shelter-list-container h2 {
     margin-bottom: 20px;
-    color: #333;
+    color: var(--text);
   }
   
   .loading, .error-message, .no-shelters {
