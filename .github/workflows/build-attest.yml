@@ -23,7 +23,7 @@ jobs:
     name: Client SLSA L3 Build & Attestation
     uses: oss-slu/oss_cicd_automation/.github/workflows/slsa-build-attest.yml@main
     with:
-      image-name: ghcr.io/oss-slu/shelter_volunteers/client
+      image-name: ghcr.io/oss-slu/shelter-volunteers-client
       context: .
       file: docker_files/client_app/Dockerfile.prod
       build-args: |
@@ -37,8 +37,8 @@ jobs:
     name: Server SLSA L3 Build & Attestation
     uses: oss-slu/oss_cicd_automation/.github/workflows/slsa-build-attest.yml@main
     with:
-      image-name: ghcr.io/oss-slu/shelter_volunteers/server
-      context: .
+      image-name: ghcr.io/oss-slu/shelter-volunteers-server
+      context: ./server
       file: docker_files/server/Dockerfile.prod
       sbom-artifact-name: shelter-volunteers-server-sbom
       push: true
