@@ -7,6 +7,7 @@ import {
   timeStringToMillis,
 } from "../../formatting/FormatDateTime";
 import { dedupeRepeatableShifts } from "../../utils/repeatableShiftDeduplication";
+import "../../styles/shelter/RepeatableShiftsScreen.css";
 
 const MAX_INSTRUCTIONS_LENGTH = 500;
 
@@ -97,48 +98,75 @@ const RepeatableShiftsScreen = () => {
     setPendingShifts((shifts) => shifts.filter((_, i) => i !== index));
   };
 
+  const shelterLabel = loadingShelterName ? "this shelter" : shelterName || "this shelter";
+  const hasShifts = pendingShifts.length > 0;
+
   return (
-    <div className="d-flex flex-column align-items-center gap-2">
-      <div>
-        <h1 className="display-4">Repeatable Shifts</h1>
-        <h2>
-          Shelter: {loadingShelterName ? "Loading Shelter Name" : shelterName}
-        </h2>
-      </div>
+    <div className="repeatable-shifts-screen">
+      <header className="repeatable-shifts-header">
+        <h1 className="page-title">Repeatable Shifts</h1>
+        <p className="repeatable-shifts-subtitle">
+          The daily schedule used every time <strong>{shelterLabel}</strong> opens.
+        </p>
+      </header>
       {errorMessages.length > 0 && (
-        <ul className="w-100 text-danger bg-danger-subtle text-start">
-          {errorMessages.map((message, index) => (
-            <li key={index}>{message}</li>
-          ))}
-        </ul>
+        <div className="alert alert-danger repeatable-shifts-errors" role="alert">
+          <ul className="mb-0">
+            {errorMessages.map((message, index) => (
+              <li key={index}>{message}</li>
+            ))}
+          </ul>
+        </div>
       )}
-      <div className="card">
-        <h1>Projected Repeatable Shifts</h1>
+      <section className="repeatable-shifts-card" aria-labelledby="repeatable-shifts-title">
+        <div className="repeatable-shifts-card-header">
+          <div>
+            <h2 id="repeatable-shifts-title" className="repeatable-shifts-card-title">
+              Projected Repeatable Shifts
+            </h2>
+            {!loadingShifts && (
+              <p className="repeatable-shifts-count">
+                {pendingShifts.length} {pendingShifts.length === 1 ? "shift" : "shifts"} per day
+              </p>
+            )}
+          </div>
+          <button
+            className="btn btn-outline-primary"
+            type="button"
+            onClick={addNewShift}
+            disabled={loadingShifts}>
+            + Add shift
+          </button>
+        </div>
         {loadingShifts ? (
-          <div>Loading shifts...</div>
+          <p className="repeatable-shifts-empty">Loading shifts…</p>
+        ) : !hasShifts ? (
+          <p className="repeatable-shifts-empty">
+            No repeatable shifts yet. Add the first shift to build your daily schedule.
+          </p>
         ) : (
-          <div className="d-flex flex-column py-4">
-            <table className="table table-striped">
+          <div className="repeatable-shifts-table-wrap">
+            <table className="table repeatable-shifts-table">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>Shift Name</th>
-                  <th>Start Time</th>
-                  <th>Duration (hours)</th>
-                  <th>End Time</th>
-                  <th>Required Volunteers</th>
-                  <th>Max Volunteers</th>
-                  <th style={{ minWidth: "280px" }}>Shelter Instructions</th>
-                  <th>Recurring Instructions</th>
-                  <th>Actions</th>
+                  <th className="col-index">#</th>
+                  <th>Shift name</th>
+                  <th>Start time</th>
+                  <th>Duration (h)</th>
+                  <th>End time</th>
+                  <th>Required</th>
+                  <th>Max</th>
+                  <th className="col-instructions">Shelter instructions</th>
+                  <th className="text-center">Recurring</th>
+                  <th className="text-end">
+                    <span className="visually-hidden">Actions</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {pendingShifts.map((shift, idx) => (
-                  <tr key={shift.id || `new-${idx}`} className="align-top">
-                    <td>
-                      <div className="text-center align-content-center">{idx + 1}</div>
-                    </td>
+                  <tr key={shift.id || `new-${idx}`}>
+                    <td className="col-index">{idx + 1}</td>
                     <td>
                       <input
                         type="text"
@@ -164,6 +192,7 @@ const RepeatableShiftsScreen = () => {
                         className="form-control"
                         step="0.01"
                         value={(shift.shiftEnd - shift.shiftStart) / 3600000}
+                        aria-label={`Duration in hours (shift ${idx + 1})`}
                         disabled
                       />
                     </td>
@@ -210,48 +239,49 @@ const RepeatableShiftsScreen = () => {
                         placeholder="Enter entry instructions, items to bring, parking info, etc."
                         onChange={(e) => updateShift(idx, "instructions", e.target.value)}
                       />
-                      <small className="text-muted">
+                      <small className="repeatable-shifts-char-count">
                         {(shift.instructions || "").trim().length}/{MAX_INSTRUCTIONS_LENGTH}
                       </small>
                     </td>
                     <td className="text-center">
                       <input
                         type="checkbox"
-                        className="form-check-input"
+                        className="form-check-input repeatable-shifts-checkbox"
                         checked={Boolean(shift.instructionsRecurring)}
                         onChange={(e) =>
                           updateShift(idx, "instructionsRecurring", e.target.checked)
                         }
+                        aria-label={`Copy instructions to every generated shift (shift ${idx + 1})`}
                         title="When enabled, instructions are copied to every generated shift."
                       />
                     </td>
-                    <td>
-                      <div>
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          onClick={() => deleteShift(idx)}>
-                          Delete
-                        </button>
-                      </div>
+                    <td className="text-end">
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => deleteShift(idx)}>
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <button className="btn btn-secondary w-25" type="button" onClick={addNewShift}>
-              Add new shift
-            </button>
           </div>
         )}
-      </div>
-      <button
-        type="button"
-        className="btn btn-primary w-100 btn-lg"
-        disabled={loadingShifts}
-        onClick={() => submitShifts()}>
-        Submit Schedule
-      </button>
+        <div className="repeatable-shifts-card-footer">
+          <p className="repeatable-shifts-footer-note">
+            Edits are not saved until you submit the schedule.
+          </p>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={loadingShifts}
+            onClick={() => submitShifts()}>
+            Submit schedule
+          </button>
+        </div>
+      </section>
     </div>
   );
 };

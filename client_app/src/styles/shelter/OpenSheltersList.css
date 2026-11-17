@@ -25,7 +25,7 @@
 
 .shelter-open-list__results-title {
   margin: 0 0 0.5rem;
-  color: #0f172a;
+  color: var(--text-strong);
 }
 
 .shelter-open-list__results--list {
@@ -58,7 +58,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-strong);
 }
 
 .shelter-open-list__group-count {
@@ -82,12 +82,12 @@
 .shelter-open-list__card .shelter-name {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-strong);
   margin-bottom: 0.45rem;
 }
 
 .shelter-open-list__card .shelter-location a {
-  color: #1d4ed8;
+  color: var(--brand-strong);
   text-decoration: none;
   line-height: 1.6;
 }

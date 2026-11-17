@@ -30,7 +30,7 @@
     font-weight: 600;
     font-size: 0.95em;
     margin-bottom: 8px;
-    color: #333;
+    color: var(--text);
   }
   
 .timeInput,
@@ -53,7 +53,7 @@
 .numberInput:focus,
 .instructionsInput:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--brand);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -61,7 +61,7 @@
   margin-top: 6px;
   text-align: right;
   font-size: 0.8em;
-  color: #555;
+  color: var(--text-muted);
 }
   
   .buttonContainer {
@@ -78,7 +78,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #2563eb;
+    background-color: var(--brand);
     color: white;
     font-weight: 600;
     font-size: 0.95em;
@@ -86,7 +86,7 @@
   }
   
   .saveButton:hover {
-    background-color: #1d4ed8;
+    background-color: var(--brand-strong);
   }
   
   .cancelButton {
@@ -95,7 +95,7 @@
     border-radius: 5px;
     cursor: pointer;
     background-color: white;
-    color: #333;
+    color: var(--text);
     font-weight: 600;
     font-size: 0.95em;
     transition: background-color 0.2s;

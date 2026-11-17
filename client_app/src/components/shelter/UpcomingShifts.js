@@ -40,7 +40,7 @@ const UpcomingShifts = () => {
       </div>
     ) : (
       <div className="upcoming-shifts">
-        <h2>Upcoming Shifts</h2>
+        <h1 className="page-title">Upcoming Shifts</h1>
         <ViewShifts shiftDetailsData={shiftDetailsData} />
       </div>
     )

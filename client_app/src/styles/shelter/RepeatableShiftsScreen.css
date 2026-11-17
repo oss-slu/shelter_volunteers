@@ -1,0 +1,181 @@
+/* Daily Schedule screen (RepeatableShiftsScreen) */
+
+.repeatable-shifts-header {
+  margin-bottom: 1.5rem;
+}
+
+.repeatable-shifts-subtitle {
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}
+
+.repeatable-shifts-subtitle strong {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.repeatable-shifts-errors {
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+}
+
+/* Card */
+.repeatable-shifts-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--box-shadow-color);
+  overflow: hidden;
+}
+
+.repeatable-shifts-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.repeatable-shifts-card-title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.repeatable-shifts-count {
+  margin-top: 0.125rem !important;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.repeatable-shifts-empty {
+  padding: 2.5rem 1.5rem !important;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Table: same 1.5rem inset as the card header and footer */
+.repeatable-shifts-table-wrap {
+  /* relative: keeps absolutely positioned children (e.g. .visually-hidden)
+     inside the scroll box instead of widening the whole page. */
+  position: relative;
+  overflow-x: auto;
+}
+
+.repeatable-shifts-card-header .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.repeatable-shifts-table {
+  margin: 0;
+  min-width: 960px;
+}
+
+.repeatable-shifts-table th,
+.repeatable-shifts-table td {
+  padding: 0.75rem 0.5rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.repeatable-shifts-table th {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  vertical-align: bottom;
+  white-space: nowrap;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.repeatable-shifts-table th:first-child,
+.repeatable-shifts-table td:first-child {
+  padding-left: 1.5rem;
+}
+
+.repeatable-shifts-table th:last-child,
+.repeatable-shifts-table td:last-child {
+  padding-right: 1.5rem;
+}
+
+.repeatable-shifts-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.repeatable-shifts-table tbody tr:hover {
+  background: transparent;
+}
+
+.repeatable-shifts-table .col-index {
+  width: 3rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Text cells line up with the text inside the neighbouring inputs. */
+.repeatable-shifts-table td.col-index {
+  padding-top: calc(0.75rem + 0.45rem);
+}
+
+.repeatable-shifts-table .col-instructions {
+  min-width: 260px;
+}
+
+.repeatable-shifts-table .form-control {
+  font-size: var(--fs-sm);
+}
+
+.repeatable-shifts-checkbox {
+  margin-top: 0.6rem;
+}
+
+.repeatable-shifts-table td:last-child .btn {
+  margin-top: 0.15rem;
+}
+
+.repeatable-shifts-char-count {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+
+/* Footer */
+.repeatable-shifts-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface-muted);
+}
+
+.repeatable-shifts-footer-note {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 640px) {
+  .repeatable-shifts-card-header,
+  .repeatable-shifts-card-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .repeatable-shifts-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .repeatable-shifts-table th:first-child,
+  .repeatable-shifts-table td:first-child {
+    padding-left: 1rem;
+  }
+}

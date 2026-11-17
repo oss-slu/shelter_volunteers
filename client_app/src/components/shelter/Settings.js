@@ -8,7 +8,7 @@ const Settings = () => {
 
   return (
     <div className="settings-page">
-      <h2>Settings</h2>
+      <h1 className="page-title">Settings</h1>
       <AddUserForm shelterId={shelterId} />
       {/* Add link to define repeatable shifts */}
       <Link to={`/shelter-dashboard/${shelterId}/repeatable-shifts`}>
