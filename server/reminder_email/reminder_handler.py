@@ -5,7 +5,6 @@ Connects the reminder engine to actual email delivery. Fetches shelter
 and volunteer info, renders templates, and sends via SendGrid.
 """
 
-import html as html_module
 import logging
 import os
 from datetime import datetime, timezone
@@ -16,6 +15,8 @@ try:
 except ImportError:  # Python < 3.9
     from backports.zoneinfo import ZoneInfo
 
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
 from domains.service_shift import ServiceShift
 from reminder_email.email_service import send_email
 from repository.mongo.shelter import ShelterRepo
@@ -25,8 +26,11 @@ from use_cases.user_info.get_user_info_by_email import get_user_info_by_email
 
 logger = logging.getLogger(__name__)
 
-# Template directory relative to this file
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
+_TEMPLATES = Environment(
+    loader=FileSystemLoader(Path(__file__).parent / "templates"),
+    autoescape=select_autoescape(),
+    keep_trailing_newline=True,
+)
 
 # Subjects per reminder type
 SUBJECT_24H = "Reminder: Upcoming Volunteer Shift Tomorrow"
@@ -76,13 +80,6 @@ def _duration_hours(shift: ServiceShift) -> str:
     return f"{int(hrs)}h" if hrs == int(hrs) else f"{hrs:.1f}h"
 
 
-def _load_template(name: str) -> str:
-    """Load HTML template file."""
-    path = _TEMPLATES_DIR / name
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
 def _get_volunteer_name(volunteer_id: str, user_info_repo: UserInfoRepository) -> str:
     """Get display name for volunteer; fallback to 'Volunteer'."""
     user = get_user_info_by_email(volunteer_id, user_info_repo)
@@ -109,6 +106,22 @@ def _get_shift_instructions(shift: ServiceShift) -> str:
     return instr.strip()
 
 
+def render_reminder_html(
+    reminder_type: str, shift: ServiceShift, volunteer_name: str, shelter_name: str
+) -> str:
+    """Render the reminder for a shift and its volunteer and shelter display names."""
+    is_day_before = reminder_type == "reminder_24h"
+    template = _TEMPLATES.get_template("reminder_24h.html" if is_day_before else "reminder_2h.html")
+    return template.render(
+        volunteer_name=volunteer_name,
+        shelter_name=shelter_name,
+        shift_date=_format_date(shift.shift_start),
+        shift_time=_format_time(shift.shift_start),
+        duration=_duration_hours(shift) if is_day_before else "",
+        instructions=_get_shift_instructions(shift) if is_day_before else "",
+    )
+
+
 def send_reminder_email(
     shift_id: str,
     volunteer_id: str,
@@ -132,42 +145,11 @@ def send_reminder_email(
         RuntimeError: If email send fails (caller should not update reminder flags).
     """
     logger.debug("Reminder email for shift %s type %s", shift_id, reminder_type)
-    volunteer_name = html_module.escape(_get_volunteer_name(volunteer_id, user_info_repo))
-    shelter_name = html_module.escape(_get_shelter_name(shift.shelter_id, shelter_repo))
-    shift_date = _format_date(shift.shift_start)
-    shift_time = _format_time(shift.shift_start)
-    duration = _duration_hours(shift)
-    raw_instructions = _get_shift_instructions(shift)
-    instructions = html_module.escape(raw_instructions) if raw_instructions else ""
-
-    if reminder_type == "reminder_24h":
-        subject = SUBJECT_24H
-        html_body = _load_template("reminder_24h.html")
-        if instructions:
-            instructions_section = (
-                f'<div class="instructions">'
-                f'<span class="label">Shift Instructions</span>'
-                f'<div class="value" style="margin-top: 8px;">{instructions}</div>'
-                f"</div>"
-            )
-        else:
-            instructions_section = ""
-        html_body = html_body.format(
-            volunteer_name=volunteer_name,
-            shelter_name=shelter_name,
-            shift_date=shift_date,
-            shift_time=shift_time,
-            duration=duration,
-            shift_instructions_section=instructions_section,
-        )
-    else:
-        subject = SUBJECT_2H
-        html_body = _load_template("reminder_2h.html")
-        html_body = html_body.format(
-            volunteer_name=volunteer_name,
-            shelter_name=shelter_name,
-            shift_time=shift_time,
-            shift_date=shift_date,
-        )
-
+    subject = SUBJECT_24H if reminder_type == "reminder_24h" else SUBJECT_2H
+    html_body = render_reminder_html(
+        reminder_type,
+        shift,
+        _get_volunteer_name(volunteer_id, user_info_repo),
+        _get_shelter_name(shift.shelter_id, shelter_repo),
+    )
     send_email(volunteer_id, subject, html_body)
