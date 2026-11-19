@@ -12,7 +12,6 @@ Usage (from server/):
 Optional: second arg is shelter display name (default: Homeless Shelter)
 """
 
-import html as html_module
 import os
 import sys
 from datetime import datetime, timedelta, timezone
@@ -33,7 +32,7 @@ from reminder_email.reminder_handler import (
     _duration_hours,
     _format_date,
     _format_time,
-    _load_template,
+    render_reminder_html,
 )
 
 
@@ -85,32 +84,10 @@ def main():
         instructions="Park in the back lot. Check in at the front desk.",
     )
 
-    volunteer_name = html_module.escape("Alex Rivera")
-    shelter_name = html_module.escape(shelter_display)
     shift_date = _format_date(shift.shift_start)
     shift_time = _format_time(shift.shift_start)
     duration = _duration_hours(shift)
-    raw = (shift.instructions or "").strip()
-    instructions = html_module.escape(raw) if raw else ""
-    if instructions:
-        instructions_section = (
-            f'<div class="instructions">'
-            f'<span class="label">Shift Instructions</span>'
-            f'<div class="value" style="margin-top: 8px;">{instructions}</div>'
-            f"</div>"
-        )
-    else:
-        instructions_section = ""
-
-    html_body = _load_template("reminder_24h.html")
-    html_body = html_body.format(
-        volunteer_name=volunteer_name,
-        shelter_name=shelter_name,
-        shift_date=shift_date,
-        shift_time=shift_time,
-        duration=duration,
-        shift_instructions_section=instructions_section,
-    )
+    html_body = render_reminder_html("reminder_24h", shift, "Alex Rivera", shelter_display)
 
     send_email(recipient, SUBJECT_24H, html_body)
     print(f"Sent demo 24h reminder to {recipient}")
