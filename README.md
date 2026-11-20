@@ -6,6 +6,29 @@ This application is a work in progress. It uses Flask server with a React JS cli
 
 Homeless shelters rely on volunteers' help. When inclement weather strikes, homeless shelters get filled with people that need a place to stay, and volunteers' help becomes even more important. There are many people willing to volunteer, but knowing which shelter lacks help is a challenge. The purpose of this application is to simplify the process of scheduling work shifts for volunteers, and to give homeless shelters visibility into their upcoming staffing. The application allows volunteers to select shelters and times when they want to work, see which shelters (and which times) urgently need help, and cancel/reschedule their shifts.
 
+## Tech Stack
+
+- **Client** (`client_app/`): React 18 (Create React App), React Router, Material UI and React Bootstrap, Axios, and Google sign-in with `@react-oauth/google`. Tests run with Jest and React Testing Library, and the code is checked with ESLint and Prettier.
+- **Server** (`server/`): Python with Flask, served by Gunicorn in the production image. It uses PyMongo for MongoDB, APScheduler for scheduled jobs, PyJWT for tokens, Google auth libraries for Google sign-in, and SendGrid for reminder emails. Tests run with pytest and the code is linted with pylint.
+- **Database**: MongoDB (a MongoDB Atlas cluster, or the `mongo` image in `docker-compose.yml`).
+- **Deployment**: Docker (`docker-compose.yml` for development, `docker-compose.prod.yml` for the published images) with a Caddy reverse proxy (`Caddyfile`) in front of the client and the server in production.
+
+## Project Structure
+
+- `client_app/`: the React client. `src/` holds the app (`App.js`), `api/`, `authentication/`, `components/`, `contexts/`, `formatting/`, `styles/` and `utils/`.
+- `server/`: the Flask API.
+  - `application/`: the Flask app (`app.py`, `config.py`) and the REST endpoints in `application/rest/`.
+  - `use_cases/`: the operations the API performs (shifts, shelters, service commitments, waitlist, reminders, authorization and so on).
+  - `domains/`: the domain objects (volunteers, shelters, work shifts, service commitments and so on).
+  - `request/` and `serializers/`: the request objects (valid and invalid) that use cases take, and the JSON encoders that serialize domain objects.
+  - `repository/`: data access, with a MongoDB repository (`mongo/`, `mongorepo.py`) and an in-memory one (`memrepo.py`).
+  - `scheduler/` and `reminder_email/`: the reminder scheduler and the emails it sends.
+  - `authentication/`, `cli/` and `scripts/`: sign-in and tokens, the admin command line (`admin_cli`) and helper scripts.
+  - `tests/`: pytest tests, in subfolders such as `use_cases/`, `rest/`, `repositories/`, `domain/` and `reminder_email/`.
+- `docs/`: documentation, such as `SYSTEM_DESIGN.md` and the MongoDB Atlas setup guide.
+- `wireframes/`: wireframes of the screens, one subfolder per feature.
+- `docker_files/`: the Dockerfiles for the client, the server and the database, and the sample data.
+
 ## Getting Started
 
 The first time you want to run this code, you will need to:
