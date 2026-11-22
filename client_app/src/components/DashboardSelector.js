@@ -6,7 +6,6 @@ export const DashboardSelector = () => {
   const {currentDashboard, onSelectDashboard} = useCurrentDashboard();
   const {dashboards} = useDashboards();
   const [isOpen, setIsOpen] = useState(false);
-  console.log("DashboardSelector rendered with dashboards:", dashboards);
   if (dashboards.length < 1) return null;
   
   return (
