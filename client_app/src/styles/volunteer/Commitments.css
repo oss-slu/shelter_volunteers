@@ -1,0 +1,385 @@
+.commitments-page {
+  box-sizing: border-box;
+  width: min(100%, 1200px);
+  margin: 0 auto;
+  padding: 0.5rem 0 4rem;
+  color: #173247;
+  text-align: left;
+}
+
+.commitments-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  overflow: hidden;
+  min-height: 190px;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  border-radius: 22px;
+  background: linear-gradient(115deg, #123956 0%, #07566c 58%, #168481 100%);
+  box-shadow: 0 16px 32px rgba(18, 57, 86, 0.16);
+  color: #fff;
+}
+
+.commitments-hero::after {
+  content: "";
+  position: absolute;
+  right: -5rem;
+  top: -9rem;
+  width: 25rem;
+  height: 25rem;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4rem rgba(255, 255, 255, 0.035),
+    0 0 0 8rem rgba(255, 255, 255, 0.025);
+  pointer-events: none;
+}
+
+.commitments-hero-copy,
+.commitments-hero-icon {
+  position: relative;
+  z-index: 1;
+}
+
+.commitments-eyebrow {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  color: #bceae6;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.commitments-hero h1 {
+  margin: 0 0 0.65rem;
+  color: #fff;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.commitments-hero p {
+  max-width: 32rem;
+  color: #e3f3f6;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.commitments-hero-icon {
+  display: grid;
+  flex: 0 0 6.5rem;
+  width: 6.5rem;
+  height: 6.5rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(8px);
+}
+
+.commitments-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.commitments-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 112px;
+  padding: 1.15rem 1.4rem;
+  border: 1px solid #dce8ec;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(21, 58, 76, 0.05);
+}
+
+.commitments-stat-label {
+  color: #587181;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.commitments-stat strong {
+  margin: 0.45rem 0 0.2rem;
+  color: #113c52;
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.commitments-stat-detail {
+  color: #627783;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.commitments-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.commitments-toolbar h2 {
+  margin: 0 0 0.3rem;
+  color: #15364b;
+  font-size: 1.55rem;
+  letter-spacing: -0.02em;
+}
+
+.commitments-toolbar p {
+  color: #607483;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.commitments-page .commitments-view-toggle {
+  flex: 0 0 auto;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid #d9e5e9;
+  border-radius: 12px;
+  background: #eef4f6;
+}
+
+.commitments-page .commitments-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.5rem 0.9rem;
+  border: 0;
+  border-radius: 9px;
+  color: #4a6272;
+  font-weight: 700;
+}
+
+.commitments-page .commitments-view-btn + .commitments-view-btn {
+  border-left: 0;
+}
+
+.commitments-page .commitments-view-btn.active {
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(27, 68, 87, 0.12);
+  color: #0b6077;
+}
+
+.commitments-page .commitments-view-btn:hover:not(.active) {
+  background: #dfecef;
+  color: #123c50;
+}
+
+.commitments-page .commitments-view-btn:focus-visible,
+.commitments-page .shift-calendar-export__button:focus-visible,
+.commitments-page .signup-button:focus-visible {
+  outline: 3px solid #f5b43e;
+  outline-offset: 3px;
+}
+
+.commitments-page .shift-calendar-export--all {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid #dce8ec;
+  border-radius: 13px;
+  background: #f5faf9;
+}
+
+.commitments-page .shift-calendar-export__button {
+  border-radius: 9px;
+  background: #176c78;
+}
+
+.commitments-page .shift-calendar-export__button:hover:not(:disabled) {
+  background: #0e5662;
+}
+
+.commitments-page .shift-calendar-export__note {
+  max-width: 45rem;
+  color: #556e78;
+}
+
+.commitments-page .table-container {
+  overflow-x: auto;
+  border: 1px solid #dce8ec;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(21, 58, 76, 0.07);
+}
+
+.commitments-page .shifts-table th {
+  padding: 1rem 1.1rem;
+  background: #eff6f7;
+  color: #47616e;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.commitments-page .shifts-table .table-row td {
+  padding: 1.1rem;
+  border-bottom: 1px solid #e9eff1;
+}
+
+.commitments-page .shifts-table .table-row:last-child td {
+  border-bottom: 0;
+}
+
+.commitments-page .shifts-table .table-row:hover,
+.commitments-page .shifts-table .table-row.selected {
+  background: #eff8f8;
+}
+
+.commitments-page .shifts-table .shelter-name,
+.commitments-page .card-title .shelter-name {
+  color: #173b4e;
+}
+
+.commitments-page .cards-container .dashboard-button {
+  border: 1px solid #dce8ec;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(21, 58, 76, 0.06);
+}
+
+.commitments-page .cards-container .dashboard-button.selected {
+  border-color: #0f7a82;
+  background: #f0faf9;
+}
+
+.commitments-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 3.5rem 1.5rem;
+  border: 1px dashed #bfd2d7;
+  border-radius: 18px;
+  background: #f8fbfb;
+  text-align: center;
+}
+
+.commitments-empty-icon {
+  display: grid;
+  width: 4.25rem;
+  height: 4.25rem;
+  place-items: center;
+  border-radius: 16px;
+  background: #e5f2f2;
+  color: #166d79;
+}
+
+.commitments-empty h2 {
+  margin: 0;
+  color: #173b4e;
+  font-size: 1.35rem;
+}
+
+.commitments-empty p {
+  max-width: 29rem;
+  color: #5d7480;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.commitments-page .commitments-cancel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem max(1.25rem, calc((100vw - 1100px) / 2));
+  border-top: 1px solid #cbdde1;
+  background: #fff;
+  box-shadow: 0 -8px 24px rgba(21, 58, 76, 0.1);
+}
+
+.commitments-page .commitments-cancel-bar .selected-shifts-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.commitments-page .commitments-cancel-bar .signup-section {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.commitments-page .commitments-cancel-bar .signup-button.enabled {
+  width: auto;
+  min-width: 12rem;
+  border-radius: 9px;
+  background: #a23b37;
+  box-shadow: none;
+  font-size: 0.95rem;
+}
+
+.commitments-page .commitments-cancel-bar .signup-button.enabled:hover {
+  background: #872d2a;
+}
+
+@media (max-width: 720px) {
+  .commitments-page {
+    padding-bottom: 3rem;
+  }
+
+  .commitments-hero {
+    min-height: 0;
+    border-radius: 17px;
+  }
+
+  .commitments-hero-icon {
+    display: none;
+  }
+
+  .commitments-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commitments-stat:nth-child(2) {
+    grid-column: span 2;
+    grid-row: 2;
+  }
+
+  .commitments-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .commitments-page .commitments-view-toggle {
+    align-self: flex-start;
+  }
+
+  .commitments-page .commitments-cancel-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .commitments-page .commitments-cancel-bar .signup-button.enabled {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .commitments-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .commitments-stat:nth-child(2) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}

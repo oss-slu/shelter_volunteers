@@ -1,19 +1,21 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { serviceCommitmentAPI } from '../../api/serviceCommitment';
-import { formatDate } from '../../formatting/FormatDateTime';
-import { formatTime } from '../../formatting/FormatDateTime';
-import { MobileShiftCard } from './MobileShiftCard';
-import { DesktopShiftRow } from './DesktopShiftRow';
-import { SubmitResultsMessage } from './SubmitResultsMessage';
-import VolunteerShiftCalendar from './VolunteerShiftCalendar';
-import ExportAllShiftsButton from './ExportAllShiftsButton';
-import Loading from '../Loading';
-import '../../styles/volunteer/CommitmentsViewToggle.css';
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { serviceCommitmentAPI } from "../../api/serviceCommitment";
+import { formatDate } from "../../formatting/FormatDateTime";
+import { formatTime } from "../../formatting/FormatDateTime";
+import { MobileShiftCard } from "./MobileShiftCard";
+import { DesktopShiftRow } from "./DesktopShiftRow";
+import { SubmitResultsMessage } from "./SubmitResultsMessage";
+import VolunteerShiftCalendar from "./VolunteerShiftCalendar";
+import ExportAllShiftsButton from "./ExportAllShiftsButton";
+import Loading from "../Loading";
+import { CalendarDays, List } from "lucide-react";
+import "../../styles/volunteer/CommitmentsViewToggle.css";
+import "../../styles/volunteer/Commitments.css";
 
-const VIEW_LIST = 'list';
-const VIEW_CALENDAR = 'calendar';
+const VIEW_LIST = "list";
+const VIEW_CALENDAR = "calendar";
 
-function Commitments(){
+function Commitments() {
   const [loading, setLoading] = useState(true);
   const [shifts, setShifts] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState(new Set());
@@ -43,13 +45,12 @@ function Commitments(){
       cancelled = true;
     };
   }, [refreshCommitments]);
-  
 
   // Format date and time
   const formatDateTime = (timestamp) => {
     return {
       date: formatDate(timestamp),
-      time: formatTime(timestamp)
+      time: formatTime(timestamp),
     };
   };
 
@@ -81,20 +82,19 @@ function Commitments(){
       for (const commitment_id of selectedShifts) {
         await serviceCommitmentAPI.cancelCommitment(commitment_id);
       }
-      setResultMessage({'text': 'Cancelled successfully', 'success': true});
+      setResultMessage({ text: "Cancelled successfully", success: true });
       setSelectedShifts(new Set());
       await refreshCommitments();
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error cancelling shifts:", error);
       setResultMessage({
-        text: error?.message || 'Could not cancel shift(s). Please try again.',
+        text: error?.message || "Could not cancel shift(s). Please try again.",
         success: false,
       });
     }
   };
 
-// Process shift data for rendering (eliminates duplication)
+  // Process shift data for rendering (eliminates duplication)
   const processShiftData = (shift) => {
     const shelter = shift.shelter;
     const startDate = formatDate(shift.shift_start);
@@ -114,9 +114,9 @@ function Commitments(){
       duration,
       canInteract,
       hasInstructions: instructions.length > 0,
-      instructions
+      instructions,
     };
-  };  
+  };
   const closeModal = () => {
     setResultMessage({});
   };
@@ -124,13 +124,13 @@ function Commitments(){
   // Sort and format selected shifts for display
   const sortedSelectedShifts = useMemo(() => {
     return Array.from(selectedShifts)
-      .map(shiftId => {
-        const shift = shifts.find(s => s._id === shiftId);
+      .map((shiftId) => {
+        const shift = shifts.find((s) => s._id === shiftId);
         return shift;
       })
-      .filter(shift => shift) // Remove any undefined shifts
+      .filter((shift) => shift) // Remove any undefined shifts
       .sort((a, b) => new Date(a.shift_start).getTime() - new Date(b.shift_start).getTime()) // Sort chronologically
-      .map(shift => {
+      .map((shift) => {
         const shelter = shift.shelter;
         const startTime = formatDateTime(shift.shift_start);
         const endTime = formatDateTime(shift.shift_end);
@@ -138,131 +138,183 @@ function Commitments(){
           shift,
           shelter,
           startTime,
-          endTime
+          endTime,
         };
       });
   }, [selectedShifts, shifts]);
+
+  const orderedShifts = useMemo(
+    () =>
+      [...shifts].sort(
+        (a, b) => new Date(a.shift_start).getTime() - new Date(b.shift_start).getTime(),
+      ),
+    [shifts],
+  );
 
   if (loading) {
     return <Loading />;
   }
 
   const hasShifts = shifts.length > 0;
+  const nextShift = orderedShifts[0];
+  const shelterCount = new Set(
+    orderedShifts.map((shift) => shift.shelter_id || shift.shelter?.name).filter(Boolean),
+  ).size;
 
   return (
-    <div className="has-sticky-bottom">
-      <h1 className="title-small">Your Upcoming Shifts</h1>
-      <SubmitResultsMessage
-        resultMessage={resultMessage}
-        closeModal={closeModal}
-      />
-      <div className="description commitments-description">
-        <p className="tagline-small">
-          {hasShifts
-            ? 'Here are your upcoming shifts. You can select shifts to cancel them.'
-            : 'You have no upcoming shifts. Sign up through "Sign Up To Help" or use the calendar to view your schedule.'}
-        </p>
+    <div className="commitments-page has-sticky-bottom">
+      <section className="commitments-hero" aria-labelledby="commitments-title">
+        <div className="commitments-hero-copy">
+          <span className="commitments-eyebrow">YOUR VOLUNTEER SCHEDULE</span>
+          <h1 id="commitments-title">Upcoming shifts</h1>
+          <p>Everything you need to plan your next visit and show up ready to help.</p>
+        </div>
+        <div className="commitments-hero-icon" aria-hidden="true">
+          <CalendarDays size={42} strokeWidth={1.5} />
+        </div>
+      </section>
+      <SubmitResultsMessage resultMessage={resultMessage} closeModal={closeModal} />
+      <div className="commitments-overview" aria-label="Schedule summary">
+        <div className="commitments-stat">
+          <span className="commitments-stat-label">Confirmed shifts</span>
+          <strong>{shifts.length}</strong>
+          <span className="commitments-stat-detail">On your schedule</span>
+        </div>
+        <div className="commitments-stat">
+          <span className="commitments-stat-label">Next shift</span>
+          <strong>{nextShift ? formatDate(nextShift.shift_start) : "—"}</strong>
+          <span className="commitments-stat-detail">
+            {nextShift
+              ? `${formatTime(nextShift.shift_start)} · ${nextShift.shelter?.name || "Shelter"}`
+              : "Nothing scheduled yet"}
+          </span>
+        </div>
+        <div className="commitments-stat">
+          <span className="commitments-stat-label">Shelters</span>
+          <strong>{shelterCount}</strong>
+          <span className="commitments-stat-detail">You are helping</span>
+        </div>
+      </div>
+      <div className="commitments-toolbar">
+        <div className="commitments-toolbar-copy">
+          <h2>Your schedule</h2>
+          <p>
+            {hasShifts
+              ? "Select a shift in list view if you need to cancel it."
+              : "Your confirmed shifts will appear here."}
+          </p>
+        </div>
         <div className="commitments-view-toggle" role="tablist" aria-label="View mode">
           <button
             type="button"
             role="tab"
             aria-selected={viewMode === VIEW_LIST}
-            className={`commitments-view-btn ${viewMode === VIEW_LIST ? 'active' : ''}`}
-            onClick={() => setViewMode(VIEW_LIST)}
-          >
+            className={`commitments-view-btn ${viewMode === VIEW_LIST ? "active" : ""}`}
+            onClick={() => setViewMode(VIEW_LIST)}>
+            <List size={17} aria-hidden="true" />
             List
           </button>
           <button
             type="button"
             role="tab"
             aria-selected={viewMode === VIEW_CALENDAR}
-            className={`commitments-view-btn ${viewMode === VIEW_CALENDAR ? 'active' : ''}`}
-            onClick={() => setViewMode(VIEW_CALENDAR)}
-          >
+            className={`commitments-view-btn ${viewMode === VIEW_CALENDAR ? "active" : ""}`}
+            onClick={() => setViewMode(VIEW_CALENDAR)}>
+            <CalendarDays size={17} aria-hidden="true" />
             Calendar
           </button>
         </div>
       </div>
-      <ExportAllShiftsButton shifts={shifts} />
+      {hasShifts && <ExportAllShiftsButton shifts={shifts} />}
       {viewMode === VIEW_CALENDAR && (
-        <VolunteerShiftCalendar shifts={shifts} />
+        <div id="commitments-calendar-panel" role="tabpanel" aria-label="Calendar view">
+          <VolunteerShiftCalendar shifts={orderedShifts} />
+        </div>
       )}
       {viewMode === VIEW_LIST && (
-        <>
-          {/* Desktop Table View */}
-          <div className="table-container desktop-only">
-            <table className="shifts-table">
-              <thead>
-                <tr className="table-header">
-                  <th>Shelter</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Duration</th>
-                  <th>Shelter Instructions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shifts.map((shift) => (
-                  <DesktopShiftRow
+        <div id="commitments-list-panel" role="tabpanel" aria-label="List view">
+          {!hasShifts && (
+            <div className="commitments-empty">
+              <div className="commitments-empty-icon" aria-hidden="true">
+                <CalendarDays size={32} />
+              </div>
+              <h2>No upcoming shifts yet</h2>
+              <p>Find a shift on Sign Up To Help and your confirmed schedule will show up here.</p>
+            </div>
+          )}
+          {hasShifts && (
+            <>
+              {/* Desktop Table View */}
+              <div className="table-container desktop-only">
+                <table className="shifts-table">
+                  <thead>
+                    <tr className="table-header">
+                      <th>Shelter</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Duration</th>
+                      <th>Shelter Instructions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orderedShifts.map((shift) => (
+                      <DesktopShiftRow
+                        key={shift._id}
+                        shiftData={processShiftData(shift)}
+                        handleShiftToggle={handleShiftToggle}
+                        showInstructions={true}
+                        isInstructionsOpen={expandedInstructions.has(shift._id)}
+                        onInstructionsToggle={toggleInstructions}
+                        instructionsColSpan={5}
+                        showCalendarExport={true}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Mobile Card View */}
+              <div className="cards-container mobile-only">
+                {orderedShifts.map((shift) => (
+                  <MobileShiftCard
                     key={shift._id}
                     shiftData={processShiftData(shift)}
                     handleShiftToggle={handleShiftToggle}
                     showInstructions={true}
+                    showCalendarExport={true}
                     isInstructionsOpen={expandedInstructions.has(shift._id)}
                     onInstructionsToggle={toggleInstructions}
-                    instructionsColSpan={5}
-                    showCalendarExport={true}
                   />
                 ))}
-              </tbody>
-            </table>
-          </div>
-          {/* Mobile Card View */}
-          <div className="cards-container mobile-only">
-            {shifts.map((shift) => (
-              <MobileShiftCard
-                key={shift._id}
-                shiftData={processShiftData(shift)}
-                handleShiftToggle={handleShiftToggle}
-                showInstructions={true}
-                showCalendarExport={true}
-                isInstructionsOpen={expandedInstructions.has(shift._id)}
-                onInstructionsToggle={toggleInstructions}
-              />
-            ))}
-          </div>
-          <div className="sticky-signup-container">
-            {selectedShifts.size > 0 && (
-              <div className="selected-shifts-summary">
-                <h3 className="summary-title">
-                  Shifts Selected to Cancel ({selectedShifts.size})
-                </h3>
-                <div className="list">
-                  {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
-                    <div key={shift._id} className="tagline-small">
-                      • {shelter.name} - on {startTime.date} at {startTime.time} - {endTime.time}
+              </div>
+              {selectedShifts.size > 0 && (
+                <div className="sticky-signup-container commitments-cancel-bar">
+                  <div className="selected-shifts-summary">
+                    <h3 className="summary-title">
+                      Shifts Selected to Cancel ({selectedShifts.size})
+                    </h3>
+                    <div className="list">
+                      {sortedSelectedShifts.map(({ shift, shelter, startTime, endTime }) => (
+                        <div key={shift._id} className="tagline-small">
+                          • {shelter?.name || "Shelter"} - on {startTime.date} at {startTime.time} -{" "}
+                          {endTime.time}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <div className="signup-section">
+                    <button
+                      type="button"
+                      onClick={handleCancel}
+                      disabled={selectedShifts.size === 0}
+                      className={`signup-button ${selectedShifts.size > 0 ? "enabled signedup" : "disabled"}`}>
+                      Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? "s" : ""}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-            {selectedShifts.size === 0 && (
-              <div>
-                <p className="tagline-small">You can select shifts you want to cancel.</p>
-              </div>
-            )}
-            <div className="signup-section">
-              <button
-                type="button"
-                onClick={handleCancel}
-                disabled={selectedShifts.size === 0}
-                className={`signup-button ${selectedShifts.size > 0 ? 'enabled signedup' : 'disabled'}`}
-              >
-                Cancel {selectedShifts.size} Shift{selectedShifts.size !== 1 ? 's' : ''}
-              </button>
-            </div>
-          </div>
-        </>
+              )}
+            </>
+          )}
+        </div>
       )}
     </div>
   );
