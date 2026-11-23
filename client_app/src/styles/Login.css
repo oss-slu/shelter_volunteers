@@ -491,6 +491,18 @@
   }
 }
 
+@media (max-width: 480px) {
+  .landing-brand,
+  .landing-nav-links a {
+    white-space: nowrap;
+  }
+
+  /* Keep the bar to one line: logo + Sign in. The sections are a scroll away. */
+  .landing-nav-links a:not(.landing-nav-cta) {
+    display: none;
+  }
+}
+
 @media (max-width: 420px) {
   .landing-brand {
     gap: 0.5rem;

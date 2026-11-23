@@ -1,10 +1,14 @@
 .add-user-form {
-  padding: 20px;
+  max-width: 36rem;
+  margin-bottom: 2rem;
 }
 
 .add-user-form h2 {
-  margin-bottom: 15px;
-  color: #333;
+  margin-bottom: 1.25rem;
+}
+
+.add-user-empty {
+  color: var(--text-muted);
 }
 
 .form-group {
@@ -15,7 +19,7 @@
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #333;
+  color: var(--text);
 }
 
 .form-group input {
@@ -47,7 +51,7 @@
   border-radius: 4px;
 }
 
-.message.success {
+.message.error {
   margin-top: 10px;
   color: #721c24;
   background-color: #f8d7da;
@@ -63,6 +67,11 @@
 }
 
 .cancel-button {
-  background-color: #2c3e50;
+  background-color: var(--text-strong);
   color: white;
+}
+/* Embedded in the Settings page: a section heading, not a second page title. */
+.settings-page .add-user-form h2 {
+  margin-top: 1.5rem;
+  font-size: var(--fs-lg);
 }

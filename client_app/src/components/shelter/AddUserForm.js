@@ -64,7 +64,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
   return (
     <div>
       <div className="add-user-form">
-        <h2>Add {adminType}</h2>
+        <h2 className="page-title">Add {adminType}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email" className="form-label">User Email</label>
@@ -97,7 +97,7 @@ const AddUserForm = ({ resourceType = "shelter" }) => {
       </div >
       <div>
         {admins.length === 0 ? (
-          <li>No {adminType} users found.</li>
+          <p className="add-user-empty">No {adminType} users found.</p>
         ) : (
           <div>
             <h3 className="summary-title">

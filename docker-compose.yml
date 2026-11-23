@@ -11,7 +11,15 @@ services:
     command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shifts --type json --file /volunteers.json --jsonArray"
     depends_on:
       - mongodb
-     
+
+  shelter-importer:
+    image: mongo
+    volumes:
+      - ./server/scripts/data/stl_mock_shelters.json:/stl_mock_shelters.json
+    command: sh -c "mongoimport --host mongodb --db volunteers_db --collection shelters --type json --file /stl_mock_shelters.json --jsonArray --mode upsert --upsertFields name"
+    depends_on:
+      - mongodb
+
   backend:
     build:
       context: ./server

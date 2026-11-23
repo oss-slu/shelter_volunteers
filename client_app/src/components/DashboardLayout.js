@@ -78,13 +78,11 @@ function DashboardLayout() {
         <Sidebar />
         <div className="content-with-header">
           <Header user={user} />
-          <div className="home-container">
-            <div className="content-wrapper">
+          <div className="dashboard-content">
+            <main className="dashboard-main">
               <DashboardBreadcrumb />
-              <main>
-                <Outlet />
-              </main>
-            </div>
+              <Outlet />
+            </main>
           </div>
         </div>
       </div>
