@@ -18,7 +18,13 @@ jest.mock("./DesktopShiftRow", () => ({
   DesktopShiftRow: ({ shiftData, handleShiftToggle }) => (
     <tr>
       <td>
-        <button onClick={() => handleShiftToggle(shiftData.shift)}>Select test shift</button>
+        <button
+          type="button"
+          aria-pressed={shiftData.isSelected}
+          disabled={!shiftData.canInteract}
+          onClick={() => handleShiftToggle(shiftData.shift)}>
+          Select test shift {shiftData.shift.shift_name}
+        </button>
       </td>
     </tr>
   ),
@@ -58,7 +64,7 @@ test("shows a load error and retries instead of showing an empty shift list", as
   expect(await screen.findByRole("alert")).toHaveTextContent("could not load the available shifts");
   expect(screen.queryByText(/There are no open shifts/)).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Retry loading shifts" }));
-  expect(await screen.findByRole("button", { name: "Select test shift" })).toBeInTheDocument();
+  expect(await screen.findByRole("button", { name: "Select test shift Dinner" })).toBeInTheDocument();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
 
@@ -67,11 +73,65 @@ test("shows a submission error, preserves selected shifts, and allows retry", as
     .mockRejectedValueOnce(new Error("Network unavailable"))
     .mockResolvedValueOnce([{ success: true }]);
   render(<VolunteerShiftSignup />);
-  fireEvent.click(await screen.findByRole("button", { name: "Select test shift" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Select test shift Dinner" }));
   fireEvent.click(screen.getByRole("button", { name: "Sign up for 1 shift" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Your selected shifts are still here");
   expect(screen.getByRole("button", { name: "Sign up for 1 shift" })).toBeEnabled();
   fireEvent.click(screen.getByRole("button", { name: "Sign up for 1 shift" }));
   await waitFor(() => expect(serviceCommitmentAPI.addCommitments).toHaveBeenCalledTimes(2));
   expect(await screen.findByText("Sign-up results")).toBeInTheDocument();
+});
+
+test("renders available shifts in date order and lets a volunteer select and deselect one", async () => {
+  const earlierShift = { ...shift, _id: "early", shift_name: "Breakfast" };
+  const laterShift = {
+    ...shift,
+    _id: "late",
+    shift_name: "Lunch",
+    shift_start: shift.shift_end + 3600000,
+    shift_end: shift.shift_end + 7200000,
+  };
+  serviceShiftAPI.getFutureShifts.mockResolvedValue([laterShift, earlierShift]);
+
+  render(<VolunteerShiftSignup />);
+
+  const shiftButtons = await screen.findAllByRole("button", { name: /Select test shift/ });
+  expect(shiftButtons.map((button) => button.textContent)).toEqual([
+    "Select test shift Breakfast",
+    "Select test shift Lunch",
+  ]);
+  expect(screen.getByRole("button", { name: "Sign up for shifts" })).toBeDisabled();
+
+  fireEvent.click(shiftButtons[0]);
+  expect(shiftButtons[0]).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByRole("button", { name: "Sign up for 1 shift" })).toBeEnabled();
+
+  fireEvent.click(shiftButtons[0]);
+  expect(shiftButtons[0]).toHaveAttribute("aria-pressed", "false");
+  expect(screen.getByRole("button", { name: "Sign up for shifts" })).toBeDisabled();
+});
+
+test("submits the selected shift and shows the results", async () => {
+  serviceCommitmentAPI.addCommitments.mockResolvedValue([{ success: true }]);
+  render(<VolunteerShiftSignup />);
+
+  fireEvent.click(await screen.findByRole("button", { name: "Select test shift Dinner" }));
+  fireEvent.click(screen.getByRole("button", { name: "Sign up for 1 shift" }));
+
+  await waitFor(() =>
+    expect(serviceCommitmentAPI.addCommitments).toHaveBeenCalledWith([
+      { volunteer_id: "volunteer@example.com", service_shift_id: "shift-1" },
+    ]),
+  );
+  expect(await screen.findByText("Sign-up results")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Sign up for shifts" })).toBeDisabled();
+});
+
+test("shows an empty state when no shifts are available", async () => {
+  serviceShiftAPI.getFutureShifts.mockResolvedValue([]);
+  render(<VolunteerShiftSignup />);
+
+  expect(await screen.findByText(/There are no open shifts to sign up for right now/)).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /Select test shift/ })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Sign up for shifts" })).toBeDisabled();
 });
