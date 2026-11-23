@@ -19,7 +19,7 @@ export const Sidebar = () => {
     if (currentDashboard) {
       setMenuItems(navigationConfig[currentDashboard.type]);
     }
-  }, [currentDashboard]);
+  }, [location.pathname, menuItems, currentDashboard]);
 
   // Keep the highlighted tab in sync when the route changes (e.g. header "View Profile").
   useEffect(() => {

@@ -28,6 +28,11 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("open")}>
           Open Shelters by Date
         </button>
+        <button
+          className={`tab-button ${activeTab === "open" ? "active" : ""}`}
+          onClick={() => setActiveTab("open")}>
+          Open Shelters by Date
+        </button>
       </div>
       <div className="tab-content">
         {activeTab === "add" && <AddShelterForm />}
