@@ -81,12 +81,14 @@ def create_app(config_name="development"):
         @app.route("/<path:path>")
         def serve(path):
             if path != "":
-                requested_path = os.path.abspath(os.path.join(react_build_dir, path))
+                requested_path = os.path.realpath(os.path.join(react_build_dir, path))
                 if (
                     os.path.commonpath([react_build_dir, requested_path]) == react_build_dir
                     and os.path.isfile(requested_path)
                 ):
-                    return send_from_directory(react_build_dir, path)
+                    safe_path = os.path.relpath(requested_path, react_build_dir)
+                    if not safe_path.startswith("..") and not os.path.isabs(safe_path):
+                        return send_from_directory(react_build_dir, safe_path)
             return send_from_directory(react_build_dir, "index.html")
 
     return app
