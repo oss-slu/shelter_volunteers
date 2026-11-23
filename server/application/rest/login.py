@@ -98,6 +98,7 @@ def login():
 
         return _login_response(token, user_data)
     except ValueError as e:
+        current_app.logger.warning("Login failed: %s", e)
         return Response(json.dumps({"error": str(e)}),
             mimetype="application/json",
             status = HTTP_STATUS_CODES_MAPPING[ResponseTypes.AUTHORIZATION_ERROR]
