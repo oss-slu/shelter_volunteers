@@ -2,11 +2,13 @@
 .vscode/settings.json
 venv/
 .env.pre-production
+.env.production
 *__pycache__/
 *.pyc
 .pytest_cache/
 .idea/
 .venv
 __init__.py
+!server/cli/__init__.py
 settings.json
 package-lock.json

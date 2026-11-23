@@ -41,9 +41,10 @@ function ShelterDashboard() {
         fetchPromises.push(
           fetch(request_endpoint, {
             method: "GET",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "volunteer@slu.edu",
+              "X-Volunteer-Session": "1",
             },
           })
           .then((response) => response.json())

@@ -87,8 +87,10 @@ export default function RequestForHelp() {
 
     fetch(`${SERVER}/service_shift`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "X-Volunteer-Session": "1",
       },
       body: JSON.stringify(formattedEvent),
     })
@@ -260,4 +262,3 @@ export default function RequestForHelp() {
     </Fragment>
   )
 }
-

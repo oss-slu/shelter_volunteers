@@ -14,7 +14,7 @@ function NavBarShelterDashboard() {
   const shelterBasePath = shelterId ? `/shelter-dashboard/${shelterId}` : '/shelter-dashboard';
   return (
     <Navbar collapseOnSelect expand="lg" sticky="top" data-bs-theme="dark">
-      <NavLink to={'/home'} className="navbar-brand">
+      <NavLink to={'/'} className="navbar-brand">
         <FontAwesomeIcon icon={faHome} className="home-icon" />
       </NavLink>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />

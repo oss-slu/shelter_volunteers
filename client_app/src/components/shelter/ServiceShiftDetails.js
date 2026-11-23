@@ -1,11 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faUsers, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/shelter/RequestItem.css";
 import { formatTime } from "../../formatting/FormatDateTime";
 
-const ServiceShiftDetails = ({ shift, view, cancel, edit }) => {
+const ServiceShiftDetails = ({
+  shift,
+  view,
+  viewWaitlist,
+  waitlistCount,
+  waitlistStatus,
+  cancel,
+  edit,
+}) => {
   const startTime = formatTime(shift.shift_start);
   const endTime = formatTime(shift.shift_end);
+  const waitlistLabel =
+    waitlistStatus === "loading"
+      ? "Waitlist ..."
+      : waitlistStatus === "error"
+        ? "Waitlist unavailable"
+        : `Waitlist ${waitlistCount ?? 0}`;
 
   return (
     <div className="request-item-container">
@@ -20,7 +34,9 @@ const ServiceShiftDetails = ({ shift, view, cancel, edit }) => {
         </div>
       </div>
       <div className="info">
-        <button onClick={() => view(shift)}>
+        <button
+          onClick={() => view(shift)}
+          aria-label={`View registered volunteers for ${shift.shift_name || "shift"}`}>
           <FontAwesomeIcon icon={faUsers} />
           <span>
             {" "}
@@ -28,13 +44,23 @@ const ServiceShiftDetails = ({ shift, view, cancel, edit }) => {
           </span>
         </button>
       </div>
+      {viewWaitlist && (
+        <div className="shift-waitlist">
+          <button
+            onClick={() => viewWaitlist(shift)}
+            aria-label={`View waitlist for ${shift.shift_name || "shift"}`}>
+            <FontAwesomeIcon icon={faClock} />
+            <span>{waitlistLabel}</span>
+          </button>
+        </div>
+      )}
       <div className="edit">
-        <button onClick={() => edit(shift)}>
+        <button onClick={() => edit(shift)} aria-label={`Edit ${shift.shift_name || "shift"}`}>
           <FontAwesomeIcon icon={faPenToSquare} />
         </button>
       </div>
       <div className="delete">
-        <button onClick={() => cancel(shift)}>
+        <button onClick={() => cancel(shift)} aria-label={`Delete ${shift.shift_name || "shift"}`}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </div>

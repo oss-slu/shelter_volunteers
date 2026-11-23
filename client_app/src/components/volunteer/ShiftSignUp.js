@@ -47,6 +47,11 @@ function filterShiftsByLocalDate(shifts, dateStr) {
 
 function VolunteerShiftSignup(){
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [refreshError, setRefreshError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [submitError, setSubmitError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState([]);
   const [resultShifts, setResultShifts] = useState([]);
@@ -69,6 +74,9 @@ function VolunteerShiftSignup(){
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
+    setLoadError(false);
+    setRefreshError(false);
     (async () => {
       try {
         const {
@@ -84,6 +92,7 @@ function VolunteerShiftSignup(){
         setWaitlistEntries(nextWaitlist || []);
       } catch (error) {
         console.error("fetch error:", error);
+        if (!cancelled) setLoadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -91,7 +100,7 @@ function VolunteerShiftSignup(){
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadAttempt]);
 
   const waitlistShiftIds = useMemo(
     () => new Set((waitlistEntries || []).map((e) => e.service_shift_id)),
@@ -288,33 +297,42 @@ function VolunteerShiftSignup(){
 
   // Handle sign up
   const handleSignUp = async () => {
+    if (submitting || selectedShifts.size === 0) return;
+    setSubmitting(true);
+    setSubmitError(false);
     try {
-      console.log("Submitting shifts:", selectedShifts);
       const shiftsList = Array.from(selectedShifts).map(shiftId => ({
         volunteer_id: user.email,
         service_shift_id: shiftId
       }));
       const response = await serviceCommitmentAPI.addCommitments(shiftsList);
-      console.log(response)
       setResults(response);
       setResultShifts(sortedShifts.filter(shift => selectedShifts.has(shift._id)));
       setShowResults(true);
       // Reset form
       setSelectedShifts(new Set());
-      const {
-        sheltersData,
-        futureShifts,
-        commitments: nextCommitments,
-        waitlistEntries: nextWaitlist,
-      } = await loadShiftSignupPageData();
-      setShelters(sheltersData);
-      setShifts(futureShifts);
-      setCommitments(nextCommitments);
-      setWaitlistEntries(nextWaitlist || []);
+      try {
+        const {
+          sheltersData,
+          futureShifts,
+          commitments: nextCommitments,
+          waitlistEntries: nextWaitlist,
+        } = await loadShiftSignupPageData();
+        setShelters(sheltersData);
+        setShifts(futureShifts);
+        setCommitments(nextCommitments);
+        setWaitlistEntries(nextWaitlist || []);
+      } catch (refreshError) {
+        console.error("Could not refresh shifts after sign-up:", refreshError);
+        setRefreshError(true);
+      }
     }
     catch (error) {
       console.error("Error submitting shifts:", error);
-    } 
+      setSubmitError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Modal for sign up results
@@ -394,6 +412,19 @@ function VolunteerShiftSignup(){
   if (loading) {
     return <Loading />;
   }
+  if (loadError) {
+    return (
+      <div className="volunteer-shift-signup">
+        <h1 className="title-small">Volunteer Shift Sign-up</h1>
+        <div className="signup-request-error" role="alert">
+          <p>We could not load the available shifts. Please try again.</p>
+          <button type="button" onClick={() => setLoadAttempt((attempt) => attempt + 1)}>
+            Retry loading shifts
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="has-sticky-bottom volunteer-shift-signup">
       <header className="signup-page-header">
@@ -409,6 +440,19 @@ function VolunteerShiftSignup(){
       >
         {a11yAnnouncement}
       </div>
+      {submitError && (
+        <div className="signup-request-error" role="alert">
+          Sign-up could not be completed. Your selected shifts are still here. Please try again.
+        </div>
+      )}
+      {refreshError && (
+        <div className="signup-request-error" role="alert">
+          <p>Your sign-up was submitted, but the shift list could not refresh.</p>
+          <button type="button" onClick={() => setLoadAttempt((attempt) => attempt + 1)}>
+            Retry loading shifts
+          </button>
+        </div>
+      )}
       {waitlistMessage && (
         <div
           className={`waitlist-banner ${waitlistMessage.success ? 'waitlist-banner--success' : 'waitlist-banner--error'}`}
@@ -596,10 +640,12 @@ function VolunteerShiftSignup(){
             <button
               type="button"
               onClick={handleSignUp}
-              disabled={selectedShifts.size === 0}
+              disabled={selectedShifts.size === 0 || submitting}
               className={`signup-button signup-button--cta ${selectedShifts.size > 0 ? 'enabled' : 'disabled'}`}
             >
-              {selectedShifts.size === 0
+              {submitting
+                ? 'Signing up...'
+                : selectedShifts.size === 0
                 ? 'Sign up for shifts'
                 : `Sign up for ${selectedShifts.size} shift${selectedShifts.size !== 1 ? 's' : ''}`}
             </button>

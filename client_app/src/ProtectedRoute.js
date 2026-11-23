@@ -9,7 +9,7 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      navigate('/home');
+      navigate('/');
     }
   }, [isAuthenticated, loading, navigate]);
 

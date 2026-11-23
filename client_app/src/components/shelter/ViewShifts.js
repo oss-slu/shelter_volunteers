@@ -6,7 +6,9 @@ import { EditRequestModal } from "./EditRequestModal.js";
 import { CancelRequestModal } from "./CancelRequestModal.js";
 import { formatDate } from "../../formatting/FormatDateTime.js";
 import ShiftUserInfoDisplay from "./ShiftUserInfoDisplay";
+import ShiftWaitlistModal from "./ShiftWaitlistModal";
 import { serviceShiftAPI } from "../../api/serviceShift.js";
+import { waitlistAPI } from "../../api/waitlist.js";
 
 const ViewShifts = ({ shiftDetailsData }) => {
   const { shelterId } = useParams();
@@ -14,12 +16,51 @@ const ViewShifts = ({ shiftDetailsData }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState(null);
   const [errorToast, setErrorToast] = useState("");
+  const [waitlistCounts, setWaitlistCounts] = useState({});
+  const [waitlistStatuses, setWaitlistStatuses] = useState({});
 
   useEffect(() => {
     setShiftsData(shiftDetailsData || []);
   }, [shiftDetailsData]);
+
+  useEffect(() => {
+    let ignoreResults = false;
+
+    if (!shelterId || shiftsData.length === 0) {
+      setWaitlistCounts({});
+      setWaitlistStatuses({});
+      return undefined;
+    }
+
+    setWaitlistStatuses(Object.fromEntries(shiftsData.map((shift) => [shift._id, "loading"])));
+
+    Promise.all(
+      shiftsData.map(async (shift) => {
+        try {
+          const queue = await waitlistAPI.getForShift(shelterId, shift._id);
+          return { shiftId: shift._id, count: queue.length, status: "ready" };
+        } catch (error) {
+          console.error(`Error fetching waitlist for shift ${shift._id}:`, error);
+          return { shiftId: shift._id, count: null, status: "error" };
+        }
+      }),
+    ).then((results) => {
+      if (ignoreResults) return;
+      setWaitlistCounts(
+        Object.fromEntries(results.map((result) => [result.shiftId, result.count])),
+      );
+      setWaitlistStatuses(
+        Object.fromEntries(results.map((result) => [result.shiftId, result.status])),
+      );
+    });
+
+    return () => {
+      ignoreResults = true;
+    };
+  }, [shelterId, shiftsData]);
 
   useEffect(() => {
     if (!errorToast) {
@@ -32,6 +73,11 @@ const ViewShifts = ({ shiftDetailsData }) => {
   const handleRosterClick = (shift) => {
     setSelectedShift(shift);
     setIsRosterModalOpen(true);
+  };
+
+  const handleWaitlistClick = (shift) => {
+    setSelectedShift(shift);
+    setIsWaitlistModalOpen(true);
   };
 
   const handleEditRequestClick = (shift) => {
@@ -61,6 +107,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
         shift_start: updatedShift.shift_start,
         shift_end: updatedShift.shift_end,
         required_volunteer_count: updatedShift.required_volunteer_count,
+        max_volunteer_count: updatedShift.max_volunteer_count,
         instructions: updatedShift.instructions || "",
       };
 
@@ -75,14 +122,17 @@ const ViewShifts = ({ shiftDetailsData }) => {
 
       setShiftsData(updatedShifts);
       setIsEditModalOpen(false);
+      return true;
     } catch (error) {
       console.error("Error updating shift:", error);
       setErrorToast(error?.message || "Failed to update shift. Please try again.");
-      throw error;
+      return false;
     }
   };
 
-  const shiftsGroupedByDate = shiftsData.reduce((acc, shift) => {
+  // Sort a copy by timestamp before grouping so dates and times stay chronological.
+  const sortedShifts = [...shiftsData].sort((a, b) => a.shift_start - b.shift_start);
+  const shiftsGroupedByDate = sortedShifts.reduce((acc, shift) => {
     const timestamp = formatDate(shift.shift_start);
     if (!acc[timestamp]) {
       acc[timestamp] = [];
@@ -91,12 +141,7 @@ const ViewShifts = ({ shiftDetailsData }) => {
     return acc;
   }, {});
 
-  const sortedDates = Object.keys(shiftsGroupedByDate).sort((a, b) => a < b);
-
-  // Sort shifts within each date by shift_start in ascending order
-  Object.keys(shiftsGroupedByDate).forEach((date) => {
-    shiftsGroupedByDate[date].sort((a, b) => a.shift_start - b.shift_start);
-  });
+  const sortedDates = Object.keys(shiftsGroupedByDate);
 
   return (
     <div className="upcoming-requests">
@@ -110,6 +155,9 @@ const ViewShifts = ({ shiftDetailsData }) => {
                 key={shift._id}
                 shift={shift}
                 view={handleRosterClick}
+                viewWaitlist={handleWaitlistClick}
+                waitlistCount={waitlistCounts[shift._id]}
+                waitlistStatus={waitlistStatuses[shift._id] || "loading"}
                 edit={handleEditRequestClick}
                 cancel={handleCancelRequestClick}
               />
@@ -120,6 +168,12 @@ const ViewShifts = ({ shiftDetailsData }) => {
       <ShiftUserInfoDisplay
         isOpen={isRosterModalOpen}
         onDismiss={() => setIsRosterModalOpen(false)}
+        shift={selectedShift}
+      />
+      <ShiftWaitlistModal
+        isOpen={isWaitlistModalOpen}
+        onClose={() => setIsWaitlistModalOpen(false)}
+        shelterId={shelterId}
         shift={selectedShift}
       />
       <EditRequestModal

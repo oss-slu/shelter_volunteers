@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate, useNavigate } from "react-router-dom";
+import LegacyShelterRedirect from "./LegacyShelterRedirect";
 import { useEffect } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -18,6 +19,7 @@ import HomeDashboard from "./components/HomeDashboard";
 import DashboardLayout from "./components/DashboardLayout";
 import DashboardContent from "./components/DashboardContent";
 import Logout from "./components/authentication/Logout";
+import AdminLogin from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -26,6 +28,7 @@ import AddUserForm from "./components/shelter/AddUserForm";
 import UpcomingShifts from "./components/shelter/UpcomingShifts";
 import Settings from "./components/shelter/Settings";
 import ShelterScheduleManager from "./components/shelter/ScheduleManager";
+import OpenSheltersList from "./components/shelter/OpenSheltersList";
 // Admin dashboard components
 import AdminDashboard from "./components/admin/AdminDashboard";
 
@@ -49,8 +52,11 @@ function AppContent() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/home" element={<HomeDashboard />} />
+      <Route path="/" element={<HomeDashboard />} />
+      <Route path="/home" element={<Navigate to="/" replace />} />
+      {/* The app used to live under /shelter; keep old links working. */}
+      <Route path="/shelter/*" element={<LegacyShelterRedirect />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/admin-dashboard" element={<DashboardLayout />}>
@@ -61,6 +67,7 @@ function AppContent() {
         <Route path="/shelter-dashboard/:shelterId" element={<DashboardLayout />}>
           <Route index element={<DashboardContent />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="open-shelters-list" element={<OpenSheltersList />} />
           <Route path="schedule" element={<ShelterScheduleManager />} />
           <Route path="upcoming-shifts" element={<UpcomingShifts />} />
           <Route path="repeatable-shifts" element={<RepeatableShiftsScreen />} />
@@ -84,7 +91,7 @@ function AppContent() {
 function App() {
   return (
     <div>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL || "/"}>
         <AuthProvider>
           <DashboardProvider>
             <AppContent />

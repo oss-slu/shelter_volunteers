@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.9-slim
 WORKDIR /python-docker
 COPY . /python-docker
 RUN pip3 install -r requirements.txt

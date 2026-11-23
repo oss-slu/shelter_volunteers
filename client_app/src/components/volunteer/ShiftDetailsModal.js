@@ -1,6 +1,7 @@
 import Modal from 'react-modal';
 import { formatTime } from '../../formatting/FormatDateTime';
 import { Address } from './Address';
+import AddToCalendarButton from './AddToCalendarButton';
 import '../../styles/volunteer/ShiftDetailsModal.css';
 
 /**
@@ -51,6 +52,7 @@ export default function ShiftDetailsModal({ isOpen, onClose, shifts = [], dateLa
                 <span className="shift-details-time">
                   {formatTime(c.shift_start)} – {formatTime(c.shift_end)}
                 </span>
+                <AddToCalendarButton shift={c} />
               </li>
             ))}
           </ul>

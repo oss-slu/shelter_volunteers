@@ -1,0 +1,43 @@
+services:
+  backend:
+    image: ghcr.io/oss-slu/shelter-volunteers-server:latest
+    container_name: shelter-volunteers-backend
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      FLASK_ENV: pre-production
+      FLASK_CONFIG: production
+    expose:
+      - "5001"
+
+  frontend:
+    image: ghcr.io/oss-slu/shelter-volunteers-client:latest
+    container_name: shelter-volunteers-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      - backend
+
+  # Reverse proxy + automatic TLS (Let's Encrypt) for both domains. Only
+  # service exposed to the internet — backend/frontend are reachable solely
+  # through the shared docker network.
+  caddy:
+    image: caddy:2-alpine
+    container_name: shelter-volunteers-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  caddy_data:
+  caddy_config:

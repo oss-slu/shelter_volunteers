@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { DashboardBreadcrumb } from './DashboardBreadcrumb';
 import { getUser } from '../authentication/user';
 import { useCurrentDashboard } from '../contexts/DashboardContext';
 import { getUserProfile } from '../api/volunteerApi';
@@ -79,6 +80,7 @@ function DashboardLayout() {
           <Header user={user} />
           <div className="home-container">
             <div className="content-wrapper">
+              <DashboardBreadcrumb />
               <main>
                 <Outlet />
               </main>

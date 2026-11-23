@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { shelterAPI } from "../../api/shelter";
 import { repeatableShiftsApi } from "../../api/repeatableShiftsApi";
 import {
-  displayTime,
   millisToTimeString,
   timeStringToMillis,
 } from "../../formatting/FormatDateTime";
@@ -89,12 +88,7 @@ const RepeatableShiftsScreen = () => {
   const updateShift = (index, field, value) => {
     setPendingShifts((shifts) => {
       const updatedShifts = [...shifts];
-      if (field === "duration") {
-        value = Math.max(value || 0, 0);
-        updatedShifts[index]["shiftEnd"] = updatedShifts[index]["shiftStart"] + value * 3600000;
-      } else {
-        updatedShifts[index][field] = value;
-      }
+      updatedShifts[index][field] = value;
       return updatedShifts;
     });
   };
@@ -170,13 +164,18 @@ const RepeatableShiftsScreen = () => {
                         className="form-control"
                         step="0.01"
                         value={(shift.shiftEnd - shift.shiftStart) / 3600000}
-                        onChange={(e) =>
-                          updateShift(idx, "duration", Number.parseInt(e.target.value))
-                        }
+                        disabled
                       />
                     </td>
                     <td>
-                      <div>{displayTime(shift.shiftEnd)}</div>
+                      <input
+                        type="time"
+                        className="form-control"
+                        value={millisToTimeString(shift.shiftEnd)}
+                        onChange={(e) =>
+                          updateShift(idx, "shiftEnd", timeStringToMillis(e.target.value))
+                        }
+                      />
                     </td>
                     <td>
                       <input

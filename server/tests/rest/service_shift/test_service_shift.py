@@ -236,6 +236,94 @@ class TestServiceShiftAPI(unittest.TestCase):
             {"required_volunteer_count": 2, "instructions": "updated instructions"},
         )
 
+    @patch("application.rest.service_shifts.promote_from_waitlist")
+    @patch("application.rest.service_shifts.waitlist_repo")
+    @patch("application.rest.service_shifts.commitments_repo")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_promotes_waitlist_when_capacity_increases(
+        self,
+        mock_is_authorized,
+        mock_get_repo,
+        mock_commitments_repo,
+        mock_waitlist_repo,
+        mock_promote,
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        existing_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=1,
+            max_volunteer_count=2,
+            _id="abc123",
+        )
+        updated_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=1,
+            max_volunteer_count=4,
+            _id="abc123",
+        )
+        mock_shifts_repo.get_shift.return_value = existing_shift
+        mock_shifts_repo.check_shift_overlap.return_value = False
+        mock_shifts_repo.update_service_shift.return_value = updated_shift
+
+        response = self.client.patch(
+            "/shelters/12345/service_shifts/abc123",
+            data=json.dumps({"max_volunteer_count": 4}),
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        mock_promote.assert_called_once_with(
+            mock_waitlist_repo,
+            mock_commitments_repo,
+            mock_shifts_repo,
+            "abc123",
+        )
+
+    @patch("application.rest.service_shifts.promote_from_waitlist")
+    @patch("application.rest.service_shifts.get_service_shifts_repo")
+    @patch("application.rest.shelter_admin_permission_required.is_authorized")
+    def test_patch_service_shift_does_not_promote_when_capacity_does_not_increase(
+        self, mock_is_authorized, mock_get_repo, mock_promote
+    ):
+        mock_is_authorized.return_value = True
+        mock_shifts_repo = MagicMock()
+        mock_get_repo.return_value = mock_shifts_repo
+        existing_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=1,
+            max_volunteer_count=5,
+            _id="abc123",
+        )
+        updated_shift = ServiceShift(
+            shelter_id="12345",
+            shift_start=10,
+            shift_end=20,
+            required_volunteer_count=1,
+            max_volunteer_count=4,
+            _id="abc123",
+        )
+        mock_shifts_repo.get_shift.return_value = existing_shift
+        mock_shifts_repo.check_shift_overlap.return_value = False
+        mock_shifts_repo.update_service_shift.return_value = updated_shift
+
+        response = self.client.patch(
+            "/shelters/12345/service_shifts/abc123",
+            data=json.dumps({"max_volunteer_count": 4}),
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        mock_promote.assert_not_called()
+
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_patch_service_shift_rejects_long_instructions(self, mock_is_authorized):
         mock_is_authorized.return_value = True
@@ -311,11 +399,16 @@ class TestServiceShiftAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data["message"], "Invalid data provided")
 
+    @patch("application.rest.service_shifts.waitlist_repo")
     @patch("application.rest.service_shifts.commitments_repo")
     @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
-    def test_delete_service_shift_removes_shift_and_commitments(
-        self, mock_is_authorized, mock_get_repo, mock_commitments_repo
+    def test_delete_service_shift_removes_shift_commitments_and_waitlist_entries(
+        self,
+        mock_is_authorized,
+        mock_get_repo,
+        mock_commitments_repo,
+        mock_waitlist_repo,
     ):
         mock_is_authorized.return_value = True
         mock_shifts_repo = MagicMock()
@@ -340,12 +433,19 @@ class TestServiceShiftAPI(unittest.TestCase):
         mock_commitments_repo.delete_commitments_for_service_shift.assert_called_once_with(
             "abc123"
         )
+        mock_waitlist_repo.remove_all_for_shift.assert_called_once_with("abc123")
         mock_shifts_repo.delete_service_shift.assert_called_once_with("abc123")
 
+    @patch("application.rest.service_shifts.waitlist_repo")
+    @patch("application.rest.service_shifts.commitments_repo")
     @patch("application.rest.service_shifts.get_service_shifts_repo")
     @patch("application.rest.shelter_admin_permission_required.is_authorized")
     def test_delete_service_shift_returns_404_when_missing(
-        self, mock_is_authorized, mock_get_repo
+        self,
+        mock_is_authorized,
+        mock_get_repo,
+        mock_commitments_repo,
+        mock_waitlist_repo,
     ):
         mock_is_authorized.return_value = True
         mock_shifts_repo = MagicMock()
@@ -358,6 +458,8 @@ class TestServiceShiftAPI(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+        mock_commitments_repo.delete_commitments_for_service_shift.assert_not_called()
+        mock_waitlist_repo.remove_all_for_shift.assert_not_called()
 
 if __name__ == "__main__":
     unittest.main()

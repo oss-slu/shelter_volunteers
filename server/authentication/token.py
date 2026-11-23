@@ -25,7 +25,7 @@ def create_token(user_data, jwt_secret, expiration=3600):
     token = encode(payload, jwt_secret, algorithm='HS256')
     return token
 
-def get_email_from_token(token, jwt_secret):
+def decode_token(token, jwt_secret):
     """
     Verify JWT token from request headers
     Returns user data if valid, raises exception if invalid
@@ -39,9 +39,14 @@ def get_email_from_token(token, jwt_secret):
             algorithms=['HS256'],
             options={'verify_signature': True}
         )
-        return data['email']
+        if not isinstance(data.get('email'), str) or not data['email']:
+            raise ValueError('Invalid token')
+        return data
     except ExpiredSignatureError:
         raise ValueError('Token has expired') from ExpiredSignatureError
     except InvalidTokenError:
         raise ValueError('Invalid token') from InvalidTokenError
 
+
+def get_email_from_token(token, jwt_secret):
+    return decode_token(token, jwt_secret)['email']

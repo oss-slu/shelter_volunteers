@@ -1,6 +1,7 @@
 import { PriorityBadge } from './PriorityBadge';
 import { ShelterInfo } from './ShelterInfo';
 import { VolunteerCount } from './VolunteerCount';
+import AddToCalendarButton from './AddToCalendarButton';
 
 export const MobileShiftCard = ({
   shiftData,
@@ -9,6 +10,7 @@ export const MobileShiftCard = ({
   showInstructions = false,
   isInstructionsOpen = false,
   onInstructionsToggle = null,
+  showCalendarExport = false,
 }) => {
   const instructionsPanelId = `mobile-instructions-${shiftData.shift._id}`;
   const instructionsButtonLabel = isInstructionsOpen
@@ -77,6 +79,7 @@ export const MobileShiftCard = ({
           <span className="checkmark">✓ Selected</span>
         </div>
       )}
+      {showCalendarExport && <AddToCalendarButton shift={shiftData.shift} />}
       {shiftData.signedUp && (
         <div className="detail-row  selected-indicator-desktop">
           <span className="checkmark signedup"> Signed Up</span>

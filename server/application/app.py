@@ -60,6 +60,10 @@ def create_app(config_name="development"):
     app.register_blueprint(user_info_bp)
     app.register_blueprint(waitlist_bp)
 
+    @app.route("/health")
+    def health():
+        return {"status": "ok"}, 200
+
     load_dotenv()  # Load environment variables from the .env file
 
     # Configure logging so reminder scheduler activity appears in the terminal

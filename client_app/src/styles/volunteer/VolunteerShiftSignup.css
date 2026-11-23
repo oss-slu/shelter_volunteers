@@ -7,6 +7,34 @@
   margin-right: auto;
 }
 
+.signup-request-error {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #b91c1c;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.signup-request-error p {
+  margin: 0 0 0.75rem;
+}
+
+.signup-request-error button {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #7f1d1d;
+  border-radius: 6px;
+  background: #fff;
+  color: #7f1d1d;
+  cursor: pointer;
+}
+
+.signup-request-error button:focus-visible {
+  outline: 3px solid #1e4c5b;
+  outline-offset: 2px;
+}
+
 /* Page header */
 .signup-page-header {
   text-align: center;

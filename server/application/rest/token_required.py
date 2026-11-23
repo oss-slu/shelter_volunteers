@@ -5,6 +5,7 @@ import json
 from functools import wraps
 from flask import request, Response, current_app
 from authentication.token import get_email_from_token
+from authentication.browser_session import COOKIE_NAME, is_browser_session_request
 from application.rest.status_codes import HTTP_STATUS_CODES_MAPPING
 from responses import ResponseTypes
 
@@ -15,6 +16,13 @@ def token_required_with_request(f):
             jwt_secret = current_app.config.get('JWT_SECRET')
             # Pass request.headers to verify_token
             token = request.headers.get('Authorization')
+            if not token:
+                token = request.cookies.get(COOKIE_NAME)
+                if token and not is_browser_session_request():
+                    return Response(
+                        json.dumps({'message': 'Missing browser session header'}),
+                        mimetype='application/json', status=403
+                    )
             user_email = get_email_from_token(token, jwt_secret)
             # Pass user_data to the route function
             return f(user_email, *args, **kwargs)

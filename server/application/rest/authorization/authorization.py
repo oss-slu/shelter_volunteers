@@ -109,8 +109,8 @@ def post_system_admin():
     )
 
 @authorization_blueprint.route('/system_admin', methods=['DELETE'])
-@system_admin_permission_required
-def delete_system_admin():
+@system_admin_permission_required(pass_user_email=True)
+def delete_system_admin(requesting_email):
     """
     Endpoint to remove system admin permission from user.
     Expects a JSON object with 'user_email' field.
@@ -127,7 +127,7 @@ def delete_system_admin():
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.PARAMETER_ERROR]
         )
 
-    response = remove_system_admin(repo, user_email)
+    response = remove_system_admin(repo, user_email, requesting_email)
     return Response(
         json.dumps(response.value),
         mimetype='application/json',
@@ -185,4 +185,3 @@ def delete_shelter_admin(shelter_id):
         mimetype='application/json',
         status=HTTP_STATUS_CODES_MAPPING[response.response_type]
     )
-

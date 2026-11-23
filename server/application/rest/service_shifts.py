@@ -13,12 +13,14 @@ from domains.service_shift import ServiceShift
 from repository.mongo.service_commitments import MongoRepoCommitments
 from repository.mongo.service_shifts import ServiceShiftsMongoRepo
 from repository.mongo.user_info_repository import UserInfoRepository
+from repository.mongo.waitlist import WaitlistMongoRepo
 from responses import ResponseTypes
 from serializers.service_commitment import ServiceCommitmentJsonEncoder
 from serializers.service_shift import ServiceShiftJsonEncoder
 from use_cases.add_service_shifts import shift_add_use_case
 from use_cases.list_service_shifts_use_case import list_service_shifts_with_volunteers_use_case
 from use_cases.service_commitments.list_user_infos_in_shift import list_user_infos_in_shift
+from use_cases.waitlist.promote_from_waitlist import promote_from_waitlist
 
 service_shift_bp = Blueprint("service_shift", __name__)
 MAX_INSTRUCTIONS_LENGTH = 500
@@ -27,6 +29,7 @@ logger = logging.getLogger(__name__)
 commitments_repo = MongoRepoCommitments()
 service_shifts_repo = ServiceShiftsMongoRepo()
 user_info_repo = UserInfoRepository()
+waitlist_repo = WaitlistMongoRepo()
 
 
 def get_service_shifts_repo():
@@ -367,6 +370,14 @@ def patch_service_shift(shelter_id, shift_id):
             status=HTTP_STATUS_CODES_MAPPING[ResponseTypes.NOT_FOUND],
         )
 
+    if updated_shift.max_volunteer_count > existing_shift.max_volunteer_count:
+        promote_from_waitlist(
+            waitlist_repo,
+            commitments_repo,
+            shifts_repo,
+            shift_id,
+        )
+
     return Response(
         json.dumps(updated_shift, cls=ServiceShiftJsonEncoder),
         mimetype="application/json",
@@ -378,7 +389,7 @@ def patch_service_shift(shelter_id, shift_id):
 @shelter_admin_permission_required
 def delete_service_shift(shelter_id, shift_id):
     """
-    Deletes a service shift and all volunteer commitments for that shift.
+    Deletes a service shift and all commitments and waitlist entries for that shift.
     Requires shelter admin permissions for the given shelter.
     """
     shifts_repo = get_service_shifts_repo()
@@ -398,6 +409,7 @@ def delete_service_shift(shelter_id, shift_id):
         )
 
     commitments_repo.delete_commitments_for_service_shift(shift_id)
+    waitlist_repo.remove_all_for_shift(shift_id)
     if not shifts_repo.delete_service_shift(shift_id):
         return Response(
             json.dumps({"message": "Failed to delete service shift"}),

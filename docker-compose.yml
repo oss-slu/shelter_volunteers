@@ -16,6 +16,14 @@ services:
     build:
       context: ./server
       dockerfile: ../docker_files/server/Dockerfile
+    environment:
+      FLASK_ENV: development
+      FLASK_CONFIG: development
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: volunteers_db
+      GOOGLE_CLIENT_ID: 214227450442-gp12srosdps9365qbfum19dvnutu9gi5.apps.googleusercontent.com
+      JWT_SECRET: local-docker-development-secret
     ports:
       - "5001:5001"
     depends_on:
@@ -25,6 +33,8 @@ services:
     build: 
       context: ./client_app
       dockerfile: ../docker_files/client_app/Dockerfile
+    environment:
+      REACT_APP_SERVER_URL: http://localhost:5001
     ports:
       - "3000:3000"
     develop:
@@ -41,4 +51,3 @@ services:
   
 
   
-
