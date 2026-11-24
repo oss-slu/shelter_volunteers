@@ -43,7 +43,7 @@ a.dropdown-item {
   font-size: 0.875rem;
 }
 .left {
-  left:0
+  left: 0;
 }
 
 .dropdown-menu-button {
@@ -66,4 +66,34 @@ a.dropdown-item {
 .dropdown-name {
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+.dropdown-menu-button {
+  border: 1px solid transparent;
+  color: #294d5f;
+  font-weight: 700;
+}
+
+.dropdown-menu-button:hover {
+  border-color: #d5e5e7;
+  background: #f0f7f6;
+}
+
+.dropdown-menu-item {
+  overflow: hidden;
+  min-width: 13rem;
+  border: 1px solid #d8e5e8;
+  border-radius: 11px;
+  box-shadow: 0 12px 28px rgba(20, 59, 77, 0.15);
+}
+
+.dropdown-item {
+  color: #355769;
+  font-weight: 600;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background: #e9f5f3;
+  color: #0e6772;
 }
