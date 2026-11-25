@@ -12,6 +12,9 @@ on:
       - 'server/**'
       - '.github/workflows/linting.yml'
 
+permissions:
+  contents: read
+
 jobs:
   pylint:
     runs-on: ubuntu-latest

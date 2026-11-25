@@ -12,6 +12,9 @@ on:
       - 'server/**'
       - '.github/workflows/pytest.yml'
 
+permissions:
+  contents: read
+
 jobs:
   pytest:
     runs-on: ubuntu-latest
